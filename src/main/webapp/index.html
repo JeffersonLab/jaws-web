@@ -1,5 +1,76 @@
 <html>
 <body>
 Hello
+<div>
+    <form onsubmit="return false;">
+        Send: <input id="msg" type="text" name="data" value=""/>
+        <input id="submit" type="button" value="Send"/>
+    </form>
+</div>
+<ul></ul>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#submit').click(function() {
+            console.log("click");
+            var msg = $('#msg').val();
+
+            $.ajax({
+                url : 'sse/broadcast?message=' + msg,
+                type : 'PUT',
+                success : function() {
+                    return false;
+                }
+            });
+
+            document.getElementById("msg").value = "";
+
+        });
+        $('#msg').keypress(function(e) {
+            if (e.keyCode == '13') {
+                console.log("enter");
+                var msg = $('#msg').val();
+
+                $.ajax({
+                    url : 'sse/broadcast?message=' + msg,
+                    type : 'PUT',
+                    success : function() {
+                        return false;
+                    }
+                });
+
+                document.getElementById("msg").value = "";
+            }
+        });
+
+    });
+</script>
+<script>
+    var evtSource = new EventSource('sse/broadcast');
+    var eventList = document.querySelector('ul');
+
+    console.log('attempting sse...')
+
+    evtSource.addEventListener("message", function(e) {
+        console.log('message type message')
+        var newElement = document.createElement("li");
+
+        newElement.textContent = "message: " + e.data;
+        eventList.appendChild(newElement);
+    });
+
+    evtSource.onmessage = function(e) {
+        console.log('generic message')
+        var newElement = document.createElement("li");
+
+        newElement.textContent = "message: " + e.data;
+        eventList.appendChild(newElement);
+    }
+
+    evtSource.onerror = function(e) {
+        console.log('error')
+        console.log(e)
+    }
+</script>
 </body>
 </html>
