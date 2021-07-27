@@ -1,0 +1,52 @@
+---
+version: '3.8'
+
+services:
+  zookeeper:
+    image: debezium/zookeeper:1.5.0.Final
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: debezium/kafka:1.5.0.Final
+    hostname: kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9094:9094"
+    environment:
+      KAFKA_HOME: "/kafka"
+      BOOTSTRAP_SERVER: "kafka:9092"
+      ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENERS: 'INTERNAL://kafka:9092,OUTSIDE://kafka:9094'
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka:9092, OUTSIDE://localhost:9094'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'INTERNAL:PLAINTEXT, OUTSIDE:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+
+  registry:
+    image: confluentinc/cp-schema-registry:6.0.2
+    hostname: registry
+    container_name: registry
+    depends_on:
+      - kafka
+    ports:
+      - 8081:8081
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
+      SCHEMA_REGISTRY_HOST_NAME: registry
+
+  jaws:
+    image: slominskir/jaws:2.6.1
+    tty: true
+    stdin_open: true
+    hostname: jaws
+    container_name: jaws
+    depends_on:
+      - registry
+    environment:
+      BOOTSTRAP_SERVERS: "kafka:9092"
+      SCHEMA_REGISTRY: "http://registry:8081"
+      ALARM_DEFINITIONS: "alarm1|channel1|INJ|RF|/,alarm2|channel2|INJ|RF|/,alarm3|channel3|INJ|RF|/"

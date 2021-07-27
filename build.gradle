@@ -4,8 +4,14 @@ plugins {
 
 repositories {
     mavenCentral()
+
+    maven {
+        url "https://packages.confluent.io/maven"
+    }
 }
 
 dependencies {
+    implementation 'org.jlab:jaws-libj:1.1.0',
+            'io.confluent:kafka-streams-avro-serde:6.1.0'
     providedCompile 'javax:javaee-api:8.0'
 }
