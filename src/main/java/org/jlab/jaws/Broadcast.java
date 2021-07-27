@@ -30,7 +30,6 @@ public class Broadcast {
 
     @PUT
     public String broadcastMessage(@QueryParam("message") String message) {
-
         final OutboundSseEvent event = sse.newEventBuilder()
                 .name("message")
                 .mediaType(MediaType.TEXT_PLAIN_TYPE)

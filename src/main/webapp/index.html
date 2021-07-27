@@ -8,6 +8,9 @@ Hello
     </form>
 </div>
 <ul></ul>
+<p>
+<a href="client.html">Client</a>
+</p>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -59,13 +62,13 @@ Hello
         eventList.appendChild(newElement);
     });
 
-    evtSource.onmessage = function(e) {
+    /*evtSource.onmessage = function(e) {
         console.log('generic message')
         var newElement = document.createElement("li");
 
         newElement.textContent = "message: " + e.data;
         eventList.appendChild(newElement);
-    }
+    }*/
 
     evtSource.onerror = function(e) {
         console.log('error')
