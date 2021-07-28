@@ -54,37 +54,38 @@ public class SSE {
                 final String servers = "localhost:9094";
                 final String registry = "http://localhost:8081";
 
-                final Properties props = new Properties();
+                final Properties registrationProps = new Properties();
 
                 final SpecificAvroSerde<RegisteredAlarm> VALUE_SERDE = new SpecificAvroSerde<>();
 
-                props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "sse-proxy-" + Instant.now().toString() + "-" + Math.random());
-                props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, "registered-alarms");
-                props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
-                props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
-                props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
+                registrationProps.put(EventSourceConfig.EVENT_SOURCE_GROUP, "sse-proxy-" + Instant.now().toString() + "-" + Math.random());
+                registrationProps.put(EventSourceConfig.EVENT_SOURCE_TOPIC, "registered-alarms");
+                registrationProps.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
+                registrationProps.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
+                registrationProps.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
 
                 // Deserializer specific configs
-                props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, registry);
-                props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG,"true");
+                registrationProps.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, registry);
+                registrationProps.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
 
-                EventSourceTable<String, RegisteredAlarm> table = new EventSourceTable<>(props);
+                try (
+                        EventSourceTable<String, RegisteredAlarm> registrationTable = new EventSourceTable<>(registrationProps);
+                ) {
 
-                table.addListener(new EventSourceListener<String, RegisteredAlarm>() {
-                    @Override
-                    public void initialState(Set<EventSourceRecord<String, RegisteredAlarm>> records) {
-                        sendRecords(sink, records);
-                    }
+                    registrationTable.addListener(new EventSourceListener<String, RegisteredAlarm>() {
+                        @Override
+                        public void initialState(Set<EventSourceRecord<String, RegisteredAlarm>> records) {
+                            sendRecords(sink, records);
+                        }
 
-                    @Override
-                    public void changes(List<EventSourceRecord<String, RegisteredAlarm>> records) {
-                        sendRecords(sink, records);
-                    }
+                        @Override
+                        public void changes(List<EventSourceRecord<String, RegisteredAlarm>> records) {
+                            sendRecords(sink, records);
+                        }
 
-                });
+                    });
 
-                try {
-                    table.start();
+                    registrationTable.start();
 
                     while (!sink.isClosed()) {
                         sink.send(sse.newEvent("ping", ":"));  // Actively check for connection
@@ -94,10 +95,6 @@ public class SSE {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                    }
-                } finally {
-                    if(table != null) {
-                        table.close();
                     }
                 }
 
@@ -113,7 +110,7 @@ public class SSE {
 
             String jsonValue = null;
 
-            if(value != null) {
+            if (value != null) {
                 try {
                     SpecificDatumWriter<RegisteredAlarm> writer = new SpecificDatumWriter<RegisteredAlarm>(value.getSchema());
                     OutputStream out = new ByteArrayOutputStream();
