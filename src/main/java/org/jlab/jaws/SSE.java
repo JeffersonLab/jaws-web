@@ -27,10 +27,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @ApplicationScoped
 @Path("/sse")
 public class SSE {
+    // max 10 concurrent users
+    private ExecutorService exec = Executors.newFixedThreadPool(10);
     private Sse sse;
 
     @Context
@@ -43,7 +47,7 @@ public class SSE {
     public void listen(@Context final SseEventSink sink) {
         System.err.println("Proxy connected");
 
-        Thread thread = new Thread(new Runnable() {
+        exec.execute(new Runnable() {
 
             @Override
             public void run() {
@@ -100,8 +104,6 @@ public class SSE {
                 System.err.println("Proxy disconnected");
             }
         });
-
-        thread.start();
     }
 
     private void sendRecords(SseEventSink sink, Collection<EventSourceRecord<String, RegisteredAlarm>> records) {
