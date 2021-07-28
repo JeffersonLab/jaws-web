@@ -16,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseEventSink;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
@@ -47,6 +48,7 @@ public class WebProxy {
 
                 final SpecificAvroSerde<RegisteredAlarm> VALUE_SERDE = new SpecificAvroSerde<>();
 
+                props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "sse-proxy-" + Instant.now().toString() + "-" + Math.random());
                 props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, "registered-alarms");
                 props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
                 props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
