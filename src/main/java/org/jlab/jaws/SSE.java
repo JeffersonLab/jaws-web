@@ -23,8 +23,8 @@ import java.util.Properties;
 import java.util.Set;
 
 @ApplicationScoped
-@Path("/proxy")
-public class WebProxy {
+@Path("/sse")
+public class SSE {
     private Sse sse;
 
     @Context

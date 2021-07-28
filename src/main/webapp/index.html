@@ -9,66 +9,43 @@ Hello
 </div>
 <ul></ul>
 <p>
-<a href="client.html">Client</a>
 </p>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#submit').click(function() {
-            console.log("click");
-            var msg = $('#msg').val();
+    let button = document.getElementById('submit');
 
-            $.ajax({
-                url : 'sse/broadcast?message=' + msg,
-                type : 'PUT',
-                success : function() {
-                    return false;
-                }
-            });
+    button.addEventListener("click", function(e) {
+        let msg = document.getElementById("msg");
 
-            document.getElementById("msg").value = "";
-
-        });
-        $('#msg').keypress(function(e) {
-            if (e.keyCode == '13') {
-                console.log("enter");
-                var msg = $('#msg').val();
-
-                $.ajax({
-                    url : 'sse/broadcast?message=' + msg,
-                    type : 'PUT',
-                    success : function() {
-                        return false;
-                    }
-                });
-
-                document.getElementById("msg").value = "";
+        let promise = fetch("proxy/rest", {
+            method: "PUT",
+            body: JSON.stringify({
+                title: "foo",
+                body: "bar",
+                userId: 1
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
             }
         });
 
+        msg.value = "";
+
     });
 </script>
+<ul></ul>
 <script>
-    var evtSource = new EventSource('sse/broadcast');
+    var evtSource = new EventSource('proxy/sse');
     var eventList = document.querySelector('ul');
 
     console.log('attempting sse...')
 
-    evtSource.addEventListener("message", function(e) {
+    evtSource.addEventListener("registration", function(e) {
         console.log('message type message')
         var newElement = document.createElement("li");
 
         newElement.textContent = "message: " + e.data;
         eventList.appendChild(newElement);
     });
-
-    /*evtSource.onmessage = function(e) {
-        console.log('generic message')
-        var newElement = document.createElement("li");
-
-        newElement.textContent = "message: " + e.data;
-        eventList.appendChild(newElement);
-    }*/
 
     evtSource.onerror = function(e) {
         console.log('error')
