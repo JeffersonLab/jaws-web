@@ -32,19 +32,31 @@ Hello
 
     });
 </script>
-<ul></ul>
+<h2>Registered Alarms</h2>
+<ul id="registered-list"></ul>
+<h2>Alarm Classes</h2>
+<ul id="class-list"></ul>
 <script>
-    var evtSource = new EventSource('proxy/sse');
-    var eventList = document.querySelector('ul');
+    let evtSource = new EventSource('proxy/sse'),
+    registeredList = document.getElementById('registered-list'),
+    classList = document.getElementById('class-list');
 
     console.log('attempting sse...')
 
     evtSource.addEventListener("registration", function(e) {
-        console.log('message type message')
+        console.log('registration type message')
         var newElement = document.createElement("li");
 
-        newElement.textContent = "message: " + e.data;
-        eventList.appendChild(newElement);
+        newElement.textContent = e.data;
+        registeredList.appendChild(newElement);
+    });
+
+    evtSource.addEventListener("class", function(e) {
+        console.log('class type message')
+        var newElement = document.createElement("li");
+
+        newElement.textContent = e.data;
+        classList.appendChild(newElement);
     });
 
     evtSource.onerror = function(e) {
