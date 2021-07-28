@@ -2,6 +2,9 @@ package org.jlab.jaws;
 
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
+import org.apache.avro.io.EncoderFactory;
+import org.apache.avro.io.JsonEncoder;
+import org.apache.avro.specific.SpecificDatumWriter;
 import org.jlab.jaws.entity.RegisteredAlarm;
 import org.jlab.jaws.eventsource.EventSourceConfig;
 import org.jlab.jaws.eventsource.EventSourceListener;
@@ -16,6 +19,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseEventSink;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -102,8 +108,25 @@ public class SSE {
         for (EventSourceRecord<String, RegisteredAlarm> record : records) {
             String key = record.getKey();
             RegisteredAlarm value = record.getValue();
-            String json = "{\"key\": \"" + key + "\"}";
-            sink.send(sse.newEvent("registration", json));
+
+            String jsonValue = null;
+
+            if(value != null) {
+                try {
+                    SpecificDatumWriter<RegisteredAlarm> writer = new SpecificDatumWriter<RegisteredAlarm>(value.getSchema());
+                    OutputStream out = new ByteArrayOutputStream();
+                    JsonEncoder encoder = EncoderFactory.get().jsonEncoder(value.getSchema(), out);
+                    writer.write(value, encoder);
+                    encoder.flush();
+                    jsonValue = out.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            String recordString = key + "=" + jsonValue;
+
+            sink.send(sse.newEvent("registration", recordString));
         }
     }
 }
