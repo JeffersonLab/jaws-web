@@ -77,6 +77,7 @@ public class SSE {
                     table.start();
 
                     while (!sink.isClosed()) {
+                        sink.send(sse.newEvent("ping", ":"));  // Actively check for connection
                         System.err.println("Looping checking for disconnect");
                         try {
                             Thread.sleep(5000);
