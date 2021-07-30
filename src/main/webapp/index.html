@@ -1,38 +1,35 @@
 <html>
 <body>
-Hello
+<h1>JAWS Web Proxy</h1>
+<h2>Registered Alarms</h2>
 <div>
-    <form onsubmit="return false;">
-        Send: <input id="msg" type="text" name="data" value=""/>
-        <input id="submit" type="button" value="Send"/>
+    <form id="registered-form" onsubmit="return false;">
+        <ul>
+            <li>Name: <input id="name" type="text" name="name" value=""/></li>
+            <li>Rationale: <input id="rationale" type="text" name="rationale" value=""/></li>
+        </ul>
+
+        <input id="submit" type="button" value="Set"/>
     </form>
 </div>
-<ul></ul>
-<p>
-</p>
 <script>
     let button = document.getElementById('submit');
 
     button.addEventListener("click", function(e) {
-        let msg = document.getElementById("msg");
+        let form = document.getElementById("registered-form");
 
         let promise = fetch("proxy/rest", {
             method: "PUT",
-            body: JSON.stringify({
-                title: "foo",
-                body: "bar",
-                userId: 1
-            }),
+            body: new URLSearchParams(new FormData(form)),
             headers: {
-                "Content-type": "application/json; charset=UTF-8"
+                "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
             }
         });
 
-        msg.value = "";
+        form.reset();
 
     });
 </script>
-<h2>Registered Alarms</h2>
 <ul id="registered-list"></ul>
 <h2>Alarm Classes</h2>
 <ul id="class-list"></ul>

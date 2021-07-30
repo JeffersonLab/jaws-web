@@ -10,24 +10,27 @@ import org.jlab.jaws.entity.RegisteredAlarm;
 import org.jlab.jaws.entity.SimpleProducer;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.util.Properties;
 
 @Path("/rest")
 public class REST {
     @PUT
-    public void putRegistration()
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void putRegistration(@FormParam("name") String name, @FormParam("rationale") String rationale)
     {
-        System.out.println("PUT received");
+        System.out.println("PUT received: " + name);
 
         final String servers = "localhost:9094";
         final String registry = "http://localhost:8081";
         final String registeredTopic = "registered-alarms";
 
-        String key = "alarm4";
+        String key = name;
 
         RegisteredAlarm value = new RegisteredAlarm();
         value.setClass$(AlarmClass.Base_Class);
         value.setProducer(new SimpleProducer());
+        value.setRationale(rationale);
 
         Properties props = getRegistrationProps(servers, registry);
 
