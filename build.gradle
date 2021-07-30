@@ -13,6 +13,5 @@ repositories {
 dependencies {
     implementation 'org.jlab:jaws-libj:1.1.0',
             'io.confluent:kafka-streams-avro-serde:6.1.0'
-    providedCompile 'javax:javaee-api:8.0',
-            'org.eclipse.microprofile.openapi:microprofile-openapi-api:2.0'
+    providedCompile 'javax:javaee-api:8.0'
 }
