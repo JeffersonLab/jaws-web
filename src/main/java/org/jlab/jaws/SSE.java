@@ -166,7 +166,7 @@ public class SSE {
                 }
             }
 
-            String recordString = key + "=" + jsonValue;
+            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + "}";
 
             sink.send(sse.newEvent("registration", recordString));
         }
@@ -194,7 +194,7 @@ public class SSE {
                 }
             }
 
-            String recordString = key + "=" + jsonValue;
+            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + "}";
 
             sink.send(sse.newEvent("class", recordString));
         }
