@@ -110,6 +110,8 @@ public class REST {
         RegisteredClass value = new RegisteredClass();
         value.setLocation(AlarmLocation.A1);
         value.setCategory(AlarmCategory.BCM);
+        value.setPriority(AlarmPriority.P3_MINOR);
+        value.setScreenpath("/");
 
         Properties props = getClassProps(servers, registry);
 
