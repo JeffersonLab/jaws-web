@@ -5,20 +5,20 @@
 <div>
     <form id="registered-form" onsubmit="return false;">
         <ul>
-            <li>Name: <input id="name" type="text" name="name" value=""/></li>
-            <li>Rationale: <input id="rationale" type="text" name="rationale" value=""/></li>
+            <li>Alarm Name: <input type="text" name="name" value=""/></li>
+            <li>Rationale: <input type="text" name="rationale" value=""/></li>
         </ul>
 
-        <input id="submit" type="button" value="Set"/>
+        <input id="registered-submit" type="button" value="Set"/>
     </form>
 </div>
 <script>
-    let button = document.getElementById('submit');
+    let button = document.getElementById('registered-submit');
 
     button.addEventListener("click", function(e) {
         let form = document.getElementById("registered-form");
 
-        let promise = fetch("proxy/rest", {
+        let promise = fetch("proxy/rest/registered", {
             method: "PUT",
             body: new URLSearchParams(new FormData(form)),
             headers: {
@@ -27,11 +27,38 @@
         });
 
         form.reset();
-
     });
 </script>
 <ul id="registered-list"></ul>
 <h2>Alarm Classes</h2>
+<div>
+    <form id="class-form" onsubmit="return false;">
+        <ul>
+            <li>Class Name: <input type="text" name="name" value=""/></li>
+            <li>Location: <select id="location-select"></select></li>
+            <li>Rationale: <input type="text" name="rationale" value=""/></li>
+        </ul>
+
+        <input id="class-submit" type="button" value="Set"/>
+    </form>
+</div>
+<script>
+    let classButton = document.getElementById('class-submit');
+
+    classButton.addEventListener("click", function(e) {
+        let form = document.getElementById("class-form");
+
+        let promise = fetch("proxy/rest/class", {
+            method: "PUT",
+            body: new URLSearchParams(new FormData(form)),
+            headers: {
+                "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
+            }
+        });
+
+        form.reset();
+    });
+</script>
 <ul id="class-list"></ul>
 <script>
     let evtSource = new EventSource('proxy/sse'),
@@ -61,5 +88,33 @@
         console.log(e)
     }
 </script>
+
+<script>
+    let dropdown = document.getElementById('location-select');
+    fetch('proxy/rest/locations')
+        .then(
+            function(response) {
+                if (response.status !== 200) {
+                    console.warn('Error. Status Code: ' +
+                        response.status);
+                    return;
+                }
+
+                response.json().then(function(data) {
+                    let option;
+
+                    for (let i = 0; i < data.length; i++) {
+                        option = document.createElement('option');
+                        option.text = data[i];
+                        dropdown.add(option);
+                    }
+                });
+            }
+        )
+        .catch(function(err) {
+            console.error('Fetch Error -', err);
+        });
+</script>
+
 </body>
 </html>
