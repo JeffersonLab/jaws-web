@@ -24,10 +24,21 @@ public class REST {
         return mapper.writeValueAsString(AlarmLocation.values());
     }
 
+    @GET
+    @Path("categories")
+    @Produces("application/json")
+    public String getCategories() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(AlarmCategory.values());
+    }
+
     @PUT
     @Path("/registered")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public void putRegistration(@FormParam("name") String name, @FormParam("rationale") String rationale)
+    public void putRegistration(            @FormParam("name") String name,
+                                            @FormParam("location") String location,
+                                            @FormParam("category") String category,
+                                            @FormParam("rationale") String rationale)
     {
         System.out.println("PUT received: " + name);
 
@@ -41,6 +52,20 @@ public class REST {
         value.setClass$(AlarmClass.Base_Class);
         value.setProducer(new SimpleProducer());
         value.setRationale(rationale);
+
+
+        AlarmLocation al = null;
+        if(location != null) {
+            al = AlarmLocation.valueOf(location);
+        }
+        value.setLocation(al);
+
+        AlarmCategory ac = null;
+
+        if(category != null) {
+            ac = AlarmCategory.valueOf(category);
+        }
+        value.setCategory(ac);
 
         Properties props = getRegisteredProps(servers, registry);
 
@@ -84,6 +109,7 @@ public class REST {
 
         RegisteredClass value = new RegisteredClass();
         value.setLocation(AlarmLocation.A1);
+        value.setCategory(AlarmCategory.BCM);
 
         Properties props = getClassProps(servers, registry);
 
