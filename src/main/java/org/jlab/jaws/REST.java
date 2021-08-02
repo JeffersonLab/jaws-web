@@ -41,6 +41,26 @@ public class REST {
         return mapper.writeValueAsString(AlarmClass.values());
     }
 
+    @DELETE
+    @Path("/registered")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void deleteRegistration(
+        @FormParam("name") @NotNull(message = "alarm name is required") String name) {
+        System.err.println("Deleting registration: " + name);
+
+        final String servers = "localhost:9094";
+        final String registry = "http://localhost:8081";
+        final String topic = "registered-alarms";
+
+        String key = name;
+
+        Properties props = getRegisteredProps(servers, registry);
+
+        try(KafkaProducer<String, RegisteredAlarm> p = new KafkaProducer<>(props)) {
+            p.send(new ProducerRecord<>(topic, key, null));
+        }
+    }
+
     @PUT
     @Path("/registered")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)

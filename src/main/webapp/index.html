@@ -58,6 +58,7 @@
 <table id="registered-table">
     <thead>
     <tr>
+        <th></th>
         <th>Alarm Name</th>
         <th>Priority</th>
         <th>Producer</th>
@@ -138,7 +139,7 @@
 
         console.log(json);
 
-        keys = document.querySelectorAll("#registered-table tbody tr td:first-child");
+        keys = document.querySelectorAll("#registered-table tbody tr td:nth-child(2)");
 
         keys.forEach(
             function(td, index, list) {
@@ -150,6 +151,11 @@
                 }
             }
         );
+
+        if(value === null) {
+            console.log("tombstone encountered");
+            return;
+        }
 
         let insertNullableText = function(text, row, index) {
             if(text != null) {
@@ -163,6 +169,27 @@
 
         let row = registeredTableBody.insertRow(-1),
             cell = row.insertCell(index++);
+
+        let deleteBtn = document.createElement('input');
+        deleteBtn.type = "button";
+        deleteBtn.value = "X";
+        deleteBtn.onclick = function() {
+
+            console.log('attempting to delete: ', key);
+
+            let params = "name=" + key;
+
+            let promise = fetch("proxy/rest/registered", {
+                method: "DELETE",
+                body: new URLSearchParams(params),
+                headers: {
+                    "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
+                }
+            });
+        };
+        cell.append(deleteBtn)
+
+        cell = row.insertCell(index++);
         cell.appendChild(document.createTextNode(key));
 
         insertNullableText(value.priority, row, index++);
