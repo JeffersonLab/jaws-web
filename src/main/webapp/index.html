@@ -2,16 +2,20 @@
 <body>
 <h1>JAWS Web Proxy</h1>
 <h2>Registered Alarms</h2>
-<div>
+<div style="border: 2px solid black; padding: 1em;">
+    <h3>Edit Form</h3>
     <form id="registered-form" onsubmit="return false;">
         <ul>
             <li>Alarm Name: <input type="text" name="name" value=""/></li>
             <li>Class: <select name="class" id="class-select"></select></li>
+        </ul>
+        <h4>Class Overrides (Leave blank to inherit from class)</h4>
+        <ul>
             <li>Location: <span id="registered-location-select-span"></span></li>
             <li>Category: <span id="registered-category-select-span"></span></li>
             <li>Rationale: <input type="text" name="rationale" value=""/></li>
-            <li>Filterable: (True <input type="radio" name="filterable" value="true"/>)   (False <input type="radio" name="filterable" value="false"/>)   (Inherit <input type="radio" name="filterable" value=""/>)</li>
-            <li>Latching: (True <input type="radio" name="latching" value="true"/>)   (False <input type="radio" name="latching" value="false"/>)   (Inherit <input type="radio" name="latching" value=""/>)</li>
+            <li>Filterable: (True <input type="radio" name="filterable" value="true"/>)   (False <input type="radio" name="filterable" value="false"/>)   (Inherit <input type="radio" name="filterable" checked="checked" value=""/>)</li>
+            <li>Latching: (True <input type="radio" name="latching" value="true"/>)   (False <input type="radio" name="latching" value="false"/>)   (Inherit <input type="radio" name="latching" checked="checked" value=""/>)</li>
             <li>On Delay Seconds: <input type="number" name="ondelayseconds" value=""/></li>
             <li>Off Delay Seconds: <input type="number" name="offdelayseconds" value=""/></li>
             <li>Masked By: <input type="text" name="maskedby" value=""/></li>
@@ -49,6 +53,8 @@
         form.reset();
     });
 </script>
+<div style="border: 2px solid black; padding: 1em;">
+<h2>Inventory Table</h2>
 <table id="registered-table">
     <thead>
     <tr>
@@ -71,8 +77,10 @@
     </thead>
     <tbody></tbody>
 </table>
+</div>
 <h2>Alarm Classes</h2>
-<div>
+<div style="border: 2px solid black; padding: 1em;">
+    <h3>Edit Form</h3>
     <form id="class-form" onsubmit="return false;">
         <ul>
             <li>Class Name: <input type="text" name="name" value=""/></li>
@@ -100,6 +108,8 @@
         form.reset();
     });
 </script>
+<div style="border: 2px solid black; padding: 1em;">
+<h3>Inventory Table</h3>
 <table id="class-table">
     <thead>
         <tr>
@@ -110,6 +120,7 @@
     </thead>
     <tbody></tbody>
 </table>
+</div>
 <script>
     let evtSource = new EventSource('proxy/sse'),
         registeredTable = document.getElementById('registered-table'),
@@ -233,6 +244,11 @@
 
                     let other = locationSelect.cloneNode(true);
                     other.id = 'cloned-location-select';
+
+                    let emptyOption = document.createElement('option');
+                    emptyOption.selected = "selected";
+                    other.insertBefore(emptyOption, other.options[0]);
+
                     document.getElementById("registered-location-select-span").appendChild(other);
                 });
             }
@@ -263,6 +279,11 @@
 
                     let other = categorySelect.cloneNode(true);
                     other.id = 'cloned-category-select';
+
+                    let emptyOption = document.createElement('option');
+                    emptyOption.selected = "selected";
+                    other.insertBefore(emptyOption, other.options[0]);
+
                     document.getElementById("registered-category-select-span").appendChild(other);
                 });
             }
