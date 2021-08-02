@@ -9,6 +9,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.jlab.jaws.entity.*;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Properties;
@@ -32,13 +33,33 @@ public class REST {
         return mapper.writeValueAsString(AlarmCategory.values());
     }
 
+    @GET
+    @Path("classes")
+    @Produces("application/json")
+    public String getClasses() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(AlarmClass.values());
+    }
+
     @PUT
     @Path("/registered")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public void putRegistration(            @FormParam("name") String name,
+    public void putRegistration(            @FormParam("name") @NotNull(message = "alarm name is required") String name,
+                                            @FormParam("class") @NotNull(message = "class is required") String clazz,
+                                            @FormParam("pv") String pv,
+                                            @FormParam("expression") String expression,
+                                            @FormParam("priority") String priority,
                                             @FormParam("location") String location,
                                             @FormParam("category") String category,
-                                            @FormParam("rationale") String rationale)
+                                            @FormParam("rationale") String rationale,
+                                            @FormParam("correctiveaction") String correctiveaction,
+                                            @FormParam("pocusername") String pocusername,
+                                            @FormParam("filterable") Boolean filterable,
+                                            @FormParam("latching") Boolean latching,
+                                            @FormParam("maskedby") String maskedby,
+                                            @FormParam("ondelayseconds") Long ondelayseconds,
+                                            @FormParam("offdelayseconds") Long offdelayseconds,
+                                            @FormParam("screenpath") String screenpath)
     {
         System.out.println("PUT received: " + name);
 
@@ -49,10 +70,32 @@ public class REST {
         String key = name;
 
         RegisteredAlarm value = new RegisteredAlarm();
-        value.setClass$(AlarmClass.Base_Class);
-        value.setProducer(new SimpleProducer());
+
+
+        AlarmClass acl = AlarmClass.Base_Class;
+        if(clazz != null) {
+            acl = AlarmClass.valueOf(clazz);
+        }
+
+        value.setClass$(acl);
+
+        Object producer = new SimpleProducer();
+
+        if(pv != null) {
+            producer = new EPICSProducer(pv);
+        } else if(expression != null) {
+            producer = new CALCProducer(expression);
+        }
+
+        value.setProducer(producer);
+
         value.setRationale(rationale);
 
+        AlarmPriority ap = null;
+        if(priority != null) {
+            ap = AlarmPriority.valueOf(priority);
+        }
+        value.setPriority(ap);
 
         AlarmLocation al = null;
         if(location != null) {
@@ -67,10 +110,19 @@ public class REST {
         }
         value.setCategory(ac);
 
+        value.setCorrectiveaction(correctiveaction);
+        value.setPointofcontactusername(pocusername);
+        value.setFilterable(filterable);
+        value.setLatching(latching);
+        value.setMaskedby(maskedby);
+        value.setOffdelayseconds(ondelayseconds);
+        value.setOndelayseconds(offdelayseconds);
+        value.setScreenpath(screenpath);
+
         Properties props = getRegisteredProps(servers, registry);
 
-        try(KafkaProducer<String, RegisteredAlarm> producer = new KafkaProducer<>(props)) {
-            producer.send(new ProducerRecord<>(topic, key, value));
+        try(KafkaProducer<String, RegisteredAlarm> p = new KafkaProducer<>(props)) {
+            p.send(new ProducerRecord<>(topic, key, value));
         }
     }
 
