@@ -182,18 +182,18 @@ public class REST {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public void putClass(
             @FormParam("name") @NotNull(message = "class name is required") String name,
-            @FormParam("priority") String priority,
-            @FormParam("location") String location,
-            @FormParam("category") String category,
-            @FormParam("rationale") String rationale,
-            @FormParam("correctiveaction") String correctiveaction,
-            @FormParam("pocusername") String pocusername,
+            @FormParam("priority") @NotNull(message = "priority is required") String priority,
+            @FormParam("location") @NotNull(message = "location is required") String location,
+            @FormParam("category") @NotNull(message = "category is required") String category,
+            @FormParam("rationale") @NotNull(message = "rationale is required") String rationale,
+            @FormParam("correctiveaction") @NotNull(message = "correctiveaction is required") String correctiveaction,
+            @FormParam("pocusername") @NotNull(message = "pocusername is required") String pocusername,
             @FormParam("filterable") Boolean filterable,
             @FormParam("latching") Boolean latching,
             @FormParam("maskedby") String maskedby,
             @FormParam("ondelayseconds") Long ondelayseconds,
             @FormParam("offdelayseconds") Long offdelayseconds,
-            @FormParam("screenpath") String screenpath)
+            @FormParam("screenpath") @NotNull(message = "screenpath is required") String screenpath)
     {
         System.out.println("PUT received: " + name);
 
@@ -205,7 +205,7 @@ public class REST {
 
         RegisteredClass value = new RegisteredClass();
 
-        //value.setRationale(rationale);
+        value.setRationale(rationale);
 
         AlarmPriority ap = null;
         if(priority != null) {
@@ -226,8 +226,8 @@ public class REST {
         }
         value.setCategory(ac);
 
-        //value.setCorrectiveaction(correctiveaction);
-        //value.setPointofcontactusername(pocusername);
+        value.setCorrectiveaction(correctiveaction);
+        value.setPointofcontactusername(pocusername);
         value.setFilterable(filterable);
         value.setLatching(latching);
         value.setMaskedby(maskedby);
