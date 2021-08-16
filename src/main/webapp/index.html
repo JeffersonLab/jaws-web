@@ -89,6 +89,13 @@
             <li>Priority: <select name="priority" id="priority-select"></select></li>
             <li>Location: <select name="location" id="location-select"></select></li>
             <li>Category: <select name="category" id="category-select"></select></li>
+            <li>Rationale: <input type="text" name="rationale" value=""/></li>
+            <li>Filterable: (True <input type="radio" name="filterable" value="true"/>)   (False <input type="radio" name="filterable" checked="checked" value="false"/>)</li>
+            <li>Latching: (True <input type="radio" name="latching" value="true"/>)   (False <input type="radio" name="latching" checked="checked" value="false"/>)</li>
+            <li>On Delay Seconds: <input type="number" name="ondelayseconds" value=""/></li>
+            <li>Off Delay Seconds: <input type="number" name="offdelayseconds" value=""/></li>
+            <li>Masked By: <input type="text" name="maskedby" value=""/></li>
+            <li>Screen Path: <input type="text" name="screenpath" value=""/></li>
         </ul>
 
         <input id="class-submit" type="button" value="Set"/>
@@ -116,9 +123,20 @@
 <table id="class-table">
     <thead>
         <tr>
+            <th></th>
             <th>Class Name</th>
+            <th>Priority</th>
             <th>Location</th>
             <th>Category</th>
+            <th>Rationale</th>
+            <th>Corrective Action</th>
+            <th>Point of Contact Username</th>
+            <th>Filterable</th>
+            <th>Latching</th>
+            <th>On Delay Seconds</th>
+            <th>Off Delay Seconds</th>
+            <th>Masked By</th>
+            <th>Screen Path</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -132,6 +150,15 @@
         classTableBody = classTable.getElementsByTagName("tbody")[0];
 
     console.log('attempting sse...')
+
+
+    let insertNullableText = function(text, row, index) {
+        if(text != null) {
+            text = Object.values(text)[0];
+        }
+        let cell = row.insertCell(index++);
+        cell.appendChild(document.createTextNode(text));
+    };
 
     evtSource.addEventListener("registration", function(e) {
         console.log('registration type message')
@@ -158,14 +185,6 @@
             console.log("tombstone encountered");
             return;
         }
-
-        let insertNullableText = function(text, row, index) {
-            if(text != null) {
-                text = Object.values(text)[0];
-            }
-            let cell = row.insertCell(index++);
-            cell.appendChild(document.createTextNode(text));
-        };
 
         let index = 0;
 
@@ -222,27 +241,67 @@
             key = json.key,
             value = json.value;
 
-        keys = document.querySelectorAll("#class-table tbody tr td:first-child");
+        keys = document.querySelectorAll("#class-table tbody tr td:nth-child(2)");
 
         keys.forEach(
-            function(v, index, obj) {
-                if(key === v) {
-                    console.log('match: ' + value);
+            function(td, index, list) {
+                if(key === td.textContent) {
+                    console.log('match: ', key, td.textContent);
+                    classTableBody.deleteRow(index);
                 } else {
-                    console.log('no match: ' + value + ', ' + index + ', ' + obj);
+                    console.log('no match: ', key, td.textContent, index, list);
                 }
             }
         );
 
+        if(value === null) {
+            console.log("tombstone encountered");
+            return;
+        }
+
+        let index = 0;
+
         let row = classTableBody.insertRow(-1),
-            cell = row.insertCell(0);
+            cell = row.insertCell(index++);
+
+        let deleteBtn = document.createElement('input');
+        deleteBtn.type = "button";
+        deleteBtn.value = "X";
+        deleteBtn.onclick = function() {
+
+            console.log('attempting to delete: ', key);
+
+            let params = "name=" + key;
+
+            let promise = fetch("proxy/rest/class", {
+                method: "DELETE",
+                body: new URLSearchParams(params),
+                headers: {
+                    "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
+                }
+            });
+        };
+        cell.append(deleteBtn)
+
+        cell = row.insertCell(index++);
         cell.appendChild(document.createTextNode(key));
 
-        cell = row.insertCell(1);
-        cell.appendChild(document.createTextNode(value.location));
+        insertNullableText(value.priority, row, index++);
 
-        cell = row.insertCell(2);
-        cell.appendChild(document.createTextNode(value.category));
+        cell = row.insertCell(index++);
+        cell.appendChild(document.createTextNode(value.class));
+
+        insertNullableText(value.location, row, index++);
+        insertNullableText(value.category, row, index++);
+        insertNullableText(value.rationale, row, index++);
+        insertNullableText(value.correctiveaction, row, index++);
+        insertNullableText(value.pointofcontactusername, row, index++);
+        insertNullableText(value.filterable, row, index++);
+        insertNullableText(value.latching, row, index++);
+        insertNullableText(value.ondelayseconds, row, index++);
+        insertNullableText(value.offdelayseconds, row, index++);
+        insertNullableText(value.maskedby, row, index++);
+        insertNullableText(value.screenpath, row, index++);
     });
 
     evtSource.onerror = function(e) {

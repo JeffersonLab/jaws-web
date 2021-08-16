@@ -171,13 +171,43 @@ public class REST {
         return props;
     }
 
+    @DELETE
+    @Path("/class")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void deleteClass(
+            @FormParam("name") @NotNull(message = "class name is required") String name) {
+        System.err.println("Deleting class: " + name);
+
+        final String servers = "localhost:9094";
+        final String registry = "http://localhost:8081";
+        final String topic = "registered-classes";
+
+        String key = name;
+
+        Properties props = getRegisteredProps(servers, registry);
+
+        try(KafkaProducer<String, RegisteredClass> p = new KafkaProducer<>(props)) {
+            p.send(new ProducerRecord<>(topic, key, null));
+        }
+    }
+
     @PUT
     @Path("/class")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public void putClass(
-            @FormParam("name") String name,
+            @FormParam("name") @NotNull(message = "class name is required") String name,
+            @FormParam("priority") String priority,
             @FormParam("location") String location,
-            @FormParam("rationale") String rationale)
+            @FormParam("category") String category,
+            @FormParam("rationale") String rationale,
+            @FormParam("correctiveaction") String correctiveaction,
+            @FormParam("pocusername") String pocusername,
+            @FormParam("filterable") Boolean filterable,
+            @FormParam("latching") Boolean latching,
+            @FormParam("maskedby") String maskedby,
+            @FormParam("ondelayseconds") Long ondelayseconds,
+            @FormParam("offdelayseconds") Long offdelayseconds,
+            @FormParam("screenpath") String screenpath)
     {
         System.out.println("PUT received: " + name);
 
@@ -189,10 +219,36 @@ public class REST {
         key.setClass$(AlarmClass.Base_Class);
 
         RegisteredClass value = new RegisteredClass();
-        value.setLocation(AlarmLocation.A1);
-        value.setCategory(AlarmCategory.BCM);
-        value.setPriority(AlarmPriority.P3_MINOR);
-        value.setScreenpath("/");
+
+        //value.setRationale(rationale);
+
+        AlarmPriority ap = null;
+        if(priority != null) {
+            ap = AlarmPriority.valueOf(priority);
+        }
+        value.setPriority(ap);
+
+        AlarmLocation al = null;
+        if(location != null) {
+            al = AlarmLocation.valueOf(location);
+        }
+        value.setLocation(al);
+
+        AlarmCategory ac = null;
+
+        if(category != null) {
+            ac = AlarmCategory.valueOf(category);
+        }
+        value.setCategory(ac);
+
+        //value.setCorrectiveaction(correctiveaction);
+        //value.setPointofcontactusername(pocusername);
+        value.setFilterable(filterable);
+        value.setLatching(latching);
+        value.setMaskedby(maskedby);
+        value.setOffdelayseconds(ondelayseconds);
+        value.setOndelayseconds(offdelayseconds);
+        value.setScreenpath(screenpath);
 
         Properties props = getClassProps(servers, registry);
 
