@@ -7,7 +7,6 @@ import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.jlab.jaws.entity.RegisteredAlarm;
 import org.jlab.jaws.entity.RegisteredClass;
-import org.jlab.jaws.entity.RegisteredClassKey;
 import org.jlab.jaws.eventsource.EventSourceConfig;
 import org.jlab.jaws.eventsource.EventSourceListener;
 import org.jlab.jaws.eventsource.EventSourceRecord;
@@ -61,7 +60,7 @@ public class SSE {
 
                 try (
                         EventSourceTable<String, RegisteredAlarm> registrationTable = new EventSourceTable<>(registrationProps);
-                        EventSourceTable<RegisteredClassKey, RegisteredClass> classTable = new EventSourceTable<>(classProps);
+                        EventSourceTable<String, RegisteredClass> classTable = new EventSourceTable<>(classProps);
                 ) {
 
                     registrationTable.addListener(new EventSourceListener<String, RegisteredAlarm>() {
@@ -77,14 +76,14 @@ public class SSE {
 
                     });
 
-                    classTable.addListener(new EventSourceListener<RegisteredClassKey, RegisteredClass>() {
+                    classTable.addListener(new EventSourceListener<String, RegisteredClass>() {
                         @Override
-                        public void initialState(Set<EventSourceRecord<RegisteredClassKey, RegisteredClass>> records) {
+                        public void initialState(Set<EventSourceRecord<String, RegisteredClass>> records) {
                             sendClassRecords(sink, records);
                         }
 
                         @Override
-                        public void changes(List<EventSourceRecord<RegisteredClassKey, RegisteredClass>> records) {
+                        public void changes(List<EventSourceRecord<String, RegisteredClass>> records) {
                             sendClassRecords(sink, records);
                         }
 
@@ -130,13 +129,12 @@ public class SSE {
     private Properties getClassProps(String servers, String registry) {
         final Properties props = new Properties();
 
-        final SpecificAvroSerde<RegisteredClassKey> KEY_SERDE = new SpecificAvroSerde<>();
         final SpecificAvroSerde<RegisteredClass> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-proxy-class-" + Instant.now().toString() + "-" + Math.random());
         props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, "registered-classes");
         props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
-        props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, KEY_SERDE.deserializer().getClass().getName());
+        props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
         props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
 
         // Deserializer specific configs
@@ -172,12 +170,10 @@ public class SSE {
         }
     }
 
-    private void sendClassRecords(SseEventSink sink, Collection<EventSourceRecord<RegisteredClassKey, RegisteredClass>> records) {
-        for (EventSourceRecord<RegisteredClassKey, RegisteredClass> record : records) {
-            RegisteredClassKey keyEnum = record.getKey();
+    private void sendClassRecords(SseEventSink sink, Collection<EventSourceRecord<String, RegisteredClass>> records) {
+        for (EventSourceRecord<String, RegisteredClass> record : records) {
+            String key = record.getKey();
             RegisteredClass value = record.getValue();
-
-            String key = keyEnum.getClass$().name();
 
             String jsonValue = null;
 

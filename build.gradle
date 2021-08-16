@@ -8,10 +8,14 @@ repositories {
     maven {
         url "https://packages.confluent.io/maven"
     }
+
+    maven {
+        url "https://s01.oss.sonatype.org/content/repositories/releases/"
+    }
 }
 
 dependencies {
-    implementation 'org.jlab:jaws-libj:1.1.0',
+    implementation 'org.jlab:jaws-libj:1.2.0',
             'io.confluent:kafka-streams-avro-serde:6.1.0'
     providedCompile 'javax:javaee-api:8.0'
 }

@@ -42,14 +42,6 @@ public class REST {
         return mapper.writeValueAsString(AlarmCategory.values());
     }
 
-    @GET
-    @Path("classes")
-    @Produces("application/json")
-    public String getClasses() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(AlarmClass.values());
-    }
-
     @DELETE
     @Path("/registered")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -100,13 +92,7 @@ public class REST {
 
         RegisteredAlarm value = new RegisteredAlarm();
 
-
-        AlarmClass acl = AlarmClass.Base_Class;
-        if(clazz != null) {
-            acl = AlarmClass.valueOf(clazz);
-        }
-
-        value.setClass$(acl);
+        value.setClass$(clazz);
 
         Object producer = new SimpleProducer();
 
@@ -215,8 +201,7 @@ public class REST {
         final String registry = "http://localhost:8081";
         final String topic = "registered-classes";
 
-        RegisteredClassKey key = new RegisteredClassKey();
-        key.setClass$(AlarmClass.Base_Class);
+        String key = name;
 
         RegisteredClass value = new RegisteredClass();
 
@@ -252,7 +237,7 @@ public class REST {
 
         Properties props = getClassProps(servers, registry);
 
-        try(KafkaProducer<RegisteredClassKey, RegisteredClass> producer = new KafkaProducer<>(props)) {
+        try(KafkaProducer<String, RegisteredClass> producer = new KafkaProducer<>(props)) {
             producer.send(new ProducerRecord<>(topic, key, value));
         }
     }
@@ -260,11 +245,10 @@ public class REST {
     private Properties getClassProps(String servers, String registry) {
         final Properties props = new Properties();
 
-        final SpecificAvroSerde<RegisteredClassKey> KEY_SERDE = new SpecificAvroSerde<>();
         final SpecificAvroSerde<RegisteredClass> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put("bootstrap.servers", servers);
-        props.put("key.serializer", KEY_SERDE.serializer().getClass().getName());
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", VALUE_SERDE.serializer().getClass().getName());
 
         // Serializer specific configs
