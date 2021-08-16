@@ -11,6 +11,7 @@
         </ul>
         <h4>Class Overrides (Leave blank to inherit from class)</h4>
         <ul>
+            <li>Priority: <span id="registered-priority-select-span"></span></li>
             <li>Location: <span id="registered-location-select-span"></span></li>
             <li>Category: <span id="registered-category-select-span"></span></li>
             <li>Rationale: <input type="text" name="rationale" value=""/></li>
@@ -85,6 +86,7 @@
     <form id="class-form" onsubmit="return false;">
         <ul>
             <li>Class Name: <input type="text" name="name" value=""/></li>
+            <li>Priority: <select name="priority" id="priority-select"></select></li>
             <li>Location: <select name="location" id="location-select"></select></li>
             <li>Category: <select name="category" id="category-select"></select></li>
         </ul>
@@ -250,6 +252,42 @@
 </script>
 
 <script>
+    let prioritySelect = document.getElementById('priority-select');
+    fetch('proxy/rest/priorities')
+        .then(
+            function(response) {
+                if (response.status !== 200) {
+                    console.warn('Error. Status Code: ' +
+                        response.status);
+                    return;
+                }
+
+                response.json().then(function(data) {
+                    let option;
+
+                    for (let i = 0; i < data.length; i++) {
+                        option = document.createElement('option');
+                        option.text = data[i];
+                        prioritySelect.add(option);
+                    }
+
+                    let other = prioritySelect.cloneNode(true);
+                    other.id = 'cloned-priority-select';
+
+                    let emptyOption = document.createElement('option');
+                    emptyOption.selected = "selected";
+                    other.insertBefore(emptyOption, other.options[0]);
+
+                    document.getElementById("registered-priority-select-span").appendChild(other);
+                });
+            }
+        )
+        .catch(function(err) {
+            console.error('Fetch Error -', err);
+        });
+
+
+
     let locationSelect = document.getElementById('location-select');
     fetch('proxy/rest/locations')
         .then(

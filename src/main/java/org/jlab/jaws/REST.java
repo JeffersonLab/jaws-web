@@ -18,6 +18,15 @@ import java.util.Properties;
 public class REST {
 
     @GET
+    @Path("priorities")
+    @Produces("application/json")
+    public String getPriorities() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(AlarmPriority.values());
+    }
+
+
+    @GET
     @Path("locations")
     @Produces("application/json")
     public String getLocations() throws JsonProcessingException {
