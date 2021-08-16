@@ -105,11 +105,22 @@
     let classButton = document.getElementById('class-submit');
 
     classButton.addEventListener("click", function(e) {
-        let form = document.getElementById("class-form");
+        let form = document.getElementById("class-form"),
+            formData = new FormData(form);
+
+        /*Treat empty string as no-field*/
+        for(var pair of Array.from(formData.entries())) {
+            if(pair[1] === "") {
+                console.log('deleting: ', pair);
+                formData.delete(pair[0]);
+            } else {
+                console.log('keeping: ', pair)
+            }
+        }
 
         let promise = fetch("proxy/rest/class", {
             method: "PUT",
-            body: new URLSearchParams(new FormData(form)),
+            body: new URLSearchParams(formData),
             headers: {
                 "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
             }
