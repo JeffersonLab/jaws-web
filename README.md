@@ -1,2 +1,2 @@
-# jaws-web-proxy
-Web proxy for JAWS
+# jaws-web-admin
+Web Admin interface for [JAWS](https://github.com/JeffersonLab/jaws).
