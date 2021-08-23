@@ -1,4 +1,38 @@
 <html>
+<head>
+    <style>
+        .scroll-wrap {
+            max-height: 12em;
+            overflow: auto;
+        }
+
+        table {
+            margin: 1em 0;
+            border-collapse: collapse;
+            border: none; /*Else watch for scroll artifacts above...*/
+        }
+
+        th,
+        td {
+            padding: 0.25em 0.5em 0.25em 1em;
+            vertical-align: text-top;
+            text-align: left;
+        }
+
+        th {
+            vertical-align: bottom;
+            background-color: #666;
+            color: #fff;
+        }
+
+        th {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+    </style>
+</head>
 <body>
 <h1>JAWS Web Proxy</h1>
 <h2>Registered Alarms</h2>
@@ -58,6 +92,7 @@
 </script>
 <div style="border: 2px solid black; padding: 1em;">
 <h2>Inventory Table</h2>
+<div class="scroll-wrap">
 <table id="registered-table">
     <thead>
     <tr>
@@ -81,6 +116,7 @@
     </thead>
     <tbody></tbody>
 </table>
+</div>
 </div>
 <h2>Alarm Classes</h2>
 <div style="border: 2px solid black; padding: 1em;">
@@ -135,6 +171,7 @@
 </script>
 <div style="border: 2px solid black; padding: 1em;">
 <h3>Inventory Table</h3>
+<div class="scroll-wrap">
 <table id="class-table">
     <thead>
         <tr>
@@ -156,6 +193,7 @@
     </thead>
     <tbody></tbody>
 </table>
+</div>
 </div>
 <script>
     let evtSource = new EventSource('proxy/sse'),
