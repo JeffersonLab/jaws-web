@@ -1,33 +1,3 @@
-.scroll-wrap {
-    max-height: 12em;
-    overflow: auto;
-}
-
-table {
-    margin: 1em 0;
-    border-collapse: collapse;
-    border: none; /*Else watch for scroll artifacts above...*/
-}
-
-th,
-td {
-    padding: 0.25em 0.5em 0.25em 1em;
-    vertical-align: text-top;
-    text-align: left;
-}
-
-th {
-    vertical-align: bottom;
-    background-color: #666;
-    color: #fff;
-}
-
-th {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-}
 h1 {
     display: inline-block;
     vertical-align: top;

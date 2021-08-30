@@ -1,3 +1,36 @@
+
+var tabledata = [
+];
+
+var table = new Tabulator("#registered-table", {
+    data: tabledata,
+    reactiveData: true,
+    height:200, // enables the Virtual DOM
+    layout:"fitColumns",
+    responsiveLayout: "collapse",
+    index: "name",
+    columns:[
+        {title:"Alarm Name", field:"name"},
+        {title:"Class", field:"class"},
+        {title:"Priority", field:"priority"},
+        {title:"Producer", field:"producer"},
+        {title:"Location", field:"location"},
+        {title:"Category", field:"category"},
+        {title:"Rationale", field:"rationale"},
+        {title:"Corrective Action", field:"correctiveaction"},
+        {title:"Point of Contact Username", field:"pointofcontactusername"},
+        {title:"Filterable", field:"filterable"},
+        {title:"Latching", field:"latching"},
+        {title:"On Delay Seconds", field:"ondelayseconds"},
+        {title:"Off Delay Seconds", field:"offdelayseconds"},
+        {title:"Masked By", field:"maskedby"},
+        {title:"Screen Path", field:"screenpath"},
+    ]
+});
+
+
+
+
 let classButton = document.getElementById('class-submit');
 
 classButton.addEventListener("click", function(e) {
@@ -67,12 +100,11 @@ classTableBody = classTable.getElementsByTagName("tbody")[0];
 console.log('attempting sse...')
 
 
-let insertUnionText = function(text, row, index) {
+let unwrapNullableUnionText = function(text) {
     if(text != null) {
         text = Object.values(text)[0];
     }
-    let cell = row.insertCell(index++);
-    cell.appendChild(document.createTextNode(text));
+    return text;
 };
 
 let insertText = function(text, row, index) {
@@ -86,30 +118,34 @@ evtSource.addEventListener("registration", function(e) {
         key = json.key,
         value = json.value;
 
-    console.log(json);
+    const i = tabledata.findIndex(element => element.name === key);
 
-    let keys = document.querySelectorAll("#registered-table tbody tr td:nth-child(2)");
-
-    keys.forEach(
-        function(td, index, list) {
-            if(key === td.textContent) {
-                console.log('match: ', key, td.textContent);
-                registeredTableBody.deleteRow(index);
-            } else {
-                console.log('no match: ', key, td.textContent, index, list);
-            }
-        }
-    );
+    if(i !== -1) {
+        tabledata.splice(i, 1);
+    }
 
     if(value === null) {
         console.log("tombstone encountered");
         return;
     }
 
-    let index = 0;
+    tabledata.push({name: key,
+        class: value.class,
+        priority: unwrapNullableUnionText(value.priority),
+        producer: JSON.stringify(value.producer),
+        location: unwrapNullableUnionText(value.location),
+        category: unwrapNullableUnionText(value.category),
+        rationale: unwrapNullableUnionText(value.rationale),
+        correctiveaction: unwrapNullableUnionText(value.correctiveaction),
+        pointofcontactusername: unwrapNullableUnionText(value.pointofcontactusername),
+        filterable: unwrapNullableUnionText(value.filterable),
+        latching: unwrapNullableUnionText(value.latching),
+        ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
+        offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
+        maskedby: unwrapNullableUnionText(value.maskedby),
+        screenpath: unwrapNullableUnionText(value.screenpath)});
 
-    let row = registeredTableBody.insertRow(-1),
-        cell = row.insertCell(index++);
+    console.log(tabledata);
 
     let deleteBtn = document.createElement('input');
     deleteBtn.type = "button";
@@ -128,30 +164,6 @@ evtSource.addEventListener("registration", function(e) {
             }
         });
     };
-    cell.append(deleteBtn)
-
-    cell = row.insertCell(index++);
-    cell.appendChild(document.createTextNode(key));
-
-    insertUnionText(value.priority, row, index++);
-
-    cell = row.insertCell(index++);
-    cell.appendChild(document.createTextNode(JSON.stringify(value.producer)));
-
-    cell = row.insertCell(index++);
-    cell.appendChild(document.createTextNode(value.class));
-
-    insertUnionText(value.location, row, index++);
-    insertUnionText(value.category, row, index++);
-    insertUnionText(value.rationale, row, index++);
-    insertUnionText(value.correctiveaction, row, index++);
-    insertUnionText(value.pointofcontactusername, row, index++);
-    insertUnionText(value.filterable, row, index++);
-    insertUnionText(value.latching, row, index++);
-    insertUnionText(value.ondelayseconds, row, index++);
-    insertUnionText(value.offdelayseconds, row, index++);
-    insertUnionText(value.maskedby, row, index++);
-    insertUnionText(value.screenpath, row, index++);
 });
 
 evtSource.addEventListener("class", function(e) {

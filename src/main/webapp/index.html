@@ -2,6 +2,7 @@
 <head>
     <link rel="shortcut icon" href="resources/img/favicon.ico"/>
     <link rel="stylesheet" href="resources/css/site.css"/>
+    <link href="https://unpkg.com/tabulator-tables@4.9.3/dist/css/tabulator.min.css" rel="stylesheet">
 </head>
 <body>
 <header>
@@ -15,6 +16,7 @@
     </ul>
 </nav>
 <h2>Registered Alarms</h2>
+<div id="registered-table"></div>
 <div style="border: 2px solid black; padding: 1em;">
     <h3>Edit Form</h3>
     <form id="registered-form" onsubmit="return false;">
@@ -40,34 +42,6 @@
 
         <input id="registered-submit" type="button" value="Set"/>
     </form>
-</div>
-<div style="border: 2px solid black; padding: 1em;">
-<h2>Inventory Table</h2>
-<div class="scroll-wrap">
-<table id="registered-table">
-    <thead>
-    <tr>
-        <th></th>
-        <th>Alarm Name</th>
-        <th>Priority</th>
-        <th>Producer</th>
-        <th>Class</th>
-        <th>Location</th>
-        <th>Category</th>
-        <th>Rationale</th>
-        <th>Corrective Action</th>
-        <th>Point of Contact Username</th>
-        <th>Filterable</th>
-        <th>Latching</th>
-        <th>On Delay Seconds</th>
-        <th>Off Delay Seconds</th>
-        <th>Masked By</th>
-        <th>Screen Path</th>
-    </tr>
-    </thead>
-    <tbody></tbody>
-</table>
-</div>
 </div>
 <h2>Alarm Classes</h2>
 <div style="border: 2px solid black; padding: 1em;">
@@ -118,6 +92,7 @@
 </table>
 </div>
 </div>
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>
 <script type="text/javascript" src="resources/js/site.js"></script>
 </body>
 </html>

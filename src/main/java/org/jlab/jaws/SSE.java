@@ -155,6 +155,7 @@ public class SSE {
                 try {
                     SpecificDatumWriter<RegisteredAlarm> writer = new SpecificDatumWriter<>(value.getSchema());
                     OutputStream out = new ByteArrayOutputStream();
+                    // See: https://issues.apache.org/jira/browse/AVRO-1582 - JSON encoded union fields needed to indicate nullable are encoded as array!
                     JsonEncoder encoder = EncoderFactory.get().jsonEncoder(value.getSchema(), out);
                     writer.write(value, encoder);
                     encoder.flush();
