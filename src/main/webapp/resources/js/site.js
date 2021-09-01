@@ -1,4 +1,9 @@
 
+
+$( function() {
+    $( "#tabs" ).tabs();
+} );
+
 var tabledata = [
 ];
 

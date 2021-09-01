@@ -2,6 +2,7 @@
 <head>
     <link rel="shortcut icon" href="resources/img/favicon.ico"/>
     <link rel="stylesheet" href="resources/css/site.css"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link href="https://unpkg.com/tabulator-tables@4.9.3/dist/css/tabulator.min.css" rel="stylesheet">
 </head>
 <body>
@@ -9,90 +10,94 @@
     <img src="resources/img/logo128x128.png"/>
     <h1>JAWS Web Admin</h1>
 </header>
-<nav>
+<div id="tabs">
     <ul>
-        <li><button>Registered</button></li>
-        <li><button>Classes</button></li>
+        <li><a href="#tabs-1">Registered</a></li>
+        <li><a href="#tabs-2">Classes</a></li>
     </ul>
-</nav>
-<h2>Registered Alarms</h2>
-<div id="registered-table"></div>
-<div style="border: 2px solid black; padding: 1em;">
-    <h3>Edit Form</h3>
-    <form id="registered-form" onsubmit="return false;">
-        <ul>
-            <li>Alarm Name: <input type="text" name="name" value=""/></li>
-            <li>Class: <input type="text" name="class" value=""/></li>
-        </ul>
-        <h4>Class Overrides (Leave blank to inherit from class)</h4>
-        <ul>
-            <li>Priority: <span id="registered-priority-select-span"></span></li>
-            <li>Location: <span id="registered-location-select-span"></span></li>
-            <li>Category: <span id="registered-category-select-span"></span></li>
-            <li>Rationale: <input type="text" name="rationale" value=""/></li>
-            <li>Corrective Action: <input type="text" name="correctiveaction" value=""/></li>
-            <li>Point of Contact Username: <input type="text" name="pocusername" value=""/></li>
-            <li>Filterable: (True <input type="radio" name="filterable" value="true"/>)   (False <input type="radio" name="filterable" value="false"/>)   (Inherit <input type="radio" name="filterable" checked="checked" value=""/>)</li>
-            <li>Latching: (True <input type="radio" name="latching" value="true"/>)   (False <input type="radio" name="latching" value="false"/>)   (Inherit <input type="radio" name="latching" checked="checked" value=""/>)</li>
-            <li>On Delay Seconds: <input type="number" name="ondelayseconds" value=""/></li>
-            <li>Off Delay Seconds: <input type="number" name="offdelayseconds" value=""/></li>
-            <li>Masked By: <input type="text" name="maskedby" value=""/></li>
-            <li>Screen Path: <input type="text" name="screenpath" value=""/></li>
-        </ul>
+    <div id="tabs-1">
+        <h2>Registered Alarms</h2>
+        <div id="registered-table"></div>
+        <div style="border: 2px solid black; padding: 1em;">
+            <h3>Edit Form</h3>
+            <form id="registered-form" onsubmit="return false;">
+                <ul>
+                    <li>Alarm Name: <input type="text" name="name" value=""/></li>
+                    <li>Class: <input type="text" name="class" value=""/></li>
+                </ul>
+                <h4>Class Overrides (Leave blank to inherit from class)</h4>
+                <ul>
+                    <li>Priority: <span id="registered-priority-select-span"></span></li>
+                    <li>Location: <span id="registered-location-select-span"></span></li>
+                    <li>Category: <span id="registered-category-select-span"></span></li>
+                    <li>Rationale: <input type="text" name="rationale" value=""/></li>
+                    <li>Corrective Action: <input type="text" name="correctiveaction" value=""/></li>
+                    <li>Point of Contact Username: <input type="text" name="pocusername" value=""/></li>
+                    <li>Filterable: (True <input type="radio" name="filterable" value="true"/>)   (False <input type="radio" name="filterable" value="false"/>)   (Inherit <input type="radio" name="filterable" checked="checked" value=""/>)</li>
+                    <li>Latching: (True <input type="radio" name="latching" value="true"/>)   (False <input type="radio" name="latching" value="false"/>)   (Inherit <input type="radio" name="latching" checked="checked" value=""/>)</li>
+                    <li>On Delay Seconds: <input type="number" name="ondelayseconds" value=""/></li>
+                    <li>Off Delay Seconds: <input type="number" name="offdelayseconds" value=""/></li>
+                    <li>Masked By: <input type="text" name="maskedby" value=""/></li>
+                    <li>Screen Path: <input type="text" name="screenpath" value=""/></li>
+                </ul>
 
-        <input id="registered-submit" type="button" value="Set"/>
-    </form>
-</div>
-<h2>Alarm Classes</h2>
-<div style="border: 2px solid black; padding: 1em;">
-    <h3>Edit Form</h3>
-    <form id="class-form" onsubmit="return false;">
-        <ul>
-            <li>Class Name: <input type="text" name="name" value=""/></li>
-            <li>Priority: <select name="priority" id="priority-select"></select></li>
-            <li>Location: <select name="location" id="location-select"></select></li>
-            <li>Category: <select name="category" id="category-select"></select></li>
-            <li>Rationale: <input type="text" name="rationale" value=""/></li>
-            <li>Corrective Action: <input type="text" name="correctiveaction" value=""/></li>
-            <li>Point of Contact Username: <input type="text" name="pocusername" value=""/></li>
-            <li>Filterable: (True <input type="radio" name="filterable" value="true"/>)   (False <input type="radio" name="filterable" checked="checked" value="false"/>)</li>
-            <li>Latching: (True <input type="radio" name="latching" value="true"/>)   (False <input type="radio" name="latching" checked="checked" value="false"/>)</li>
-            <li>On Delay Seconds: <input type="number" name="ondelayseconds" value=""/></li>
-            <li>Off Delay Seconds: <input type="number" name="offdelayseconds" value=""/></li>
-            <li>Masked By: <input type="text" name="maskedby" value=""/></li>
-            <li>Screen Path: <input type="text" name="screenpath" value=""/></li>
-        </ul>
+                <input id="registered-submit" type="button" value="Set"/>
+            </form>
+        </div>    </div>
+    <div id="tabs-2">
+        <h2>Alarm Classes</h2>
+        <div style="border: 2px solid black; padding: 1em;">
+            <h3>Edit Form</h3>
+            <form id="class-form" onsubmit="return false;">
+                <ul>
+                    <li>Class Name: <input type="text" name="name" value=""/></li>
+                    <li>Priority: <select name="priority" id="priority-select"></select></li>
+                    <li>Location: <select name="location" id="location-select"></select></li>
+                    <li>Category: <select name="category" id="category-select"></select></li>
+                    <li>Rationale: <input type="text" name="rationale" value=""/></li>
+                    <li>Corrective Action: <input type="text" name="correctiveaction" value=""/></li>
+                    <li>Point of Contact Username: <input type="text" name="pocusername" value=""/></li>
+                    <li>Filterable: (True <input type="radio" name="filterable" value="true"/>)   (False <input type="radio" name="filterable" checked="checked" value="false"/>)</li>
+                    <li>Latching: (True <input type="radio" name="latching" value="true"/>)   (False <input type="radio" name="latching" checked="checked" value="false"/>)</li>
+                    <li>On Delay Seconds: <input type="number" name="ondelayseconds" value=""/></li>
+                    <li>Off Delay Seconds: <input type="number" name="offdelayseconds" value=""/></li>
+                    <li>Masked By: <input type="text" name="maskedby" value=""/></li>
+                    <li>Screen Path: <input type="text" name="screenpath" value=""/></li>
+                </ul>
 
-        <input id="class-submit" type="button" value="Set"/>
-    </form>
-</div>
-<div style="border: 2px solid black; padding: 1em;">
-<h3>Inventory Table</h3>
-<div class="scroll-wrap">
-<table id="class-table">
-    <thead>
-        <tr>
-            <th></th>
-            <th>Class Name</th>
-            <th>Priority</th>
-            <th>Location</th>
-            <th>Category</th>
-            <th>Rationale</th>
-            <th>Corrective Action</th>
-            <th>Point of Contact Username</th>
-            <th>Filterable</th>
-            <th>Latching</th>
-            <th>On Delay Seconds</th>
-            <th>Off Delay Seconds</th>
-            <th>Masked By</th>
-            <th>Screen Path</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
-</div>
+                <input id="class-submit" type="button" value="Set"/>
+            </form>
+        </div>
+        <div style="border: 2px solid black; padding: 1em;">
+            <div class="scroll-wrap">
+                <table id="class-table">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Class Name</th>
+                        <th>Priority</th>
+                        <th>Location</th>
+                        <th>Category</th>
+                        <th>Rationale</th>
+                        <th>Corrective Action</th>
+                        <th>Point of Contact Username</th>
+                        <th>Filterable</th>
+                        <th>Latching</th>
+                        <th>On Delay Seconds</th>
+                        <th>Off Delay Seconds</th>
+                        <th>Masked By</th>
+                        <th>Screen Path</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="resources/js/site.js"></script>
 </body>
 </html>
