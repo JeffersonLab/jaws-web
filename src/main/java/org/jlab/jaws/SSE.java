@@ -13,6 +13,9 @@ import org.jlab.jaws.eventsource.EventSourceRecord;
 import org.jlab.jaws.eventsource.EventSourceTable;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -30,13 +33,29 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @ApplicationScoped
 @Path("/sse")
-public class SSE {
+@WebListener
+public class SSE implements ServletContextListener {
     // max 10 concurrent users
     private ExecutorService exec = Executors.newFixedThreadPool(10);
     private Sse sse;
+
+    @Override
+    public void contextDestroyed(ServletContextEvent event) {
+        System.err.println("Attempting to stop executor service");
+
+        exec.shutdownNow();
+
+        try {
+            exec.awaitTermination(8, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            System.err.println("Timeout while awaiting shutdown");
+            e.printStackTrace();
+        }
+    }
 
     @Context
     public void setSse(Sse sse) {
@@ -92,14 +111,16 @@ public class SSE {
                     registrationTable.start();
                     classTable.start();
 
-                    while (!sink.isClosed()) {
-                        sink.send(sse.newEvent("ping", ":"));  // Actively check for connection
-                        System.err.println("Looping checking for disconnect");
-                        try {
+
+                    try {
+                        while (!sink.isClosed()) {
+                            sink.send(sse.newEvent("ping", ":"));  // Actively check for connection
+                            System.err.println("Looping checking for disconnect");
                             Thread.sleep(5000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
                         }
+                    } catch (InterruptedException e) {
+                        System.err.println("SSE Thread interrupted, shutting down");
+                        e.printStackTrace();
                     }
                 }
 
