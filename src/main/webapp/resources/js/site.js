@@ -7,14 +7,27 @@ $( function() {
 var tabledata = [
 ];
 
+var rowSelected = function(row) {
+    $(".no-selection-row-action").prop("disabled", true);
+    $(".selected-row-action").prop("disabled", false);
+};
+
+var rowDeselected = function(row) {
+    $(".no-selection-row-action").prop("disabled", false);
+    $(".selected-row-action").prop("disabled", true);
+};
+
 var table = new Tabulator("#registered-table", {
     data: tabledata,
     reactiveData: true,
-    height:200, // enables the Virtual DOM
-    layout:"fitColumns",
+    height: 200, // enables the Virtual DOM
+    layout: "fitColumns",
     responsiveLayout: "collapse",
     index: "name",
-    columns:[
+    selectable: 1,
+    rowSelected: rowSelected,
+    rowDeselected: rowDeselected,
+    columns: [
         {title:"Alarm Name", field:"name"},
         {title:"Class", field:"class"},
         {title:"Priority", field:"priority"},
@@ -34,6 +47,34 @@ var table = new Tabulator("#registered-table", {
 });
 
 
+$(document).on("click", "#delete-registration-button", function() {
+    console.log('attempting to delete');
+
+    let selectedData = table.getSelectedData();
+
+    console.log("selectedData:", selectedData);
+
+    let params = "name=" + selectedData[0].name;
+
+    let promise = fetch("proxy/rest/registered", {
+        method: "DELETE",
+        body: new URLSearchParams(params),
+        headers: {
+            "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
+        }
+    });
+
+    promise.then(response => {
+            if(!response.ok) {
+                throw new Error("Network response not ok");
+            }
+            console.log("attempting to deselect");
+            rowDeselected();
+        })
+        .catch(error => {
+            console.error('Delete failed: ', error)
+        });
+});
 
 
 let classButton = document.getElementById('class-submit');
