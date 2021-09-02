@@ -1,7 +1,61 @@
 
 
+let newRegistration = function() {
+    let form = document.getElementById("registered-form"),
+        formData = new FormData(form);
+
+    /*Treat empty string as no-field*/
+    for(var pair of Array.from(formData.entries())) {
+        if(pair[1] === "") {
+            console.log('deleting: ', pair);
+            formData.delete(pair[0]);
+        } else {
+            console.log('keeping: ', pair)
+        }
+    }
+
+    let promise = fetch("proxy/rest/registered", {
+        method: "PUT",
+        body: new URLSearchParams(formData),
+        headers: {
+            "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
+        }
+    });
+
+    promise.then(response => {
+        if(!response.ok) {
+            throw new Error("Network response not ok");
+        }
+        console.log("attempting to deselect");
+        rowDeselected();
+        form.reset();
+        $("#registration-dialog").dialog("close");
+    })
+        .catch(error => {
+            console.error('Edit failed: ', error)
+        });
+};
+
 $( function() {
-    $( "#tabs" ).tabs();
+    $( "#tabs" ).tabs().show();
+
+    var registrationDialog = $("#registration-dialog").dialog({
+        autoOpen: false,
+        height: 400,
+        width: 400,
+        modal: true,
+        buttons: {
+            Set: newRegistration,
+            Cancel: function() {
+                registrationDialog.dialog( "close" );
+            }
+        }
+    });
+
+    registrationDialog.find( "form" ).on( "submit", function( event ) {
+        event.preventDefault();
+        newRegistration();
+    });
 } );
 
 var tabledata = [
@@ -46,6 +100,9 @@ var table = new Tabulator("#registered-table", {
     ]
 });
 
+$(document).on("click", "#new-registration-button", function() {
+    $("#registration-dialog").dialog("open");
+});
 
 $(document).on("click", "#delete-registration-button", function() {
     console.log('attempting to delete');
@@ -104,35 +161,6 @@ classButton.addEventListener("click", function(e) {
     form.reset();
 });
 
-
-
-
-let button = document.getElementById('registered-submit');
-
-button.addEventListener("click", function(e) {
-    let form = document.getElementById("registered-form"),
-        formData = new FormData(form);
-
-    /*Treat empty string as no-field*/
-    for(var pair of Array.from(formData.entries())) {
-        if(pair[1] === "") {
-            console.log('deleting: ', pair);
-            formData.delete(pair[0]);
-        } else {
-            console.log('keeping: ', pair)
-        }
-    }
-
-    let promise = fetch("proxy/rest/registered", {
-        method: "PUT",
-        body: new URLSearchParams(formData),
-        headers: {
-            "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
-        }
-    });
-
-    form.reset();
-});
 
 
 

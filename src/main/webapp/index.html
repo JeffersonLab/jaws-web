@@ -23,30 +23,56 @@
             <button type="button" id="delete-registration-button" class="selected-row-action" disabled="disabled">Delete</button>
         </div>
         <div id="registered-table"></div>
-        <div style="border: 2px solid black; padding: 1em;">
-            <h3>Edit Form</h3>
+        <div id="registration-dialog" class="dialog" title="New Registration">
             <form id="registered-form" onsubmit="return false;">
-                <ul>
-                    <li>Alarm Name: <input type="text" name="name" value=""/></li>
-                    <li>Class: <input type="text" name="class" value=""/></li>
-                </ul>
-                <h4>Class Overrides (Leave blank to inherit from class)</h4>
-                <ul>
-                    <li>Priority: <span id="registered-priority-select-span"></span></li>
-                    <li>Location: <span id="registered-location-select-span"></span></li>
-                    <li>Category: <span id="registered-category-select-span"></span></li>
-                    <li>Rationale: <input type="text" name="rationale" value=""/></li>
-                    <li>Corrective Action: <input type="text" name="correctiveaction" value=""/></li>
-                    <li>Point of Contact Username: <input type="text" name="pocusername" value=""/></li>
-                    <li>Filterable: (True <input type="radio" name="filterable" value="true"/>)   (False <input type="radio" name="filterable" value="false"/>)   (Inherit <input type="radio" name="filterable" checked="checked" value=""/>)</li>
-                    <li>Latching: (True <input type="radio" name="latching" value="true"/>)   (False <input type="radio" name="latching" value="false"/>)   (Inherit <input type="radio" name="latching" checked="checked" value=""/>)</li>
-                    <li>On Delay Seconds: <input type="number" name="ondelayseconds" value=""/></li>
-                    <li>Off Delay Seconds: <input type="number" name="offdelayseconds" value=""/></li>
-                    <li>Masked By: <input type="text" name="maskedby" value=""/></li>
-                    <li>Screen Path: <input type="text" name="screenpath" value=""/></li>
-                </ul>
-
-                <input id="registered-submit" type="button" value="Set"/>
+                <fieldset>
+                    <label>Alarm Name</label>
+                    <input type="text" name="name" value=""/>
+                    <label>Class</label>
+                    <input type="text" name="class" value=""/>
+                </fieldset>
+                <h2>Class Overrides</h2>
+                <div class="footnote">(Blank fields inherit from class)</div>
+                <fieldset>
+                    <label>Priority</label>
+                    <span id="registered-priority-select-span"></span>
+                    <label>Location</label>
+                    <span id="registered-location-select-span"></span>
+                    <label>Category</label>
+                    <span id="registered-category-select-span"></span>
+                    <label>Rationale</label>
+                    <input type="text" name="rationale" value=""/>
+                    <label>Corrective Action</label>
+                    <input type="text" name="correctiveaction" value=""/>
+                    <label>Point of Contact Username</label>
+                    <input type="text" name="pocusername" value=""/>
+                    <fieldset>
+                        <legend>Filterable</legend>
+                        <label>True</label>
+                        <input type="radio" name="filterable" value="true"/>
+                        <label>False</label>
+                        <input type="radio" name="filterable" value="false"/>
+                        <label>Inherit</label>
+                        <input type="radio" name="filterable" checked="checked" value=""/>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Latching</legend>
+                        <label>True</label>
+                        <input type="radio" name="latching" value="true"/>
+                        <label>False</label>
+                        <input type="radio" name="latching" value="false"/>
+                        <label>Inherit</label>
+                        <input type="radio" name="latching" checked="checked" value=""/>
+                    </fieldset><label>On Delay Seconds</label>
+                    <input type="number" name="ondelayseconds" value=""/>
+                    <label>Off Delay Seconds</label>
+                    <input type="number" name="offdelayseconds" value=""/>
+                    <label>Masked By</label>
+                    <input type="text" name="maskedby" value=""/>
+                    <label>Screen Path</label>
+                    <input type="text" name="screenpath" value=""/>
+                </fieldset>
+                <input id="registered-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
             </form>
         </div>    </div>
     <div id="tabs-2">

@@ -3,3 +3,39 @@ h1 {
     vertical-align: top;
     padding: 1em;
 }
+#tabs {
+    display: none;
+}
+.dialog {
+    display: none;
+}
+.dialog h2 {
+    margin-bottom: 0;
+}
+.footnote {
+    font-style: italic;
+    font-size: 0.8em;
+}
+label, input {
+    display:block;
+}
+input.text {
+    margin-bottom:12px;
+    width:95%;
+    adding: .4em;
+}
+fieldset {
+    padding:0;
+    border:0;
+    margin-top:25px;
+}
+fieldset fieldset {
+    margin-top: 0
+}
+fieldset fieldset input {
+    margin-right: 2em;
+}
+fieldset fieldset label,
+fieldset fieldset input {
+    display: inline-block;
+}
