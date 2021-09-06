@@ -116,9 +116,15 @@ $(document).on("click", "#edit-registration-button", function() {
     $("#registered-priority-select").val(data.priority);
     $("#registered-location-select").val(data.location);
     $("#registered-category-select").val(data.category);
-    $("#registered-rationale-input").val(data.rationale);
-    $("#registered-correctiveaction-input").val(data.correctiveaction);
-    $("#registered-pocusername-input").val(data.pocusername);
+    $("#registered-rationale-textarea").val(data.rationale);
+    $("#registered-correctiveaction-textarea").val(data.correctiveaction);
+    $("#registered-pocusername-input").val(data.pointofcontactusername);
+    $("#registered-form [name=filterable]").val([data.filterable]);
+    $("#registered-form [name=latching]").val([data.latching]);
+    $("#registered-ondelay-input").val(data.ondelayseconds);
+    $("#registered-offdelay-input").val(data.offdelayseconds);
+    $("#registered-maskedby-input").val(data.maskedby);
+    $("#registered-screenpath-input").val(data.screenpath);
 
     $("#registration-dialog").dialog("option", "title", "Edit Registration")
     $("#registration-dialog").dialog("open");
