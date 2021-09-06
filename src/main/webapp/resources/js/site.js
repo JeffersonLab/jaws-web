@@ -28,7 +28,6 @@ let newRegistration = function() {
         }
         console.log("attempting to deselect");
         rowDeselected();
-        form.reset();
         $("#registration-dialog").dialog("close");
     })
         .catch(error => {
@@ -101,6 +100,27 @@ var table = new Tabulator("#registered-table", {
 });
 
 $(document).on("click", "#new-registration-button", function() {
+
+    document.getElementById("registered-form").reset();
+
+    $("#registration-dialog").dialog("option", "title", "New Registration")
+    $("#registration-dialog").dialog("open");
+});
+
+$(document).on("click", "#edit-registration-button", function() {
+    let selectedData = table.getSelectedData(),
+        data = selectedData[0];
+
+    $("#alarm-name-input").val(data.name);
+    $("#registered-class-input").val(data.class);
+    $("#registered-priority-select").val(data.priority);
+    $("#registered-location-select").val(data.location);
+    $("#registered-category-select").val(data.category);
+    $("#registered-rationale-input").val(data.rationale);
+    $("#registered-correctiveaction-input").val(data.correctiveaction);
+    $("#registered-pocusername-input").val(data.pocusername);
+
+    $("#registration-dialog").dialog("option", "title", "Edit Registration")
     $("#registration-dialog").dialog("open");
 });
 
@@ -340,7 +360,7 @@ fetch('proxy/rest/priorities')
                 }
 
                 let other = prioritySelect.cloneNode(true);
-                other.id = 'cloned-priority-select';
+                other.id = 'registered-priority-select';
 
                 let emptyOption = document.createElement('option');
                 emptyOption.selected = "selected";
@@ -376,7 +396,7 @@ fetch('proxy/rest/locations')
                 }
 
                 let other = locationSelect.cloneNode(true);
-                other.id = 'cloned-location-select';
+                other.id = 'registered-location-select';
 
                 let emptyOption = document.createElement('option');
                 emptyOption.selected = "selected";
@@ -411,7 +431,7 @@ fetch('proxy/rest/categories')
                 }
 
                 let other = categorySelect.cloneNode(true);
-                other.id = 'cloned-category-select';
+                other.id = 'registered-category-select';
 
                 let emptyOption = document.createElement('option');
                 emptyOption.selected = "selected";
