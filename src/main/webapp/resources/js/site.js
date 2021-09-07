@@ -35,6 +35,42 @@ let newRegistration = function() {
         });
 };
 
+
+let newClass = function() {
+    let form = document.getElementById("class-form"),
+        formData = new FormData(form);
+
+    /*Treat empty string as no-field*/
+    for(var pair of Array.from(formData.entries())) {
+        if(pair[1] === "") {
+            console.log('deleting: ', pair);
+            formData.delete(pair[0]);
+        } else {
+            console.log('keeping: ', pair)
+        }
+    }
+
+    let promise = fetch("proxy/rest/class", {
+        method: "PUT",
+        body: new URLSearchParams(formData),
+        headers: {
+            "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
+        }
+    });
+
+    promise.then(response => {
+        if(!response.ok) {
+            throw new Error("Network response not ok");
+        }
+        console.log("attempting to deselect");
+        rowDeselected();
+        $("#class-dialog").dialog("close");
+    })
+        .catch(error => {
+            console.error('Edit failed: ', error)
+        });
+};
+
 $( function() {
     $( "#tabs" ).tabs().show();
 
@@ -54,6 +90,24 @@ $( function() {
     registrationDialog.find( "form" ).on( "submit", function( event ) {
         event.preventDefault();
         newRegistration();
+    });
+
+    var classDialog = $("#class-dialog").dialog({
+        autoOpen: false,
+        height: 400,
+        width: 400,
+        modal: true,
+        buttons: {
+            Set: newClass,
+            Cancel: function() {
+                classDialog.dialog( "close" );
+            }
+        }
+    });
+
+    classDialog.find( "form" ).on( "submit", function( event ) {
+        event.preventDefault();
+        newClass();
     });
 } );
 
@@ -191,40 +245,75 @@ $(document).on("click", "#delete-registration-button", function() {
 });
 
 
-let classButton = document.getElementById('class-submit');
 
-classButton.addEventListener("click", function(e) {
-    let form = document.getElementById("class-form"),
-        formData = new FormData(form);
 
-    /*Treat empty string as no-field*/
-    for(var pair of Array.from(formData.entries())) {
-        if(pair[1] === "") {
-            console.log('deleting: ', pair);
-            formData.delete(pair[0]);
-        } else {
-            console.log('keeping: ', pair)
-        }
-    }
+
+
+$(document).on("click", "#new-class-button", function() {
+
+    document.getElementById("class-form").reset();
+
+    $("#class-dialog").dialog("option", "title", "New Class")
+    $("#class-dialog").dialog("open");
+});
+
+$(document).on("click", "#edit-class-button", function() {
+    let selectedData = classestable.getSelectedData(),
+        data = selectedData[0];
+
+    $("#class-name-input").val(data.name);
+    $("#priority-select").val(data.priority);
+    $("#location-select").val(data.location);
+    $("#category-select").val(data.category);
+    $("#class-rationale-textarea").val(data.rationale);
+    $("#class-correctiveaction-textarea").val(data.correctiveaction);
+    $("#class-pocusername-input").val(data.pointofcontactusername);
+    $("#class-form [name=filterable]").val([data.filterable]);
+    $("#class-form [name=latching]").val([data.latching]);
+    $("#class-ondelay-input").val(data.ondelayseconds);
+    $("#class-offdelay-input").val(data.offdelayseconds);
+    $("#class-maskedby-input").val(data.maskedby);
+    $("#class-screenpath-input").val(data.screenpath);
+
+    $("#class-dialog").dialog("option", "title", "Edit Class")
+    $("#class-dialog").dialog("open");
+});
+
+$(document).on("click", "#delete-class-button", function() {
+    console.log('attempting to delete');
+
+    let selectedData = classestable.getSelectedData();
+
+    console.log("selectedData:", selectedData);
+
+    let params = "name=" + selectedData[0].name;
 
     let promise = fetch("proxy/rest/class", {
-        method: "PUT",
-        body: new URLSearchParams(formData),
+        method: "DELETE",
+        body: new URLSearchParams(params),
         headers: {
             "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
         }
     });
 
-    form.reset();
+    promise.then(response => {
+        if(!response.ok) {
+            throw new Error("Network response not ok");
+        }
+        console.log("attempting to deselect");
+        rowDeselected();
+    })
+        .catch(error => {
+            console.error('Delete failed: ', error)
+        });
 });
 
 
 
 
 
-let evtSource = new EventSource('proxy/sse'),
-    registeredTable = document.getElementById('registered-table'),
-    classTable = document.getElementById('class-table');
+
+let evtSource = new EventSource('proxy/sse');
 
 console.log('attempting sse...')
 
@@ -235,11 +324,6 @@ let unwrapNullableUnionText = function(text) {
     }
     return text;
 };
-
-let insertText = function(text, row, index) {
-    let cell = row.insertCell(index++);
-    cell.appendChild(document.createTextNode(text));
-}
 
 evtSource.addEventListener("registration", function(e) {
     console.log('registration type message')

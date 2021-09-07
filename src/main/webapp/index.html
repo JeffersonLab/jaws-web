@@ -83,23 +83,47 @@
             <button type="button" id="delete-class-button" class="selected-row-action" disabled="disabled">Delete</button>
         </div>
         <div id="classes-table"></div>
-        <div id="classes-dialog" class="dialog" title="New Class">
+        <div id="class-dialog" class="dialog" title="New Class">
             <form id="class-form" onsubmit="return false;">
-                <ul>
-                    <li>Class Name: <input type="text" name="name" value=""/></li>
-                    <li>Priority: <select name="priority" id="priority-select"></select></li>
-                    <li>Location: <select name="location" id="location-select"></select></li>
-                    <li>Category: <select name="category" id="category-select"></select></li>
-                    <li>Rationale: <input type="text" name="rationale" value=""/></li>
-                    <li>Corrective Action: <input type="text" name="correctiveaction" value=""/></li>
-                    <li>Point of Contact Username: <input type="text" name="pocusername" value=""/></li>
-                    <li>Filterable: (True <input type="radio" name="filterable" value="true"/>)   (False <input type="radio" name="filterable" checked="checked" value="false"/>)</li>
-                    <li>Latching: (True <input type="radio" name="latching" value="true"/>)   (False <input type="radio" name="latching" checked="checked" value="false"/>)</li>
-                    <li>On Delay Seconds: <input type="number" name="ondelayseconds" value=""/></li>
-                    <li>Off Delay Seconds: <input type="number" name="offdelayseconds" value=""/></li>
-                    <li>Masked By: <input type="text" name="maskedby" value=""/></li>
-                    <li>Screen Path: <input type="text" name="screenpath" value=""/></li>
-                </ul>
+                <fieldset>
+                    <label>Class Name</label>
+                    <input type="text" name="name" id="class-name-input" value=""/>
+                </fieldset>
+                <fieldset>
+                    <label>Priority</label>
+                    <select id="priority-select" name="priority"></select>
+                    <label>Location</label>
+                    <select id="location-select" name="location"></select>
+                    <label>Category</label>
+                    <select id="category-select" name="category"></select>
+                    <label>Rationale</label>
+                    <textarea name="rationale" id="class-rationale-textarea"></textarea>
+                    <label>Corrective Action</label>
+                    <textarea name="correctiveaction" id="class-correctiveaction-textarea"></textarea>
+                    <label>Point of Contact Username</label>
+                    <input type="text" name="pocusername" id="class-pocusername-input" value=""/>
+                    <fieldset>
+                        <legend>Filterable</legend>
+                        <label>True</label>
+                        <input type="radio" name="filterable" checked="checked" value="true"/>
+                        <label>False</label>
+                        <input type="radio" name="filterable" value="false"/>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Latching</legend>
+                        <label>True</label>
+                        <input type="radio" name="latching" checked="checked" value="true"/>
+                        <label>False</label>
+                        <input type="radio" name="latching" value="false"/>
+                    </fieldset><label>On Delay Seconds</label>
+                    <input type="number" name="ondelayseconds" id="class-ondelay-input" value=""/>
+                    <label>Off Delay Seconds</label>
+                    <input type="number" name="offdelayseconds" id="class-offdelay-input" value=""/>
+                    <label>Masked By</label>
+                    <input type="text" name="maskedby" id="class-maskedby-input" value=""/>
+                    <label>Screen Path</label>
+                    <input type="text" name="screenpath" id="class-screenpath-input" value=""/>
+                </fieldset>
                 <input id="class-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
             </form>
         </div>
