@@ -18,20 +18,32 @@ let newRegistration = function() {
         method: "PUT",
         body: new URLSearchParams(formData),
         headers: {
+            Accept: "application/json",
             "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
         }
     });
 
     promise.then(response => {
-        if(!response.ok) {
-            throw new Error("Network response not ok");
+        if(response.ok) {
+            console.log("attempting to deselect");
+            rowDeselected();
+            $("#registration-dialog").dialog("close");
+        } else {
+            response.json().then(function (data) {
+                if ('parameterViolations' in data && data.parameterViolations.length > 0) {
+                    let violations = [];
+                    for (let v of data.parameterViolations) {
+                        violations.push(v.message);
+                    }
+                    alert("Unable to edit: " + violations);
+                } else {
+                    alert("Network response not ok: " + data);
+                }
+            });
         }
-        console.log("attempting to deselect");
-        rowDeselected();
-        $("#registration-dialog").dialog("close");
     })
         .catch(error => {
-            console.error('Edit failed: ', error)
+            alert("Unable to edit: " + error);
         });
 };
 
@@ -54,20 +66,32 @@ let newClass = function() {
         method: "PUT",
         body: new URLSearchParams(formData),
         headers: {
+            Accept: "application/json",
             "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
         }
     });
 
     promise.then(response => {
-        if(!response.ok) {
-            throw new Error("Network response not ok");
+        if(response.ok) {
+            console.log("attempting to deselect");
+            rowDeselected();
+            $("#class-dialog").dialog("close");
+        } else {
+            response.json().then(function (data) {
+                if ('parameterViolations' in data && data.parameterViolations.length > 0) {
+                    let violations = [];
+                    for (let v of data.parameterViolations) {
+                        violations.push(v.message);
+                    }
+                    alert("Unable to edit: " + violations);
+                } else {
+                    alert("Network response not ok: " + data);
+                }
+            });
         }
-        console.log("attempting to deselect");
-        rowDeselected();
-        $("#class-dialog").dialog("close");
     })
         .catch(error => {
-            console.error('Edit failed: ', error)
+            alert("Unable to edit: " + error);
         });
 };
 
