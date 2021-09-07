@@ -88,6 +88,8 @@ let newClass = function() {
 };
 
 $( function() {
+    $( ".toolbar button" ).button();
+
     $( "#tabs" ).tabs().show();
 
     var registrationDialog = $("#registration-dialog").dialog({
@@ -134,23 +136,23 @@ var classestabledata = [
 ];
 
 var registeredRowSelected = function(row) {
-    $("#registered-toolbar .no-selection-row-action").prop("disabled", true);
-    $("#registered-toolbar .selected-row-action").prop("disabled", false);
+    $("#registered-toolbar .no-selection-row-action").button( "option", "disabled", true );
+    $("#registered-toolbar .selected-row-action").button( "option", "disabled", false );
 };
 
 var classRowSelected = function(row) {
-    $("#class-toolbar .no-selection-row-action").prop("disabled", true);
-    $("#class-toolbar .selected-row-action").prop("disabled", false);
+    $("#class-toolbar .no-selection-row-action").button( "option", "disabled", true );
+    $("#class-toolbar .selected-row-action").button( "option", "disabled", false );
 };
 
 var registeredRowDeselected = function(row) {
-    $("#registered-toolbar .no-selection-row-action").prop("disabled", false);
-    $("#registered-toolbar .selected-row-action").prop("disabled", true);
+    $("#registered-toolbar .no-selection-row-action").button( "option", "disabled", false );
+    $("#registered-toolbar .selected-row-action").button( "option", "disabled", true );
 };
 
 var classRowDeselected = function(row) {
-    $("#class-toolbar .no-selection-row-action").prop("disabled", false);
-    $("#class-toolbar .selected-row-action").prop("disabled", true);
+    $("#class-toolbar .no-selection-row-action").button( "option", "disabled", false );
+    $("#class-toolbar .selected-row-action").button( "option", "disabled", true );
 };
 
 var registeredtable = new Tabulator("#registered-table", {
