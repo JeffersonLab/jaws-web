@@ -7,10 +7,7 @@ let newRegistration = function() {
     /*Treat empty string as no-field*/
     for(var pair of Array.from(formData.entries())) {
         if(pair[1] === "") {
-            console.log('deleting: ', pair);
             formData.delete(pair[0]);
-        } else {
-            console.log('keeping: ', pair)
         }
     }
 
@@ -25,7 +22,6 @@ let newRegistration = function() {
 
     promise.then(response => {
         if(response.ok) {
-            console.log("attempting to deselect");
             registeredRowDeselected();
             $("#registration-dialog").dialog("close");
         } else {
@@ -55,10 +51,7 @@ let newClass = function() {
     /*Treat empty string as no-field*/
     for(var pair of Array.from(formData.entries())) {
         if(pair[1] === "") {
-            console.log('deleting: ', pair);
             formData.delete(pair[0]);
-        } else {
-            console.log('keeping: ', pair)
         }
     }
 
@@ -73,7 +66,6 @@ let newClass = function() {
 
     promise.then(response => {
         if(response.ok) {
-            console.log("attempting to deselect");
             classRowDeselected();
             $("#class-dialog").dialog("close");
         } else {
@@ -250,11 +242,7 @@ $(document).on("click", "#edit-registration-button", function() {
 });
 
 $(document).on("click", "#delete-registration-button", function() {
-    console.log('attempting to delete');
-
     let selectedData = registeredtable.getSelectedData();
-
-    console.log("selectedData:", selectedData);
 
     let params = "name=" + selectedData[0].name;
 
@@ -270,7 +258,6 @@ $(document).on("click", "#delete-registration-button", function() {
             if(!response.ok) {
                 throw new Error("Network response not ok");
             }
-            console.log("attempting to deselect");
             registeredRowDeselected();
         })
         .catch(error => {
@@ -314,11 +301,7 @@ $(document).on("click", "#edit-class-button", function() {
 });
 
 $(document).on("click", "#delete-class-button", function() {
-    console.log('attempting to delete');
-
     let selectedData = classestable.getSelectedData();
-
-    console.log("selectedData:", selectedData);
 
     let params = "name=" + selectedData[0].name;
 
@@ -334,7 +317,6 @@ $(document).on("click", "#delete-class-button", function() {
         if(!response.ok) {
             throw new Error("Network response not ok");
         }
-        console.log("attempting to deselect");
         classRowDeselected();
     })
         .catch(error => {
@@ -349,9 +331,6 @@ $(document).on("click", "#delete-class-button", function() {
 
 let evtSource = new EventSource('proxy/sse');
 
-console.log('attempting sse...')
-
-
 let unwrapNullableUnionText = function(text) {
     if(text != null) {
         text = Object.values(text)[0];
@@ -360,7 +339,6 @@ let unwrapNullableUnionText = function(text) {
 };
 
 evtSource.addEventListener("registration", function(e) {
-    console.log('registration type message')
     let json = JSON.parse(e.data),
         key = json.key,
         value = json.value;
@@ -372,7 +350,6 @@ evtSource.addEventListener("registration", function(e) {
     }
 
     if(value === null) {
-        console.log("tombstone encountered");
         return;
     }
 
@@ -391,12 +368,9 @@ evtSource.addEventListener("registration", function(e) {
         offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
         maskedby: unwrapNullableUnionText(value.maskedby),
         screenpath: unwrapNullableUnionText(value.screenpath)});
-
-    console.log(registeredtabledata);
 });
 
 evtSource.addEventListener("class", function(e) {
-    console.log('class type message: ');
     let json = JSON.parse(e.data),
         key = json.key,
         value = json.value;
@@ -408,7 +382,6 @@ evtSource.addEventListener("class", function(e) {
     }
 
     if(value === null) {
-        console.log("tombstone encountered");
         return;
     }
 
@@ -425,8 +398,6 @@ evtSource.addEventListener("class", function(e) {
         offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
         maskedby: unwrapNullableUnionText(value.maskedby),
         screenpath: unwrapNullableUnionText(value.screenpath)});
-
-    console.log(registeredtabledata);
 });
 
 evtSource.onerror = function(e) {
