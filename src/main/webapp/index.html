@@ -77,8 +77,13 @@
         </div>    </div>
     <div id="tabs-2">
         <h2>Alarm Classes</h2>
-        <div style="border: 2px solid black; padding: 1em;">
-            <h3>Edit Form</h3>
+        <div class="toolbar">
+            <button type="button" id="new-class-button">New</button> |
+            <button type="button" id="edit-class-button" class="selected-row-action" disabled="disabled">Edit</button>
+            <button type="button" id="delete-class-button" class="selected-row-action" disabled="disabled">Delete</button>
+        </div>
+        <div id="classes-table"></div>
+        <div id="classes-dialog" class="dialog" title="New Class">
             <form id="class-form" onsubmit="return false;">
                 <ul>
                     <li>Class Name: <input type="text" name="name" value=""/></li>
@@ -95,34 +100,8 @@
                     <li>Masked By: <input type="text" name="maskedby" value=""/></li>
                     <li>Screen Path: <input type="text" name="screenpath" value=""/></li>
                 </ul>
-
-                <input id="class-submit" type="button" value="Set"/>
+                <input id="class-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
             </form>
-        </div>
-        <div style="border: 2px solid black; padding: 1em;">
-            <div class="scroll-wrap">
-                <table id="class-table">
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>Class Name</th>
-                        <th>Priority</th>
-                        <th>Location</th>
-                        <th>Category</th>
-                        <th>Rationale</th>
-                        <th>Corrective Action</th>
-                        <th>Point of Contact Username</th>
-                        <th>Filterable</th>
-                        <th>Latching</th>
-                        <th>On Delay Seconds</th>
-                        <th>Off Delay Seconds</th>
-                        <th>Masked By</th>
-                        <th>Screen Path</th>
-                    </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
         </div>
     </div>
 </div>

@@ -57,7 +57,10 @@ $( function() {
     });
 } );
 
-var tabledata = [
+var registeredtabledata = [
+];
+
+var classestabledata = [
 ];
 
 var rowSelected = function(row) {
@@ -70,8 +73,8 @@ var rowDeselected = function(row) {
     $(".selected-row-action").prop("disabled", true);
 };
 
-var table = new Tabulator("#registered-table", {
-    data: tabledata,
+var registeredtable = new Tabulator("#registered-table", {
+    data: registeredtabledata,
     reactiveData: true,
     height: 200, // enables the Virtual DOM
     layout: "fitColumns",
@@ -99,6 +102,34 @@ var table = new Tabulator("#registered-table", {
     ]
 });
 
+var classestable = new Tabulator("#classes-table", {
+    data: classestabledata,
+    reactiveData: true,
+    height: 200, // enables the Virtual DOM
+    layout: "fitColumns",
+    responsiveLayout: "collapse",
+    index: "name",
+    selectable: 1,
+    rowSelected: rowSelected,
+    rowDeselected: rowDeselected,
+    columns: [
+        {title:"Class Name", field:"name"},
+        {title:"Priority", field:"priority"},
+        {title:"Location", field:"location"},
+        {title:"Category", field:"category"},
+        {title:"Rationale", field:"rationale"},
+        {title:"Corrective Action", field:"correctiveaction"},
+        {title:"Point of Contact Username", field:"pointofcontactusername"},
+        {title:"Filterable", field:"filterable"},
+        {title:"Latching", field:"latching"},
+        {title:"On Delay Seconds", field:"ondelayseconds"},
+        {title:"Off Delay Seconds", field:"offdelayseconds"},
+        {title:"Masked By", field:"maskedby"},
+        {title:"Screen Path", field:"screenpath"},
+    ]
+});
+
+
 $(document).on("click", "#new-registration-button", function() {
 
     document.getElementById("registered-form").reset();
@@ -108,7 +139,7 @@ $(document).on("click", "#new-registration-button", function() {
 });
 
 $(document).on("click", "#edit-registration-button", function() {
-    let selectedData = table.getSelectedData(),
+    let selectedData = registeredtable.getSelectedData(),
         data = selectedData[0];
 
     $("#alarm-name-input").val(data.name);
@@ -133,7 +164,7 @@ $(document).on("click", "#edit-registration-button", function() {
 $(document).on("click", "#delete-registration-button", function() {
     console.log('attempting to delete');
 
-    let selectedData = table.getSelectedData();
+    let selectedData = registeredtable.getSelectedData();
 
     console.log("selectedData:", selectedData);
 
@@ -193,9 +224,7 @@ classButton.addEventListener("click", function(e) {
 
 let evtSource = new EventSource('proxy/sse'),
     registeredTable = document.getElementById('registered-table'),
-    registeredTableBody = registeredTable.getElementsByTagName("tbody")[0],
     classTable = document.getElementById('class-table');
-classTableBody = classTable.getElementsByTagName("tbody")[0];
 
 console.log('attempting sse...')
 
@@ -218,10 +247,10 @@ evtSource.addEventListener("registration", function(e) {
         key = json.key,
         value = json.value;
 
-    const i = tabledata.findIndex(element => element.name === key);
+    const i = registeredtabledata.findIndex(element => element.name === key);
 
     if(i !== -1) {
-        tabledata.splice(i, 1);
+        registeredtabledata.splice(i, 1);
     }
 
     if(value === null) {
@@ -229,7 +258,7 @@ evtSource.addEventListener("registration", function(e) {
         return;
     }
 
-    tabledata.push({name: key,
+    registeredtabledata.push({name: key,
         class: value.class,
         priority: unwrapNullableUnionText(value.priority),
         producer: JSON.stringify(value.producer),
@@ -245,94 +274,41 @@ evtSource.addEventListener("registration", function(e) {
         maskedby: unwrapNullableUnionText(value.maskedby),
         screenpath: unwrapNullableUnionText(value.screenpath)});
 
-    console.log(tabledata);
-
-    let deleteBtn = document.createElement('input');
-    deleteBtn.type = "button";
-    deleteBtn.value = "X";
-    deleteBtn.onclick = function() {
-
-        console.log('attempting to delete: ', key);
-
-        let params = "name=" + key;
-
-        let promise = fetch("proxy/rest/registered", {
-            method: "DELETE",
-            body: new URLSearchParams(params),
-            headers: {
-                "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
-            }
-        });
-    };
+    console.log(registeredtabledata);
 });
 
 evtSource.addEventListener("class", function(e) {
     console.log('class type message: ');
-
     let json = JSON.parse(e.data),
         key = json.key,
         value = json.value;
 
-    console.log(json);
+    const i = classestabledata.findIndex(element => element.name === key);
 
-    let keys = document.querySelectorAll("#class-table tbody tr td:nth-child(2)");
-
-    keys.forEach(
-        function(td, index, list) {
-            if(key === td.textContent) {
-                console.log('match: ', key, td.textContent);
-                classTableBody.deleteRow(index);
-            } else {
-                console.log('no match: ', key, td.textContent, index, list);
-            }
-        }
-    );
+    if(i !== -1) {
+        classestabledata.splice(i, 1);
+    }
 
     if(value === null) {
         console.log("tombstone encountered");
         return;
     }
 
-    let index = 0;
+    classestabledata.push({name: key,
+        priority: value.priority,
+        location: value.location,
+        category: value.category,
+        rationale: value.rationale,
+        correctiveaction:value.correctiveaction,
+        pointofcontactusername: value.pointofcontactusername,
+        filterable: value.filterable,
+        latching: value.latching,
+        ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
+        offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
+        maskedby: unwrapNullableUnionText(value.maskedby),
+        screenpath: unwrapNullableUnionText(value.screenpath)});
 
-    let row = classTableBody.insertRow(-1),
-        cell = row.insertCell(index++);
-
-    let deleteBtn = document.createElement('input');
-    deleteBtn.type = "button";
-    deleteBtn.value = "X";
-    deleteBtn.onclick = function() {
-
-        console.log('attempting to delete: ', key);
-
-        let params = "name=" + key;
-
-        let promise = fetch("proxy/rest/class", {
-            method: "DELETE",
-            body: new URLSearchParams(params),
-            headers: {
-                "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
-            }
-        });
-    };
-    cell.append(deleteBtn)
-
-    cell = row.insertCell(index++);
-    cell.appendChild(document.createTextNode(key));
-
-    insertText(value.priority, row, index++);
-
-    insertText(value.location, row, index++);
-    insertText(value.category, row, index++);
-    insertText(value.rationale, row, index++);
-    insertText(value.correctiveaction, row, index++);
-    insertText(value.pointofcontactusername, row, index++);
-    insertText(value.filterable, row, index++);
-    insertText(value.latching, row, index++);
-    insertText(value.ondelayseconds, row, index++);
-    insertText(value.offdelayseconds, row, index++);
-    insertText(value.maskedby, row, index++);
-    insertText(value.screenpath, row, index++);
+    console.log(registeredtabledata);
 });
 
 evtSource.onerror = function(e) {
