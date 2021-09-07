@@ -26,7 +26,7 @@ let newRegistration = function() {
     promise.then(response => {
         if(response.ok) {
             console.log("attempting to deselect");
-            rowDeselected();
+            registeredRowDeselected();
             $("#registration-dialog").dialog("close");
         } else {
             response.json().then(function (data) {
@@ -74,7 +74,7 @@ let newClass = function() {
     promise.then(response => {
         if(response.ok) {
             console.log("attempting to deselect");
-            rowDeselected();
+            classRowDeselected();
             $("#class-dialog").dialog("close");
         } else {
             response.json().then(function (data) {
@@ -141,14 +141,24 @@ var registeredtabledata = [
 var classestabledata = [
 ];
 
-var rowSelected = function(row) {
-    $(".no-selection-row-action").prop("disabled", true);
-    $(".selected-row-action").prop("disabled", false);
+var registeredRowSelected = function(row) {
+    $("#registered-toolbar .no-selection-row-action").prop("disabled", true);
+    $("#registered-toolbar .selected-row-action").prop("disabled", false);
 };
 
-var rowDeselected = function(row) {
-    $(".no-selection-row-action").prop("disabled", false);
-    $(".selected-row-action").prop("disabled", true);
+var classRowSelected = function(row) {
+    $("#class-toolbar .no-selection-row-action").prop("disabled", true);
+    $("#class-toolbar .selected-row-action").prop("disabled", false);
+};
+
+var registeredRowDeselected = function(row) {
+    $("#registered-toolbar .no-selection-row-action").prop("disabled", false);
+    $("#registered-toolbar .selected-row-action").prop("disabled", true);
+};
+
+var classRowDeselected = function(row) {
+    $("#class-toolbar .no-selection-row-action").prop("disabled", false);
+    $("#class-toolbar .selected-row-action").prop("disabled", true);
 };
 
 var registeredtable = new Tabulator("#registered-table", {
@@ -159,8 +169,8 @@ var registeredtable = new Tabulator("#registered-table", {
     responsiveLayout: "collapse",
     index: "name",
     selectable: 1,
-    rowSelected: rowSelected,
-    rowDeselected: rowDeselected,
+    rowSelected: registeredRowSelected,
+    rowDeselected: registeredRowDeselected,
     columns: [
         {title:"Alarm Name", field:"name"},
         {title:"Class", field:"class"},
@@ -188,8 +198,8 @@ var classestable = new Tabulator("#classes-table", {
     responsiveLayout: "collapse",
     index: "name",
     selectable: 1,
-    rowSelected: rowSelected,
-    rowDeselected: rowDeselected,
+    rowSelected: classRowSelected,
+    rowDeselected: classRowDeselected,
     columns: [
         {title:"Class Name", field:"name"},
         {title:"Priority", field:"priority"},
@@ -261,7 +271,7 @@ $(document).on("click", "#delete-registration-button", function() {
                 throw new Error("Network response not ok");
             }
             console.log("attempting to deselect");
-            rowDeselected();
+            registeredRowDeselected();
         })
         .catch(error => {
             console.error('Delete failed: ', error)
@@ -325,7 +335,7 @@ $(document).on("click", "#delete-class-button", function() {
             throw new Error("Network response not ok");
         }
         console.log("attempting to deselect");
-        rowDeselected();
+        classRowDeselected();
     })
         .catch(error => {
             console.error('Delete failed: ', error)
