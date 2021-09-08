@@ -90,7 +90,11 @@ let newClass = function() {
 $( function() {
     $( ".toolbar button" ).button();
 
-    $( "#tabs" ).tabs().show();
+    $( "#tabs" ).tabs({
+        activate: function( event, ui ) {
+            ui.newPanel.css("display","flex");
+        }
+    }).show();
 
     var registrationDialog = $("#registration-dialog").dialog({
         autoOpen: false,
