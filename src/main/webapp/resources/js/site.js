@@ -158,7 +158,7 @@ var classRowDeselected = function(row) {
 var registeredtable = new Tabulator("#registered-table", {
     data: registeredtabledata,
     reactiveData: true,
-    height: 200, // enables the Virtual DOM
+    maxHeight: "100%", // enables the Virtual DOM
     layout: "fitColumns",
     responsiveLayout: "collapse",
     index: "name",
@@ -187,7 +187,7 @@ var registeredtable = new Tabulator("#registered-table", {
 var classestable = new Tabulator("#classes-table", {
     data: classestabledata,
     reactiveData: true,
-    height: 200, // enables the Virtual DOM
+    maxHeight: "100%", // enables the Virtual DOM
     layout: "fitColumns",
     responsiveLayout: "collapse",
     index: "name",
