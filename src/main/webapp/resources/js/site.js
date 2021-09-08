@@ -167,6 +167,9 @@ var registeredtable = new Tabulator("#registered-table", {
     responsiveLayout: "collapse",
     index: "name",
     selectable: 1,
+    initialSort:[
+        {column:"name", dir:"asc"}
+    ],
     rowSelected: registeredRowSelected,
     rowDeselected: registeredRowDeselected,
     columns: [
@@ -196,6 +199,9 @@ var classestable = new Tabulator("#classes-table", {
     responsiveLayout: "collapse",
     index: "name",
     selectable: 1,
+    initialSort:[
+        {column:"name", dir:"asc"}
+    ],
     rowSelected: classRowSelected,
     rowDeselected: classRowDeselected,
     columns: [
@@ -374,6 +380,10 @@ evtSource.addEventListener("registration", function(e) {
         offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
         maskedby: unwrapNullableUnionText(value.maskedby),
         screenpath: unwrapNullableUnionText(value.screenpath)});
+
+    let sorters = registeredtable.getSorters();
+
+    registeredtable.setSort(sorters);
 });
 
 evtSource.addEventListener("class", function(e) {
@@ -404,6 +414,10 @@ evtSource.addEventListener("class", function(e) {
         offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
         maskedby: unwrapNullableUnionText(value.maskedby),
         screenpath: unwrapNullableUnionText(value.screenpath)});
+
+    let sorters = classestable.getSorters();
+
+    classestable.setSort(sorters);
 });
 
 evtSource.onerror = function(e) {
