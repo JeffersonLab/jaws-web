@@ -1,6 +1,6 @@
 
 
-let newRegistration = function() {
+let setRegistration = function() {
     let form = document.getElementById("registered-form"),
         formData = new FormData(form);
 
@@ -44,7 +44,7 @@ let newRegistration = function() {
 };
 
 
-let newClass = function() {
+let setClass = function() {
     let form = document.getElementById("class-form"),
         formData = new FormData(form);
 
@@ -102,7 +102,7 @@ $( function() {
         width: 400,
         modal: true,
         buttons: {
-            Set: newRegistration,
+            Set: setRegistration,
             Cancel: function() {
                 registrationDialog.dialog( "close" );
             }
@@ -111,7 +111,7 @@ $( function() {
 
     registrationDialog.find( "form" ).on( "submit", function( event ) {
         event.preventDefault();
-        newRegistration();
+        setRegistration();
     });
 
     var classDialog = $("#class-dialog").dialog({
@@ -120,7 +120,7 @@ $( function() {
         width: 400,
         modal: true,
         buttons: {
-            Set: newClass,
+            Set: setClass,
             Cancel: function() {
                 classDialog.dialog( "close" );
             }
@@ -129,7 +129,7 @@ $( function() {
 
     classDialog.find( "form" ).on( "submit", function( event ) {
         event.preventDefault();
-        newClass();
+        setClass();
     });
 } );
 
