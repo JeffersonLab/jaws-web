@@ -80,3 +80,7 @@ body .ui-tabs .ui-tabs-panel {
     flex-grow: 1;
     min-height: 6em;
 }
+
+.search-input {
+    display: inline-block;
+}

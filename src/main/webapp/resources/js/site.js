@@ -173,21 +173,21 @@ var registeredtable = new Tabulator("#registered-table", {
     rowSelected: registeredRowSelected,
     rowDeselected: registeredRowDeselected,
     columns: [
-        {title:"Alarm Name", field:"name"},
-        {title:"Class", field:"class"},
-        {title:"Priority", field:"priority"},
-        {title:"Producer", field:"producer"},
-        {title:"Location", field:"location"},
-        {title:"Category", field:"category"},
-        {title:"Rationale", field:"rationale"},
-        {title:"Corrective Action", field:"correctiveaction"},
-        {title:"Point of Contact Username", field:"pointofcontactusername"},
-        {title:"Filterable", field:"filterable"},
-        {title:"Latching", field:"latching"},
-        {title:"On Delay Seconds", field:"ondelayseconds"},
-        {title:"Off Delay Seconds", field:"offdelayseconds"},
-        {title:"Masked By", field:"maskedby"},
-        {title:"Screen Path", field:"screenpath"},
+        {title:"name", field:"name"},
+        {title:"class", field:"class"},
+        {title:"priority", field:"priority"},
+        {title:"producer", field:"producer"},
+        {title:"location", field:"location"},
+        {title:"category", field:"category"},
+        {title:"rationale", field:"rationale"},
+        {title:"correctiveaction", field:"correctiveaction"},
+        {title:"pointofcontactusername", field:"pointofcontactusername"},
+        {title:"filterable", field:"filterable"},
+        {title:"latching", field:"latching"},
+        {title:"ondelayseconds", field:"ondelayseconds"},
+        {title:"offdelayseconds", field:"offdelayseconds"},
+        {title:"maskedby", field:"maskedby"},
+        {title:"screenpath", field:"screenpath"},
     ]
 });
 
@@ -205,19 +205,19 @@ var classestable = new Tabulator("#classes-table", {
     rowSelected: classRowSelected,
     rowDeselected: classRowDeselected,
     columns: [
-        {title:"Class Name", field:"name"},
-        {title:"Priority", field:"priority"},
-        {title:"Location", field:"location"},
-        {title:"Category", field:"category"},
-        {title:"Rationale", field:"rationale"},
-        {title:"Corrective Action", field:"correctiveaction"},
-        {title:"Point of Contact Username", field:"pointofcontactusername"},
-        {title:"Filterable", field:"filterable"},
-        {title:"Latching", field:"latching"},
-        {title:"On Delay Seconds", field:"ondelayseconds"},
-        {title:"Off Delay Seconds", field:"offdelayseconds"},
-        {title:"Masked By", field:"maskedby"},
-        {title:"Screen Path", field:"screenpath"},
+        {title:"name", field:"name"},
+        {title:"priority", field:"priority"},
+        {title:"location", field:"location"},
+        {title:"category", field:"category"},
+        {title:"rationale", field:"rationale"},
+        {title:"correctiveaction", field:"correctiveaction"},
+        {title:"pointofcontactusername", field:"pointofcontactusername"},
+        {title:"filterable", field:"filterable"},
+        {title:"latching", field:"latching"},
+        {title:"ondelayseconds", field:"ondelayseconds"},
+        {title:"offdelayseconds", field:"offdelayseconds"},
+        {title:"maskedby", field:"maskedby"},
+        {title:"screenpath", field:"screenpath"},
     ]
 });
 
@@ -277,6 +277,19 @@ $(document).on("click", "#delete-registration-button", function() {
         });
 });
 
+$(document).on("click", "#search-registration-button", function() {
+    registeredtable.clearFilter();
+
+    let filterText = $("#registration-search-input").val();
+
+    let filterArray = filterText.split(",");
+
+    for(let filter of filterArray) {
+        let keyValue = filter.split("=");
+
+        registeredtable.addFilter(keyValue[0], "=", keyValue[1]);
+    }
+});
 
 
 
@@ -336,7 +349,19 @@ $(document).on("click", "#delete-class-button", function() {
         });
 });
 
+$(document).on("click", "#search-class-button", function() {
+    classestable.clearFilter();
 
+    let filterText = $("#class-search-input").val();
+
+    let filterArray = filterText.split(",");
+
+    for(let filter of filterArray) {
+        let keyValue = filter.split("=");
+
+        classestable.addFilter(keyValue[0], "=", keyValue[1]);
+    }
+});
 
 
 
