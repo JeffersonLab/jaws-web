@@ -19,3 +19,12 @@ dependencies {
             'io.confluent:kafka-streams-avro-serde:6.1.0'
     providedCompile 'javax:javaee-api:8.0'
 }
+
+task copyWarToDockerVolume(type: Copy) {
+    copy {
+        from war
+        into 'dockerWarVolume'
+    }
+}
+
+build.dependsOn copyWarToDockerVolume
