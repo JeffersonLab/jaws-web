@@ -403,31 +403,31 @@ evtSource.addEventListener("registration", function(e) {
         registeredtabledata.splice(i, 1);
     }
 
-    if(value === null) {
-        return;
+    if(value !== null) { /*null means tombstone*/
+        let epicspv = null;
+
+        if ("org.jlab.jaws.entity.EPICSProducer" in value.producer) {
+            epicspv = value.producer["org.jlab.jaws.entity.EPICSProducer"].pv;
+        }
+
+        registeredtabledata.push({
+            name: key,
+            class: value.class,
+            priority: unwrapNullableUnionText(value.priority),
+            location: unwrapNullableUnionText(value.location),
+            category: unwrapNullableUnionText(value.category),
+            rationale: unwrapNullableUnionText(value.rationale),
+            correctiveaction: unwrapNullableUnionText(value.correctiveaction),
+            pointofcontactusername: unwrapNullableUnionText(value.pointofcontactusername),
+            filterable: unwrapNullableUnionText(value.filterable),
+            latching: unwrapNullableUnionText(value.latching),
+            ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
+            offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
+            maskedby: unwrapNullableUnionText(value.maskedby),
+            screenpath: unwrapNullableUnionText(value.screenpath),
+            epicspv: epicspv
+        });
     }
-
-    let epicspv = null;
-
-    if("org.jlab.jaws.entity.EPICSProducer" in value.producer) {
-        epicspv = value.producer["org.jlab.jaws.entity.EPICSProducer"].pv;
-    }
-
-    registeredtabledata.push({name: key,
-        class: value.class,
-        priority: unwrapNullableUnionText(value.priority),
-        location: unwrapNullableUnionText(value.location),
-        category: unwrapNullableUnionText(value.category),
-        rationale: unwrapNullableUnionText(value.rationale),
-        correctiveaction: unwrapNullableUnionText(value.correctiveaction),
-        pointofcontactusername: unwrapNullableUnionText(value.pointofcontactusername),
-        filterable: unwrapNullableUnionText(value.filterable),
-        latching: unwrapNullableUnionText(value.latching),
-        ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
-        offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
-        maskedby: unwrapNullableUnionText(value.maskedby),
-        screenpath: unwrapNullableUnionText(value.screenpath),
-        epicspv: epicspv});
 
     let count = 0;
 
@@ -436,8 +436,8 @@ evtSource.addEventListener("registration", function(e) {
     } else {
         count = registeredtable.getDataCount("active");
 
+        /*On tombstone this could be skipped...*/
         let sorters = registeredtable.getSorters();
-
         registeredtable.setSort(sorters);
     }
 
