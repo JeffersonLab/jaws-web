@@ -49,13 +49,11 @@ public class REST {
         @FormParam("name") @NotNull(message = "alarm name is required") String name) {
         System.err.println("Deleting registration: " + name);
 
-        final String servers = "localhost:9094";
-        final String registry = "http://localhost:8081";
         final String topic = "registered-alarms";
 
         String key = name;
 
-        Properties props = getRegisteredProps(servers, registry);
+        Properties props = getRegisteredProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
         try(KafkaProducer<String, RegisteredAlarm> p = new KafkaProducer<>(props)) {
             p.send(new ProducerRecord<>(topic, key, null));
@@ -84,8 +82,6 @@ public class REST {
     {
         System.out.println("PUT received: " + name);
 
-        final String servers = "localhost:9094";
-        final String registry = "http://localhost:8081";
         final String topic = "registered-alarms";
 
         String key = name;
@@ -134,7 +130,7 @@ public class REST {
         value.setOndelayseconds(offdelayseconds);
         value.setScreenpath(screenpath);
 
-        Properties props = getRegisteredProps(servers, registry);
+        Properties props = getRegisteredProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
         try(KafkaProducer<String, RegisteredAlarm> p = new KafkaProducer<>(props)) {
             p.send(new ProducerRecord<>(topic, key, value));
@@ -164,13 +160,11 @@ public class REST {
             @FormParam("name") @NotNull(message = "class name is required") String name) {
         System.err.println("Deleting class: " + name);
 
-        final String servers = "localhost:9094";
-        final String registry = "http://localhost:8081";
         final String topic = "registered-classes";
 
         String key = name;
 
-        Properties props = getRegisteredProps(servers, registry);
+        Properties props = getRegisteredProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
         try(KafkaProducer<String, RegisteredClass> p = new KafkaProducer<>(props)) {
             p.send(new ProducerRecord<>(topic, key, null));
@@ -197,8 +191,6 @@ public class REST {
     {
         System.out.println("PUT received: " + name);
 
-        final String servers = "localhost:9094";
-        final String registry = "http://localhost:8081";
         final String topic = "registered-classes";
 
         String key = name;
@@ -235,7 +227,7 @@ public class REST {
         value.setOndelayseconds(offdelayseconds);
         value.setScreenpath(screenpath);
 
-        Properties props = getClassProps(servers, registry);
+        Properties props = getClassProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
         try(KafkaProducer<String, RegisteredClass> producer = new KafkaProducer<>(props)) {
             producer.send(new ProducerRecord<>(topic, key, value));

@@ -71,11 +71,8 @@ public class SSE implements ServletContextListener {
 
             @Override
             public void run() {
-                final String servers = "localhost:9094";
-                final String registry = "http://localhost:8081";
-
-                final Properties registrationProps = getRegistrationProps(servers, registry);
-                final Properties classProps = getClassProps(servers, registry);
+                final Properties registrationProps = getRegistrationProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
+                final Properties classProps = getClassProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
                 try (
                         EventSourceTable<String, RegisteredAlarm> registrationTable = new EventSourceTable<>(registrationProps);
