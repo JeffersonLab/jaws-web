@@ -67,7 +67,6 @@ public class REST {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public void putRegistration(            @FormParam("name") @NotNull(message = "alarm name is required") String name,
                                             @FormParam("class") @NotNull(message = "class is required") String clazz,
-                                            @FormParam("pv") String pv,
                                             @FormParam("expression") String expression,
                                             @FormParam("priority") String priority,
                                             @FormParam("location") String location,
@@ -80,7 +79,8 @@ public class REST {
                                             @FormParam("maskedby") String maskedby,
                                             @FormParam("ondelayseconds") Long ondelayseconds,
                                             @FormParam("offdelayseconds") Long offdelayseconds,
-                                            @FormParam("screenpath") String screenpath)
+                                            @FormParam("screenpath") String screenpath,
+                                            @FormParam("epicspv") String epicspv)
     {
         System.out.println("PUT received: " + name);
 
@@ -96,8 +96,8 @@ public class REST {
 
         Object producer = new SimpleProducer();
 
-        if(pv != null) {
-            producer = new EPICSProducer(pv);
+        if(epicspv != null) {
+            producer = new EPICSProducer(epicspv);
         } else if(expression != null) {
             producer = new CALCProducer(expression);
         }

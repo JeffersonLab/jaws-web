@@ -176,7 +176,6 @@ var registeredtable = new Tabulator("#registered-table", {
         {title:"name", field:"name"},
         {title:"class", field:"class"},
         {title:"priority", field:"priority"},
-        {title:"producer", field:"producer"},
         {title:"location", field:"location"},
         {title:"category", field:"category"},
         {title:"rationale", field:"rationale"},
@@ -188,6 +187,7 @@ var registeredtable = new Tabulator("#registered-table", {
         {title:"offdelayseconds", field:"offdelayseconds"},
         {title:"maskedby", field:"maskedby"},
         {title:"screenpath", field:"screenpath"},
+        {title:"epicspv", field:"epicspv"}
     ]
 });
 
@@ -217,7 +217,7 @@ var classestable = new Tabulator("#classes-table", {
         {title:"ondelayseconds", field:"ondelayseconds"},
         {title:"offdelayseconds", field:"offdelayseconds"},
         {title:"maskedby", field:"maskedby"},
-        {title:"screenpath", field:"screenpath"},
+        {title:"screenpath", field:"screenpath"}
     ]
 });
 
@@ -248,6 +248,7 @@ $(document).on("click", "#edit-registration-button", function() {
     $("#registered-offdelay-input").val(data.offdelayseconds);
     $("#registered-maskedby-input").val(data.maskedby);
     $("#registered-screenpath-input").val(data.screenpath);
+    $("#epicspv-input").val(data.epicspv);
 
     $("#registration-dialog").dialog("option", "title", "Edit Registration")
     $("#registration-dialog").dialog("open");
@@ -390,10 +391,15 @@ evtSource.addEventListener("registration", function(e) {
         return;
     }
 
+    let epicspv = null;
+
+    if("org.jlab.jaws.entity.EPICSProducer" in value.producer) {
+        epicspv = value.producer["org.jlab.jaws.entity.EPICSProducer"].pv;
+    }
+
     registeredtabledata.push({name: key,
         class: value.class,
         priority: unwrapNullableUnionText(value.priority),
-        producer: JSON.stringify(value.producer),
         location: unwrapNullableUnionText(value.location),
         category: unwrapNullableUnionText(value.category),
         rationale: unwrapNullableUnionText(value.rationale),
@@ -404,7 +410,8 @@ evtSource.addEventListener("registration", function(e) {
         ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
         offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
         maskedby: unwrapNullableUnionText(value.maskedby),
-        screenpath: unwrapNullableUnionText(value.screenpath)});
+        screenpath: unwrapNullableUnionText(value.screenpath),
+        epicspv: epicspv});
 
     let sorters = registeredtable.getSorters();
 
