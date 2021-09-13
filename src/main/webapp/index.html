@@ -18,11 +18,14 @@
     <div id="tabs-1">
         <h2>Registered Alarms</h2>
         <div id="registered-toolbar" class="toolbar">
-            <input type="text" value="" id="registration-search-input" class="search-input" placeholder="field=value,field=value"/>
-            <button type="button" id="search-registration-button">Search</button> |
+            <form id="registered-search-form" onsubmit="return false;">
+                <input type="text" value="" id="registration-search-input" class="search-input" placeholder="field=value,field=value"/>
+                <button type="button" id="search-registration-button">Search</button> |
+            </form>
             <button type="button" id="new-registration-button">New</button> |
             <button type="button" id="edit-registration-button" class="selected-row-action" disabled="disabled">Edit</button>
-            <button type="button" id="delete-registration-button" class="selected-row-action" disabled="disabled">Delete</button>
+            <button type="button" id="delete-registration-button" class="selected-row-action" disabled="disabled">Delete</button> |
+            <span>Records: </span><span id="registered-record-count"></span>
         </div>
         <div class="table-wrap">
             <div id="registered-table"></div>

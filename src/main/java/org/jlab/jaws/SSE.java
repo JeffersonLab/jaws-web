@@ -83,6 +83,7 @@ public class SSE implements ServletContextListener {
                         @Override
                         public void initialState(Set<EventSourceRecord<String, RegisteredAlarm>> records) {
                             sendRegistrationRecords(sink, records);
+                            sink.send(sse.newEvent("registration-highwatermark", ""));
                         }
 
                         @Override

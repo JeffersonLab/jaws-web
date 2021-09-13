@@ -159,37 +159,7 @@ var classRowDeselected = function(row) {
     $("#class-toolbar .selected-row-action").button( "option", "disabled", true );
 };
 
-var registeredtable = new Tabulator("#registered-table", {
-    data: registeredtabledata,
-    reactiveData: true,
-    height: "100%", // enables the Virtual DOM
-    layout: "fitColumns",
-    responsiveLayout: "collapse",
-    index: "name",
-    selectable: 1,
-    initialSort:[
-        {column:"name", dir:"asc"}
-    ],
-    rowSelected: registeredRowSelected,
-    rowDeselected: registeredRowDeselected,
-    columns: [
-        {title:"name", field:"name"},
-        {title:"class", field:"class"},
-        {title:"priority", field:"priority"},
-        {title:"location", field:"location"},
-        {title:"category", field:"category"},
-        {title:"rationale", field:"rationale"},
-        {title:"correctiveaction", field:"correctiveaction"},
-        {title:"pointofcontactusername", field:"pointofcontactusername"},
-        {title:"filterable", field:"filterable"},
-        {title:"latching", field:"latching"},
-        {title:"ondelayseconds", field:"ondelayseconds"},
-        {title:"offdelayseconds", field:"offdelayseconds"},
-        {title:"maskedby", field:"maskedby"},
-        {title:"screenpath", field:"screenpath"},
-        {title:"epicspv", field:"epicspv"}
-    ]
-});
+var registeredtable = null;
 
 var classestable = new Tabulator("#classes-table", {
     data: classestabledata,
@@ -278,7 +248,7 @@ $(document).on("click", "#delete-registration-button", function() {
         });
 });
 
-$(document).on("click", "#search-registration-button", function() {
+let registrationSearch = function() {
     registeredtable.clearFilter();
 
     let filterText = $("#registration-search-input").val();
@@ -290,6 +260,18 @@ $(document).on("click", "#search-registration-button", function() {
 
         registeredtable.addFilter(keyValue[0], "=", keyValue[1]);
     }
+
+    let count = registeredtable.getDataCount("active");
+    $("#registered-record-count").text(count.toLocaleString());
+};
+
+$(document).on( "submit", "#registered-search-form", function( event ) {
+    event.preventDefault();
+    registrationSearch();
+});
+
+$(document).on("click", "#search-registration-button", function() {
+    registrationSearch();
 });
 
 
@@ -376,6 +358,40 @@ let unwrapNullableUnionText = function(text) {
     return text;
 };
 
+evtSource.addEventListener("registration-highwatermark", function(e){
+    registeredtable = new Tabulator("#registered-table", {
+        data: registeredtabledata,
+        reactiveData: true,
+        height: "100%", // enables the Virtual DOM
+        layout: "fitColumns",
+        responsiveLayout: "collapse",
+        index: "name",
+        selectable: 1,
+        initialSort:[
+            {column:"name", dir:"asc"}
+        ],
+        rowSelected: registeredRowSelected,
+        rowDeselected: registeredRowDeselected,
+        columns: [
+            {title:"name", field:"name"},
+            {title:"class", field:"class"},
+            {title:"priority", field:"priority"},
+            {title:"location", field:"location"},
+            {title:"category", field:"category"},
+            {title:"rationale", field:"rationale"},
+            {title:"correctiveaction", field:"correctiveaction"},
+            {title:"pointofcontactusername", field:"pointofcontactusername"},
+            {title:"filterable", field:"filterable"},
+            {title:"latching", field:"latching"},
+            {title:"ondelayseconds", field:"ondelayseconds"},
+            {title:"offdelayseconds", field:"offdelayseconds"},
+            {title:"maskedby", field:"maskedby"},
+            {title:"screenpath", field:"screenpath"},
+            {title:"epicspv", field:"epicspv"}
+        ]
+    });
+});
+
 evtSource.addEventListener("registration", function(e) {
     let json = JSON.parse(e.data),
         key = json.key,
@@ -413,9 +429,19 @@ evtSource.addEventListener("registration", function(e) {
         screenpath: unwrapNullableUnionText(value.screenpath),
         epicspv: epicspv});
 
-    let sorters = registeredtable.getSorters();
+    let count = 0;
 
-    registeredtable.setSort(sorters);
+    if(registeredtable === null) {
+        count = registeredtabledata.length;
+    } else {
+        count = registeredtable.getDataCount("active");
+
+        let sorters = registeredtable.getSorters();
+
+        registeredtable.setSort(sorters);
+    }
+
+    $("#registered-record-count").text(count.toLocaleString());
 });
 
 evtSource.addEventListener("class", function(e) {

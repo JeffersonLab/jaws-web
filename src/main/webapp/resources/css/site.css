@@ -81,6 +81,7 @@ body .ui-tabs .ui-tabs-panel {
     min-height: 6em;
 }
 
+#registered-search-form,
 .search-input {
     display: inline-block;
 }
