@@ -18,7 +18,7 @@
     <div id="tabs-1">
         <h2>Registered Alarms</h2>
         <div id="registered-toolbar" class="toolbar">
-            <form id="registered-search-form" onsubmit="return false;">
+            <form id="registered-search-form" class="search-form" onsubmit="return false;">
                 <input type="text" value="" id="registration-search-input" class="search-input" placeholder="field=value,field=value"/>
                 <button type="button" id="search-registration-button">Search</button> |
             </form>
@@ -87,11 +87,14 @@
     <div id="tabs-2">
         <h2>Alarm Classes</h2>
         <div id="class-toolbar" class="toolbar">
-            <input type="text" value="" id="class-search-input" class="search-input" placeholder="field=value,field=value"/>
+            <form id="class-search-form" class="search-form" onsubmit="return false;">
+                <input type="text" value="" id="class-search-input" class="search-input" placeholder="field=value,field=value"/>
             <button type="button" id="search-class-button">Search</button> |
+            </form>
             <button type="button" id="new-class-button">New</button> |
             <button type="button" id="edit-class-button" class="selected-row-action" disabled="disabled">Edit</button>
-            <button type="button" id="delete-class-button" class="selected-row-action" disabled="disabled">Delete</button>
+            <button type="button" id="delete-class-button" class="selected-row-action" disabled="disabled">Delete</button> |
+            <span>Records: </span><span id="class-record-count"></span>
         </div>
         <div id="classes-table"></div>
         <div id="class-dialog" class="dialog" title="New Class">

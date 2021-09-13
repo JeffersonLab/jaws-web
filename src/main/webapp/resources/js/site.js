@@ -333,6 +333,10 @@ $(document).on("click", "#delete-class-button", function() {
 });
 
 $(document).on("click", "#search-class-button", function() {
+    classSearch();
+});
+
+let classSearch = function() {
     classestable.clearFilter();
 
     let filterText = $("#class-search-input").val();
@@ -344,8 +348,19 @@ $(document).on("click", "#search-class-button", function() {
 
         classestable.addFilter(keyValue[0], "=", keyValue[1]);
     }
+
+    let count = classestable.getDataCount("active");
+    $("#class-record-count").text(count.toLocaleString());
+};
+
+$(document).on( "submit", "#class-search-form", function( event ) {
+    event.preventDefault();
+    classSearch();
 });
 
+$(document).on("click", "#search-class-button", function() {
+    classSearch();
+});
 
 
 
@@ -455,27 +470,37 @@ evtSource.addEventListener("class", function(e) {
         classestabledata.splice(i, 1);
     }
 
-    if(value === null) {
-        return;
+    if(value !== null) { /*null means tombstone*/
+        classestabledata.push({
+            name: key,
+            priority: value.priority,
+            location: value.location,
+            category: value.category,
+            rationale: value.rationale,
+            correctiveaction: value.correctiveaction,
+            pointofcontactusername: value.pointofcontactusername,
+            filterable: value.filterable,
+            latching: value.latching,
+            ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
+            offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
+            maskedby: unwrapNullableUnionText(value.maskedby),
+            screenpath: unwrapNullableUnionText(value.screenpath)
+        });
     }
 
-    classestabledata.push({name: key,
-        priority: value.priority,
-        location: value.location,
-        category: value.category,
-        rationale: value.rationale,
-        correctiveaction:value.correctiveaction,
-        pointofcontactusername: value.pointofcontactusername,
-        filterable: value.filterable,
-        latching: value.latching,
-        ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
-        offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
-        maskedby: unwrapNullableUnionText(value.maskedby),
-        screenpath: unwrapNullableUnionText(value.screenpath)});
+    let count = 0;
 
-    let sorters = classestable.getSorters();
+    if(classestable === null) {
+        count = classestabledata.length;
+    } else {
+        count = classestable.getDataCount("active");
 
-    classestable.setSort(sorters);
+        /*On tombstone this could be skipped...*/
+        let sorters = classestable.getSorters();
+        classestable.setSort(sorters);
+    }
+
+    $("#class-record-count").text(count.toLocaleString());
 });
 
 evtSource.onerror = function(e) {
