@@ -1,6 +1,10 @@
 # jaws-web-admin [![Docker](https://img.shields.io/docker/v/slominskir/jaws-web-admin?sort=semver&label=DockerHub)](https://hub.docker.com/r/slominskir/jaws-web-admin)
 Web Admin interface for [JAWS](https://github.com/JeffersonLab/jaws).
 
+<p>
+<a href="#"><img src="https://raw.githubusercontent.com/JeffersonLab/jaws-web-admin/master/Screenshot.png"/></a>     
+</p>
+
 ## Quick Start with Compose
 1. Grab project
 ```
