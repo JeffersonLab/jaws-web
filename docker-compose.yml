@@ -53,7 +53,6 @@ services:
       CLASS_DEFINITIONS: "base|INJ|RF|P3_MINOR|Timely operator action required|Call expert|helpdesk|/"
 
   web:
-    image: jboss/wildfly:24.0.0.Final
     hostname: web
     container_name: web
     ports:
@@ -64,5 +63,3 @@ services:
     environment:
       BOOTSTRAP_SERVERS: "kafka:9092"
       SCHEMA_REGISTRY: "http://registry:8081"
-    volumes:
-      - ./dockerWarVolume:/opt/jboss/wildfly/standalone/deployments/
