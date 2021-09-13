@@ -161,35 +161,7 @@ var classRowDeselected = function(row) {
 
 var registeredtable = null;
 
-var classestable = new Tabulator("#classes-table", {
-    data: classestabledata,
-    reactiveData: true,
-    height: "100%", // enables the Virtual DOM
-    layout: "fitColumns",
-    responsiveLayout: "collapse",
-    index: "name",
-    selectable: 1,
-    initialSort:[
-        {column:"name", dir:"asc"}
-    ],
-    rowSelected: classRowSelected,
-    rowDeselected: classRowDeselected,
-    columns: [
-        {title:"name", field:"name"},
-        {title:"priority", field:"priority"},
-        {title:"location", field:"location"},
-        {title:"category", field:"category"},
-        {title:"rationale", field:"rationale"},
-        {title:"correctiveaction", field:"correctiveaction"},
-        {title:"pointofcontactusername", field:"pointofcontactusername"},
-        {title:"filterable", field:"filterable"},
-        {title:"latching", field:"latching"},
-        {title:"ondelayseconds", field:"ondelayseconds"},
-        {title:"offdelayseconds", field:"offdelayseconds"},
-        {title:"maskedby", field:"maskedby"},
-        {title:"screenpath", field:"screenpath"}
-    ]
-});
+var classestable = null;
 
 
 $(document).on("click", "#new-registration-button", function() {
@@ -372,6 +344,38 @@ let unwrapNullableUnionText = function(text) {
     }
     return text;
 };
+
+evtSource.addEventListener("class-highwatermark", function(e){
+    classestable = new Tabulator("#classes-table", {
+        data: classestabledata,
+        reactiveData: true,
+        height: "100%", // enables the Virtual DOM
+        layout: "fitColumns",
+        responsiveLayout: "collapse",
+        index: "name",
+        selectable: 1,
+        initialSort:[
+            {column:"name", dir:"asc"}
+        ],
+        rowSelected: classRowSelected,
+        rowDeselected: classRowDeselected,
+        columns: [
+            {title:"name", field:"name"},
+            {title:"priority", field:"priority"},
+            {title:"location", field:"location"},
+            {title:"category", field:"category"},
+            {title:"rationale", field:"rationale"},
+            {title:"correctiveaction", field:"correctiveaction"},
+            {title:"pointofcontactusername", field:"pointofcontactusername"},
+            {title:"filterable", field:"filterable"},
+            {title:"latching", field:"latching"},
+            {title:"ondelayseconds", field:"ondelayseconds"},
+            {title:"offdelayseconds", field:"offdelayseconds"},
+            {title:"maskedby", field:"maskedby"},
+            {title:"screenpath", field:"screenpath"}
+        ]
+    });
+});
 
 evtSource.addEventListener("registration-highwatermark", function(e){
     registeredtable = new Tabulator("#registered-table", {

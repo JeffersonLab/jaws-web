@@ -97,6 +97,7 @@ public class SSE implements ServletContextListener {
                         @Override
                         public void initialState(Set<EventSourceRecord<String, RegisteredClass>> records) {
                             sendClassRecords(sink, records);
+                            sink.send(sse.newEvent("class-highwatermark", ""));
                         }
 
                         @Override
