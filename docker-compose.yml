@@ -55,7 +55,7 @@ services:
   effective:
     hostname: effective
     container_name: effective
-    image: slominskir/jaws-alarm-processor:2.1.0
+    image: slominskir/jaws-effective-processor:3.0.0
     depends_on:
       - jaws
     environment:
