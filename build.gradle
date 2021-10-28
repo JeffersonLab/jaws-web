@@ -27,4 +27,4 @@ task copyWarToDockerVolume(type: Copy) {
     }
 }
 
-build.finalizedBy copyWarToDockerVolume
+war.finalizedBy copyWarToDockerVolume
