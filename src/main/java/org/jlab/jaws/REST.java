@@ -55,7 +55,7 @@ public class REST {
 
         Properties props = getRegisteredProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
-        try(KafkaProducer<String, RegisteredAlarm> p = new KafkaProducer<>(props)) {
+        try(KafkaProducer<String, AlarmRegistration> p = new KafkaProducer<>(props)) {
             p.send(new ProducerRecord<>(topic, key, null));
         }
     }
@@ -86,7 +86,7 @@ public class REST {
 
         String key = name;
 
-        RegisteredAlarm value = new RegisteredAlarm();
+        AlarmRegistration value = new AlarmRegistration();
 
         value.setClass$(clazz);
 
@@ -132,7 +132,7 @@ public class REST {
 
         Properties props = getRegisteredProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
-        try(KafkaProducer<String, RegisteredAlarm> p = new KafkaProducer<>(props)) {
+        try(KafkaProducer<String, AlarmRegistration> p = new KafkaProducer<>(props)) {
             p.send(new ProducerRecord<>(topic, key, value));
         }
     }
@@ -141,7 +141,7 @@ public class REST {
     private Properties getRegisteredProps(String servers, String registry) {
         final Properties props = new Properties();
 
-        final SpecificAvroSerde<RegisteredAlarm> VALUE_SERDE = new SpecificAvroSerde<>();
+        final SpecificAvroSerde<AlarmRegistration> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put("bootstrap.servers", servers);
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
@@ -166,7 +166,7 @@ public class REST {
 
         Properties props = getRegisteredProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
-        try(KafkaProducer<String, RegisteredClass> p = new KafkaProducer<>(props)) {
+        try(KafkaProducer<String, AlarmClass> p = new KafkaProducer<>(props)) {
             p.send(new ProducerRecord<>(topic, key, null));
         }
     }
@@ -195,7 +195,7 @@ public class REST {
 
         String key = name;
 
-        RegisteredClass value = new RegisteredClass();
+        AlarmClass value = new AlarmClass();
 
         value.setRationale(rationale);
 
@@ -229,7 +229,7 @@ public class REST {
 
         Properties props = getClassProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
-        try(KafkaProducer<String, RegisteredClass> producer = new KafkaProducer<>(props)) {
+        try(KafkaProducer<String, AlarmClass> producer = new KafkaProducer<>(props)) {
             producer.send(new ProducerRecord<>(topic, key, value));
         }
     }
@@ -237,7 +237,7 @@ public class REST {
     private Properties getClassProps(String servers, String registry) {
         final Properties props = new Properties();
 
-        final SpecificAvroSerde<RegisteredClass> VALUE_SERDE = new SpecificAvroSerde<>();
+        final SpecificAvroSerde<AlarmClass> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put("bootstrap.servers", servers);
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");

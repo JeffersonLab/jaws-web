@@ -5,8 +5,8 @@ import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificDatumWriter;
-import org.jlab.jaws.entity.RegisteredAlarm;
-import org.jlab.jaws.entity.RegisteredClass;
+import org.jlab.jaws.entity.AlarmRegistration;
+import org.jlab.jaws.entity.AlarmClass;
 import org.jlab.jaws.eventsource.EventSourceConfig;
 import org.jlab.jaws.eventsource.EventSourceListener;
 import org.jlab.jaws.eventsource.EventSourceRecord;
@@ -75,33 +75,33 @@ public class SSE implements ServletContextListener {
                 final Properties classProps = getClassProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
                 try (
-                        EventSourceTable<String, RegisteredAlarm> registrationTable = new EventSourceTable<>(registrationProps);
-                        EventSourceTable<String, RegisteredClass> classTable = new EventSourceTable<>(classProps);
+                        EventSourceTable<String, AlarmRegistration> registrationTable = new EventSourceTable<>(registrationProps);
+                        EventSourceTable<String, AlarmClass> classTable = new EventSourceTable<>(classProps);
                 ) {
 
-                    registrationTable.addListener(new EventSourceListener<String, RegisteredAlarm>() {
+                    registrationTable.addListener(new EventSourceListener<String, AlarmRegistration>() {
                         @Override
-                        public void initialState(Set<EventSourceRecord<String, RegisteredAlarm>> records) {
+                        public void initialState(Set<EventSourceRecord<String, AlarmRegistration>> records) {
                             sendRegistrationRecords(sink, records);
                             sink.send(sse.newEvent("registration-highwatermark", ""));
                         }
 
                         @Override
-                        public void changes(List<EventSourceRecord<String, RegisteredAlarm>> records) {
+                        public void changes(List<EventSourceRecord<String, AlarmRegistration>> records) {
                             sendRegistrationRecords(sink, records);
                         }
 
                     });
 
-                    classTable.addListener(new EventSourceListener<String, RegisteredClass>() {
+                    classTable.addListener(new EventSourceListener<String, AlarmClass>() {
                         @Override
-                        public void initialState(Set<EventSourceRecord<String, RegisteredClass>> records) {
+                        public void initialState(Set<EventSourceRecord<String, AlarmClass>> records) {
                             sendClassRecords(sink, records);
                             sink.send(sse.newEvent("class-highwatermark", ""));
                         }
 
                         @Override
-                        public void changes(List<EventSourceRecord<String, RegisteredClass>> records) {
+                        public void changes(List<EventSourceRecord<String, AlarmClass>> records) {
                             sendClassRecords(sink, records);
                         }
 
@@ -131,7 +131,7 @@ public class SSE implements ServletContextListener {
     private Properties getRegistrationProps(String servers, String registry) {
         final Properties props = new Properties();
 
-        final SpecificAvroSerde<RegisteredAlarm> VALUE_SERDE = new SpecificAvroSerde<>();
+        final SpecificAvroSerde<AlarmRegistration> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-proxy-registered-" + Instant.now().toString() + "-" + Math.random());
         props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, "registered-alarms");
@@ -149,7 +149,7 @@ public class SSE implements ServletContextListener {
     private Properties getClassProps(String servers, String registry) {
         final Properties props = new Properties();
 
-        final SpecificAvroSerde<RegisteredClass> VALUE_SERDE = new SpecificAvroSerde<>();
+        final SpecificAvroSerde<AlarmClass> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-proxy-class-" + Instant.now().toString() + "-" + Math.random());
         props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, "registered-classes");
@@ -164,16 +164,16 @@ public class SSE implements ServletContextListener {
         return props;
     }
 
-    private void sendRegistrationRecords(SseEventSink sink, Collection<EventSourceRecord<String, RegisteredAlarm>> records) {
-        for (EventSourceRecord<String, RegisteredAlarm> record : records) {
+    private void sendRegistrationRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmRegistration>> records) {
+        for (EventSourceRecord<String, AlarmRegistration> record : records) {
             String key = record.getKey();
-            RegisteredAlarm value = record.getValue();
+            AlarmRegistration value = record.getValue();
 
             String jsonValue = null;
 
             if (value != null) {
                 try {
-                    SpecificDatumWriter<RegisteredAlarm> writer = new SpecificDatumWriter<>(value.getSchema());
+                    SpecificDatumWriter<AlarmRegistration> writer = new SpecificDatumWriter<>(value.getSchema());
                     OutputStream out = new ByteArrayOutputStream();
                     // See: https://issues.apache.org/jira/browse/AVRO-1582 - JSON encoded union fields needed to indicate nullable are encoded as array!
                     JsonEncoder encoder = EncoderFactory.get().jsonEncoder(value.getSchema(), out);
@@ -191,16 +191,16 @@ public class SSE implements ServletContextListener {
         }
     }
 
-    private void sendClassRecords(SseEventSink sink, Collection<EventSourceRecord<String, RegisteredClass>> records) {
-        for (EventSourceRecord<String, RegisteredClass> record : records) {
+    private void sendClassRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmClass>> records) {
+        for (EventSourceRecord<String, AlarmClass> record : records) {
             String key = record.getKey();
-            RegisteredClass value = record.getValue();
+            AlarmClass value = record.getValue();
 
             String jsonValue = null;
 
             if (value != null) {
                 try {
-                    SpecificDatumWriter<RegisteredClass> writer = new SpecificDatumWriter<>(value.getSchema());
+                    SpecificDatumWriter<AlarmClass> writer = new SpecificDatumWriter<>(value.getSchema());
                     OutputStream out = new ByteArrayOutputStream();
                     JsonEncoder encoder = EncoderFactory.get().jsonEncoder(value.getSchema(), out);
                     writer.write(value, encoder);
