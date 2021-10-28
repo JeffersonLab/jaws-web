@@ -553,6 +553,13 @@ evtSource.addEventListener("effective", function(e) {
     }
 
     if(value !== null) { /*null means tombstone*/
+
+        let epicspv = null;
+
+        if ("org.jlab.jaws.entity.EPICSProducer" in value.producer) {
+            epicspv = value.producer["org.jlab.jaws.entity.EPICSProducer"].pv;
+        }
+
         effectivetabledata.push({
             name: key,
             class: value.class,
