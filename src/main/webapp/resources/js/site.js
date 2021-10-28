@@ -552,7 +552,11 @@ evtSource.addEventListener("effective", function(e) {
         effectivetabledata.splice(i, 1);
     }
 
-    if(value !== null) { /*null means tombstone*/
+    console.log('effective', value)
+
+    if(value !== null && value.calculated != null) { /*null means tombstone*/
+
+        value = value.calculated["org.jlab.jaws.entity.AlarmRegistration"];
 
         let epicspv = null;
 
@@ -563,14 +567,14 @@ evtSource.addEventListener("effective", function(e) {
         effectivetabledata.push({
             name: key,
             class: value.class,
-            priority: value.priority,
-            location: value.location,
-            category: value.category,
-            rationale: value.rationale,
-            correctiveaction: value.correctiveaction,
-            pointofcontactusername: value.pointofcontactusername,
-            filterable: value.filterable,
-            latching: value.latching,
+            priority: unwrapNullableUnionText(value.priority),
+            location: unwrapNullableUnionText(value.location),
+            category: unwrapNullableUnionText(value.category),
+            rationale: unwrapNullableUnionText(value.rationale),
+            correctiveaction: unwrapNullableUnionText(value.correctiveaction),
+            pointofcontactusername: unwrapNullableUnionText(value.pointofcontactusername),
+            filterable: unwrapNullableUnionText(value.filterable),
+            latching: unwrapNullableUnionText(value.latching),
             ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
             offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
             maskedby: unwrapNullableUnionText(value.maskedby),
