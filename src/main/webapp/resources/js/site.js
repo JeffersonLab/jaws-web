@@ -133,11 +133,11 @@ $( function() {
     });
 } );
 
-var registeredtabledata = [
-];
+var classestabledata = [];
 
-var classestabledata = [
-];
+var registeredtabledata = [];
+
+var effectivetabledata = [];
 
 var registeredRowSelected = function(row) {
     $("#registered-toolbar .no-selection-row-action").button( "option", "disabled", true );
@@ -159,10 +159,9 @@ var classRowDeselected = function(row) {
     $("#class-toolbar .selected-row-action").button( "option", "disabled", true );
 };
 
-var registeredtable = null;
-
 var classestable = null;
-
+var registeredtable = null;
+var effectivetable = null;
 
 $(document).on("click", "#new-registration-button", function() {
 
@@ -391,6 +390,38 @@ evtSource.addEventListener("registration-highwatermark", function(e){
         ],
         rowSelected: registeredRowSelected,
         rowDeselected: registeredRowDeselected,
+        columns: [
+            {title:"name", field:"name"},
+            {title:"class", field:"class"},
+            {title:"priority", field:"priority"},
+            {title:"location", field:"location"},
+            {title:"category", field:"category"},
+            {title:"rationale", field:"rationale"},
+            {title:"correctiveaction", field:"correctiveaction"},
+            {title:"pointofcontactusername", field:"pointofcontactusername"},
+            {title:"filterable", field:"filterable"},
+            {title:"latching", field:"latching"},
+            {title:"ondelayseconds", field:"ondelayseconds"},
+            {title:"offdelayseconds", field:"offdelayseconds"},
+            {title:"maskedby", field:"maskedby"},
+            {title:"screenpath", field:"screenpath"},
+            {title:"epicspv", field:"epicspv"}
+        ]
+    });
+});
+
+evtSource.addEventListener("effective-highwatermark", function(e){
+    effectivetable = new Tabulator("#effective-table", {
+        data: effectivetabledata,
+        reactiveData: true,
+        height: "100%", // enables the Virtual DOM
+        layout: "fitColumns",
+        responsiveLayout: "collapse",
+        index: "name",
+        selectable: 1,
+        initialSort:[
+            {column:"name", dir:"asc"}
+        ],
         columns: [
             {title:"name", field:"name"},
             {title:"class", field:"class"},

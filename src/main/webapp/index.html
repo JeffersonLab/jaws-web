@@ -12,10 +12,69 @@
 </header>
 <div id="tabs">
     <ul>
-        <li><a href="#tabs-1">Registered</a></li>
-        <li><a href="#tabs-2">Classes</a></li>
+        <li><a href="#tabs-1">Classes</a></li>
+        <li><a href="#tabs-2">Registered</a></li>
+        <li><a href="#tabs-3">Effective</a></li>
     </ul>
     <div id="tabs-1">
+        <h2>Alarm Classes</h2>
+        <div id="class-toolbar" class="toolbar">
+            <form id="class-search-form" class="search-form" onsubmit="return false;">
+                <input type="text" value="" id="class-search-input" class="search-input" placeholder="field=value,field=value"/>
+                <button type="button" id="search-class-button">Search</button> |
+            </form>
+            <button type="button" id="new-class-button">New</button> |
+            <button type="button" id="edit-class-button" class="selected-row-action" disabled="disabled">Edit</button>
+            <button type="button" id="delete-class-button" class="selected-row-action" disabled="disabled">Delete</button> |
+            <span>Records: </span><span id="class-record-count"></span>
+        </div>
+        <div id="classes-table"></div>
+        <div id="class-dialog" class="dialog" title="New Class">
+            <form id="class-form" onsubmit="return false;">
+                <fieldset>
+                    <label>Class Name</label>
+                    <input type="text" name="name" id="class-name-input" value=""/>
+                </fieldset>
+                <fieldset>
+                    <label>Priority</label>
+                    <select id="priority-select" name="priority"></select>
+                    <label>Location</label>
+                    <select id="location-select" name="location"></select>
+                    <label>Category</label>
+                    <select id="category-select" name="category"></select>
+                    <label>Rationale</label>
+                    <textarea name="rationale" id="class-rationale-textarea"></textarea>
+                    <label>Corrective Action</label>
+                    <textarea name="correctiveaction" id="class-correctiveaction-textarea"></textarea>
+                    <label>Point of Contact Username</label>
+                    <input type="text" name="pocusername" id="class-pocusername-input" value=""/>
+                    <fieldset>
+                        <legend>Filterable</legend>
+                        <label>True</label>
+                        <input type="radio" name="filterable" checked="checked" value="true"/>
+                        <label>False</label>
+                        <input type="radio" name="filterable" value="false"/>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Latching</legend>
+                        <label>True</label>
+                        <input type="radio" name="latching" checked="checked" value="true"/>
+                        <label>False</label>
+                        <input type="radio" name="latching" value="false"/>
+                    </fieldset><label>On Delay Seconds</label>
+                    <input type="number" name="ondelayseconds" id="class-ondelay-input" value=""/>
+                    <label>Off Delay Seconds</label>
+                    <input type="number" name="offdelayseconds" id="class-offdelay-input" value=""/>
+                    <label>Masked By</label>
+                    <input type="text" name="maskedby" id="class-maskedby-input" value=""/>
+                    <label>Screen Path</label>
+                    <input type="text" name="screenpath" id="class-screenpath-input" value=""/>
+                </fieldset>
+                <input id="class-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+            </form>
+        </div>
+    </div>
+    <div id="tabs-2">
         <h2>Registered Alarms</h2>
         <div id="registered-toolbar" class="toolbar">
             <form id="registered-search-form" class="search-form" onsubmit="return false;">
@@ -83,64 +142,18 @@
                 </fieldset>
                 <input id="registered-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
             </form>
-        </div>    </div>
-    <div id="tabs-2">
-        <h2>Alarm Classes</h2>
-        <div id="class-toolbar" class="toolbar">
-            <form id="class-search-form" class="search-form" onsubmit="return false;">
-                <input type="text" value="" id="class-search-input" class="search-input" placeholder="field=value,field=value"/>
-            <button type="button" id="search-class-button">Search</button> |
-            </form>
-            <button type="button" id="new-class-button">New</button> |
-            <button type="button" id="edit-class-button" class="selected-row-action" disabled="disabled">Edit</button>
-            <button type="button" id="delete-class-button" class="selected-row-action" disabled="disabled">Delete</button> |
-            <span>Records: </span><span id="class-record-count"></span>
         </div>
-        <div id="classes-table"></div>
-        <div id="class-dialog" class="dialog" title="New Class">
-            <form id="class-form" onsubmit="return false;">
-                <fieldset>
-                    <label>Class Name</label>
-                    <input type="text" name="name" id="class-name-input" value=""/>
-                </fieldset>
-                <fieldset>
-                    <label>Priority</label>
-                    <select id="priority-select" name="priority"></select>
-                    <label>Location</label>
-                    <select id="location-select" name="location"></select>
-                    <label>Category</label>
-                    <select id="category-select" name="category"></select>
-                    <label>Rationale</label>
-                    <textarea name="rationale" id="class-rationale-textarea"></textarea>
-                    <label>Corrective Action</label>
-                    <textarea name="correctiveaction" id="class-correctiveaction-textarea"></textarea>
-                    <label>Point of Contact Username</label>
-                    <input type="text" name="pocusername" id="class-pocusername-input" value=""/>
-                    <fieldset>
-                        <legend>Filterable</legend>
-                        <label>True</label>
-                        <input type="radio" name="filterable" checked="checked" value="true"/>
-                        <label>False</label>
-                        <input type="radio" name="filterable" value="false"/>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Latching</legend>
-                        <label>True</label>
-                        <input type="radio" name="latching" checked="checked" value="true"/>
-                        <label>False</label>
-                        <input type="radio" name="latching" value="false"/>
-                    </fieldset><label>On Delay Seconds</label>
-                    <input type="number" name="ondelayseconds" id="class-ondelay-input" value=""/>
-                    <label>Off Delay Seconds</label>
-                    <input type="number" name="offdelayseconds" id="class-offdelay-input" value=""/>
-                    <label>Masked By</label>
-                    <input type="text" name="maskedby" id="class-maskedby-input" value=""/>
-                    <label>Screen Path</label>
-                    <input type="text" name="screenpath" id="class-screenpath-input" value=""/>
-                </fieldset>
-                <input id="class-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
-            </form>
+    </div>
+    <div id="tabs-3">
+        <h2>Effective Registrations</h2>
+        <div id="effective-toolbar" class="toolbar">
+            <form id="effective-search-form" class="search-form" onsubmit="return false;">
+                <input type="text" value="" id="effective-search-input" class="search-input" placeholder="field=value,field=value"/>
+                <button type="button" id="effective-class-button">Search</button> |
+            </form> |
+            <span>Records: </span><span id="effective-record-count"></span>
         </div>
+        <div id="effective-table"></div>
     </div>
 </div>
 <script type="text/javascript" src="resources/tabulator-4.9.3/js/tabulator.min.js"></script>
