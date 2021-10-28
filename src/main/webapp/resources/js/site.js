@@ -303,9 +303,6 @@ $(document).on("click", "#delete-class-button", function() {
         });
 });
 
-$(document).on("click", "#search-class-button", function() {
-    classSearch();
-});
 
 let classSearch = function() {
     classestable.clearFilter();
@@ -331,6 +328,34 @@ $(document).on( "submit", "#class-search-form", function( event ) {
 
 $(document).on("click", "#search-class-button", function() {
     classSearch();
+});
+
+
+
+$(document).on("click", "#search-effective-button", function() {
+    effectiveSearch();
+});
+
+let effectiveSearch = function() {
+    effectivetable.clearFilter();
+
+    let filterText = $("#effective-search-input").val();
+
+    let filterArray = filterText.split(",");
+
+    for(let filter of filterArray) {
+        let keyValue = filter.split("=");
+
+        effectivetable.addFilter(keyValue[0], "=", keyValue[1]);
+    }
+
+    let count = effectivetable.getDataCount("active");
+    $("#effective-record-count").text(count.toLocaleString());
+};
+
+$(document).on( "submit", "#effective-search-form", function( event ) {
+    event.preventDefault();
+    effectiveSearch();
 });
 
 
