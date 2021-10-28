@@ -10,7 +10,7 @@ public class JaxRSApp extends Application {
 
     public static final String CLASSES_TOPIC = "alarm-classes";
     public static final String REGISTRATION_TOPIC = "alarm-registrations";
-    public static final String EFFECTIVE_TOPIC = "effective-alarms";
+    public static final String EFFECTIVE_TOPIC = "effective-registrations";
 
 
     static {
