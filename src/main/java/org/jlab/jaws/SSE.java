@@ -134,7 +134,7 @@ public class SSE implements ServletContextListener {
         final SpecificAvroSerde<AlarmRegistration> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-proxy-registered-" + Instant.now().toString() + "-" + Math.random());
-        props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, "registered-alarms");
+        props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.REGISTRATION_TOPIC);
         props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
         props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
         props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
@@ -152,7 +152,7 @@ public class SSE implements ServletContextListener {
         final SpecificAvroSerde<AlarmClass> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-proxy-class-" + Instant.now().toString() + "-" + Math.random());
-        props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, "registered-classes");
+        props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.CLASSES_TOPIC);
         props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
         props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
         props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());

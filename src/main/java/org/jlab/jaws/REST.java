@@ -49,14 +49,12 @@ public class REST {
         @FormParam("name") @NotNull(message = "alarm name is required") String name) {
         System.err.println("Deleting registration: " + name);
 
-        final String topic = "registered-alarms";
-
         String key = name;
 
         Properties props = getRegisteredProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
         try(KafkaProducer<String, AlarmRegistration> p = new KafkaProducer<>(props)) {
-            p.send(new ProducerRecord<>(topic, key, null));
+            p.send(new ProducerRecord<>(JaxRSApp.REGISTRATION_TOPIC, key, null));
         }
     }
 
@@ -81,8 +79,6 @@ public class REST {
                                             @FormParam("epicspv") String epicspv)
     {
         System.out.println("PUT received: " + name);
-
-        final String topic = "registered-alarms";
 
         String key = name;
 
@@ -133,7 +129,7 @@ public class REST {
         Properties props = getRegisteredProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
         try(KafkaProducer<String, AlarmRegistration> p = new KafkaProducer<>(props)) {
-            p.send(new ProducerRecord<>(topic, key, value));
+            p.send(new ProducerRecord<>(JaxRSApp.REGISTRATION_TOPIC, key, value));
         }
     }
 
@@ -160,14 +156,12 @@ public class REST {
             @FormParam("name") @NotNull(message = "class name is required") String name) {
         System.err.println("Deleting class: " + name);
 
-        final String topic = "registered-classes";
-
         String key = name;
 
         Properties props = getRegisteredProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
         try(KafkaProducer<String, AlarmClass> p = new KafkaProducer<>(props)) {
-            p.send(new ProducerRecord<>(topic, key, null));
+            p.send(new ProducerRecord<>(JaxRSApp.CLASSES_TOPIC, key, null));
         }
     }
 
@@ -190,8 +184,6 @@ public class REST {
             @FormParam("screenpath") @NotNull(message = "screenpath is required") String screenpath)
     {
         System.out.println("PUT received: " + name);
-
-        final String topic = "registered-classes";
 
         String key = name;
 
@@ -230,7 +222,7 @@ public class REST {
         Properties props = getClassProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
         try(KafkaProducer<String, AlarmClass> producer = new KafkaProducer<>(props)) {
-            producer.send(new ProducerRecord<>(topic, key, value));
+            producer.send(new ProducerRecord<>(JaxRSApp.CLASSES_TOPIC, key, value));
         }
     }
 
