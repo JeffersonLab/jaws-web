@@ -442,6 +442,53 @@ evtSource.addEventListener("effective-highwatermark", function(e){
     });
 });
 
+
+
+
+evtSource.addEventListener("class", function(e) {
+    let json = JSON.parse(e.data),
+        key = json.key,
+        value = json.value;
+
+    const i = classestabledata.findIndex(element => element.name === key);
+
+    if(i !== -1) {
+        classestabledata.splice(i, 1);
+    }
+
+    if(value !== null) { /*null means tombstone*/
+        classestabledata.push({
+            name: key,
+            priority: value.priority,
+            location: value.location,
+            category: value.category,
+            rationale: value.rationale,
+            correctiveaction: value.correctiveaction,
+            pointofcontactusername: value.pointofcontactusername,
+            filterable: value.filterable,
+            latching: value.latching,
+            ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
+            offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
+            maskedby: unwrapNullableUnionText(value.maskedby),
+            screenpath: unwrapNullableUnionText(value.screenpath)
+        });
+    }
+
+    let count = 0;
+
+    if(classestable === null) {
+        count = classestabledata.length;
+    } else {
+        count = classestable.getDataCount("active");
+
+        /*On tombstone this could be skipped...*/
+        let sorters = classestable.getSorters();
+        classestable.setSort(sorters);
+    }
+
+    $("#class-record-count").text(count.toLocaleString());
+});
+
 evtSource.addEventListener("registration", function(e) {
     let json = JSON.parse(e.data),
         key = json.key,
@@ -494,20 +541,21 @@ evtSource.addEventListener("registration", function(e) {
     $("#registered-record-count").text(count.toLocaleString());
 });
 
-evtSource.addEventListener("class", function(e) {
+evtSource.addEventListener("effective", function(e) {
     let json = JSON.parse(e.data),
         key = json.key,
         value = json.value;
 
-    const i = classestabledata.findIndex(element => element.name === key);
+    const i = effectivetabledata.findIndex(element => element.name === key);
 
     if(i !== -1) {
-        classestabledata.splice(i, 1);
+        effectivetabledata.splice(i, 1);
     }
 
     if(value !== null) { /*null means tombstone*/
-        classestabledata.push({
+        effectivetabledata.push({
             name: key,
+            class: value.class,
             priority: value.priority,
             location: value.location,
             category: value.category,
@@ -519,24 +567,27 @@ evtSource.addEventListener("class", function(e) {
             ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
             offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
             maskedby: unwrapNullableUnionText(value.maskedby),
-            screenpath: unwrapNullableUnionText(value.screenpath)
+            screenpath: unwrapNullableUnionText(value.screenpath),
+            epicspv: epicspv
         });
     }
 
     let count = 0;
 
-    if(classestable === null) {
-        count = classestabledata.length;
+    if(effectivetable === null) {
+        count = effectivetabledata.length;
     } else {
-        count = classestable.getDataCount("active");
+        count = effectivetable.getDataCount("active");
 
         /*On tombstone this could be skipped...*/
-        let sorters = classestable.getSorters();
-        classestable.setSort(sorters);
+        let sorters = effectivetable.getSorters();
+        effectivetable.setSort(sorters);
     }
 
-    $("#class-record-count").text(count.toLocaleString());
+    $("#effective-record-count").text(count.toLocaleString());
 });
+
+
 
 evtSource.onerror = function(e) {
     console.log('error')
