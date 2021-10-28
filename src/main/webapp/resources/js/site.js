@@ -470,7 +470,7 @@ evtSource.addEventListener("class", function(e) {
             ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
             offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
             maskedby: unwrapNullableUnionText(value.maskedby),
-            screenpath: unwrapNullableUnionText(value.screenpath)
+            screenpath: value.screenpath
         });
     }
 
@@ -551,8 +551,6 @@ evtSource.addEventListener("effective", function(e) {
     if(i !== -1) {
         effectivetabledata.splice(i, 1);
     }
-
-    console.log('effective', value)
 
     if(value !== null && value.calculated != null) { /*null means tombstone*/
 
