@@ -2,5 +2,5 @@
 version: '3.8'
 
 services:
-  web:
-    image: slominskir/jaws-web-admin:0.1.0
+  admin:
+    image: slominskir/jaws-admin-gui:1.0.0
