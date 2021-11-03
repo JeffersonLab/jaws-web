@@ -523,8 +523,6 @@ evtSource.addEventListener("registration", function (e) {
         key = json.key,
         value = json.value;
 
-    console.log('registration: ', key, value);
-
     registeredEvents.set(key, value);
 });
 
@@ -534,7 +532,6 @@ let processRegistrationEvents = function () {
 
     registeredEvents.forEach(function (value, key) {
         if (value == null) { /*null means tombstone*/
-            console.log('found a tombstone1', key);
             remove.push(key);
         } else {
             let epicspv = null;
