@@ -27,6 +27,7 @@ import javax.ws.rs.sse.SseEventSink;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -210,11 +211,11 @@ public class SSE implements ServletContextListener {
             if (value != null) {
                 try {
                     SpecificDatumWriter<AlarmClass> writer = new SpecificDatumWriter<>(value.getSchema());
-                    OutputStream out = new ByteArrayOutputStream();
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
                     JsonEncoder encoder = EncoderFactory.get().jsonEncoder(value.getSchema(), out);
                     writer.write(value, encoder);
                     encoder.flush();
-                    jsonValue = out.toString();
+                    jsonValue = out.toString(Charset.forName("UTF-8"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -236,12 +237,12 @@ public class SSE implements ServletContextListener {
             if (value != null) {
                 try {
                     SpecificDatumWriter<AlarmRegistration> writer = new SpecificDatumWriter<>(value.getSchema());
-                    OutputStream out = new ByteArrayOutputStream();
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
                     // See: https://issues.apache.org/jira/browse/AVRO-1582 - JSON encoded union fields needed to indicate nullable are encoded as array!
                     JsonEncoder encoder = EncoderFactory.get().jsonEncoder(value.getSchema(), out);
                     writer.write(value, encoder);
                     encoder.flush();
-                    jsonValue = out.toString();
+                    jsonValue = out.toString(Charset.forName("UTF-8"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -263,11 +264,11 @@ public class SSE implements ServletContextListener {
             if (value != null) {
                 try {
                     SpecificDatumWriter<EffectiveRegistration> writer = new SpecificDatumWriter<>(value.getSchema());
-                    OutputStream out = new ByteArrayOutputStream();
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
                     JsonEncoder encoder = EncoderFactory.get().jsonEncoder(value.getSchema(), out);
                     writer.write(value, encoder);
                     encoder.flush();
-                    jsonValue = out.toString();
+                    jsonValue = out.toString(Charset.forName("UTF-8"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
