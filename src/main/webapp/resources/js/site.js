@@ -1,12 +1,12 @@
+let maxUpdateMillis = 500;
 
-
-let setRegistration = function() {
+let setRegistration = function () {
     let form = document.getElementById("registered-form"),
         formData = new FormData(form);
 
     /*Treat empty string as no-field*/
-    for(var pair of Array.from(formData.entries())) {
-        if(pair[1] === "") {
+    for (var pair of Array.from(formData.entries())) {
+        if (pair[1] === "") {
             formData.delete(pair[0]);
         }
     }
@@ -21,7 +21,7 @@ let setRegistration = function() {
     });
 
     promise.then(response => {
-        if(response.ok) {
+        if (response.ok) {
             registeredRowDeselected();
             $("#registration-dialog").dialog("close");
         } else {
@@ -44,13 +44,13 @@ let setRegistration = function() {
 };
 
 
-let setClass = function() {
+let setClass = function () {
     let form = document.getElementById("class-form"),
         formData = new FormData(form);
 
     /*Treat empty string as no-field*/
-    for(var pair of Array.from(formData.entries())) {
-        if(pair[1] === "") {
+    for (var pair of Array.from(formData.entries())) {
+        if (pair[1] === "") {
             formData.delete(pair[0]);
         }
     }
@@ -65,7 +65,7 @@ let setClass = function() {
     });
 
     promise.then(response => {
-        if(response.ok) {
+        if (response.ok) {
             classRowDeselected();
             $("#class-dialog").dialog("close");
         } else {
@@ -87,12 +87,12 @@ let setClass = function() {
         });
 };
 
-$( function() {
-    $( ".toolbar button" ).button();
+$(function () {
+    $(".toolbar button").button();
 
-    $( "#tabs" ).tabs({
-        activate: function( event, ui ) {
-            ui.newPanel.css("display","flex");
+    $("#tabs").tabs({
+        activate: function (event, ui) {
+            ui.newPanel.css("display", "flex");
         }
     }).show();
 
@@ -103,13 +103,13 @@ $( function() {
         modal: true,
         buttons: {
             Set: setRegistration,
-            Cancel: function() {
-                registrationDialog.dialog( "close" );
+            Cancel: function () {
+                registrationDialog.dialog("close");
             }
         }
     });
 
-    registrationDialog.find( "form" ).on( "submit", function( event ) {
+    registrationDialog.find("form").on("submit", function (event) {
         event.preventDefault();
         setRegistration();
     });
@@ -121,49 +121,47 @@ $( function() {
         modal: true,
         buttons: {
             Set: setClass,
-            Cancel: function() {
-                classDialog.dialog( "close" );
+            Cancel: function () {
+                classDialog.dialog("close");
             }
         }
     });
 
-    classDialog.find( "form" ).on( "submit", function( event ) {
+    classDialog.find("form").on("submit", function (event) {
         event.preventDefault();
         setClass();
     });
-} );
+});
 
-var classestabledata = [];
-
-var registeredtabledata = [];
-
-var effectivetabledata = [];
-
-var registeredRowSelected = function(row) {
-    $("#registered-toolbar .no-selection-row-action").button( "option", "disabled", true );
-    $("#registered-toolbar .selected-row-action").button( "option", "disabled", false );
+var registeredRowSelected = function (row) {
+    $("#registered-toolbar .no-selection-row-action").button("option", "disabled", true);
+    $("#registered-toolbar .selected-row-action").button("option", "disabled", false);
 };
 
-var classRowSelected = function(row) {
-    $("#class-toolbar .no-selection-row-action").button( "option", "disabled", true );
-    $("#class-toolbar .selected-row-action").button( "option", "disabled", false );
+var classRowSelected = function (row) {
+    $("#class-toolbar .no-selection-row-action").button("option", "disabled", true);
+    $("#class-toolbar .selected-row-action").button("option", "disabled", false);
 };
 
-var registeredRowDeselected = function(row) {
-    $("#registered-toolbar .no-selection-row-action").button( "option", "disabled", false );
-    $("#registered-toolbar .selected-row-action").button( "option", "disabled", true );
+var registeredRowDeselected = function (row) {
+    $("#registered-toolbar .no-selection-row-action").button("option", "disabled", false);
+    $("#registered-toolbar .selected-row-action").button("option", "disabled", true);
 };
 
-var classRowDeselected = function(row) {
-    $("#class-toolbar .no-selection-row-action").button( "option", "disabled", false );
-    $("#class-toolbar .selected-row-action").button( "option", "disabled", true );
+var classRowDeselected = function (row) {
+    $("#class-toolbar .no-selection-row-action").button("option", "disabled", false);
+    $("#class-toolbar .selected-row-action").button("option", "disabled", true);
 };
+
+const classesEvents = new Map();
+const registeredEvents = new Map();
+const effectiveEvents = new Map();
 
 var classestable = null;
 var registeredtable = null;
 var effectivetable = null;
 
-$(document).on("click", "#new-registration-button", function() {
+$(document).on("click", "#new-registration-button", function () {
 
     document.getElementById("registered-form").reset();
 
@@ -171,7 +169,7 @@ $(document).on("click", "#new-registration-button", function() {
     $("#registration-dialog").dialog("open");
 });
 
-$(document).on("click", "#edit-registration-button", function() {
+$(document).on("click", "#edit-registration-button", function () {
     let selectedData = registeredtable.getSelectedData(),
         data = selectedData[0];
 
@@ -195,7 +193,7 @@ $(document).on("click", "#edit-registration-button", function() {
     $("#registration-dialog").dialog("open");
 });
 
-$(document).on("click", "#delete-registration-button", function() {
+$(document).on("click", "#delete-registration-button", function () {
     let selectedData = registeredtable.getSelectedData();
 
     let params = "name=" + selectedData[0].name;
@@ -209,24 +207,24 @@ $(document).on("click", "#delete-registration-button", function() {
     });
 
     promise.then(response => {
-            if(!response.ok) {
-                throw new Error("Network response not ok");
-            }
-            registeredRowDeselected();
-        })
+        if (!response.ok) {
+            throw new Error("Network response not ok");
+        }
+        registeredRowDeselected();
+    })
         .catch(error => {
             console.error('Delete failed: ', error)
         });
 });
 
-let registrationSearch = function() {
+let registrationSearch = function () {
     registeredtable.clearFilter();
 
     let filterText = $("#registration-search-input").val();
 
     let filterArray = filterText.split(",");
 
-    for(let filter of filterArray) {
+    for (let filter of filterArray) {
         let keyValue = filter.split("=");
 
         registeredtable.addFilter(keyValue[0], "=", keyValue[1]);
@@ -236,20 +234,17 @@ let registrationSearch = function() {
     $("#registered-record-count").text(count.toLocaleString());
 };
 
-$(document).on( "submit", "#registered-search-form", function( event ) {
+$(document).on("submit", "#registered-search-form", function (event) {
     event.preventDefault();
     registrationSearch();
 });
 
-$(document).on("click", "#search-registration-button", function() {
+$(document).on("click", "#search-registration-button", function () {
     registrationSearch();
 });
 
 
-
-
-
-$(document).on("click", "#new-class-button", function() {
+$(document).on("click", "#new-class-button", function () {
 
     document.getElementById("class-form").reset();
 
@@ -257,7 +252,7 @@ $(document).on("click", "#new-class-button", function() {
     $("#class-dialog").dialog("open");
 });
 
-$(document).on("click", "#edit-class-button", function() {
+$(document).on("click", "#edit-class-button", function () {
     let selectedData = classestable.getSelectedData(),
         data = selectedData[0];
 
@@ -279,7 +274,7 @@ $(document).on("click", "#edit-class-button", function() {
     $("#class-dialog").dialog("open");
 });
 
-$(document).on("click", "#delete-class-button", function() {
+$(document).on("click", "#delete-class-button", function () {
     let selectedData = classestable.getSelectedData();
 
     let params = "name=" + selectedData[0].name;
@@ -293,7 +288,7 @@ $(document).on("click", "#delete-class-button", function() {
     });
 
     promise.then(response => {
-        if(!response.ok) {
+        if (!response.ok) {
             throw new Error("Network response not ok");
         }
         classRowDeselected();
@@ -304,14 +299,14 @@ $(document).on("click", "#delete-class-button", function() {
 });
 
 
-let classSearch = function() {
+let classSearch = function () {
     classestable.clearFilter();
 
     let filterText = $("#class-search-input").val();
 
     let filterArray = filterText.split(",");
 
-    for(let filter of filterArray) {
+    for (let filter of filterArray) {
         let keyValue = filter.split("=");
 
         classestable.addFilter(keyValue[0], "=", keyValue[1]);
@@ -321,29 +316,28 @@ let classSearch = function() {
     $("#class-record-count").text(count.toLocaleString());
 };
 
-$(document).on( "submit", "#class-search-form", function( event ) {
+$(document).on("submit", "#class-search-form", function (event) {
     event.preventDefault();
     classSearch();
 });
 
-$(document).on("click", "#search-class-button", function() {
+$(document).on("click", "#search-class-button", function () {
     classSearch();
 });
 
 
-
-$(document).on("click", "#search-effective-button", function() {
+$(document).on("click", "#search-effective-button", function () {
     effectiveSearch();
 });
 
-let effectiveSearch = function() {
+let effectiveSearch = function () {
     effectivetable.clearFilter();
 
     let filterText = $("#effective-search-input").val();
 
     let filterArray = filterText.split(",");
 
-    for(let filter of filterArray) {
+    for (let filter of filterArray) {
         let keyValue = filter.split("=");
 
         effectivetable.addFilter(keyValue[0], "=", keyValue[1]);
@@ -353,298 +347,400 @@ let effectiveSearch = function() {
     $("#effective-record-count").text(count.toLocaleString());
 };
 
-$(document).on( "submit", "#effective-search-form", function( event ) {
+$(document).on("submit", "#effective-search-form", function (event) {
     event.preventDefault();
     effectiveSearch();
 });
 
 
-
 let evtSource = new EventSource('proxy/sse');
 
-let unwrapNullableUnionText = function(text) {
-    if(text != null) {
+let unwrapNullableUnionText = function (text) {
+    if (text != null) {
         text = Object.values(text)[0];
     }
     return text;
 };
 
-evtSource.addEventListener("class-highwatermark", function(e){
+evtSource.addEventListener("class-highwatermark", function (e) {
+    const {updateOrAdd, remove} = processClassEvents();
+
     classestable = new Tabulator("#classes-table", {
-        data: classestabledata,
-        reactiveData: true,
+        data: updateOrAdd,
+        reactiveData: false,
         height: "100%", // enables the Virtual DOM
         layout: "fitColumns",
         responsiveLayout: "collapse",
         index: "name",
         selectable: 1,
-        initialSort:[
-            {column:"name", dir:"asc"}
+        initialSort: [
+            {column: "name", dir: "asc"}
         ],
         rowSelected: classRowSelected,
         rowDeselected: classRowDeselected,
         columns: [
-            {title:"name", field:"name"},
-            {title:"priority", field:"priority"},
-            {title:"location", field:"location"},
-            {title:"category", field:"category"},
-            {title:"rationale", field:"rationale"},
-            {title:"correctiveaction", field:"correctiveaction"},
-            {title:"pointofcontactusername", field:"pointofcontactusername"},
-            {title:"filterable", field:"filterable"},
-            {title:"latching", field:"latching"},
-            {title:"ondelayseconds", field:"ondelayseconds"},
-            {title:"offdelayseconds", field:"offdelayseconds"},
-            {title:"maskedby", field:"maskedby"},
-            {title:"screenpath", field:"screenpath"}
+            {title: "name", field: "name"},
+            {title: "priority", field: "priority"},
+            {title: "location", field: "location"},
+            {title: "category", field: "category"},
+            {title: "rationale", field: "rationale"},
+            {title: "correctiveaction", field: "correctiveaction"},
+            {title: "pointofcontactusername", field: "pointofcontactusername"},
+            {title: "filterable", field: "filterable"},
+            {title: "latching", field: "latching"},
+            {title: "ondelayseconds", field: "ondelayseconds"},
+            {title: "offdelayseconds", field: "offdelayseconds"},
+            {title: "maskedby", field: "maskedby"},
+            {title: "screenpath", field: "screenpath"}
         ]
     });
+
+    updateClassCountLabel();
+
+    setTimeout(batchClassesTableUpdate, maxUpdateMillis);
 });
 
-evtSource.addEventListener("registration-highwatermark", function(e){
+evtSource.addEventListener("registration-highwatermark", function (e) {
+    const {updateOrAdd, remove} = processRegistrationEvents();
+
     registeredtable = new Tabulator("#registered-table", {
-        data: registeredtabledata,
-        reactiveData: true,
+        data: updateOrAdd,
+        reactiveData: false,
         height: "100%", // enables the Virtual DOM
         layout: "fitColumns",
         responsiveLayout: "collapse",
         index: "name",
         selectable: 1,
-        initialSort:[
-            {column:"name", dir:"asc"}
+        initialSort: [
+            {column: "name", dir: "asc"}
         ],
         rowSelected: registeredRowSelected,
         rowDeselected: registeredRowDeselected,
         columns: [
-            {title:"name", field:"name"},
-            {title:"class", field:"class"},
-            {title:"priority", field:"priority"},
-            {title:"location", field:"location"},
-            {title:"category", field:"category"},
-            {title:"rationale", field:"rationale"},
-            {title:"correctiveaction", field:"correctiveaction"},
-            {title:"pointofcontactusername", field:"pointofcontactusername"},
-            {title:"filterable", field:"filterable"},
-            {title:"latching", field:"latching"},
-            {title:"ondelayseconds", field:"ondelayseconds"},
-            {title:"offdelayseconds", field:"offdelayseconds"},
-            {title:"maskedby", field:"maskedby"},
-            {title:"screenpath", field:"screenpath"},
-            {title:"epicspv", field:"epicspv"}
+            {title: "name", field: "name"},
+            {title: "class", field: "class"},
+            {title: "priority", field: "priority"},
+            {title: "location", field: "location"},
+            {title: "category", field: "category"},
+            {title: "rationale", field: "rationale"},
+            {title: "correctiveaction", field: "correctiveaction"},
+            {title: "pointofcontactusername", field: "pointofcontactusername"},
+            {title: "filterable", field: "filterable"},
+            {title: "latching", field: "latching"},
+            {title: "ondelayseconds", field: "ondelayseconds"},
+            {title: "offdelayseconds", field: "offdelayseconds"},
+            {title: "maskedby", field: "maskedby"},
+            {title: "screenpath", field: "screenpath"},
+            {title: "epicspv", field: "epicspv"}
         ]
     });
+
+    updateRegistrationCountLabel();
+
+    setTimeout(batchRegisteredTableUpdate, maxUpdateMillis);
 });
 
-evtSource.addEventListener("effective-highwatermark", function(e){
+evtSource.addEventListener("effective-highwatermark", function (e) {
+    const {updateOrAdd, remove} = processEffectiveEvents();
+
     effectivetable = new Tabulator("#effective-table", {
-        data: effectivetabledata,
-        reactiveData: true,
+        data: updateOrAdd,
+        reactiveData: false,
         height: "100%", // enables the Virtual DOM
         layout: "fitColumns",
         responsiveLayout: "collapse",
         index: "name",
         selectable: 1,
-        initialSort:[
-            {column:"name", dir:"asc"}
+        initialSort: [
+            {column: "name", dir: "asc"}
         ],
         columns: [
-            {title:"name", field:"name"},
-            {title:"class", field:"class"},
-            {title:"priority", field:"priority"},
-            {title:"location", field:"location"},
-            {title:"category", field:"category"},
-            {title:"rationale", field:"rationale"},
-            {title:"correctiveaction", field:"correctiveaction"},
-            {title:"pointofcontactusername", field:"pointofcontactusername"},
-            {title:"filterable", field:"filterable"},
-            {title:"latching", field:"latching"},
-            {title:"ondelayseconds", field:"ondelayseconds"},
-            {title:"offdelayseconds", field:"offdelayseconds"},
-            {title:"maskedby", field:"maskedby"},
-            {title:"screenpath", field:"screenpath"},
-            {title:"epicspv", field:"epicspv"}
+            {title: "name", field: "name"},
+            {title: "class", field: "class"},
+            {title: "priority", field: "priority"},
+            {title: "location", field: "location"},
+            {title: "category", field: "category"},
+            {title: "rationale", field: "rationale"},
+            {title: "correctiveaction", field: "correctiveaction"},
+            {title: "pointofcontactusername", field: "pointofcontactusername"},
+            {title: "filterable", field: "filterable"},
+            {title: "latching", field: "latching"},
+            {title: "ondelayseconds", field: "ondelayseconds"},
+            {title: "offdelayseconds", field: "offdelayseconds"},
+            {title: "maskedby", field: "maskedby"},
+            {title: "screenpath", field: "screenpath"},
+            {title: "epicspv", field: "epicspv"}
         ]
     });
+
+    updateEffectiveCountLabel();
+
+    setTimeout(batchEffectiveTableUpdate, maxUpdateMillis);
 });
 
 
-
-
-evtSource.addEventListener("class", function(e) {
+evtSource.addEventListener("class", function (e) {
     let json = JSON.parse(e.data),
         key = json.key,
         value = json.value;
 
-    const i = classestabledata.findIndex(element => element.name === key);
-
-    if(i !== -1) {
-        classestabledata.splice(i, 1);
-    }
-
-    if(value !== null) { /*null means tombstone*/
-        classestabledata.push({
-            name: key,
-            priority: value.priority,
-            location: value.location,
-            category: value.category,
-            rationale: value.rationale,
-            correctiveaction: value.correctiveaction,
-            pointofcontactusername: value.pointofcontactusername,
-            filterable: value.filterable,
-            latching: value.latching,
-            ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
-            offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
-            maskedby: unwrapNullableUnionText(value.maskedby),
-            screenpath: value.screenpath
-        });
-    }
-
-    let count = 0;
-
-    if(classestable === null) {
-        count = classestabledata.length;
-    } else {
-        count = classestable.getDataCount("active");
-
-        /*On tombstone this could be skipped...*/
-        let sorters = classestable.getSorters();
-        classestable.setSort(sorters);
-    }
-
-    $("#class-record-count").text(count.toLocaleString());
+    classesEvents.set(key, value);
 });
 
-evtSource.addEventListener("registration", function(e) {
-    let json = JSON.parse(e.data),
-        key = json.key,
-        value = json.value;
+let processClassEvents = function () {
+    const updateOrAdd = [];
+    const remove = [];
 
-    const i = registeredtabledata.findIndex(element => element.name === key);
-
-    if(i !== -1) {
-        registeredtabledata.splice(i, 1);
-    }
-
-    if(value !== null) { /*null means tombstone*/
-        let epicspv = null;
-
-        if ("org.jlab.jaws.entity.EPICSProducer" in value.producer) {
-            epicspv = value.producer["org.jlab.jaws.entity.EPICSProducer"].pv;
+    classesEvents.forEach(function (value, key) {
+        if (value == null) { /*null means tombstone*/
+            remove.push(key);
+        } else {
+            updateOrAdd.push({
+                name: key,
+                priority: value.priority,
+                location: value.location,
+                category: value.category,
+                rationale: value.rationale,
+                correctiveaction: value.correctiveaction,
+                pointofcontactusername: value.pointofcontactusername,
+                filterable: value.filterable,
+                latching: value.latching,
+                ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
+                offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
+                maskedby: unwrapNullableUnionText(value.maskedby),
+                screenpath: value.screenpath
+            });
         }
+    });
 
-        registeredtabledata.push({
-            name: key,
-            class: value.class,
-            priority: unwrapNullableUnionText(value.priority),
-            location: unwrapNullableUnionText(value.location),
-            category: unwrapNullableUnionText(value.category),
-            rationale: unwrapNullableUnionText(value.rationale),
-            correctiveaction: unwrapNullableUnionText(value.correctiveaction),
-            pointofcontactusername: unwrapNullableUnionText(value.pointofcontactusername),
-            filterable: unwrapNullableUnionText(value.filterable),
-            latching: unwrapNullableUnionText(value.latching),
-            ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
-            offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
-            maskedby: unwrapNullableUnionText(value.maskedby),
-            screenpath: unwrapNullableUnionText(value.screenpath),
-            epicspv: epicspv
-        });
-    }
+    classesEvents.clear();
 
-    let count = 0;
+    return {updateOrAdd, remove};
+};
 
-    if(registeredtable === null) {
-        count = registeredtabledata.length;
-    } else {
-        count = registeredtable.getDataCount("active");
-
-        /*On tombstone this could be skipped...*/
-        let sorters = registeredtable.getSorters();
-        registeredtable.setSort(sorters);
-    }
-
-    $("#registered-record-count").text(count.toLocaleString());
-});
-
-evtSource.addEventListener("effective", function(e) {
+evtSource.addEventListener("registration", function (e) {
     let json = JSON.parse(e.data),
         key = json.key,
         value = json.value;
 
-    const i = effectivetabledata.findIndex(element => element.name === key);
+    console.log('registration: ', key, value);
 
-    if(i !== -1) {
-        effectivetabledata.splice(i, 1);
-    }
-
-    if(value !== null && value.calculated != null) { /*null means tombstone*/
-
-        value = value.calculated["org.jlab.jaws.entity.AlarmRegistration"];
-
-        let epicspv = null;
-
-        if ("org.jlab.jaws.entity.EPICSProducer" in value.producer) {
-            epicspv = value.producer["org.jlab.jaws.entity.EPICSProducer"].pv;
-        }
-
-        effectivetabledata.push({
-            name: key,
-            class: value.class,
-            priority: unwrapNullableUnionText(value.priority),
-            location: unwrapNullableUnionText(value.location),
-            category: unwrapNullableUnionText(value.category),
-            rationale: unwrapNullableUnionText(value.rationale),
-            correctiveaction: unwrapNullableUnionText(value.correctiveaction),
-            pointofcontactusername: unwrapNullableUnionText(value.pointofcontactusername),
-            filterable: unwrapNullableUnionText(value.filterable),
-            latching: unwrapNullableUnionText(value.latching),
-            ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
-            offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
-            maskedby: unwrapNullableUnionText(value.maskedby),
-            screenpath: unwrapNullableUnionText(value.screenpath),
-            epicspv: epicspv
-        });
-    }
-
-    let count = 0;
-
-    if(effectivetable === null) {
-        count = effectivetabledata.length;
-    } else {
-        count = effectivetable.getDataCount("active");
-
-        /*On tombstone this could be skipped...*/
-        let sorters = effectivetable.getSorters();
-        effectivetable.setSort(sorters);
-    }
-
-    $("#effective-record-count").text(count.toLocaleString());
+    registeredEvents.set(key, value);
 });
 
+let processRegistrationEvents = function () {
+    const updateOrAdd = [];
+    const remove = [];
 
+    registeredEvents.forEach(function (value, key) {
+        if (value == null) { /*null means tombstone*/
+            console.log('found a tombstone1', key);
+            remove.push(key);
+        } else {
+            let epicspv = null;
 
-evtSource.onerror = function(e) {
+            if ("org.jlab.jaws.entity.EPICSProducer" in value.producer) {
+                epicspv = value.producer["org.jlab.jaws.entity.EPICSProducer"].pv;
+            }
+
+            updateOrAdd.push({
+                name: key,
+                class: value.class,
+                priority: unwrapNullableUnionText(value.priority),
+                location: unwrapNullableUnionText(value.location),
+                category: unwrapNullableUnionText(value.category),
+                rationale: unwrapNullableUnionText(value.rationale),
+                correctiveaction: unwrapNullableUnionText(value.correctiveaction),
+                pointofcontactusername: unwrapNullableUnionText(value.pointofcontactusername),
+                filterable: unwrapNullableUnionText(value.filterable),
+                latching: unwrapNullableUnionText(value.latching),
+                ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
+                offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
+                maskedby: unwrapNullableUnionText(value.maskedby),
+                screenpath: unwrapNullableUnionText(value.screenpath),
+                epicspv: epicspv
+            });
+        }
+    });
+
+    registeredEvents.clear();
+
+    return {updateOrAdd, remove};
+};
+
+evtSource.addEventListener("effective", function (e) {
+    let json = JSON.parse(e.data),
+        key = json.key,
+        value = json.value;
+
+    effectiveEvents.set(key, value);
+});
+
+let processEffectiveEvents = function () {
+    const updateOrAdd = [];
+    const remove = [];
+
+    effectiveEvents.forEach(function (value, key) {
+        if (value == null || value.calculated == null) { /*null means tombstone*/
+            remove.push(key);
+        } else {
+            value = value.calculated["org.jlab.jaws.entity.AlarmRegistration"];
+
+            let epicspv = null;
+
+            if ("org.jlab.jaws.entity.EPICSProducer" in value.producer) {
+                epicspv = value.producer["org.jlab.jaws.entity.EPICSProducer"].pv;
+            }
+
+            updateOrAdd.push({
+                name: key,
+                class: value.class,
+                priority: unwrapNullableUnionText(value.priority),
+                location: unwrapNullableUnionText(value.location),
+                category: unwrapNullableUnionText(value.category),
+                rationale: unwrapNullableUnionText(value.rationale),
+                correctiveaction: unwrapNullableUnionText(value.correctiveaction),
+                pointofcontactusername: unwrapNullableUnionText(value.pointofcontactusername),
+                filterable: unwrapNullableUnionText(value.filterable),
+                latching: unwrapNullableUnionText(value.latching),
+                ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
+                offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
+                maskedby: unwrapNullableUnionText(value.maskedby),
+                screenpath: unwrapNullableUnionText(value.screenpath),
+                epicspv: epicspv
+            });
+        }
+    });
+
+    effectiveEvents.clear();
+
+    return {updateOrAdd, remove};
+};
+
+evtSource.onerror = function (e) {
     console.log('error')
     console.log(e)
 }
 
+let updateClassCountLabel = function() {
+    let count = classestable.getDataCount("active");
 
+    let sorters = classestable.getSorters();
+    classestable.setSort(sorters);
 
+    $("#class-record-count").text(count.toLocaleString());
+};
 
+let batchClassesTableUpdate = function () {
+    const {updateOrAdd, remove} = processClassEvents();
 
+    if (updateOrAdd.length > 0 || remove.length > 0) {
+        console.time('batchClassesTableUpdate');
+
+        let promises = [];
+
+        if(remove.length > 0) {
+            promises.push(classestable.deleteRow(remove));
+        }
+
+        if(updateOrAdd.length > 0) {
+            promises.push(classestable.updateOrAddData(updateOrAdd));
+        }
+
+        Promise.all(promises).then(function(){
+            updateClassCountLabel();
+
+            console.timeEnd('batchClassesTableUpdate');
+            setTimeout(batchClassesTableUpdate, maxUpdateMillis);
+        });
+    } else {
+        setTimeout(batchClassesTableUpdate, maxUpdateMillis);
+    }
+}
+
+let updateRegistrationCountLabel = function() {
+    let count = registeredtable.getDataCount("active");
+
+    let sorters = registeredtable.getSorters();
+    registeredtable.setSort(sorters);
+
+    $("#registered-record-count").text(count.toLocaleString());
+};
+
+let batchRegisteredTableUpdate = function () {
+    const {updateOrAdd, remove} = processRegistrationEvents();
+
+    if (updateOrAdd.length > 0 || remove.length > 0) {
+        console.time('batchRegisteredTableUpdate');
+
+        let promises = [];
+
+        if(remove.length > 0) {
+            promises.push(registeredtable.deleteRow(remove));
+        }
+
+        if(updateOrAdd.length > 0) {
+            promises.push(registeredtable.updateOrAddData(updateOrAdd));
+        }
+
+        Promise.all(promises).then(function(){
+            updateRegistrationCountLabel();
+
+            console.timeEnd('batchRegisteredTableUpdate');
+            setTimeout(batchRegisteredTableUpdate, maxUpdateMillis);
+        });
+    } else {
+        setTimeout(batchRegisteredTableUpdate, maxUpdateMillis);
+    }
+}
+
+let updateEffectiveCountLabel = function() {
+    let count = effectivetable.getDataCount("active");
+
+    let sorters = effectivetable.getSorters();
+    effectivetable.setSort(sorters);
+
+    $("#effective-record-count").text(count.toLocaleString());
+};
+
+let batchEffectiveTableUpdate = function () {
+    const {updateOrAdd, remove} = processEffectiveEvents();
+
+    if (updateOrAdd.length > 0 || remove.length > 0) {
+        console.time('batchEffectiveTableUpdate');
+        let promises = [];
+
+        if(remove.length > 0) {
+            promises.push(effectivetable.deleteRow(remove));
+        }
+
+        if(updateOrAdd.length > 0) {
+            promises.push(effectivetable.updateOrAddData(updateOrAdd));
+        }
+
+        Promise.all(promises).then(function(){
+            updateEffectiveCountLabel();
+
+            console.timeEnd('batchEffectiveTableUpdate');
+            setTimeout(batchEffectiveTableUpdate, maxUpdateMillis);
+        });
+    } else {
+        setTimeout(batchEffectiveTableUpdate, maxUpdateMillis);
+    }
+}
 
 
 let prioritySelect = document.getElementById('priority-select');
 fetch('proxy/rest/priorities')
     .then(
-        function(response) {
+        function (response) {
             if (response.status !== 200) {
                 console.warn('Error. Status Code: ' +
                     response.status);
                 return;
             }
 
-            response.json().then(function(data) {
+            response.json().then(function (data) {
                 let option;
 
                 for (let i = 0; i < data.length; i++) {
@@ -664,23 +760,22 @@ fetch('proxy/rest/priorities')
             });
         }
     )
-    .catch(function(err) {
+    .catch(function (err) {
         console.error('Fetch Error -', err);
     });
-
 
 
 let locationSelect = document.getElementById('location-select');
 fetch('proxy/rest/locations')
     .then(
-        function(response) {
+        function (response) {
             if (response.status !== 200) {
                 console.warn('Error. Status Code: ' +
                     response.status);
                 return;
             }
 
-            response.json().then(function(data) {
+            response.json().then(function (data) {
                 let option;
 
                 for (let i = 0; i < data.length; i++) {
@@ -700,7 +795,7 @@ fetch('proxy/rest/locations')
             });
         }
     )
-    .catch(function(err) {
+    .catch(function (err) {
         console.error('Fetch Error -', err);
     });
 
@@ -708,14 +803,14 @@ fetch('proxy/rest/locations')
 let categorySelect = document.getElementById('category-select');
 fetch('proxy/rest/categories')
     .then(
-        function(response) {
+        function (response) {
             if (response.status !== 200) {
                 console.warn('Error. Status Code: ' +
                     response.status);
                 return;
             }
 
-            response.json().then(function(data) {
+            response.json().then(function (data) {
                 let option;
 
                 for (let i = 0; i < data.length; i++) {
@@ -735,6 +830,6 @@ fetch('proxy/rest/categories')
             });
         }
     )
-    .catch(function(err) {
+    .catch(function (err) {
         console.error('Fetch Error -', err);
     });
