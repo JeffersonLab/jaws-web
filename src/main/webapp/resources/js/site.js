@@ -1,4 +1,5 @@
 let maxUpdateMillis = 500;
+let maxRecordsPerUpdate = 100;
 
 let setRegistration = function () {
     let form = document.getElementById("registered-form"),
@@ -363,7 +364,7 @@ let unwrapNullableUnionText = function (text) {
 };
 
 evtSource.addEventListener("class-highwatermark", function (e) {
-    const {updateOrAdd, remove} = processClassEvents();
+    const {updateOrAdd, remove} = processClassEvents(75000);
 
     classestable = new Tabulator("#classes-table", {
         data: updateOrAdd,
@@ -401,8 +402,9 @@ evtSource.addEventListener("class-highwatermark", function (e) {
 });
 
 evtSource.addEventListener("registration-highwatermark", function (e) {
-    const {updateOrAdd, remove} = processRegistrationEvents();
-
+    console.time('registered-init');
+    const {updateOrAdd, remove} = processRegistrationEvents(75000);
+    console.timeLog('registered-init');
     registeredtable = new Tabulator("#registered-table", {
         data: updateOrAdd,
         reactiveData: false,
@@ -437,11 +439,12 @@ evtSource.addEventListener("registration-highwatermark", function (e) {
 
     updateRegistrationCountLabel();
 
+    console.timeEnd('registered-init');
     setTimeout(batchRegisteredTableUpdate, maxUpdateMillis);
 });
 
 evtSource.addEventListener("effective-highwatermark", function (e) {
-    const {updateOrAdd, remove} = processEffectiveEvents();
+    const {updateOrAdd, remove} = processEffectiveEvents(75000);
 
     effectivetable = new Tabulator("#effective-table", {
         data: updateOrAdd,
@@ -487,11 +490,18 @@ evtSource.addEventListener("class", function (e) {
     classesEvents.set(key, value);
 });
 
-let processClassEvents = function () {
+let processClassEvents = function (maxRecords = maxRecordsPerUpdate) {
     const updateOrAdd = [];
     const remove = [];
 
-    classesEvents.forEach(function (value, key) {
+    let keys = classesEvents.keys();
+
+    let recordsToProcess = Math.min(classesEvents.size, maxRecords);
+
+    for(let i = 0; i < recordsToProcess; i++) {
+        const key = keys.next().value;
+        let value = classesEvents.get(key);
+
         if (value == null) { /*null means tombstone*/
             remove.push(key);
         } else {
@@ -511,9 +521,9 @@ let processClassEvents = function () {
                 screenpath: value.screenpath
             });
         }
-    });
 
-    classesEvents.clear();
+        classesEvents.delete(key);
+    }
 
     return {updateOrAdd, remove};
 };
@@ -526,11 +536,18 @@ evtSource.addEventListener("registration", function (e) {
     registeredEvents.set(key, value);
 });
 
-let processRegistrationEvents = function () {
+let processRegistrationEvents = function (maxRecords = maxRecordsPerUpdate) {
     const updateOrAdd = [];
     const remove = [];
 
-    registeredEvents.forEach(function (value, key) {
+    let keys = registeredEvents.keys();
+
+    let recordsToProcess = Math.min(registeredEvents.size, maxRecords);
+
+    for(let i = 0; i < recordsToProcess; i++) {
+        const key = keys.next().value;
+        let value = registeredEvents.get(key);
+
         if (value == null) { /*null means tombstone*/
             remove.push(key);
         } else {
@@ -558,9 +575,9 @@ let processRegistrationEvents = function () {
                 epicspv: epicspv
             });
         }
-    });
 
-    registeredEvents.clear();
+        registeredEvents.delete(key);
+    }
 
     return {updateOrAdd, remove};
 };
@@ -573,11 +590,18 @@ evtSource.addEventListener("effective", function (e) {
     effectiveEvents.set(key, value);
 });
 
-let processEffectiveEvents = function () {
+let processEffectiveEvents = function (maxRecords = maxRecordsPerUpdate) {
     const updateOrAdd = [];
     const remove = [];
 
-    effectiveEvents.forEach(function (value, key) {
+    let keys = effectiveEvents.keys();
+
+    let recordsToProcess = Math.min(effectiveEvents.size, maxRecords);
+
+    for(let i = 0; i < recordsToProcess; i++) {
+        const key = keys.next().value;
+        let value = effectiveEvents.get(key);
+
         if (value == null || value.calculated == null) { /*null means tombstone*/
             remove.push(key);
         } else {
@@ -607,9 +631,9 @@ let processEffectiveEvents = function () {
                 epicspv: epicspv
             });
         }
-    });
 
-    effectiveEvents.clear();
+        effectiveEvents.delete(key);
+    }
 
     return {updateOrAdd, remove};
 };
@@ -637,7 +661,7 @@ let batchClassesTableUpdate = function () {
         let promises = [];
 
         if(remove.length > 0) {
-            promises.push(classestable.deleteRow(remove));
+            //promises.push(classestable.deleteRow(remove));
         }
 
         if(updateOrAdd.length > 0) {
@@ -673,7 +697,7 @@ let batchRegisteredTableUpdate = function () {
         let promises = [];
 
         if(remove.length > 0) {
-            promises.push(registeredtable.deleteRow(remove));
+            //promises.push(registeredtable.deleteRow(remove));
         }
 
         if(updateOrAdd.length > 0) {
@@ -708,7 +732,7 @@ let batchEffectiveTableUpdate = function () {
         let promises = [];
 
         if(remove.length > 0) {
-            promises.push(effectivetable.deleteRow(remove));
+            //promises.push(effectivetable.deleteRow(remove));
         }
 
         if(updateOrAdd.length > 0) {
