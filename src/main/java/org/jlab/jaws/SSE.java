@@ -17,9 +17,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.Sse;
@@ -29,10 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -66,8 +61,13 @@ public class SSE implements ServletContextListener {
 
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS)
-    public void listen(@Context final SseEventSink sink) {
-        System.err.println("Proxy connected");
+    public void listen(@Context final SseEventSink sink,
+                       @QueryParam("classIndex") String classIndex,
+                       @QueryParam("registrationIndex") String registrationIndex,
+                       @QueryParam("effectiveIndex") String effectiveIndex) {
+        System.err.println("Proxy connected: classIndex: " + classIndex +
+                ", registrationIndex: " + registrationIndex +
+                ", effectiveIndex: " + effectiveIndex);
 
         exec.execute(new Runnable() {
 
@@ -202,6 +202,9 @@ public class SSE implements ServletContextListener {
     }
 
     private void sendClassRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmClass>> records) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+
         for (EventSourceRecord<String, AlarmClass> record : records) {
             String key = record.getKey();
             AlarmClass value = record.getValue();
@@ -221,10 +224,16 @@ public class SSE implements ServletContextListener {
                 }
             }
 
-            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + "}";
+            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + "},";
 
-            sink.send(sse.newEvent("class", recordString));
+            builder.append(recordString);
         }
+
+        int i = builder.lastIndexOf(",");
+
+        builder.replace(i, i + 1, "]");
+
+        sink.send(sse.newEvent("class", builder.toString()));
     }
 
     private void sendRegistrationRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmRegistration>> records) {
