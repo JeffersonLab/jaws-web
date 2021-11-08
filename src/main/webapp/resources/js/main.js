@@ -1,5 +1,6 @@
 import {AlarmClass, AlarmRegistration, EffectiveRegistration, KafkaLogPosition} from "./entities.js";
 import db from './db.js';
+import ui from './ui.js';
 import remote from './remote.js';
 
 db.classes.put(new AlarmClass("Testing")).then (function(){
@@ -10,4 +11,5 @@ db.classes.put(new AlarmClass("Testing")).then (function(){
     alert ("Ooops: " + error);
 });
 
+ui.start();
 remote.start();
