@@ -20,6 +20,12 @@ dependencies {
     providedCompile 'javax:javaee-api:8.0'
 }
 
+task customCleanUp(type:Delete) {
+    delete 'dockerWarVolume'
+}
+
+tasks.clean.dependsOn(tasks.customCleanUp)
+
 task copyWarToDockerVolume(type: Copy) {
     copy {
         from war
