@@ -46,6 +46,18 @@ class Remote {
             }
         });
     }
+
+    getLocations() {
+        fetch('proxy/rest/locations')
+    }
+
+    getCategories() {
+        return fetch('proxy/rest/categories');
+    }
+
+    getPriorities() {
+        fetch('proxy/rest/priorities')
+    }
 }
 
 const remote = new Remote();
