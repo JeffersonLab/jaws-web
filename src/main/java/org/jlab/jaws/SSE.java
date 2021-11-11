@@ -223,7 +223,7 @@ public class SSE implements ServletContextListener {
                 }
             }
 
-            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + "\", \"offset\": " + record.getOffset() + "},";
+            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + ", \"offset\": " + record.getOffset() + "},";
 
             builder.append(recordString);
         }
@@ -259,7 +259,7 @@ public class SSE implements ServletContextListener {
                 }
             }
 
-            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + "\", \"offset\": " + record.getOffset() + "},";
+            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + ", \"offset\": " + record.getOffset() + "},";
 
             builder.append(recordString);
         }
@@ -294,7 +294,7 @@ public class SSE implements ServletContextListener {
                 }
             }
 
-            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + "\", \"offset\": " + record.getOffset() + "},";
+            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + ", \"offset\": " + record.getOffset() + "},";
 
             builder.append(recordString);
         }

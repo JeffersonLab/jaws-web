@@ -10,6 +10,42 @@ class Remote {
     start() {
         console.log('starting remote!');
     }
+
+    setRegistration(formData) {
+        /*Treat empty string as no-field*/
+        for (var pair of Array.from(formData.entries())) {
+            if (pair[1] === "") {
+                formData.delete(pair[0]);
+            }
+        }
+
+        return fetch("proxy/rest/registered", {
+            method: "PUT",
+            body: new URLSearchParams(formData),
+            headers: {
+                Accept: "application/json",
+                "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
+            }
+        });
+    }
+
+    setClass(formData) {
+        /*Treat empty string as no-field*/
+        for (var pair of Array.from(formData.entries())) {
+            if (pair[1] === "") {
+                formData.delete(pair[0]);
+            }
+        }
+
+        return fetch("proxy/rest/class", {
+            method: "PUT",
+            body: new URLSearchParams(formData),
+            headers: {
+                Accept: "application/json",
+                "Content-type": 'application/x-www-form-urlencoded;charset=UTF-8'
+            }
+        });
+    }
 }
 
 const remote = new Remote();

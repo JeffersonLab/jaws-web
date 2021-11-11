@@ -7,12 +7,12 @@ db.version(1).stores({
     classes: "name",
     registrations: "name",
     effective: "name",
-    kafkaLogPositions: "name, position"
+    positions: "name, position"
 });
 
 db.classes.mapToClass(AlarmClass);
 db.registrations.mapToClass(AlarmRegistration);
 db.effective.mapToClass(EffectiveRegistration);
-db.kafkaLogPositions.mapToClass(KafkaLogPosition);
+db.positions.mapToClass(KafkaLogPosition);
 
 export default db;
