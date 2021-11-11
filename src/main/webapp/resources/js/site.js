@@ -9,54 +9,6 @@ var classestable = null;
 var registeredtable = null;
 var effectivetable = null;
 
-
-let evtSource = new EventSource('proxy/sse');
-
-let unwrapNullableUnionText = function (text) {
-    if (text != null) {
-        text = Object.values(text)[0];
-    }
-    return text;
-};
-
-evtSource.addEventListener("class-highwatermark", function (e) {
-    const {updateOrAdd, remove} = processClassEvents(75000);
-
-    classestable = new Tabulator("#classes-table", {
-        data: updateOrAdd,
-        reactiveData: false,
-        height: "100%", // enables the Virtual DOM
-        layout: "fitColumns",
-        responsiveLayout: "collapse",
-        index: "name",
-        selectable: 1,
-        initialSort: [
-            {column: "name", dir: "asc"}
-        ],
-        rowSelected: classRowSelected,
-        rowDeselected: classRowDeselected,
-        columns: [
-            {title: "name", field: "name"},
-            {title: "priority", field: "priority"},
-            {title: "location", field: "location"},
-            {title: "category", field: "category"},
-            {title: "rationale", field: "rationale"},
-            {title: "correctiveaction", field: "correctiveaction"},
-            {title: "pointofcontactusername", field: "pointofcontactusername"},
-            {title: "filterable", field: "filterable"},
-            {title: "latching", field: "latching"},
-            {title: "ondelayseconds", field: "ondelayseconds"},
-            {title: "offdelayseconds", field: "offdelayseconds"},
-            {title: "maskedby", field: "maskedby"},
-            {title: "screenpath", field: "screenpath"}
-        ]
-    });
-
-    updateClassCountLabel();
-
-    setTimeout(batchClassesTableUpdate, maxUpdateMillis);
-});
-
 evtSource.addEventListener("registration-highwatermark", function (e) {
     console.time('registered-init');
     const {updateOrAdd, remove} = processRegistrationEvents(75000);
@@ -145,44 +97,6 @@ evtSource.addEventListener("class", function (e) {
 
     classesEvents.set(key, value);
 });
-
-let processClassEvents = function (maxRecords = maxRecordsPerUpdate) {
-    const updateOrAdd = [];
-    const remove = [];
-
-    let keys = classesEvents.keys();
-
-    let recordsToProcess = Math.min(classesEvents.size, maxRecords);
-
-    for(let i = 0; i < recordsToProcess; i++) {
-        const key = keys.next().value;
-        let value = classesEvents.get(key);
-
-        if (value == null) { /*null means tombstone*/
-            remove.push(key);
-        } else {
-            updateOrAdd.push({
-                name: key,
-                priority: value.priority,
-                location: value.location,
-                category: value.category,
-                rationale: value.rationale,
-                correctiveaction: value.correctiveaction,
-                pointofcontactusername: value.pointofcontactusername,
-                filterable: value.filterable,
-                latching: value.latching,
-                ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
-                offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
-                maskedby: unwrapNullableUnionText(value.maskedby),
-                screenpath: value.screenpath
-            });
-        }
-
-        classesEvents.delete(key);
-    }
-
-    return {updateOrAdd, remove};
-};
 
 evtSource.addEventListener("registration", function (e) {
     let json = JSON.parse(e.data),
@@ -297,42 +211,6 @@ let processEffectiveEvents = function (maxRecords = maxRecordsPerUpdate) {
 evtSource.onerror = function (e) {
     console.log('error')
     console.log(e)
-}
-
-let updateClassCountLabel = function() {
-    let count = classestable.getDataCount("active");
-
-    let sorters = classestable.getSorters();
-    classestable.setSort(sorters);
-
-    $("#class-record-count").text(count.toLocaleString());
-};
-
-let batchClassesTableUpdate = function () {
-    const {updateOrAdd, remove} = processClassEvents();
-
-    if (updateOrAdd.length > 0 || remove.length > 0) {
-        console.time('batchClassesTableUpdate');
-
-        let promises = [];
-
-        if(remove.length > 0) {
-            //promises.push(classestable.deleteRow(remove));
-        }
-
-        if(updateOrAdd.length > 0) {
-            promises.push(classestable.updateOrAddData(updateOrAdd));
-        }
-
-        Promise.all(promises).then(function(){
-            updateClassCountLabel();
-
-            console.timeEnd('batchClassesTableUpdate');
-            setTimeout(batchClassesTableUpdate, maxUpdateMillis);
-        });
-    } else {
-        setTimeout(batchClassesTableUpdate, maxUpdateMillis);
-    }
 }
 
 let updateRegistrationCountLabel = function() {

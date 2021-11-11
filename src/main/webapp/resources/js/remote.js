@@ -1,12 +1,6 @@
 import {AlarmClass, AlarmRegistration, EffectiveRegistration} from "./entities.js";
 
-const worker = new Worker('worker.js', {"type": "module"});
-
-worker.onmessage = function(e) {
-    console.log('remote onmessage', e.data);
-}
-
-class Remote {
+class Remote extends EventTarget {
     start() {
         console.log('starting remote!');
     }
@@ -48,7 +42,7 @@ class Remote {
     }
 
     getLocations() {
-        fetch('proxy/rest/locations')
+        return fetch('proxy/rest/locations')
     }
 
     getCategories() {
@@ -56,10 +50,35 @@ class Remote {
     }
 
     getPriorities() {
-        fetch('proxy/rest/priorities')
+        return fetch('proxy/rest/priorities')
     }
 }
 
 const remote = new Remote();
+
+const worker = new Worker('worker.js', {"type": "module"});
+
+worker.onmessage = function(e) {
+    console.log('remote onmessage', e.data);
+
+    let event;
+
+    switch(e.data) {
+        case "class":
+             event = new CustomEvent("class", { detail: null });
+            remote.dispatchEvent(event);
+            break;
+        case "class-highwatermark":
+            event = new CustomEvent("class-highwatermark", { detail: null });
+            remote.dispatchEvent(event);
+            break;
+        case "registration":
+            event = new CustomEvent("registration", { detail: null });
+            remote.dispatchEvent(event);
+            break;
+        default:
+            console.log('Unknown worker message: ', e.data);
+    }
+}
 
 export default remote;

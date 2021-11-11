@@ -1,10 +1,6 @@
 import remote from './remote.js';
 
 class UserInterface {
-    constructor() {
-        this.self = this;
-    }
-
     registrationSearch() {
         registeredtable.clearFilter();
 
@@ -64,7 +60,7 @@ class UserInterface {
 
         promise.then(response => {
             if (response.ok) {
-                self.registeredRowDeselected();
+                ui.registeredRowDeselected();
                 $("#registration-dialog").dialog("close");
             } else {
                 response.json().then(function (data) {
@@ -93,7 +89,7 @@ class UserInterface {
 
         promise.then(response => {
             if (response.ok) {
-                self.classRowDeselected();
+                ui.classRowDeselected();
                 $("#class-dialog").dialog("close");
             } else {
                 response.json().then(function (data) {
@@ -242,14 +238,57 @@ class UserInterface {
             });
     }
 
+    updateClassCountLabel() {
+        let count = classestable.getDataCount("active");
+
+        let sorters = classestable.getSorters();
+        classestable.setSort(sorters);
+
+        $("#class-record-count").text(count.toLocaleString());
+    };
+
+    renderClassTable(data) {
+        classestable = new Tabulator("#classes-table", {
+            data: data,
+            reactiveData: false,
+            height: "100%", // enables the Virtual DOM
+            layout: "fitColumns",
+            responsiveLayout: "collapse",
+            index: "name",
+            selectable: 1,
+            initialSort: [
+                {column: "name", dir: "asc"}
+            ],
+            rowSelected: ui.classRowSelected,
+            rowDeselected: ui.classRowDeselected,
+            columns: [
+                {title: "name", field: "name"},
+                {title: "priority", field: "priority"},
+                {title: "location", field: "location"},
+                {title: "category", field: "category"},
+                {title: "rationale", field: "rationale"},
+                {title: "correctiveaction", field: "correctiveaction"},
+                {title: "pointofcontactusername", field: "pointofcontactusername"},
+                {title: "filterable", field: "filterable"},
+                {title: "latching", field: "latching"},
+                {title: "ondelayseconds", field: "ondelayseconds"},
+                {title: "offdelayseconds", field: "offdelayseconds"},
+                {title: "maskedby", field: "maskedby"},
+                {title: "screenpath", field: "screenpath"}
+            ]
+        });
+
+        ui.updateClassCountLabel();
+    }
+
     start() {
 
         $(function () {
             $(".toolbar button").button();
 
             $("#tabs").tabs({
-                activate: function (event, ui) {
-                    ui.newPanel.css("display", "flex");
+                activate: function (event, i) {
+                    i.newPanel.css("display", "flex");
                 }
             }).show();
 
@@ -259,7 +298,7 @@ class UserInterface {
                 width: 400,
                 modal: true,
                 buttons: {
-                    Set: self.setRegistration,
+                    Set: ui.setRegistration,
                     Cancel: function () {
                         registrationDialog.dialog("close");
                     }
@@ -268,7 +307,7 @@ class UserInterface {
 
             registrationDialog.find("form").on("submit", function (event) {
                 event.preventDefault();
-                self.setRegistration();
+                ui.setRegistration();
             });
 
             let classDialog = $("#class-dialog").dialog({
@@ -286,12 +325,16 @@ class UserInterface {
 
             classDialog.find("form").on("submit", function (event) {
                 event.preventDefault();
-                self.setClass();
+                ui.setClass();
             });
 
-            //self.initPriorities();
-            //self.initLocations();
-            //self.initCategories();
+            remote.addEventListener("class-highwatermark", function() {
+                ui.renderClassTable();
+            });
+
+            ui.initPriorities();
+            ui.initLocations();
+            ui.initCategories();
         });
 
         $(document).on("click", "#new-registration-button", function () {
@@ -343,7 +386,7 @@ class UserInterface {
                 if (!response.ok) {
                     throw new Error("Network response not ok");
                 }
-                self.registeredRowDeselected();
+                ui.registeredRowDeselected();
             })
                 .catch(error => {
                     console.error('Delete failed: ', error)
@@ -352,11 +395,11 @@ class UserInterface {
 
         $(document).on("submit", "#registered-search-form", function (event) {
             event.preventDefault();
-            self.registrationSearch();
+            ui.registrationSearch();
         });
 
         $(document).on("click", "#search-registration-button", function () {
-            self.registrationSearch();
+            ui.registrationSearch();
         });
 
         $(document).on("click", "#new-class-button", function () {
@@ -406,7 +449,7 @@ class UserInterface {
                 if (!response.ok) {
                     throw new Error("Network response not ok");
                 }
-                self.classRowDeselected();
+                ui.classRowDeselected();
             })
                 .catch(error => {
                     console.error('Delete failed: ', error)
@@ -415,21 +458,21 @@ class UserInterface {
 
         $(document).on("submit", "#class-search-form", function (event) {
             event.preventDefault();
-            self.classSearch();
+            ui.classSearch();
         });
 
         $(document).on("click", "#search-class-button", function () {
-            self.classSearch();
+            ui.classSearch();
         });
 
 
         $(document).on("click", "#search-effective-button", function () {
-            self.effectiveSearch();
+            ui.effectiveSearch();
         });
 
         $(document).on("submit", "#effective-search-form", function (event) {
             event.preventDefault();
-            self.effectiveSearch();
+            ui.effectiveSearch();
         });
     }
 }

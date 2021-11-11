@@ -1,6 +1,13 @@
 import db from './resources/js/db.js';
 import {AlarmClass} from "./resources/js/entities.js";
 
+let unwrapNullableUnionText = function (text) {
+    if (text != null) {
+        text = Object.values(text)[0];
+    }
+    return text;
+};
+
 async function init() {
     const [classPos, regPos, effPos] = await db.positions.bulkGet(["class", "registration", "effective"]);
 
@@ -17,17 +24,56 @@ async function init() {
 
         let records = JSON.parse(e.data);
 
-        let classes = [];
+        let classset = new Map();
 
-        for (const record of records) {
-            let key = record.key,
-                value = record.value;
+        // TODO: update EventSourceTable to resolve duplicates AND provide separate add/remove arrays
+        // Also, would be nice if union encoding (unwrapNullableUnionText) was done server-side...
 
-            console.log('found: ', key, value);
-            classes.push(new AlarmClass(key));
+        // Resolve duplicate keys;
+        for(const record of records) {
+            classset.set(record.key, record.value);
         }
 
-        db.classes.bulkPut(classes);
+        let remove = [];
+        let updateOrAdd = [];
+
+        let keys = classset.keys();
+
+        for (const key of keys) {
+            let value = classset.get(key);
+
+            console.log('found: ', key, value);
+
+            if(value == null) {
+                remove.push(key);
+            } else {
+                updateOrAdd.push(new AlarmClass(
+                    key,
+                    value.priority,
+                    value.location,
+                    value.category,
+                    value.rationale,
+                    value.correctiveaction,
+                    value.pointofcontactusername,
+                    value.filterable,
+                    value.latching,
+                    unwrapNullableUnionText(value.ondelayseconds),
+                    unwrapNullableUnionText(value.offdelayseconds),
+                    unwrapNullableUnionText(value.maskedby),
+                    value.screenpath
+                ));
+            }
+        }
+
+        if(remove.length > 0) {
+            db.classes.bulkDelete(remove);
+        }
+
+        if(updateOrAdd.length > 0) {
+            db.classes.bulkPut(updateOrAdd);
+        }
+
+        postMessage("class");
     });
 
     evtSource.addEventListener("class-highwatermark", function (e) {
