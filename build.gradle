@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jlab:jaws-libj:1.4.0',
+    implementation 'org.jlab:jaws-libj:1.5.0',
             'io.confluent:kafka-streams-avro-serde:6.1.0'
     providedCompile 'javax:javaee-api:8.0'
 }
