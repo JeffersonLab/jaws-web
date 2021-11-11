@@ -24,7 +24,6 @@ import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseEventSink;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.*;
@@ -62,9 +61,9 @@ public class SSE implements ServletContextListener {
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void listen(@Context final SseEventSink sink,
-                       @QueryParam("classIndex") String classIndex,
-                       @QueryParam("registrationIndex") String registrationIndex,
-                       @QueryParam("effectiveIndex") String effectiveIndex) {
+                       @QueryParam("classIndex") @DefaultValue("-1") long classIndex,
+                       @QueryParam("registrationIndex") @DefaultValue("-1") long registrationIndex,
+                       @QueryParam("effectiveIndex") @DefaultValue("-1") long effectiveIndex) {
         System.err.println("Proxy connected: classIndex: " + classIndex +
                 ", registrationIndex: " + registrationIndex +
                 ", effectiveIndex: " + effectiveIndex);
@@ -78,9 +77,9 @@ public class SSE implements ServletContextListener {
                 final Properties effectiveProps = getEffectiveProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
                 try (
-                        EventSourceTable<String, AlarmClass> classTable = new EventSourceTable<>(classProps);
-                        EventSourceTable<String, AlarmRegistration> registrationTable = new EventSourceTable<>(registrationProps);
-                        EventSourceTable<String, EffectiveRegistration> effectiveTable = new EventSourceTable<>(effectiveProps);
+                        EventSourceTable<String, AlarmClass> classTable = new EventSourceTable<>(classProps, classIndex);
+                        EventSourceTable<String, AlarmRegistration> registrationTable = new EventSourceTable<>(registrationProps, registrationIndex);
+                        EventSourceTable<String, EffectiveRegistration> effectiveTable = new EventSourceTable<>(effectiveProps, effectiveIndex);
                 ) {
 
                     classTable.addListener(new EventSourceListener<String, AlarmClass>() {
@@ -224,7 +223,7 @@ public class SSE implements ServletContextListener {
                 }
             }
 
-            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + "},";
+            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + "\", \"offset\": " + record.getOffset() + "},";
 
             builder.append(recordString);
         }
@@ -237,6 +236,9 @@ public class SSE implements ServletContextListener {
     }
 
     private void sendRegistrationRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmRegistration>> records) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+
         for (EventSourceRecord<String, AlarmRegistration> record : records) {
             String key = record.getKey();
             AlarmRegistration value = record.getValue();
@@ -257,13 +259,22 @@ public class SSE implements ServletContextListener {
                 }
             }
 
-            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + "}";
+            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + "\", \"offset\": " + record.getOffset() + "},";
 
-            sink.send(sse.newEvent("registration", recordString));
+            builder.append(recordString);
         }
+
+        int i = builder.lastIndexOf(",");
+
+        builder.replace(i, i + 1, "]");
+
+        sink.send(sse.newEvent("registration", builder.toString()));
     }
 
     private void sendEffectiveRecords(SseEventSink sink, Collection<EventSourceRecord<String, EffectiveRegistration>> records) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+
         for (EventSourceRecord<String, EffectiveRegistration> record : records) {
             String key = record.getKey();
             EffectiveRegistration value = record.getValue();
@@ -283,9 +294,15 @@ public class SSE implements ServletContextListener {
                 }
             }
 
-            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + "}";
+            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + "\", \"offset\": " + record.getOffset() + "},";
 
-            sink.send(sse.newEvent("effective", recordString));
+            builder.append(recordString);
         }
+
+        int i = builder.lastIndexOf(",");
+
+        builder.replace(i, i + 1, "]");
+
+        sink.send(sse.newEvent("effective", builder.toString()));
     }
 }
