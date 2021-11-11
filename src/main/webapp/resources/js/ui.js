@@ -1,6 +1,41 @@
 import remote from './remote.js';
+import TableUI from './table-ui.js';
 
 class UserInterface {
+    constructor() {
+        let panelElement = "#classes-panel",
+            tableElement = "#classes-table",
+            options = {
+                data: [],
+                reactiveData: false,
+                height: "100%", // enables the Virtual DOM
+                layout: "fitColumns",
+                responsiveLayout: "collapse",
+                index: "name",
+                selectable: 1,
+                initialSort: [
+                    {column: "name", dir: "asc"}
+                ],
+                columns: [
+                    {title: "name", field: "name"},
+                    {title: "priority", field: "priority"},
+                    {title: "location", field: "location"},
+                    {title: "category", field: "category"},
+                    {title: "rationale", field: "rationale"},
+                    {title: "correctiveaction", field: "correctiveaction"},
+                    {title: "pointofcontactusername", field: "pointofcontactusername"},
+                    {title: "filterable", field: "filterable"},
+                    {title: "latching", field: "latching"},
+                    {title: "ondelayseconds", field: "ondelayseconds"},
+                    {title: "offdelayseconds", field: "offdelayseconds"},
+                    {title: "maskedby", field: "maskedby"},
+                    {title: "screenpath", field: "screenpath"}
+                ]
+            };
+
+       this.classes = new TableUI(panelElement, tableElement, options);
+    }
+
     registrationSearch() {
         registeredtable.clearFilter();
 
@@ -115,19 +150,9 @@ class UserInterface {
         $("#registered-toolbar .selected-row-action").button("option", "disabled", false);
     }
 
-    classRowSelected(row) {
-        $("#class-toolbar .no-selection-row-action").button("option", "disabled", true);
-        $("#class-toolbar .selected-row-action").button("option", "disabled", false);
-    }
-
     registeredRowDeselected(row) {
         $("#registered-toolbar .no-selection-row-action").button("option", "disabled", false);
         $("#registered-toolbar .selected-row-action").button("option", "disabled", true);
-    }
-
-    classRowDeselected(row) {
-        $("#class-toolbar .no-selection-row-action").button("option", "disabled", false);
-        $("#class-toolbar .selected-row-action").button("option", "disabled", true);
     }
 
     initPriorities() {
@@ -238,49 +263,6 @@ class UserInterface {
             });
     }
 
-    updateClassCountLabel() {
-        let count = classestable.getDataCount("active");
-
-        let sorters = classestable.getSorters();
-        classestable.setSort(sorters);
-
-        $("#class-record-count").text(count.toLocaleString());
-    };
-
-    renderClassTable(data) {
-        classestable = new Tabulator("#classes-table", {
-            data: data,
-            reactiveData: false,
-            height: "100%", // enables the Virtual DOM
-            layout: "fitColumns",
-            responsiveLayout: "collapse",
-            index: "name",
-            selectable: 1,
-            initialSort: [
-                {column: "name", dir: "asc"}
-            ],
-            rowSelected: ui.classRowSelected,
-            rowDeselected: ui.classRowDeselected,
-            columns: [
-                {title: "name", field: "name"},
-                {title: "priority", field: "priority"},
-                {title: "location", field: "location"},
-                {title: "category", field: "category"},
-                {title: "rationale", field: "rationale"},
-                {title: "correctiveaction", field: "correctiveaction"},
-                {title: "pointofcontactusername", field: "pointofcontactusername"},
-                {title: "filterable", field: "filterable"},
-                {title: "latching", field: "latching"},
-                {title: "ondelayseconds", field: "ondelayseconds"},
-                {title: "offdelayseconds", field: "offdelayseconds"},
-                {title: "maskedby", field: "maskedby"},
-                {title: "screenpath", field: "screenpath"}
-            ]
-        });
-
-        ui.updateClassCountLabel();
-    }
-
     start() {
 
         $(function () {
@@ -326,10 +308,6 @@ class UserInterface {
             classDialog.find("form").on("submit", function (event) {
                 event.preventDefault();
                 ui.setClass();
-            });
-
-            remote.addEventListener("class-highwatermark", function() {
-                ui.renderClassTable();
             });
 
             ui.initPriorities();

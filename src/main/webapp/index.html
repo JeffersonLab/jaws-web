@@ -15,13 +15,13 @@
 </header>
 <div id="tabs">
     <ul>
-        <li><a href="#tabs-1">Classes</a></li>
+        <li><a href="#classes-panel">Classes</a></li>
         <li><a href="#tabs-2">Registrations</a></li>
         <li><a href="#tabs-3">Effective</a></li>
     </ul>
-    <div id="tabs-1">
+    <div id="classes-panel">
         <h2>Alarm Classes</h2>
-        <div id="class-toolbar" class="toolbar">
+        <div class="toolbar">
             <form id="class-search-form" class="search-form" onsubmit="return false;">
                 <input type="text" value="" id="class-search-input" class="search-input" placeholder="field=value,field=value"/>
                 <button type="button" id="search-class-button">Search</button> |
@@ -29,7 +29,7 @@
             <button type="button" id="new-class-button">New</button> |
             <button type="button" id="edit-class-button" class="selected-row-action" disabled="disabled">Edit</button>
             <button type="button" id="delete-class-button" class="selected-row-action" disabled="disabled">Delete</button> |
-            <span>Records: </span><span id="class-record-count"></span>
+            <span>Records: </span><span class="record-count"></span>
         </div>
         <div id="classes-table"></div>
         <div id="class-dialog" class="dialog" title="New Class">
