@@ -1,5 +1,5 @@
 import db from './resources/js/db.js';
-import {AlarmClass} from "./resources/js/entities.js";
+import {AlarmClass, AlarmRegistration} from "./resources/js/entities.js";
 
 let unwrapNullableUnionText = function (text) {
     if (text != null) {
@@ -19,9 +19,7 @@ async function init() {
         '&registrationIndex=' + regIndex +
         '&effectiveIndex=' + effIndex);
 
-    evtSource.addEventListener("class", function (e) {
-        console.log('class (worker)!', e.data);
-
+    evtSource.addEventListener("class", async (e) => {
         let records = JSON.parse(e.data);
 
         let classset = new Map();
@@ -41,8 +39,6 @@ async function init() {
 
         for (const key of keys) {
             let value = classset.get(key);
-
-            console.log('found: ', key, value);
 
             if(value == null) {
                 remove.push(key);
@@ -66,24 +62,88 @@ async function init() {
         }
 
         if(remove.length > 0) {
-            db.classes.bulkDelete(remove);
+            await db.classes.bulkDelete(remove);
         }
 
         if(updateOrAdd.length > 0) {
-            db.classes.bulkPut(updateOrAdd);
+            await db.classes.bulkPut(updateOrAdd);
         }
 
         postMessage("class");
     });
 
+    evtSource.addEventListener("registration", async (e) => {
+        let records = JSON.parse(e.data);
+
+        let set = new Map();
+
+        // TODO: update EventSourceTable to resolve duplicates AND provide separate add/remove arrays
+        // Also, would be nice if union encoding (unwrapNullableUnionText) was done server-side...
+
+        // Resolve duplicate keys;
+        for(const record of records) {
+            set.set(record.key, record.value);
+        }
+
+        let remove = [];
+        let updateOrAdd = [];
+
+        let keys = set.keys();
+
+        for (const key of keys) {
+            let value = set.get(key);
+
+            if(value == null) {
+                remove.push(key);
+            } else {
+                let epicspv = null;
+
+                if ("org.jlab.jaws.entity.EPICSProducer" in value.producer) {
+                    epicspv = value.producer["org.jlab.jaws.entity.EPICSProducer"].pv;
+                }
+
+                updateOrAdd.push(new AlarmRegistration(
+                    key,
+                    value.class,
+                    unwrapNullableUnionText(value.priority),
+                    unwrapNullableUnionText(value.location),
+                    unwrapNullableUnionText(value.category),
+                    unwrapNullableUnionText(value.rationale),
+                    unwrapNullableUnionText(value.correctiveaction),
+                    unwrapNullableUnionText(value.pointofcontactusername),
+                    unwrapNullableUnionText(value.filterable),
+                    unwrapNullableUnionText(value.latching),
+                    unwrapNullableUnionText(value.ondelayseconds),
+                    unwrapNullableUnionText(value.offdelayseconds),
+                    unwrapNullableUnionText(value.maskedby),
+                    unwrapNullableUnionText(value.screenpath),
+                    epicspv
+                ));
+            }
+        }
+
+        if(remove.length > 0) {
+            await db.registrations.bulkDelete(remove);
+        }
+
+        if(updateOrAdd.length > 0) {
+            await db.registrations.bulkPut(updateOrAdd);
+        }
+
+        postMessage("registration");
+    });
+
     evtSource.addEventListener("class-highwatermark", function (e) {
-        console.log('class-highwatermark (worker)!');
         postMessage("class-highwatermark");
+    });
+
+    evtSource.addEventListener("registration-highwatermark", function (e) {
+        postMessage("registration-highwatermark");
     });
 }
 
 init().then(()=>{
-    console.log("success");
+    console.log("worker started");
 }).catch(error => {
     console.error(error);
 });

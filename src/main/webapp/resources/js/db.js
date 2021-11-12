@@ -10,6 +10,11 @@ db.version(1).stores({
     positions: "name, position"
 });
 
+db.classes.clear();
+db.registrations.clear();
+db.effective.clear();
+db.positions.clear();
+
 db.classes.mapToClass(AlarmClass);
 db.registrations.mapToClass(AlarmRegistration);
 db.effective.mapToClass(EffectiveRegistration);

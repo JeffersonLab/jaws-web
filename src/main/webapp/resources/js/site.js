@@ -9,48 +9,6 @@ var classestable = null;
 var registeredtable = null;
 var effectivetable = null;
 
-evtSource.addEventListener("registration-highwatermark", function (e) {
-    console.time('registered-init');
-    const {updateOrAdd, remove} = processRegistrationEvents(75000);
-    console.timeLog('registered-init');
-    registeredtable = new Tabulator("#registered-table", {
-        data: updateOrAdd,
-        reactiveData: false,
-        height: "100%", // enables the Virtual DOM
-        layout: "fitColumns",
-        responsiveLayout: "collapse",
-        index: "name",
-        selectable: 1,
-        initialSort: [
-            {column: "name", dir: "asc"}
-        ],
-        rowSelected: registeredRowSelected,
-        rowDeselected: registeredRowDeselected,
-        columns: [
-            {title: "name", field: "name"},
-            {title: "class", field: "class"},
-            {title: "priority", field: "priority"},
-            {title: "location", field: "location"},
-            {title: "category", field: "category"},
-            {title: "rationale", field: "rationale"},
-            {title: "correctiveaction", field: "correctiveaction"},
-            {title: "pointofcontactusername", field: "pointofcontactusername"},
-            {title: "filterable", field: "filterable"},
-            {title: "latching", field: "latching"},
-            {title: "ondelayseconds", field: "ondelayseconds"},
-            {title: "offdelayseconds", field: "offdelayseconds"},
-            {title: "maskedby", field: "maskedby"},
-            {title: "screenpath", field: "screenpath"},
-            {title: "epicspv", field: "epicspv"}
-        ]
-    });
-
-    updateRegistrationCountLabel();
-
-    console.timeEnd('registered-init');
-    setTimeout(batchRegisteredTableUpdate, maxUpdateMillis);
-});
-
 evtSource.addEventListener("effective-highwatermark", function (e) {
     const {updateOrAdd, remove} = processEffectiveEvents(75000);
 
@@ -105,52 +63,6 @@ evtSource.addEventListener("registration", function (e) {
 
     registeredEvents.set(key, value);
 });
-
-let processRegistrationEvents = function (maxRecords = maxRecordsPerUpdate) {
-    const updateOrAdd = [];
-    const remove = [];
-
-    let keys = registeredEvents.keys();
-
-    let recordsToProcess = Math.min(registeredEvents.size, maxRecords);
-
-    for(let i = 0; i < recordsToProcess; i++) {
-        const key = keys.next().value;
-        let value = registeredEvents.get(key);
-
-        if (value == null) { /*null means tombstone*/
-            remove.push(key);
-        } else {
-            let epicspv = null;
-
-            if ("org.jlab.jaws.entity.EPICSProducer" in value.producer) {
-                epicspv = value.producer["org.jlab.jaws.entity.EPICSProducer"].pv;
-            }
-
-            updateOrAdd.push({
-                name: key,
-                class: value.class,
-                priority: unwrapNullableUnionText(value.priority),
-                location: unwrapNullableUnionText(value.location),
-                category: unwrapNullableUnionText(value.category),
-                rationale: unwrapNullableUnionText(value.rationale),
-                correctiveaction: unwrapNullableUnionText(value.correctiveaction),
-                pointofcontactusername: unwrapNullableUnionText(value.pointofcontactusername),
-                filterable: unwrapNullableUnionText(value.filterable),
-                latching: unwrapNullableUnionText(value.latching),
-                ondelayseconds: unwrapNullableUnionText(value.ondelayseconds),
-                offdelayseconds: unwrapNullableUnionText(value.offdelayseconds),
-                maskedby: unwrapNullableUnionText(value.maskedby),
-                screenpath: unwrapNullableUnionText(value.screenpath),
-                epicspv: epicspv
-            });
-        }
-
-        registeredEvents.delete(key);
-    }
-
-    return {updateOrAdd, remove};
-};
 
 evtSource.addEventListener("effective", function (e) {
     let json = JSON.parse(e.data),

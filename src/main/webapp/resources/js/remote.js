@@ -59,8 +59,6 @@ const remote = new Remote();
 const worker = new Worker('worker.js', {"type": "module"});
 
 worker.onmessage = function(e) {
-    console.log('remote onmessage', e.data);
-
     let event;
 
     switch(e.data) {
@@ -74,6 +72,10 @@ worker.onmessage = function(e) {
             break;
         case "registration":
             event = new CustomEvent("registration", { detail: null });
+            remote.dispatchEvent(event);
+            break;
+        case "registration-highwatermark":
+            event = new CustomEvent("registration-highwatermark", { detail: null });
             remote.dispatchEvent(event);
             break;
         default:

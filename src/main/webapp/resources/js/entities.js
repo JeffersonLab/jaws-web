@@ -18,8 +18,23 @@ class AlarmClass {
 }
 
 class AlarmRegistration {
-    constructor(name) {
+    constructor(name, clazz, priority, location, category, rationale, correctiveaction, pointofcontactusername,
+                filterable, latching, ondelayseconds, offdelayseconds, maskedby, screenpath, epicspv) {
         this.name = name;
+        this.class = clazz;
+        this.priority = priority;
+        this.location = location;
+        this.category = category;
+        this.rationale = rationale;
+        this.correctiveaction = correctiveaction;
+        this.pointofcontactusername = pointofcontactusername;
+        this.filterable = filterable;
+        this.latching = latching;
+        this.ondelayseconds = ondelayseconds;
+        this.offdelayseconds = offdelayseconds;
+        this.maskedby = maskedby;
+        this.screenpath = screenpath;
+        this.epicspv = epicspv;
     }
 }
 
