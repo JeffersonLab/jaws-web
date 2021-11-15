@@ -84,42 +84,42 @@ public class SSE implements ServletContextListener {
 
                     classTable.addListener(new EventSourceListener<String, AlarmClass>() {
                         @Override
-                        public void initialState(Set<EventSourceRecord<String, AlarmClass>> records) {
-                            sendClassRecords(sink, records);
+                        public void initialState(LinkedHashMap<String, EventSourceRecord<String, AlarmClass>> records) {
+                            sendClassRecords(sink, records.values());
                             sink.send(sse.newEvent("class-highwatermark", ""));
                         }
 
                         @Override
-                        public void changes(List<EventSourceRecord<String, AlarmClass>> records) {
-                            sendClassRecords(sink, records);
+                        public void changes(LinkedHashMap<String, EventSourceRecord<String, AlarmClass>> records) {
+                            sendClassRecords(sink, records.values());
                         }
 
                     });
 
                     registrationTable.addListener(new EventSourceListener<String, AlarmRegistration>() {
                         @Override
-                        public void initialState(Set<EventSourceRecord<String, AlarmRegistration>> records) {
-                            sendRegistrationRecords(sink, records);
+                        public void initialState(LinkedHashMap<String, EventSourceRecord<String, AlarmRegistration>> records) {
+                            sendRegistrationRecords(sink, records.values());
                             sink.send(sse.newEvent("registration-highwatermark", ""));
                         }
 
                         @Override
-                        public void changes(List<EventSourceRecord<String, AlarmRegistration>> records) {
-                            sendRegistrationRecords(sink, records);
+                        public void changes(LinkedHashMap<String, EventSourceRecord<String, AlarmRegistration>> records) {
+                            sendRegistrationRecords(sink, records.values());
                         }
 
                     });
 
                     effectiveTable.addListener(new EventSourceListener<String, EffectiveRegistration>() {
                         @Override
-                        public void initialState(Set<EventSourceRecord<String, EffectiveRegistration>> records) {
-                            sendEffectiveRecords(sink, records);
+                        public void initialState(LinkedHashMap<String, EventSourceRecord<String, EffectiveRegistration>> records) {
+                            sendEffectiveRecords(sink, records.values());
                             sink.send(sse.newEvent("effective-highwatermark", ""));
                         }
 
                         @Override
-                        public void changes(List<EventSourceRecord<String, EffectiveRegistration>> records) {
-                            sendEffectiveRecords(sink, records);
+                        public void changes(LinkedHashMap<String, EventSourceRecord<String, EffectiveRegistration>> records) {
+                            sendEffectiveRecords(sink, records.values());
                         }
 
                     });
