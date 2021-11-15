@@ -22,7 +22,7 @@ class TableUI extends EventTarget {
 
         this.updateCountLabel();
 
-        // bind this on methods (not fool proof though since callers can also bind)
+        // bind this on methods
         const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
 
         methods
