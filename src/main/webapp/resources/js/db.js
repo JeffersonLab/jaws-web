@@ -7,13 +7,8 @@ db.version(1).stores({
     classes: "name",
     registrations: "name",
     effective: "name",
-    positions: "name, position"
+    positions: "name"
 });
-
-db.classes.clear();
-db.registrations.clear();
-db.effective.clear();
-db.positions.clear();
 
 db.classes.mapToClass(AlarmClass);
 db.registrations.mapToClass(AlarmRegistration);
