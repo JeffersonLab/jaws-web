@@ -1,5 +1,5 @@
 import db from './resources/js/db.js';
-import {AlarmClass, AlarmRegistration} from "./resources/js/entities.js";
+import {AlarmClass, AlarmRegistration, KafkaLogPosition} from "./resources/js/entities.js";
 
 let unwrapNullableUnionText = function (text) {
     if (text != null) {
@@ -14,6 +14,8 @@ async function init() {
     let classIndex = classPos === undefined ? -1 : classPos.position;
     let regIndex = regPos === undefined ? -1 : regPos.position;
     let effIndex = effPos === undefined ? -1 : effPos.position;
+
+    console.log('classIndex: ', classIndex, ', regIndex: ', regIndex, ', effIndex: ', effIndex);
 
     const evtSource = new EventSource('proxy/sse?classIndex=' + classIndex +
         '&registrationIndex=' + regIndex +
@@ -30,6 +32,7 @@ async function init() {
         // Resolve duplicate keys;
         for(const record of records) {
             classset.set(record.key, record.value);
+            console.log(record.key, record.offset);
         }
 
         let remove = [];
@@ -67,6 +70,12 @@ async function init() {
 
         if(updateOrAdd.length > 0) {
             await db.classes.bulkPut(updateOrAdd);
+        }
+
+        if(records.length > 0) {
+            let resumeIndex = records[records.length - 1].offset;
+            await db.positions.put(new KafkaLogPosition('class', resumeIndex));
+            console.log('Saved class resume index: ', resumeIndex);
         }
 
         postMessage("class");
