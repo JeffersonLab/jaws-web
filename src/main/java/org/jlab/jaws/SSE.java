@@ -1,13 +1,12 @@
 package org.jlab.jaws;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificDatumWriter;
-import org.jlab.jaws.entity.AlarmRegistration;
-import org.jlab.jaws.entity.AlarmClass;
-import org.jlab.jaws.entity.EffectiveRegistration;
+import org.jlab.jaws.entity.*;
 import org.jlab.jaws.eventsource.EventSourceConfig;
 import org.jlab.jaws.eventsource.EventSourceListener;
 import org.jlab.jaws.eventsource.EventSourceRecord;
@@ -204,6 +203,10 @@ public class SSE implements ServletContextListener {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 
+        ObjectMapper mapper = new ObjectMapper();
+
+        mapper.addMixIn(AlarmClass.class, AlarmClassMixin.class);
+
         for (EventSourceRecord<String, AlarmClass> record : records) {
             String key = record.getKey();
             AlarmClass value = record.getValue();
@@ -212,12 +215,7 @@ public class SSE implements ServletContextListener {
 
             if (value != null) {
                 try {
-                    SpecificDatumWriter<AlarmClass> writer = new SpecificDatumWriter<>(value.getSchema());
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    JsonEncoder encoder = EncoderFactory.get().jsonEncoder(value.getSchema(), out);
-                    writer.write(value, encoder);
-                    encoder.flush();
-                    jsonValue = out.toString(Charset.forName("UTF-8"));
+                    jsonValue = mapper.writeValueAsString(value);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

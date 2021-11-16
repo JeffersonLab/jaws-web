@@ -11,7 +11,8 @@ let unwrapNullableUnionText = function (text) {
 async function init() {
     const [classPos, regPos, effPos] = await db.positions.bulkGet(["class", "registration", "effective"]);
 
-    let classIndex = classPos === undefined ? -1 : classPos.position;
+    //let classIndex = classPos === undefined ? -1 : classPos.position;
+    let classIndex = -1;
     let regIndex = regPos === undefined ? -1 : regPos.position;
     let effIndex = effPos === undefined ? -1 : effPos.position;
 
@@ -24,24 +25,12 @@ async function init() {
     evtSource.addEventListener("class", async (e) => {
         let records = JSON.parse(e.data);
 
-        let classset = new Map();
-
-        // TODO: update EventSourceTable to resolve duplicates AND provide separate add/remove arrays
-        // Also, would be nice if union encoding (unwrapNullableUnionText) was done server-side...
-
-        // Resolve duplicate keys;
-        for(const record of records) {
-            classset.set(record.key, record.value);
-            console.log(record.key, record.offset);
-        }
-
         let remove = [];
         let updateOrAdd = [];
 
-        let keys = classset.keys();
-
-        for (const key of keys) {
-            let value = classset.get(key);
+        for (const record of records) {
+            let key = record.key;
+            let value = record.value;
 
             if(value == null) {
                 remove.push(key);
@@ -56,9 +45,9 @@ async function init() {
                     value.pointofcontactusername,
                     value.filterable,
                     value.latching,
-                    unwrapNullableUnionText(value.ondelayseconds),
-                    unwrapNullableUnionText(value.offdelayseconds),
-                    unwrapNullableUnionText(value.maskedby),
+                    value.ondelayseconds,
+                    value.offdelayseconds,
+                    value.maskedby,
                     value.screenpath
                 ));
             }
