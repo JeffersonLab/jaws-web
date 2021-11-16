@@ -7,13 +7,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.jlab.jaws.entity.*;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS,
-        property = "producer")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = SimpleProducer.class),
-        @JsonSubTypes.Type(value = EPICSProducer.class),
-        @JsonSubTypes.Type(value = CALCProducer.class)
-})
 interface AlarmRegistrationMixin {
     @JsonProperty
     String getName();
