@@ -1,10 +1,11 @@
-package org.jlab.jaws;
+package org.jlab.jaws.json;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-interface CALCProducerMixin {
+public
+interface EPICSProducerMixin {
     @JsonProperty
-    String getExpression();
+    String getPv();
 }

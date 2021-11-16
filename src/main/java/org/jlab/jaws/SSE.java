@@ -11,6 +11,7 @@ import org.jlab.jaws.eventsource.EventSourceConfig;
 import org.jlab.jaws.eventsource.EventSourceListener;
 import org.jlab.jaws.eventsource.EventSourceRecord;
 import org.jlab.jaws.eventsource.EventSourceTable;
+import org.jlab.jaws.json.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.ServletContextEvent;
