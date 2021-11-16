@@ -4,10 +4,9 @@ import {AlarmClass, AlarmRegistration, EffectiveRegistration, KafkaLogPosition} 
 async function init() {
     const [classPos, regPos, effPos] = await db.positions.bulkGet(["class", "registration", "effective"]);
 
-    //let classIndex = classPos === undefined ? -1 : classPos.position;
-    let classIndex = -1;
-    let regIndex = regPos === undefined ? -1 : regPos.position;
-    let effIndex = effPos === undefined ? -1 : effPos.position;
+    let classIndex = classPos === undefined ? -1 : classPos.position + 1;
+    let regIndex = regPos === undefined ? -1 : regPos.position + 1;
+    let effIndex = effPos === undefined ? -1 : effPos.position + 1;
 
     console.log('classIndex: ', classIndex, ', regIndex: ', regIndex, ', effIndex: ', effIndex);
 
@@ -104,6 +103,12 @@ async function init() {
             await db.registrations.bulkPut(updateOrAdd);
         }
 
+        if(records.length > 0) {
+            let resumeIndex = records[records.length - 1].offset;
+            await db.positions.put(new KafkaLogPosition('registration', resumeIndex));
+            console.log('Saved registration resume index: ', resumeIndex);
+        }
+
         postMessage("registration");
     });
 
@@ -146,6 +151,12 @@ async function init() {
 
         if(updateOrAdd.length > 0) {
             await db.effective.bulkPut(updateOrAdd);
+        }
+
+        if(records.length > 0) {
+            let resumeIndex = records[records.length - 1].offset;
+            await db.positions.put(new KafkaLogPosition('effective', resumeIndex));
+            console.log('Saved effective resume index: ', resumeIndex);
         }
 
         postMessage("effective");

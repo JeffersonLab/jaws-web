@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.jlab.jaws.entity.*;
-import org.jlab.jaws.eventsource.EventSourceConfig;
-import org.jlab.jaws.eventsource.EventSourceListener;
-import org.jlab.jaws.eventsource.EventSourceRecord;
-import org.jlab.jaws.eventsource.EventSourceTable;
+import org.jlab.jaws.eventsource.*;
 import org.jlab.jaws.json.*;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -72,9 +69,9 @@ public class SSE implements ServletContextListener {
                 final Properties effectiveProps = getEffectiveProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
                 try (
-                        EventSourceTable<String, AlarmClass> classTable = new EventSourceTable<>(classProps, classIndex);
-                        EventSourceTable<String, AlarmRegistration> registrationTable = new EventSourceTable<>(registrationProps, registrationIndex);
-                        EventSourceTable<String, EffectiveRegistration> effectiveTable = new EventSourceTable<>(effectiveProps, effectiveIndex);
+                        EventSourceTable2<String, AlarmClass> classTable = new EventSourceTable2<>(classProps, classIndex);
+                        EventSourceTable2<String, AlarmRegistration> registrationTable = new EventSourceTable2<>(registrationProps, registrationIndex);
+                        EventSourceTable2<String, EffectiveRegistration> effectiveTable = new EventSourceTable2<>(effectiveProps, effectiveIndex);
                 ) {
 
                     classTable.addListener(new EventSourceListener<String, AlarmClass>() {
@@ -224,7 +221,11 @@ public class SSE implements ServletContextListener {
 
         int i = builder.lastIndexOf(",");
 
-        builder.replace(i, i + 1, "]");
+        if(i == -1) {
+            builder.append("]");
+        } else {
+            builder.replace(i, i + 1, "]");
+        }
 
         sink.send(sse.newEvent("class", builder.toString()));
     }
@@ -261,7 +262,11 @@ public class SSE implements ServletContextListener {
 
         int i = builder.lastIndexOf(",");
 
-        builder.replace(i, i + 1, "]");
+        if(i == -1) {
+            builder.append("]");
+        } else {
+            builder.replace(i, i + 1, "]");
+        }
 
         sink.send(sse.newEvent("registration", builder.toString()));
     }
@@ -299,7 +304,11 @@ public class SSE implements ServletContextListener {
 
         int i = builder.lastIndexOf(",");
 
-        builder.replace(i, i + 1, "]");
+        if(i == -1) {
+            builder.append("]");
+        } else {
+            builder.replace(i, i + 1, "]");
+        }
 
         sink.send(sse.newEvent("effective", builder.toString()));
     }
