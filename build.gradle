@@ -16,7 +16,8 @@ repositories {
 
 dependencies {
     implementation 'org.jlab:jaws-libj:1.6.0',
-            'io.confluent:kafka-streams-avro-serde:6.1.0'
+            'io.confluent:kafka-streams-avro-serde:6.1.0',
+            'com.fasterxml.jackson.core:jackson-databind:2.11.3'
     providedCompile 'javax:javaee-api:8.0'
 }
 
