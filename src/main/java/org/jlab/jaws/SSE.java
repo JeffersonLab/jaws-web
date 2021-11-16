@@ -237,6 +237,13 @@ public class SSE implements ServletContextListener {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 
+        ObjectMapper mapper = new ObjectMapper();
+
+        mapper.addMixIn(AlarmRegistration.class, AlarmRegistrationMixin.class);
+        mapper.addMixIn(SimpleProducer.class, SimpleProducerMixin.class);
+        mapper.addMixIn(EPICSProducer.class, EPICSProducerMixin.class);
+        mapper.addMixIn(CALCProducer.class, CALCProducerMixin.class);
+
         for (EventSourceRecord<String, AlarmRegistration> record : records) {
             String key = record.getKey();
             AlarmRegistration value = record.getValue();
@@ -245,13 +252,7 @@ public class SSE implements ServletContextListener {
 
             if (value != null) {
                 try {
-                    SpecificDatumWriter<AlarmRegistration> writer = new SpecificDatumWriter<>(value.getSchema());
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    // See: https://issues.apache.org/jira/browse/AVRO-1582 - JSON encoded union fields needed to indicate nullable are encoded as array!
-                    JsonEncoder encoder = EncoderFactory.get().jsonEncoder(value.getSchema(), out);
-                    writer.write(value, encoder);
-                    encoder.flush();
-                    jsonValue = out.toString(Charset.forName("UTF-8"));
+                    jsonValue = mapper.writeValueAsString(value);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

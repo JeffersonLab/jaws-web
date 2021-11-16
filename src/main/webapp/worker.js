@@ -73,49 +73,32 @@ async function init() {
     evtSource.addEventListener("registration", async (e) => {
         let records = JSON.parse(e.data);
 
-        let set = new Map();
-
-        // TODO: update EventSourceTable to resolve duplicates AND provide separate add/remove arrays
-        // Also, would be nice if union encoding (unwrapNullableUnionText) was done server-side...
-
-        // Resolve duplicate keys;
-        for(const record of records) {
-            set.set(record.key, record.value);
-        }
-
         let remove = [];
         let updateOrAdd = [];
 
-        let keys = set.keys();
-
-        for (const key of keys) {
-            let value = set.get(key);
+        for (const record of records) {
+            let key = record.key,
+                value = record.value;
 
             if(value == null) {
                 remove.push(key);
             } else {
-                let epicspv = null;
-
-                if ("org.jlab.jaws.entity.EPICSProducer" in value.producer) {
-                    epicspv = value.producer["org.jlab.jaws.entity.EPICSProducer"].pv;
-                }
-
                 updateOrAdd.push(new AlarmRegistration(
                     key,
                     value.class,
-                    unwrapNullableUnionText(value.priority),
-                    unwrapNullableUnionText(value.location),
-                    unwrapNullableUnionText(value.category),
-                    unwrapNullableUnionText(value.rationale),
-                    unwrapNullableUnionText(value.correctiveaction),
-                    unwrapNullableUnionText(value.pointofcontactusername),
-                    unwrapNullableUnionText(value.filterable),
-                    unwrapNullableUnionText(value.latching),
-                    unwrapNullableUnionText(value.ondelayseconds),
-                    unwrapNullableUnionText(value.offdelayseconds),
-                    unwrapNullableUnionText(value.maskedby),
-                    unwrapNullableUnionText(value.screenpath),
-                    epicspv
+                    value.priority,
+                    value.location,
+                    value.category,
+                    value.rationale,
+                    value.correctiveaction,
+                    value.pointofcontactusername,
+                    value.filterable,
+                    value.latching,
+                    value.ondelayseconds,
+                    value.offdelayseconds,
+                    value.maskedby,
+                    value.screenpath,
+                    value.producer.pv
                 ));
             }
         }
