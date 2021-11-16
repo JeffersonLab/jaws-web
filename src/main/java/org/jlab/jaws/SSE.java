@@ -275,6 +275,14 @@ public class SSE implements ServletContextListener {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 
+        ObjectMapper mapper = new ObjectMapper();
+
+        mapper.addMixIn(EffectiveRegistration.class, EffectiveRegistrationMixin.class);
+        mapper.addMixIn(AlarmRegistration.class, AlarmRegistrationMixin.class);
+        mapper.addMixIn(SimpleProducer.class, SimpleProducerMixin.class);
+        mapper.addMixIn(EPICSProducer.class, EPICSProducerMixin.class);
+        mapper.addMixIn(CALCProducer.class, CALCProducerMixin.class);
+
         for (EventSourceRecord<String, EffectiveRegistration> record : records) {
             String key = record.getKey();
             EffectiveRegistration value = record.getValue();
@@ -283,12 +291,7 @@ public class SSE implements ServletContextListener {
 
             if (value != null) {
                 try {
-                    SpecificDatumWriter<EffectiveRegistration> writer = new SpecificDatumWriter<>(value.getSchema());
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    JsonEncoder encoder = EncoderFactory.get().jsonEncoder(value.getSchema(), out);
-                    writer.write(value, encoder);
-                    encoder.flush();
-                    jsonValue = out.toString(Charset.forName("UTF-8"));
+                    jsonValue = mapper.writeValueAsString(value);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

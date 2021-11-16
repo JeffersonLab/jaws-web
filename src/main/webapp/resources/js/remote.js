@@ -78,6 +78,14 @@ worker.onmessage = function(e) {
             event = new CustomEvent("registration-highwatermark", { detail: null });
             remote.dispatchEvent(event);
             break;
+        case "effective":
+            event = new CustomEvent("effective", { detail: null });
+            remote.dispatchEvent(event);
+            break;
+        case "effective-highwatermark":
+            event = new CustomEvent("effective-highwatermark", { detail: null });
+            remote.dispatchEvent(event);
+            break;
         default:
             console.log('Unknown worker message: ', e.data);
     }

@@ -68,6 +68,40 @@ class UserInterface {
         };
 
         this.registrations = new TableUI(panelElement, tableElement, options);
+
+        panelElement = "#effective-panel",
+            tableElement = "#effective-table",
+            options = {
+                data: [],
+                reactiveData: false,
+                height: "100%", // enables the Virtual DOM
+                layout: "fitColumns",
+                responsiveLayout: "collapse",
+                index: "name",
+                selectable: 1,
+                initialSort: [
+                    {column: "name", dir: "asc"}
+                ],
+                columns: [
+                    {title: "name", field: "name"},
+                    {title: "class", field: "class"},
+                    {title: "priority", field: "priority"},
+                    {title: "location", field: "location"},
+                    {title: "category", field: "category"},
+                    {title: "rationale", field: "rationale"},
+                    {title: "correctiveaction", field: "correctiveaction"},
+                    {title: "pointofcontactusername", field: "pointofcontactusername"},
+                    {title: "filterable", field: "filterable"},
+                    {title: "latching", field: "latching"},
+                    {title: "ondelayseconds", field: "ondelayseconds"},
+                    {title: "offdelayseconds", field: "offdelayseconds"},
+                    {title: "maskedby", field: "maskedby"},
+                    {title: "screenpath", field: "screenpath"},
+                    {title: "epicspv", field: "epicspv"}
+                ]
+            };
+
+        this.effective = new TableUI(panelElement, tableElement, options);
     }
 
     registrationSearch() {

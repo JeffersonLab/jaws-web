@@ -1,12 +1,5 @@
 import db from './resources/js/db.js';
-import {AlarmClass, AlarmRegistration, KafkaLogPosition} from "./resources/js/entities.js";
-
-let unwrapNullableUnionText = function (text) {
-    if (text != null) {
-        text = Object.values(text)[0];
-    }
-    return text;
-};
+import {AlarmClass, AlarmRegistration, EffectiveRegistration, KafkaLogPosition} from "./resources/js/entities.js";
 
 async function init() {
     const [classPos, regPos, effPos] = await db.positions.bulkGet(["class", "registration", "effective"]);
@@ -114,12 +107,60 @@ async function init() {
         postMessage("registration");
     });
 
+    evtSource.addEventListener("effective", async (e) => {
+        let records = JSON.parse(e.data);
+
+        let remove = [];
+        let updateOrAdd = [];
+
+        for (const record of records) {
+            let key = record.key,
+                value = record.value;
+
+            if(value == null) {
+                remove.push(key);
+            } else {
+                updateOrAdd.push(new EffectiveRegistration(
+                    key,
+                    value.class,
+                    value.priority,
+                    value.location,
+                    value.category,
+                    value.rationale,
+                    value.correctiveaction,
+                    value.pointofcontactusername,
+                    value.filterable,
+                    value.latching,
+                    value.ondelayseconds,
+                    value.offdelayseconds,
+                    value.maskedby,
+                    value.screenpath,
+                    value.producer.pv
+                ));
+            }
+        }
+
+        if(remove.length > 0) {
+            await db.effective.bulkDelete(remove);
+        }
+
+        if(updateOrAdd.length > 0) {
+            await db.effective.bulkPut(updateOrAdd);
+        }
+
+        postMessage("effective");
+    });
+
     evtSource.addEventListener("class-highwatermark", function (e) {
         postMessage("class-highwatermark");
     });
 
     evtSource.addEventListener("registration-highwatermark", function (e) {
         postMessage("registration-highwatermark");
+    });
+
+    evtSource.addEventListener("effective-highwatermark", function (e) {
+        postMessage("effective-highwatermark");
     });
 }
 

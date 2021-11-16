@@ -13,3 +13,7 @@ remote.addEventListener("class-highwatermark", async () => {
 remote.addEventListener("registration-highwatermark", async () => {
     await db.registrations.toArray().then((data) => ui.registrations.setData(data));
 });
+
+remote.addEventListener("effective-highwatermark", async () => {
+    await db.effective.toArray().then((data) => ui.effective.setData(data));
+});
