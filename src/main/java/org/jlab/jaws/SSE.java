@@ -69,20 +69,19 @@ public class SSE implements ServletContextListener {
                 final Properties effectiveProps = getEffectiveProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
                 try (
-                        EventSourceTable2<String, AlarmClass> classTable = new EventSourceTable2<>(classProps, classIndex);
-                        EventSourceTable2<String, AlarmRegistration> registrationTable = new EventSourceTable2<>(registrationProps, registrationIndex);
-                        EventSourceTable2<String, EffectiveRegistration> effectiveTable = new EventSourceTable2<>(effectiveProps, effectiveIndex);
+                        EventSourceTable<String, AlarmClass> classTable = new EventSourceTable<>(classProps, classIndex);
+                        EventSourceTable<String, AlarmRegistration> registrationTable = new EventSourceTable<>(registrationProps, registrationIndex);
+                        EventSourceTable<String, EffectiveRegistration> effectiveTable = new EventSourceTable<>(effectiveProps, effectiveIndex);
                 ) {
 
                     classTable.addListener(new EventSourceListener<String, AlarmClass>() {
                         @Override
-                        public void initialState(LinkedHashMap<String, EventSourceRecord<String, AlarmClass>> records) {
-                            sendClassRecords(sink, records.values());
+                        public void highWaterOffset() {
                             sink.send(sse.newEvent("class-highwatermark", ""));
                         }
 
                         @Override
-                        public void changes(LinkedHashMap<String, EventSourceRecord<String, AlarmClass>> records) {
+                        public void batch(LinkedHashMap<String, EventSourceRecord<String, AlarmClass>> records) {
                             sendClassRecords(sink, records.values());
                         }
 
@@ -90,13 +89,12 @@ public class SSE implements ServletContextListener {
 
                     registrationTable.addListener(new EventSourceListener<String, AlarmRegistration>() {
                         @Override
-                        public void initialState(LinkedHashMap<String, EventSourceRecord<String, AlarmRegistration>> records) {
-                            sendRegistrationRecords(sink, records.values());
+                        public void highWaterOffset() {
                             sink.send(sse.newEvent("registration-highwatermark", ""));
                         }
 
                         @Override
-                        public void changes(LinkedHashMap<String, EventSourceRecord<String, AlarmRegistration>> records) {
+                        public void batch(LinkedHashMap<String, EventSourceRecord<String, AlarmRegistration>> records) {
                             sendRegistrationRecords(sink, records.values());
                         }
 
@@ -104,13 +102,12 @@ public class SSE implements ServletContextListener {
 
                     effectiveTable.addListener(new EventSourceListener<String, EffectiveRegistration>() {
                         @Override
-                        public void initialState(LinkedHashMap<String, EventSourceRecord<String, EffectiveRegistration>> records) {
-                            sendEffectiveRecords(sink, records.values());
+                        public void highWaterOffset() {
                             sink.send(sse.newEvent("effective-highwatermark", ""));
                         }
 
                         @Override
-                        public void changes(LinkedHashMap<String, EventSourceRecord<String, EffectiveRegistration>> records) {
+                        public void batch(LinkedHashMap<String, EventSourceRecord<String, EffectiveRegistration>> records) {
                             sendEffectiveRecords(sink, records.values());
                         }
 
