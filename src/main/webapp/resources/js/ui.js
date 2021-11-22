@@ -15,7 +15,10 @@ class UserInterface {
             }
         };
 
-        page.base('/jaws-admin-gui/view');
+        const meta = document.querySelector('meta');
+        const contextPath = meta && meta.dataset.contextPath || '';
+
+        page.base(contextPath + '/view');
 
         page('/', this.tabs.init);
         page('/classes', this.tabs.classes);
