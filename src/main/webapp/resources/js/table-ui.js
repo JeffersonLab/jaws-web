@@ -6,57 +6,50 @@ class TableUI extends EventTarget {
     constructor(panelElement, tableElement, options) {
         super();
 
-        this.panelElement = panelElement;
-        this.tableElement = tableElement;
+        let me = this;
 
-        this.options = options || {};
+        me.panelElement = panelElement;
+        me.tableElement = tableElement;
 
-        let that = this;
+        me.options = options || {};
 
-        this.rowDeselected = function() {
-            $(that.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", true);
-            $(that.panelElement + " .toolbar .selected-row-action").button("option", "disabled", false);
+        me.rowDeselected = function() {
+            $(me.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", true);
+            $(me.panelElement + " .toolbar .selected-row-action").button("option", "disabled", false);
         }
 
-        this.rowSelected = function() {
-            $(that.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", false);
-            $(that.panelElement + " .toolbar .selected-row-action").button("option", "disabled", true);
+        me.rowSelected = function() {
+            $(me.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", false);
+            $(me.panelElement + " .toolbar .selected-row-action").button("option", "disabled", true);
         }
 
-        this.options.rowSelected = this.rowDeselected;
+        me.options.rowSelected = me.rowDeselected;
 
-        this.options.rowDeselected = this.rowSelected;
+        me.options.rowDeselected = me.rowSelected;
 
-        this.tabulator = new Tabulator(this.tableElement, this.options);
+        me.tabulator = new Tabulator(me.tableElement, me.options);
 
-        // bind this on methods
-        const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
+        me.refresh = async function(table) {
+            let d, c;
+            let recordsPromise = table.orderBy('name').limit(PAGE_SIZE).toArray().then((data) => {
+                d = data;
+                me.setData(data);
+            });
 
-        methods
-            .filter(method => (method !== 'constructor'))
-            .forEach((method) => { this[method] = this[method].bind(this);});
-    }
+            let countPromise = table.count().then((count) => {
+                c = count;
+            });
 
-    async refresh(table) {
-        let d, c;
-        let recordsPromise = table.orderBy('name').limit(PAGE_SIZE).toArray().then((data) => {
-            d = data;
-            this.setData(data)
-        });
+            return Promise.all([recordsPromise, countPromise]).then(() => me.updateCountLabel(1, Math.min(PAGE_SIZE, d.length),  c));
+        }
 
-        let countPromise = table.count().then((count) => {
-            c = count;
-        });
+        me.updateCountLabel = function(offset, max, count) {
+            $(me.panelElement + " .record-count").text(offset.toLocaleString() + ' - ' + max.toLocaleString() + ' of ' + count.toLocaleString());
+        }
 
-        return Promise.all([recordsPromise, countPromise]).then(() => this.updateCountLabel(1, Math.min(PAGE_SIZE, d.length),  c));
-    }
-
-    updateCountLabel(offset, max, count) {
-        $(this.panelElement + " .record-count").text(offset.toLocaleString() + ' - ' + max.toLocaleString() + ' of ' + count.toLocaleString());
-    }
-
-    setData(data) {
-        this.tabulator.setData(data);
+        me.setData = function(data) {
+            me.tabulator.setData(data);
+        }
     }
 }
 
