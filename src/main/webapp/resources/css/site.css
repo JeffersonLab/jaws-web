@@ -85,3 +85,7 @@ body .ui-tabs .ui-tabs-panel {
 .search-input {
     display: inline-block;
 }
+
+.dialog dt {
+    font-weight: bold;
+}

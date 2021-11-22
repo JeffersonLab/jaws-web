@@ -430,8 +430,8 @@ class UserInterface {
 
             let viewClassDialog = $("#view-class-dialog").dialog({
                 autoOpen: false,
-                height: 400,
-                width: 400,
+                height: 550,
+                width: 750,
                 modal: true,
                 buttons: {
                     OK: function () {
