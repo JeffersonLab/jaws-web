@@ -27,9 +27,11 @@
                 <button type="button" id="search-class-button">Search</button> |
             </form>
             <button type="button" id="new-class-button">New</button> |
-            <button type="button" id="view-class-button" class="selected-row-action">View</button>
+            <button type="button" id="view-class-button" class="selected-row-action" disabled="disabled">View</button>
             <button type="button" id="edit-class-button" class="selected-row-action" disabled="disabled">Edit</button>
             <button type="button" id="delete-class-button" class="selected-row-action" disabled="disabled">Delete</button> |
+            <button type="button" id="previous-class-button" disabled="disabled">Previous</button>
+            <button type="button" id="next-class-button" disabled="disabled">Next</button> |
             <span>Records: </span><span class="record-count"></span>
         </div>
         <div class="table-wrap">

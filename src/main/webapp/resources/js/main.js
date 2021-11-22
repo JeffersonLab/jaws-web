@@ -6,25 +6,27 @@ import remote from './remote.js';
 ui.start();
 remote.start();
 
-let classHighOffsetReached = false;
+let classHighOffsetReached = false,
+    registrationHighOffsetReached = false,
+    effectiveHighOffsetReached = false;
 
 remote.addEventListener("class-highwatermark", async () => {
-    await db.classes.toArray().then((data) => {
-        ui.classes.setData(data);
+        await ui.classes.refresh(db.classes);
         classHighOffsetReached = true;
-    });
 });
 
 remote.addEventListener("class", async () => {
     if(classHighOffsetReached) {
-        await db.classes.toArray().then((data) => ui.classes.setData(data));
+        await ui.classes.refresh(db.classes);
     }
 });
 
 remote.addEventListener("registration-highwatermark", async () => {
-    await db.registrations.toArray().then((data) => ui.registrations.setData(data));
+    await ui.registrations.refresh(db.registrations);
+    registrationHighOffsetReached = true;
 });
 
 remote.addEventListener("effective-highwatermark", async () => {
-    await db.effective.toArray().then((data) => ui.effective.setData(data));
+    await ui.effective.refresh(db.effective);
+    effectiveHighOffsetReached = true;
 });

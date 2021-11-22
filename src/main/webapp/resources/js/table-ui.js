@@ -1,3 +1,6 @@
+import db from "./db.js";
+
+let PAGE_SIZE = 100;
 
 class TableUI extends EventTarget {
     constructor(panelElement, tableElement, options) {
@@ -26,8 +29,6 @@ class TableUI extends EventTarget {
 
         this.tabulator = new Tabulator(this.tableElement, this.options);
 
-        this.updateCountLabel();
-
         // bind this on methods
         const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
 
@@ -36,18 +37,26 @@ class TableUI extends EventTarget {
             .forEach((method) => { this[method] = this[method].bind(this);});
     }
 
-    updateCountLabel() {
-        let count = this.tabulator.getDataCount("active");
+    async refresh(table) {
+        let d, c;
+        let recordsPromise = table.orderBy('name').limit(PAGE_SIZE).toArray().then((data) => {
+            d = data;
+            this.setData(data)
+        });
 
-        let sorters = this.tabulator.getSorters();
-        this.tabulator.setSort(sorters);
+        let countPromise = table.count().then((count) => {
+            c = count;
+        });
 
-        $(this.panelElement + " .record-count").text(count.toLocaleString());
+        return Promise.all([recordsPromise, countPromise]).then(() => this.updateCountLabel(1, Math.min(PAGE_SIZE, d.length),  c));
+    }
+
+    updateCountLabel(offset, max, count) {
+        $(this.panelElement + " .record-count").text(offset.toLocaleString() + ' - ' + max.toLocaleString() + ' of ' + count.toLocaleString());
     }
 
     setData(data) {
         this.tabulator.setData(data);
-        this.updateCountLabel();
     }
 }
 

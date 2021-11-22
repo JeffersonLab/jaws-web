@@ -54,6 +54,7 @@ class UserInterface {
             tableElement = "#classes-table",
             options = {
                 data: [],
+                headerSort: false,
                 reactiveData: false,
                 height: "100%", // enables the Virtual DOM
                 layout: "fitColumns",
@@ -68,15 +69,12 @@ class UserInterface {
                     {title: "priority", field: "priority"},
                     {title: "location", field: "location"},
                     {title: "category", field: "category"},
-                    {title: "rationale", field: "rationale"},
-                    {title: "correctiveaction", field: "correctiveaction"},
-                    {title: "pointofcontactusername", field: "pointofcontactusername"},
+                    {title: "contact", field: "pointofcontactusername"},
                     {title: "filterable", field: "filterable"},
                     {title: "latching", field: "latching"},
-                    {title: "ondelayseconds", field: "ondelayseconds"},
-                    {title: "offdelayseconds", field: "offdelayseconds"},
-                    {title: "maskedby", field: "maskedby"},
-                    {title: "screenpath", field: "screenpath"}
+                    {title: "on-delay-seconds", field: "ondelayseconds"},
+                    {title: "off-delay-seconds", field: "offdelayseconds"},
+                    {title: "masked-by", field: "maskedby"},
                 ]
             };
 
@@ -86,6 +84,7 @@ class UserInterface {
             tableElement = "#registrations-table",
             options = {
             data: [],
+            headerSort: false,
             reactiveData: false,
             height: "100%", // enables the Virtual DOM
             layout: "fitColumns",
@@ -101,16 +100,12 @@ class UserInterface {
                 {title: "priority", field: "priority"},
                 {title: "location", field: "location"},
                 {title: "category", field: "category"},
-                {title: "rationale", field: "rationale"},
-                {title: "correctiveaction", field: "correctiveaction"},
-                {title: "pointofcontactusername", field: "pointofcontactusername"},
+                {title: "contact", field: "pointofcontactusername"},
                 {title: "filterable", field: "filterable"},
                 {title: "latching", field: "latching"},
-                {title: "ondelayseconds", field: "ondelayseconds"},
-                {title: "offdelayseconds", field: "offdelayseconds"},
-                {title: "maskedby", field: "maskedby"},
-                {title: "screenpath", field: "screenpath"},
-                {title: "epicspv", field: "epicspv"}
+                {title: "on-delay-seconds", field: "ondelayseconds"},
+                {title: "off-delay-seconds", field: "offdelayseconds"},
+                {title: "masked-by", field: "maskedby"}
             ]
         };
 
@@ -135,16 +130,12 @@ class UserInterface {
                     {title: "priority", field: "priority"},
                     {title: "location", field: "location"},
                     {title: "category", field: "category"},
-                    {title: "rationale", field: "rationale"},
-                    {title: "correctiveaction", field: "correctiveaction"},
-                    {title: "pointofcontactusername", field: "pointofcontactusername"},
+                    {title: "contact", field: "pointofcontactusername"},
                     {title: "filterable", field: "filterable"},
                     {title: "latching", field: "latching"},
-                    {title: "ondelayseconds", field: "ondelayseconds"},
-                    {title: "offdelayseconds", field: "offdelayseconds"},
-                    {title: "maskedby", field: "maskedby"},
-                    {title: "screenpath", field: "screenpath"},
-                    {title: "epicspv", field: "epicspv"}
+                    {title: "on-delay-seconds", field: "ondelayseconds"},
+                    {title: "off-delay-seconds", field: "offdelayseconds"},
+                    {title: "masked-by", field: "maskedby"},
                 ]
             };
 
