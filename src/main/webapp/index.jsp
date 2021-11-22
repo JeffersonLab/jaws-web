@@ -12,7 +12,6 @@
 <header>
     <img src="${pageContext.request.contextPath}/resources/img/logo128x128.png"/>
     <h1>JAWS Admin GUI</h1>
-    <h2 id="route">Current route: </h2>
 </header>
 <div id="tabs">
     <ul>
@@ -170,16 +169,5 @@
 <script src="${pageContext.request.contextPath}/resources/jquery-ui-1.12.1.smoothness/external/jquery/jquery.js"></script>
 <script src="${pageContext.request.contextPath}/resources/jquery-ui-1.12.1.smoothness/jquery-ui.min.js"></script>
 <script type="module" src="${pageContext.request.contextPath}/resources/js/main.js"></script>
-<script>
-    // Base URL under which the frontend SPA is running
-    const baseUrl = '/view';
-    // Get complete path after the hostname + port
-    const pathname = location.pathname;
-    // Determine current route, by removing the base URL from the path name
-    const currentRoute = pathname.replace(new RegExp('^' + baseUrl), '');
-    // Output route
-    const header = document.getElementById('route');
-    header.innerText += currentRoute;
-</script>
 </body>
 </html>
