@@ -1,4 +1,5 @@
 import remote from './remote.js';
+import db from './db.js';
 import TableUI from './table-ui.js';
 import page from './page-1.11.6.js';
 
@@ -11,8 +12,26 @@ class UserInterface {
             init: function() {
                 page('/classes');
             },
-            class: function(ctx, next) {
+            class: async function(ctx, next) {
                 console.log('class: ', ctx.params.name);
+
+                let data = await db.classes.get(ctx.params.name);
+
+                $("#view-class-name").text(data.name);
+                $("#view-class-priority").text(data.priority);
+                $("#view-class-location").text(data.location);
+                $("#view-class-category").text(data.category);
+                $("#view-class-rationale").text(data.rationale);
+                $("#view-class-action").text(data.correctiveaction);
+                $("#view-class-contact").text(data.pointofcontactusername);
+                $("#view-class-filterable").text([data.filterable]);
+                $("#view-class-latching").text([data.latching]);
+                $("#view-class-on-delay").text(data.ondelayseconds);
+                $("#view-class-off-delay").text(data.offdelayseconds);
+                $("#view-class-masked-by").text(data.maskedby);
+                $("#view-class-screen-path").text(data.screenpath);
+
+                $("#view-class-dialog").dialog("open");
             },
             classes: function() {
             },
@@ -518,7 +537,10 @@ class UserInterface {
         });
 
         $(document).on("click", "#view-class-button", function() {
-            $("#view-class-dialog").dialog("open");
+            let selectedData = ui.classes.tabulator.getSelectedData(),
+                data = selectedData[0];
+
+            page('/classes/' + data.name);
         });
 
         $(document).on("click", "#edit-class-button", function () {

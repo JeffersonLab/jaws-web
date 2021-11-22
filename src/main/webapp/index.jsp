@@ -36,7 +36,34 @@
             <div id="classes-table"></div>
         </div>
         <div id="view-class-dialog" class="dialog" title="Class">
-            <p>Hello World!</p>
+            <dl>
+                <dt>Name</dt>
+                <dd id="view-class-name"></dd>
+                <dt>Priority</dt>
+                <dd id="view-class-priority"></dd>
+                <dt>Location</dt>
+                <dd id="view-class-location"></dd>
+                <dt>Category</dt>
+                <dd id="view-class-category"></dd>
+                <dt>Rationale</dt>
+                <dd id="view-class-rationale"></dd>
+                <dt>Corrective Action</dt>
+                <dd id="view-class-action"></dd>
+                <dt>Point of Contact Username</dt>
+                <dd id="view-class-contact"></dd>
+                <dt>Filterable</dt>
+                <dd id="view-class-filterable"></dd>
+                <dt>Latching</dt>
+                <dd id="view-class-latching"></dd>
+                <dt>On-Delay Seconds</dt>
+                <dd id="view-class-on-delay"></dd>
+                <dt>Off-Delay Seconds</dt>
+                <dd id="view-class-off-delay"></dd>
+                <dt>Masked By</dt>
+                <dd id="view-class-masked-by"></dd>
+                <dt>Screen Path</dt>
+                <dd id="view-class-screen-path"></dd>
+            </dl>
         </div>
         <div id="class-dialog" class="dialog" title="New Class">
             <form id="class-form" onsubmit="return false;">
