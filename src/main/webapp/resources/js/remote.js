@@ -1,5 +1,10 @@
 import {AlarmClass, AlarmRegistration, EffectiveRegistration} from "./entities.js";
 
+const meta = document.querySelector('meta');
+const contextPath = meta && meta.dataset.contextPath || '';
+
+console.log('contextPath: ', contextPath);
+
 class Remote extends EventTarget {
     start() {
         console.log('starting remote!');
@@ -13,7 +18,7 @@ class Remote extends EventTarget {
             }
         }
 
-        return fetch("proxy/rest/registered", {
+        return fetch(contextPath + "/proxy/rest/registered", {
             method: "PUT",
             body: new URLSearchParams(formData),
             headers: {
@@ -31,7 +36,7 @@ class Remote extends EventTarget {
             }
         }
 
-        return fetch("proxy/rest/class", {
+        return fetch(contextPath + "/proxy/rest/class", {
             method: "PUT",
             body: new URLSearchParams(formData),
             headers: {
@@ -42,21 +47,21 @@ class Remote extends EventTarget {
     }
 
     getLocations() {
-        return fetch('proxy/rest/locations')
+        return fetch(contextPath + '/proxy/rest/locations')
     }
 
     getCategories() {
-        return fetch('proxy/rest/categories');
+        return fetch(contextPath + '/proxy/rest/categories');
     }
 
     getPriorities() {
-        return fetch('proxy/rest/priorities')
+        return fetch(contextPath + '/proxy/rest/priorities')
     }
 }
 
 const remote = new Remote();
 
-const worker = new Worker('worker.js', {"type": "module"});
+const worker = new Worker(contextPath + '/worker.js', {"type": "module"});
 
 worker.onmessage = function(e) {
     let event;

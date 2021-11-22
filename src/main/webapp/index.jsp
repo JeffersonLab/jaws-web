@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" data-context-path="${pageContext.request.contextPath}"/>
     <title>JAWS Admin GUI</title>
-    <link rel="shortcut icon" href="resources/img/favicon.ico"/>
-    <link rel="stylesheet" href="resources/css/site.css"/>
-    <link rel="stylesheet" href="resources/jquery-ui-1.12.1.smoothness/jquery-ui.min.css">
-    <link href="resources/tabulator-4.9.3/css/tabulator.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/img/favicon.ico"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/site.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/jquery-ui-1.12.1.smoothness/jquery-ui.min.css">
+    <link href="${pageContext.request.contextPath}/resources/tabulator-4.9.3/css/tabulator.min.css" rel="stylesheet">
 </head>
 <body>
 <header>
-    <img src="resources/img/logo128x128.png"/>
+    <img src="${pageContext.request.contextPath}/resources/img/logo128x128.png"/>
     <h1>JAWS Admin GUI</h1>
+    <h2 id="route">Current route: </h2>
 </header>
 <div id="tabs">
     <ul>
@@ -163,10 +164,22 @@
         </div>
     </div>
 </div>
-<script type="module" src="resources/js/dexie-3.0.3.js"></script>
-<script type="text/javascript" src="resources/tabulator-4.9.3/js/tabulator.min.js"></script>
-<script src="resources/jquery-ui-1.12.1.smoothness/external/jquery/jquery.js"></script>
-<script src="resources/jquery-ui-1.12.1.smoothness/jquery-ui.min.js"></script>
-<script type="module" src="resources/js/main.js"></script>
+<script type="module" src="${pageContext.request.contextPath}/resources/js/page-1.11.6.js"></script>
+<script type="module" src="${pageContext.request.contextPath}/resources/js/dexie-3.0.3.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/tabulator-4.9.3/js/tabulator.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/jquery-ui-1.12.1.smoothness/external/jquery/jquery.js"></script>
+<script src="${pageContext.request.contextPath}/resources/jquery-ui-1.12.1.smoothness/jquery-ui.min.js"></script>
+<script type="module" src="${pageContext.request.contextPath}/resources/js/main.js"></script>
+<script>
+    // Base URL under which the frontend SPA is running
+    const baseUrl = '/view';
+    // Get complete path after the hostname + port
+    const pathname = location.pathname;
+    // Determine current route, by removing the base URL from the path name
+    const currentRoute = pathname.replace(new RegExp('^' + baseUrl), '');
+    // Output route
+    const header = document.getElementById('route');
+    header.innerText += currentRoute;
+</script>
 </body>
 </html>

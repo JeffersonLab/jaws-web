@@ -1,8 +1,28 @@
 import remote from './remote.js';
 import TableUI from './table-ui.js';
+import page from './page-1.11.6.js';
 
 class UserInterface {
     constructor() {
+        this.tabs = {
+            init: function() {
+            },
+            classes: function() {
+            },
+            registrations: function() {
+            },
+            effective: function() {
+            }
+        };
+
+        page.base('/jaws-admin-gui/view');
+
+        page('/', this.tabs.init);
+        page('/classes', this.tabs.classes);
+        page('/registrations', this.tabs.registrations);
+        page('/effective', this.tabs.effective);
+        page();
+
         let panelElement = "#classes-panel",
             tableElement = "#classes-table",
             options = {
@@ -339,6 +359,20 @@ class UserInterface {
             $("#tabs").tabs({
                 activate: function (event, i) {
                     i.newPanel.css("display", "flex");
+
+                    switch (i.newTab.context.innerText) {
+                        case 'Classes':
+                            page('/classes');
+                            break;
+                        case 'Registrations':
+                            page('/registrations');
+                            break;
+                        case 'Effective':
+                            page('/effective');
+                            break;
+                        default:
+                            console.log('Unknown tab activation: ', event, i);
+                    }
                 }
             }).show();
 
