@@ -6,6 +6,7 @@ class UserInterface {
     constructor() {
         this.tabs = {
             init: function() {
+                page('/classes');
             },
             classes: function() {
             },
