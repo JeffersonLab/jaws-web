@@ -6,8 +6,19 @@ import remote from './remote.js';
 ui.start();
 remote.start();
 
+let classHighOffsetReached = false;
+
 remote.addEventListener("class-highwatermark", async () => {
-    await db.classes.toArray().then((data) => ui.classes.setData(data));
+    await db.classes.toArray().then((data) => {
+        ui.classes.setData(data);
+        classHighOffsetReached = true;
+    });
+});
+
+remote.addEventListener("class", async () => {
+    if(classHighOffsetReached) {
+        await db.classes.toArray().then((data) => ui.classes.setData(data));
+    }
 });
 
 remote.addEventListener("registration-highwatermark", async () => {

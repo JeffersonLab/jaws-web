@@ -8,15 +8,21 @@ class TableUI extends EventTarget {
 
         this.options = options || {};
 
-        this.options.rowSelected = () => {
-            $(this.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", true);
-            $(this.panelElement + " .toolbar .selected-row-action").button("option", "disabled", false);
-        };
+        let that = this;
 
-        this.options.rowDeselected = () => {
-            $(this.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", false);
-            $(this.panelElement + " .toolbar .selected-row-action").button("option", "disabled", true);
-        };
+        this.rowDeselected = function() {
+            $(that.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", true);
+            $(that.panelElement + " .toolbar .selected-row-action").button("option", "disabled", false);
+        }
+
+        this.rowSelected = function() {
+            $(that.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", false);
+            $(that.panelElement + " .toolbar .selected-row-action").button("option", "disabled", true);
+        }
+
+        this.options.rowSelected = this.rowDeselected;
+
+        this.options.rowDeselected = this.rowSelected;
 
         this.tabulator = new Tabulator(this.tableElement, this.options);
 

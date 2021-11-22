@@ -2,11 +2,17 @@ import remote from './remote.js';
 import TableUI from './table-ui.js';
 import page from './page-1.11.6.js';
 
+const meta = document.querySelector('meta');
+const contextPath = meta && meta.dataset.contextPath || '';
+
 class UserInterface {
     constructor() {
         this.tabs = {
             init: function() {
                 page('/classes');
+            },
+            class: function(ctx, next) {
+                console.log('class: ', ctx.params.name);
             },
             classes: function() {
             },
@@ -16,15 +22,13 @@ class UserInterface {
             }
         };
 
-        const meta = document.querySelector('meta');
-        const contextPath = meta && meta.dataset.contextPath || '';
-
         page.base(contextPath + '/view');
 
         page('/', this.tabs.init);
         page('/classes', this.tabs.classes);
         page('/registrations', this.tabs.registrations);
         page('/effective', this.tabs.effective);
+        page('/classes/:name', this.tabs.class);
         page();
 
         let panelElement = "#classes-panel",
@@ -126,6 +130,13 @@ class UserInterface {
             };
 
         this.effective = new TableUI(panelElement, tableElement, options);
+
+        // bind this on properties
+        const props = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
+
+        props
+            .filter(prop => (prop !== 'constructor'))
+            .forEach((prop) => { this[prop] = this[prop].bind(this);});
     }
 
     registrationSearch() {
@@ -216,7 +227,7 @@ class UserInterface {
 
         promise.then(response => {
             if (response.ok) {
-                ui.classRowDeselected();
+                ui.classes.rowDeselected();
                 $("#class-dialog").dialog("close");
             } else {
                 response.json().then(function (data) {
@@ -398,13 +409,25 @@ class UserInterface {
                 ui.setRegistration();
             });
 
+            let viewClassDialog = $("#view-class-dialog").dialog({
+                autoOpen: false,
+                height: 400,
+                width: 400,
+                modal: true,
+                buttons: {
+                    OK: function () {
+                        viewClassDialog.dialog("close");
+                    }
+                }
+            });
+
             let classDialog = $("#class-dialog").dialog({
                 autoOpen: false,
                 height: 400,
                 width: 400,
                 modal: true,
                 buttons: {
-                    Set: self.setClass,
+                    Set: ui.setClass,
                     Cancel: function () {
                         classDialog.dialog("close");
                     }
@@ -458,7 +481,7 @@ class UserInterface {
 
             let params = "name=" + selectedData[0].name;
 
-            let promise = fetch("proxy/rest/registered", {
+            let promise = fetch(contextPath + "/proxy/rest/registered", {
                 method: "DELETE",
                 body: new URLSearchParams(params),
                 headers: {
@@ -494,8 +517,12 @@ class UserInterface {
             $("#class-dialog").dialog("open");
         });
 
+        $(document).on("click", "#view-class-button", function() {
+            $("#view-class-dialog").dialog("open");
+        });
+
         $(document).on("click", "#edit-class-button", function () {
-            let selectedData = classestable.getSelectedData(),
+            let selectedData = ui.classes.tabulator.getSelectedData(),
                 data = selectedData[0];
 
             $("#class-name-input").val(data.name);
@@ -517,11 +544,11 @@ class UserInterface {
         });
 
         $(document).on("click", "#delete-class-button", function () {
-            let selectedData = classestable.getSelectedData();
+            let selectedData = ui.classes.tabulator.getSelectedData();
 
             let params = "name=" + selectedData[0].name;
 
-            let promise = fetch("proxy/rest/class", {
+            let promise = fetch(contextPath + "/proxy/rest/class", {
                 method: "DELETE",
                 body: new URLSearchParams(params),
                 headers: {
@@ -533,7 +560,7 @@ class UserInterface {
                 if (!response.ok) {
                     throw new Error("Network response not ok");
                 }
-                ui.classRowDeselected();
+                ui.classes.rowDeselected();
             })
                 .catch(error => {
                     console.error('Delete failed: ', error)

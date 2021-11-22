@@ -27,12 +27,16 @@
                 <button type="button" id="search-class-button">Search</button> |
             </form>
             <button type="button" id="new-class-button">New</button> |
+            <button type="button" id="view-class-button" class="selected-row-action">View</button>
             <button type="button" id="edit-class-button" class="selected-row-action" disabled="disabled">Edit</button>
             <button type="button" id="delete-class-button" class="selected-row-action" disabled="disabled">Delete</button> |
             <span>Records: </span><span class="record-count"></span>
         </div>
         <div class="table-wrap">
             <div id="classes-table"></div>
+        </div>
+        <div id="view-class-dialog" class="dialog" title="Class">
+            <p>Hello World!</p>
         </div>
         <div id="class-dialog" class="dialog" title="New Class">
             <form id="class-form" onsubmit="return false;">
