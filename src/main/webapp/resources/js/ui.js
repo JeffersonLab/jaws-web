@@ -15,6 +15,9 @@ class UserInterface {
             class: async function(ctx, next) {
                 console.log('class: ', ctx.params.name);
 
+                console.log('navigate classes page');
+                $("#tabs").tabs({ active: 0 });
+
                 let data = await db.classes.get(ctx.params.name);
 
                 $("#view-class-name").text(data.name);
@@ -35,6 +38,9 @@ class UserInterface {
             },
             registration: async function(ctx, next) {
                 console.log('registration: ', ctx.params.name);
+
+                console.log('navigate registrations page');
+                $("#tabs").tabs({ active: 1 });
 
                 let data = await db.registrations.get(ctx.params.name);
 
@@ -57,13 +63,24 @@ class UserInterface {
                 $("#view-registration-dialog").dialog("open");
             },
             effect: async function(ctx, next) {
+                console.log('effective: ', ctx.params.name);
 
+                console.log('navigate effective page');
+                $("#tabs").tabs({ active: 2 });
+
+                let data = await db.effective.get(ctx.params.name);
             },
             classes: function() {
+                console.log('navigate classes page');
+                $("#tabs").tabs({ active: 0 });
             },
             registrations: function() {
+                console.log('navigate registrations page');
+                $("#tabs").tabs({ active: 1 });
             },
             effective: function() {
+                console.log('navigate effective page');
+                $("#tabs").tabs({ active: 2 });
             }
         };
 
@@ -415,12 +432,15 @@ class UserInterface {
 
                     switch (i.newTab.context.innerText) {
                         case 'Classes':
+                            console.log('activate class tab');
                             page('/classes');
                             break;
                         case 'Registrations':
+                            console.log('activate registration tab');
                             page('/registrations');
                             break;
                         case 'Effective':
+                            console.log('activate effective tab');
                             page('/effective');
                             break;
                         default:
