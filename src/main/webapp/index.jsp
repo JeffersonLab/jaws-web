@@ -120,12 +120,47 @@
                 <button type="button" id="search-registration-button">Search</button> |
             </form>
             <button type="button" id="new-registration-button">New</button> |
+            <button type="button" id="view-registration-button" class="selected-row-action" disabled="disabled">View</button>
             <button type="button" id="edit-registration-button" class="selected-row-action" disabled="disabled">Edit</button>
             <button type="button" id="delete-registration-button" class="selected-row-action" disabled="disabled">Delete</button> |
             <span>Records: </span><span class="record-count"></span>
         </div>
         <div class="table-wrap">
             <div id="registrations-table"></div>
+        </div>
+        <div id="view-registration-dialog" class="dialog" title="Registration">
+            <dl>
+                <dt>Name</dt>
+                <dd id="view-registration-name"></dd>
+                <dt>Class</dt>
+                <dd id="view-registration-class"></dd>
+                <dt>EPICS PV</dt>
+                <dd id="view-registration-epicspv"></dd>
+                <dt>Priority</dt>
+                <dd id="view-registration-priority"></dd>
+                <dt>Location</dt>
+                <dd id="view-registration-location"></dd>
+                <dt>Category</dt>
+                <dd id="view-registration-category"></dd>
+                <dt>Rationale</dt>
+                <dd id="view-registration-rationale"></dd>
+                <dt>Corrective Action</dt>
+                <dd id="view-registration-action"></dd>
+                <dt>Point of Contact Username</dt>
+                <dd id="view-registration-contact"></dd>
+                <dt>Filterable</dt>
+                <dd id="view-registration-filterable"></dd>
+                <dt>Latching</dt>
+                <dd id="view-registration-latching"></dd>
+                <dt>On-Delay Seconds</dt>
+                <dd id="view-registration-on-delay"></dd>
+                <dt>Off-Delay Seconds</dt>
+                <dd id="view-registration-off-delay"></dd>
+                <dt>Masked By</dt>
+                <dd id="view-registration-masked-by"></dd>
+                <dt>Screen Path</dt>
+                <dd id="view-registration-screen-path"></dd>
+            </dl>
         </div>
         <div id="registration-dialog" class="dialog" title="New Registration">
             <form id="registered-form" onsubmit="return false;">

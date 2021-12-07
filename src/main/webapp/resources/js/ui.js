@@ -33,6 +33,32 @@ class UserInterface {
 
                 $("#view-class-dialog").dialog("open");
             },
+            registration: async function(ctx, next) {
+                console.log('registration: ', ctx.params.name);
+
+                let data = await db.registrations.get(ctx.params.name);
+
+                $("#view-registration-name").text(data.name);
+                $("#view-registration-class").text(data.class);
+                $("#view-registration-epicspv").text(data.epicspv);
+                $("#view-registration-priority").text(data.priority);
+                $("#view-registration-location").text(data.location);
+                $("#view-registration-category").text(data.category);
+                $("#view-registration-rationale").text(data.rationale);
+                $("#view-registration-action").text(data.correctiveaction);
+                $("#view-registration-contact").text(data.pointofcontactusername);
+                $("#view-registration-filterable").text([data.filterable]);
+                $("#view-registration-latching").text([data.latching]);
+                $("#view-registration-on-delay").text(data.ondelayseconds);
+                $("#view-registration-off-delay").text(data.offdelayseconds);
+                $("#view-registration-masked-by").text(data.maskedby);
+                $("#view-registration-screen-path").text(data.screenpath);
+
+                $("#view-registration-dialog").dialog("open");
+            },
+            effect: async function(ctx, next) {
+
+            },
             classes: function() {
             },
             registrations: function() {
@@ -48,6 +74,8 @@ class UserInterface {
         page('/registrations', this.tabs.registrations);
         page('/effective', this.tabs.effective);
         page('/classes/:name', this.tabs.class);
+        page('/registrations/:name', this.tabs.registration);
+        page('/effective/:name', this.tabs.effect);
         page();
 
         let panelElement = "#classes-panel",
@@ -427,6 +455,20 @@ class UserInterface {
                 buttons: {
                     OK: function () {
                         viewClassDialog.dialog("close");
+                        page('/classes');
+                    }
+                }
+            });
+
+            let viewRegistrationDialog = $("#view-registration-dialog").dialog({
+                autoOpen: false,
+                height: 550,
+                width: 750,
+                modal: true,
+                buttons: {
+                    OK: function () {
+                        viewRegistrationDialog.dialog("close");
+                        page('/registrations');
                     }
                 }
             });
@@ -532,6 +574,13 @@ class UserInterface {
                 data = selectedData[0];
 
             page('/classes/' + data.name);
+        });
+
+        $(document).on("click", "#view-registration-button", function() {
+            let selectedData = ui.registrations.tabulator.getSelectedData(),
+                data = selectedData[0];
+
+            page('/registrations/' + data.name);
         });
 
         $(document).on("click", "#edit-class-button", function () {

@@ -1,4 +1,3 @@
-import {AlarmClass, AlarmRegistration, EffectiveRegistration, KafkaLogPosition} from "./entities.js";
 import db from './db.js';
 import ui from './ui.js';
 import remote from './remote.js';
@@ -26,7 +25,19 @@ remote.addEventListener("registration-highwatermark", async () => {
     registrationHighOffsetReached = true;
 });
 
+remote.addEventListener("registration", async () => {
+    if(registrationHighOffsetReached) {
+        await ui.registrations.refresh(db.registrations);
+    }
+});
+
 remote.addEventListener("effective-highwatermark", async () => {
     await ui.effective.refresh(db.effective);
     effectiveHighOffsetReached = true;
+});
+
+remote.addEventListener("effective", async () => {
+    if(effectiveHighOffsetReached) {
+        await ui.effective.refresh(db.effective);
+    }
 });

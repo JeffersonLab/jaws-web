@@ -1,5 +1,3 @@
-import db from "./db.js";
-
 let PAGE_SIZE = 100;
 
 class TableUI extends EventTarget {

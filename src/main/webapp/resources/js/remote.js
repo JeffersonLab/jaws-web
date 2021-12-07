@@ -1,5 +1,3 @@
-import {AlarmClass, AlarmRegistration, EffectiveRegistration} from "./entities.js";
-
 const meta = document.querySelector('meta');
 const contextPath = meta && meta.dataset.contextPath || '';
 
