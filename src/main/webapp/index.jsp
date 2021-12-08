@@ -123,6 +123,8 @@
             <button type="button" id="view-registration-button" class="selected-row-action" disabled="disabled">View</button>
             <button type="button" id="edit-registration-button" class="selected-row-action" disabled="disabled">Edit</button>
             <button type="button" id="delete-registration-button" class="selected-row-action" disabled="disabled">Delete</button> |
+            <button type="button" id="previous-registration-button" disabled="disabled">Previous</button>
+            <button type="button" id="next-registration-button" disabled="disabled">Next</button> |
             <span>Records: </span><span class="record-count"></span>
         </div>
         <div class="table-wrap">
@@ -224,10 +226,47 @@
                 <input type="text" value="" id="effective-search-input" class="search-input" placeholder="field=value,field=value"/>
                 <button type="button" id="search-effective-button">Search</button>
             </form> |
+            <button type="button" id="view-effective-button" class="selected-row-action" disabled="disabled">View</button> |
+            <button type="button" id="previous-effective-button" disabled="disabled">Previous</button>
+            <button type="button" id="next-effective-button" disabled="disabled">Next</button> |
             <span>Records: </span><span class="record-count"></span>
         </div>
         <div class="table-wrap">
             <div id="effective-table"></div>
+        </div>
+        <div id="view-effective-dialog" class="dialog" title="Effective">
+            <dl>
+                <dt>Name</dt>
+                <dd id="view-effective-name"></dd>
+                <dt>Class</dt>
+                <dd id="view-effective-class"></dd>
+                <dt>EPICS PV</dt>
+                <dd id="view-effective-epicspv"></dd>
+                <dt>Priority</dt>
+                <dd id="view-effective-priority"></dd>
+                <dt>Location</dt>
+                <dd id="view-effective-location"></dd>
+                <dt>Category</dt>
+                <dd id="view-effective-category"></dd>
+                <dt>Rationale</dt>
+                <dd id="view-effective-rationale"></dd>
+                <dt>Corrective Action</dt>
+                <dd id="view-effective-action"></dd>
+                <dt>Point of Contact Username</dt>
+                <dd id="view-effective-contact"></dd>
+                <dt>Filterable</dt>
+                <dd id="view-effective-filterable"></dd>
+                <dt>Latching</dt>
+                <dd id="view-effective-latching"></dd>
+                <dt>On-Delay Seconds</dt>
+                <dd id="view-effective-on-delay"></dd>
+                <dt>Off-Delay Seconds</dt>
+                <dd id="view-effective-off-delay"></dd>
+                <dt>Masked By</dt>
+                <dd id="view-effective-masked-by"></dd>
+                <dt>Screen Path</dt>
+                <dd id="view-effective-screen-path"></dd>
+            </dl>
         </div>
     </div>
 </div>

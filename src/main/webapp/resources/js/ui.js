@@ -69,6 +69,24 @@ class UserInterface {
                 $("#tabs").tabs({ active: 2 });
 
                 let data = await db.effective.get(ctx.params.name);
+
+                $("#view-effective-name").text(data.name);
+                $("#view-effective-class").text(data.class);
+                $("#view-effective-epicspv").text(data.epicspv);
+                $("#view-effective-priority").text(data.priority);
+                $("#view-effective-location").text(data.location);
+                $("#view-effective-category").text(data.category);
+                $("#view-effective-rationale").text(data.rationale);
+                $("#view-effective-action").text(data.correctiveaction);
+                $("#view-effective-contact").text(data.pointofcontactusername);
+                $("#view-effective-filterable").text([data.filterable]);
+                $("#view-effective-latching").text([data.latching]);
+                $("#view-effective-on-delay").text(data.ondelayseconds);
+                $("#view-effective-off-delay").text(data.offdelayseconds);
+                $("#view-effective-masked-by").text(data.maskedby);
+                $("#view-effective-screen-path").text(data.screenpath);
+
+                $("#view-effective-dialog").dialog("open");
             },
             classes: function() {
                 console.log('navigate classes page');
@@ -493,6 +511,19 @@ class UserInterface {
                 }
             });
 
+            let viewEffectiveDialog = $("#view-effective-dialog").dialog({
+                autoOpen: false,
+                height: 550,
+                width: 750,
+                modal: true,
+                buttons: {
+                    OK: function () {
+                        viewEffectiveDialog.dialog("close");
+                        page('/effective');
+                    }
+                }
+            });
+
             let classDialog = $("#class-dialog").dialog({
                 autoOpen: false,
                 height: 400,
@@ -525,7 +556,7 @@ class UserInterface {
         });
 
         $(document).on("click", "#edit-registration-button", function () {
-            let selectedData = registeredtable.getSelectedData(),
+            let selectedData = ui.registrations.tabulator.getSelectedData(),
                 data = selectedData[0];
 
             $("#alarm-name-input").val(data.name);
@@ -601,6 +632,13 @@ class UserInterface {
                 data = selectedData[0];
 
             page('/registrations/' + data.name);
+        });
+
+        $(document).on("click", "#view-effective-button", function() {
+            let selectedData = ui.effective.tabulator.getSelectedData(),
+                data = selectedData[0];
+
+            page('/effective/' + data.name);
         });
 
         $(document).on("click", "#edit-class-button", function () {
