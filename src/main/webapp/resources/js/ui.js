@@ -132,12 +132,7 @@ class UserInterface {
                     {title: "priority", field: "priority"},
                     {title: "location", field: "location"},
                     {title: "category", field: "category"},
-                    {title: "contact", field: "pointofcontactusername"},
-                    {title: "filterable", field: "filterable"},
-                    {title: "latching", field: "latching"},
-                    {title: "on-delay-seconds", field: "ondelayseconds"},
-                    {title: "off-delay-seconds", field: "offdelayseconds"},
-                    {title: "masked-by", field: "maskedby"},
+                    {title: "contact", field: "pointofcontactusername"}
                 ]
             };
 
@@ -163,12 +158,7 @@ class UserInterface {
                 {title: "priority", field: "priority"},
                 {title: "location", field: "location"},
                 {title: "category", field: "category"},
-                {title: "contact", field: "pointofcontactusername"},
-                {title: "filterable", field: "filterable"},
-                {title: "latching", field: "latching"},
-                {title: "on-delay-seconds", field: "ondelayseconds"},
-                {title: "off-delay-seconds", field: "offdelayseconds"},
-                {title: "masked-by", field: "maskedby"}
+                {title: "contact", field: "pointofcontactusername"}
             ]
         };
 
@@ -178,6 +168,7 @@ class UserInterface {
             tableElement = "#effective-table",
             options = {
                 data: [],
+                headerSort: false,
                 reactiveData: false,
                 height: "100%", // enables the Virtual DOM
                 layout: "fitColumns",
@@ -193,12 +184,7 @@ class UserInterface {
                     {title: "priority", field: "priority"},
                     {title: "location", field: "location"},
                     {title: "category", field: "category"},
-                    {title: "contact", field: "pointofcontactusername"},
-                    {title: "filterable", field: "filterable"},
-                    {title: "latching", field: "latching"},
-                    {title: "on-delay-seconds", field: "ondelayseconds"},
-                    {title: "off-delay-seconds", field: "offdelayseconds"},
-                    {title: "masked-by", field: "maskedby"},
+                    {title: "contact", field: "pointofcontactusername"}
                 ]
             };
 
