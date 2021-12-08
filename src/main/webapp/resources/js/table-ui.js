@@ -1,4 +1,4 @@
-let PAGE_SIZE = 100;
+let PAGE_SIZE = 2;
 
 class TableUI extends EventTarget {
     constructor(panelElement, tableElement, options) {
@@ -130,10 +130,8 @@ class TableUI extends EventTarget {
                     } else {
                         me.lastOffset = me.firstOffset - 1;
                         me.firstOffset = me.lastOffset - data.length + 1;
-                        me.firstEntry = data[0];
-                        me.lastEntry = data[data.length - 1];
-
-                        console.log('first: ', me.firstEntry, 'last: ', me.lastEntry);
+                        me.firstEntry = data[data.length - 1];
+                        me.lastEntry = data[0];
                     }
                 });
 
