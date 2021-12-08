@@ -30,8 +30,8 @@
             <button type="button" id="view-class-button" class="selected-row-action" disabled="disabled">View</button>
             <button type="button" id="edit-class-button" class="selected-row-action" disabled="disabled">Edit</button>
             <button type="button" id="delete-class-button" class="selected-row-action" disabled="disabled">Delete</button> |
-            <button type="button" id="previous-class-button" disabled="disabled">Previous</button>
-            <button type="button" id="next-class-button" disabled="disabled">Next</button> |
+            <button type="button" class="prev-button" id="previous-class-button" disabled="disabled">Previous</button>
+            <button type="button" class="next-button" id="next-class-button" disabled="disabled">Next</button> |
             <span>Records: </span><span class="record-count"></span>
         </div>
         <div class="table-wrap">
@@ -123,8 +123,8 @@
             <button type="button" id="view-registration-button" class="selected-row-action" disabled="disabled">View</button>
             <button type="button" id="edit-registration-button" class="selected-row-action" disabled="disabled">Edit</button>
             <button type="button" id="delete-registration-button" class="selected-row-action" disabled="disabled">Delete</button> |
-            <button type="button" id="previous-registration-button" disabled="disabled">Previous</button>
-            <button type="button" id="next-registration-button" disabled="disabled">Next</button> |
+            <button type="button" class="prev-button" id="previous-registration-button" disabled="disabled">Previous</button>
+            <button type="button" class="next-button" id="next-registration-button" disabled="disabled">Next</button> |
             <span>Records: </span><span class="record-count"></span>
         </div>
         <div class="table-wrap">
@@ -227,8 +227,8 @@
                 <button type="button" id="search-effective-button" disabled="disabled">Search</button>
             </form> |
             <button type="button" id="view-effective-button" class="selected-row-action" disabled="disabled">View</button> |
-            <button type="button" id="previous-effective-button" disabled="disabled">Previous</button>
-            <button type="button" id="next-effective-button" disabled="disabled">Next</button> |
+            <button type="button" class="prev-button" id="previous-effective-button" disabled="disabled">Previous</button>
+            <button type="button" class="next-button" id="next-effective-button" disabled="disabled">Next</button> |
             <span>Records: </span><span class="record-count"></span>
         </div>
         <div class="table-wrap">

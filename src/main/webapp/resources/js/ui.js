@@ -673,6 +673,30 @@ class UserInterface {
                 });
         });
 
+        $(document).on("click", "#next-class-button", function(){
+            ui.classes.next(db.classes);
+        });
+
+        $(document).on("click", "#next-registration-button", function(){
+            ui.registrations.next(db.registrations);
+        });
+
+        $(document).on("click", "#next-effective-button", function() {
+            ui.effective.next(db.effective);
+        });
+
+        $(document).on("click", "#previous-class-button", function() {
+            ui.classes.previous(db.classes);
+        });
+
+        $(document).on("click", "#previous-registration-button", function() {
+            ui.registrations.previous(db.registrations);
+        });
+
+        $(document).on("click", "#previous-effective-button", function() {
+            ui.effective.previous(db.effective);
+        });
+
         $(document).on("submit", "#class-search-form", function (event) {
             event.preventDefault();
             ui.classSearch();
