@@ -30,21 +30,30 @@ class TableUI extends EventTarget {
 
         me.tabulator = new Tabulator(me.tableElement, me.options);
 
-        me.refresh = async function(table) {
-            let d, c;
-            let recordsPromise = table.orderBy('name').limit(PAGE_SIZE).toArray().then((data) => {
-                d = data;
-                me.setData(data);
+        me.updatePaginationToolbar = function() {
+            me.updateCountLabel(me.firstOffset, me.lastOffset,  me.count);
 
+            if(me.firstOffset > 1) {
+                // Enable prev button
+                me.$prevButton.button("option", "disabled", false);
+            } else {
+                // Disable prev button
                 me.$prevButton.button("option", "disabled", true);
+            }
 
-                if (data.length < PAGE_SIZE) {
-                    // Disable next button
-                    me.$nextButton.button("option", "disabled", true);
-                } else {
-                    // Enable next button
-                    me.$nextButton.button("option", "disabled", false);
-                }
+            if (me.lastOffset < me.count) {
+                // Enable next button
+                me.$nextButton.button("option", "disabled", false);
+            } else {
+                // Disable next button
+                me.$nextButton.button("option", "disabled", true);
+            }
+        }
+
+        me.refresh = async function(table) {
+            let recordsPromise = table.orderBy('name').limit(PAGE_SIZE).toArray().then((data) => {
+                me.data = data;
+                me.setData(data);
 
                 if(data.length == 0) {
                     // no results
@@ -61,21 +70,21 @@ class TableUI extends EventTarget {
             });
 
             let countPromise = table.count().then((count) => {
-                c = count;
+                me.count = count;
             });
 
-            return Promise.all([recordsPromise, countPromise]).then(() => me.updateCountLabel(me.firstOffset, me.lastOffset,  c));
+            return Promise.all([recordsPromise, countPromise]).then(() => {
+                me.updatePaginationToolbar();
+            });
         }
 
         me.next = async function(table) {
-            let d, c;
-
             let recordsPromise = table.where('name')
                 .above(me.lastEntry.name)
                 .limit(PAGE_SIZE)
                 .toArray()
                 .then((data) => {
-                d = data;
+                me.data = data;
                 me.setData(data);
 
                 if(data.length === 0) {
@@ -89,40 +98,22 @@ class TableUI extends EventTarget {
             });
 
             let countPromise = table.count().then((count) => {
-                c = count;
+                me.count = count;
             });
 
             return Promise.all([recordsPromise, countPromise]).then(() => {
-                me.updateCountLabel(me.firstOffset, me.lastOffset,  c)
-
-                if(me.firstOffset > 1) {
-                    // Enable prev button
-                    me.$prevButton.button("option", "disabled", false);
-                } else {
-                    // Disable prev button
-                    me.$prevButton.button("option", "disabled", true);
-                }
-
-                if (me.lastOffset < c) {
-                    // Enable next button
-                    me.$nextButton.button("option", "disabled", false);
-                } else {
-                    // Disable next button
-                    me.$nextButton.button("option", "disabled", true);
-                }
+                me.updatePaginationToolbar();
             });
         }
 
         me.previous = async function(table) {
-            let d, c;
-
             let recordsPromise = table.where('name')
                 .below(me.firstEntry.name)
                 .reverse()
                 .limit(PAGE_SIZE)
                 .toArray()
                 .then((data) => {
-                    d = data;
+                    me.data = data;
                     me.setData(data);
 
                     if(data.length === 0) {
@@ -136,27 +127,11 @@ class TableUI extends EventTarget {
                 });
 
             let countPromise = table.count().then((count) => {
-                c = count;
+                me.count = count;
             });
 
             return Promise.all([recordsPromise, countPromise]).then(() => {
-                me.updateCountLabel(me.firstOffset, me.lastOffset,  c)
-
-                if(me.firstOffset > 1) {
-                    // Enable prev button
-                    me.$prevButton.button("option", "disabled", false);
-                } else {
-                    // Disable prev button
-                    me.$prevButton.button("option", "disabled", true);
-                }
-
-                if (me.lastOffset < c) {
-                    // Enable next button
-                    me.$nextButton.button("option", "disabled", false);
-                } else {
-                    // Disable next button
-                    me.$nextButton.button("option", "disabled", true);
-                }
+                me.updatePaginationToolbar();
             });
         }
 
