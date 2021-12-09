@@ -186,52 +186,44 @@ class UserInterface {
             .forEach((prop) => { this[prop] = this[prop].bind(this);});
     }
 
-    registrationSearch() {
-        let filterText = $("#registration-search-input").val();
-
+    search(filterText, uitab, dbtab) {
         let filterArray = filterText.split(",");
 
-        ui.registrations.filters = [];
+        uitab.filters = [];
 
         for (let filter of filterArray) {
-            let keyValue = filter.split("=");
-
-            ui.registrations.filters.push(record => record[keyValue[0]] === keyValue[1]);
+            if(filter.indexOf('=') > -1) { // exact match equals search
+                let keyValue = filter.split("=");
+                uitab.filters.push(record => record[keyValue[0]] === keyValue[1]);
+            } else if(filter.indexOf('~') > -1) { // case-insensitive contains search
+                let keyValue = filter.split("~");
+                uitab.filters.push(record => {
+                    let haystack = record[keyValue[0]] || "";
+                    let needle = keyValue[1] || "";
+                    return haystack.toLowerCase().includes(needle.toLowerCase());
+                });
+            }
         }
 
-        ui.registrations.refresh(db.registrations);
+        uitab.refresh(dbtab);
     }
 
     classSearch() {
         let filterText = $("#class-search-input").val();
 
-        let filterArray = filterText.split(",");
+        ui.search(filterText, ui.classes, db.classes);
+    }
 
-        ui.classes.filters = [];
+    registrationSearch() {
+        let filterText = $("#registration-search-input").val();
 
-        for (let filter of filterArray) {
-            let keyValue = filter.split("=");
-
-            ui.classes.filters.push(record => record[keyValue[0]] === keyValue[1]);
-        }
-
-        ui.classes.refresh(db.classes);
+        ui.search(filterText, ui.registrations, db.registrations);
     }
 
     effectiveSearch() {
         let filterText = $("#effective-search-input").val();
 
-        let filterArray = filterText.split(",");
-
-        ui.effective.filters = [];
-
-        for (let filter of filterArray) {
-            let keyValue = filter.split("=");
-
-            ui.effective.filters.push(record => record[keyValue[0]] === keyValue[1]);
-        }
-
-        ui.effective.refresh(db.effective);
+        ui.search(filterText, ui.effective, db.effective);
     }
 
     setRegistration() {
