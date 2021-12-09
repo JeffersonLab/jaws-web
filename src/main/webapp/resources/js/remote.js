@@ -1,11 +1,9 @@
 const meta = document.querySelector('meta');
 const contextPath = meta && meta.dataset.contextPath || '';
 
-console.log('contextPath: ', contextPath);
-
 class Remote extends EventTarget {
     start() {
-        console.log('starting remote!');
+
     }
 
     setRegistration(formData) {

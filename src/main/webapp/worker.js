@@ -8,7 +8,7 @@ async function init() {
     let regIndex = regPos === undefined ? -1 : regPos.position + 1;
     let effIndex = effPos === undefined ? -1 : effPos.position + 1;
 
-    console.log('classIndex: ', classIndex, ', regIndex: ', regIndex, ', effIndex: ', effIndex);
+    //console.log('classIndex: ', classIndex, ', regIndex: ', regIndex, ', effIndex: ', effIndex);
 
     const evtSource = new EventSource('proxy/sse?classIndex=' + classIndex +
         '&registrationIndex=' + regIndex +
@@ -56,7 +56,7 @@ async function init() {
         if(records.length > 0) {
             let resumeIndex = records[records.length - 1].offset;
             await db.positions.put(new KafkaLogPosition('class', resumeIndex));
-            console.log('Saved class resume index: ', resumeIndex);
+            //console.log('Saved class resume index: ', resumeIndex);
         }
 
         postMessage("class");
@@ -106,7 +106,7 @@ async function init() {
         if(records.length > 0) {
             let resumeIndex = records[records.length - 1].offset;
             await db.positions.put(new KafkaLogPosition('registration', resumeIndex));
-            console.log('Saved registration resume index: ', resumeIndex);
+            //console.log('Saved registration resume index: ', resumeIndex);
         }
 
         postMessage("registration");
@@ -156,7 +156,7 @@ async function init() {
         if(records.length > 0) {
             let resumeIndex = records[records.length - 1].offset;
             await db.positions.put(new KafkaLogPosition('effective', resumeIndex));
-            console.log('Saved effective resume index: ', resumeIndex);
+            //console.log('Saved effective resume index: ', resumeIndex);
         }
 
         postMessage("effective");
@@ -176,7 +176,6 @@ async function init() {
 }
 
 init().then(()=>{
-    console.log("worker started");
 }).catch(error => {
     console.error(error);
 });
