@@ -234,15 +234,11 @@ class UserInterface {
             value = null;
         }
 
-        console.log('need to do quite a lot with: ', ui.registrations.data);
-
         let promises = [];
 
         for(const r of ui.registrations.data) {
             let record = JSON.parse(JSON.stringify(r));
             record[property] = value;
-
-            console.log("handling: ", record);
 
             ui.fillRegistrationForm(record);
             promises.push(ui.setRegistration());
@@ -274,8 +270,6 @@ class UserInterface {
     setRegistration() {
         let form = document.getElementById("registered-form"),
             formData = new FormData(form);
-
-        console.log('setRegistration', formData);
 
         let promise = remote.setRegistration(formData);
 
