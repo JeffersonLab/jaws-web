@@ -53,8 +53,6 @@ class TableUI extends EventTarget {
         }
 
         me.refresh = async function(table) {
-            console.log('refresh filters: ', me.filters);
-
             let countCollection = table.orderBy('name');
 
             for(const filter of me.filters) {
