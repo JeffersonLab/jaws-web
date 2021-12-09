@@ -199,54 +199,51 @@ class UserInterface {
     }
 
     registrationSearch() {
-        registeredtable.clearFilter();
-
         let filterText = $("#registration-search-input").val();
 
         let filterArray = filterText.split(",");
 
+        ui.registrations.filters = [];
+
         for (let filter of filterArray) {
             let keyValue = filter.split("=");
 
-            registeredtable.addFilter(keyValue[0], "=", keyValue[1]);
+            ui.registrations.filters.push(record => record[keyValue[0]] === keyValue[1]);
         }
 
-        let count = registeredtable.getDataCount("active");
-        $("#registered-record-count").text(count.toLocaleString());
+        ui.registrations.refresh(db.registrations);
     }
 
     classSearch() {
-        classestable.clearFilter();
-
         let filterText = $("#class-search-input").val();
 
         let filterArray = filterText.split(",");
 
+        ui.classes.filters = [];
+
         for (let filter of filterArray) {
             let keyValue = filter.split("=");
 
-            classestable.addFilter(keyValue[0], "=", keyValue[1]);
+            ui.classes.filters.push(record => record[keyValue[0]] === keyValue[1]);
         }
 
-        let count = classestable.getDataCount("active");
-        $("#class-record-count").text(count.toLocaleString());
+        ui.classes.refresh(db.classes);
     }
 
     effectiveSearch() {
-        effectivetable.clearFilter();
-
         let filterText = $("#effective-search-input").val();
 
         let filterArray = filterText.split(",");
 
+        ui.effective.filters = [];
+
         for (let filter of filterArray) {
             let keyValue = filter.split("=");
 
-            effectivetable.addFilter(keyValue[0], "=", keyValue[1]);
+            ui.effective.filters.push(record => record[keyValue[0]] === keyValue[1]);
         }
 
-        let count = effectivetable.getDataCount("active");
-        $("#effective-record-count").text(count.toLocaleString());
+        ui.effective.refresh(db.effective);
     }
 
     setRegistration() {

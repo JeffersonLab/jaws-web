@@ -1,4 +1,4 @@
-let PAGE_SIZE = 2;
+let PAGE_SIZE = 100;
 
 class TableUI extends EventTarget {
     constructor(panelElement, tableElement, options) {
@@ -28,6 +28,8 @@ class TableUI extends EventTarget {
 
         me.options.rowDeselected = me.rowSelected;
 
+        me.filters = [];
+
         me.tabulator = new Tabulator(me.tableElement, me.options);
 
         me.updatePaginationToolbar = function() {
@@ -51,7 +53,20 @@ class TableUI extends EventTarget {
         }
 
         me.refresh = async function(table) {
-            let recordsPromise = table.orderBy('name').limit(PAGE_SIZE).toArray().then((data) => {
+            console.log('refresh filters: ', me.filters);
+
+            let countCollection = table.orderBy('name');
+
+            for(const filter of me.filters) {
+                countCollection = countCollection.and(filter);
+            }
+
+            let selectCollection = countCollection.clone();
+
+            let recordsPromise = selectCollection
+                .limit(PAGE_SIZE)
+                .toArray()
+                .then((data) => {
                 me.data = data;
                 me.setData(data);
 
@@ -69,7 +84,7 @@ class TableUI extends EventTarget {
                 }
             });
 
-            let countPromise = table.count().then((count) => {
+            let countPromise = countCollection.count().then((count) => {
                 me.count = count;
             });
 
@@ -79,8 +94,17 @@ class TableUI extends EventTarget {
         }
 
         me.next = async function(table) {
-            let recordsPromise = table.where('name')
-                .above(me.lastEntry.name)
+            let selectCollection = table.where('name')
+                .above(me.lastEntry.name);
+
+            let countCollection = table.orderBy('name');
+
+            for(const filter of me.filters) {
+                selectCollection = selectCollection.and(filter);
+                countCollection = countCollection.and(filter);
+            }
+
+            let recordsPromise = selectCollection
                 .limit(PAGE_SIZE)
                 .toArray()
                 .then((data) => {
@@ -97,7 +121,7 @@ class TableUI extends EventTarget {
                 }
             });
 
-            let countPromise = table.count().then((count) => {
+            let countPromise = countCollection.count().then((count) => {
                 me.count = count;
             });
 
@@ -107,8 +131,17 @@ class TableUI extends EventTarget {
         }
 
         me.previous = async function(table) {
-            let recordsPromise = table.where('name')
-                .below(me.firstEntry.name)
+            let selectCollection = table.where('name')
+                .below(me.firstEntry.name);
+
+            let countCollection = table.orderBy('name');
+
+            for(const filter of me.filters) {
+                selectCollection = selectCollection.and(filter);
+                countCollection = countCollection.and(filter);
+            }
+
+            let recordsPromise = selectCollection
                 .reverse()
                 .limit(PAGE_SIZE)
                 .toArray()
@@ -126,7 +159,7 @@ class TableUI extends EventTarget {
                     }
                 });
 
-            let countPromise = table.count().then((count) => {
+            let countPromise = countCollection.count().then((count) => {
                 me.count = count;
             });
 

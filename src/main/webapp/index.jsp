@@ -24,7 +24,7 @@
         <div class="toolbar">
             <form id="class-search-form" class="search-form" onsubmit="return false;">
                 <input type="text" value="" id="class-search-input" class="search-input" placeholder="field=value,field=value"/>
-                <button type="button" id="search-class-button" disabled="disabled">Search</button> |
+                <button type="button" id="search-class-button">Search</button> |
             </form>
             <button type="button" id="new-class-button">New</button> |
             <button type="button" id="view-class-button" class="selected-row-action" disabled="disabled">View</button>
@@ -117,7 +117,7 @@
         <div class="toolbar">
             <form id="registered-search-form" class="search-form" onsubmit="return false;">
                 <input type="text" value="" id="registration-search-input" class="search-input" placeholder="field=value,field=value"/>
-                <button type="button" id="search-registration-button" disabled="disabled">Search</button> |
+                <button type="button" id="search-registration-button">Search</button> |
             </form>
             <button type="button" id="new-registration-button">New</button> |
             <button type="button" id="view-registration-button" class="selected-row-action" disabled="disabled">View</button>
@@ -224,7 +224,7 @@
         <div class="toolbar">
             <form id="effective-search-form" class="search-form" onsubmit="return false;">
                 <input type="text" value="" id="effective-search-input" class="search-input" placeholder="field=value,field=value"/>
-                <button type="button" id="search-effective-button" disabled="disabled">Search</button>
+                <button type="button" id="search-effective-button">Search</button>
             </form> |
             <button type="button" id="view-effective-button" class="selected-row-action" disabled="disabled">View</button> |
             <button type="button" class="prev-button" id="previous-effective-button" disabled="disabled">Previous</button>
