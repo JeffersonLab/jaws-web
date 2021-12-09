@@ -592,7 +592,7 @@ class UserInterface {
         });
 
         $(document).on("click", "#delete-registration-button", function () {
-            let selectedData = registeredtable.getSelectedData();
+            let selectedData = ui.registrations.tabulator.getSelectedData();
 
             let params = "name=" + selectedData[0].name;
 
