@@ -119,7 +119,8 @@
                 <input type="text" value="" id="registration-search-input" class="search-input" placeholder="field=value,field~value"/>
                 <button type="button" id="search-registration-button">Search</button> |
             </form>
-            <button type="button" id="new-registration-button">New</button> |
+            <button type="button" id="new-registration-button">New</button>
+            <button type="button" id="batch-edit-button">Edit All</button> |
             <button type="button" id="view-registration-button" class="selected-row-action" disabled="disabled">View</button>
             <button type="button" id="edit-registration-button" class="selected-row-action" disabled="disabled">Edit</button>
             <button type="button" id="delete-registration-button" class="selected-row-action" disabled="disabled">Delete</button> |
@@ -163,6 +164,21 @@
                 <dt>Screen Path</dt>
                 <dd id="view-registration-screen-path"></dd>
             </dl>
+        </div>
+        <div id="batch-registration-dialog" class="dialog" title="Edit All On Current Page">
+            <form id="batch-form" onsubmit="return false;">
+                <p>Edit entire page of registration records</p>
+                <label>Field to modify</label>
+                <select id="batch-update-select">
+                    <option value="class" selected="selected">Class</option>
+                    <option value="category">Category</option>
+                    <option value="priority">Priority</option>
+                    <option value="location">Location</option>
+                </select>
+                <label>Value</label>
+                <input id="batch-update-input" type="text" value=""/>
+                <input id="batch-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+            </form>
         </div>
         <div id="registration-dialog" class="dialog" title="New Registration">
             <form id="registered-form" onsubmit="return false;">

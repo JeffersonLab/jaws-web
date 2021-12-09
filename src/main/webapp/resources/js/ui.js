@@ -226,9 +226,56 @@ class UserInterface {
         ui.search(filterText, ui.effective, db.effective);
     }
 
+    setRegistrationBatch() {
+        let property = $("#batch-update-select").val();
+        let value = $("#batch-update-input").val();
+
+        if(value === '') {
+            value = null;
+        }
+
+        console.log('need to do quite a lot with: ', ui.registrations.data);
+
+        let promises = [];
+
+        for(const r of ui.registrations.data) {
+            let record = JSON.parse(JSON.stringify(r));
+            record[property] = value;
+
+            console.log("handling: ", record);
+
+            ui.fillRegistrationForm(record);
+            promises.push(ui.setRegistration());
+        }
+
+        Promise.all(promises).then(() => {
+            $("#batch-registration-dialog").dialog("close");
+        });
+    }
+
+    fillRegistrationForm(data) {
+        $("#alarm-name-input").val(data.name);
+        $("#registered-class-input").val(data.class);
+        $("#registered-priority-select").val(data.priority);
+        $("#registered-location-select").val(data.location);
+        $("#registered-category-select").val(data.category);
+        $("#registered-rationale-textarea").val(data.rationale);
+        $("#registered-correctiveaction-textarea").val(data.correctiveaction);
+        $("#registered-pocusername-input").val(data.pointofcontactusername);
+        $("#registered-form [name=filterable]").val([data.filterable]);
+        $("#registered-form [name=latching]").val([data.latching]);
+        $("#registered-ondelay-input").val(data.ondelayseconds);
+        $("#registered-offdelay-input").val(data.offdelayseconds);
+        $("#registered-maskedby-input").val(data.maskedby);
+        $("#registered-screenpath-input").val(data.screenpath);
+        $("#epicspv-input").val(data.epicspv);
+    }
+
     setRegistration() {
         let form = document.getElementById("registered-form"),
             formData = new FormData(form);
+
+        console.log('setRegistration', formData);
 
         let promise = remote.setRegistration(formData);
 
@@ -253,6 +300,7 @@ class UserInterface {
             .catch(error => {
                 alert("Unable to edit: " + error);
             });
+        return promise;
     }
 
     setClass() {
@@ -445,6 +493,24 @@ class UserInterface {
                 ui.setRegistration();
             });
 
+            let batchDialog = $("#batch-registration-dialog").dialog({
+                autoOpen: false,
+                height: 400,
+                width: 400,
+                modal: true,
+                buttons: {
+                    Set: ui.setRegistrationBatch,
+                    Cancel: function () {
+                        batchDialog.dialog("close");
+                    }
+                }
+            });
+
+            batchDialog.find("form").on("submit", function (event) {
+                event.preventDefault();
+                ui.setRegistrationBatch();
+            });
+
             let viewClassDialog = $("#view-class-dialog").dialog({
                 autoOpen: false,
                 height: 550,
@@ -507,6 +573,12 @@ class UserInterface {
             ui.initCategories();
         });
 
+        $(document).on("click", "#batch-edit-button", function(){
+            document.getElementById("batch-form").reset();
+
+            $("#batch-registration-dialog").dialog("open");
+        });
+
         $(document).on("click", "#new-registration-button", function () {
 
             document.getElementById("registered-form").reset();
@@ -519,21 +591,7 @@ class UserInterface {
             let selectedData = ui.registrations.tabulator.getSelectedData(),
                 data = selectedData[0];
 
-            $("#alarm-name-input").val(data.name);
-            $("#registered-class-input").val(data.class);
-            $("#registered-priority-select").val(data.priority);
-            $("#registered-location-select").val(data.location);
-            $("#registered-category-select").val(data.category);
-            $("#registered-rationale-textarea").val(data.rationale);
-            $("#registered-correctiveaction-textarea").val(data.correctiveaction);
-            $("#registered-pocusername-input").val(data.pointofcontactusername);
-            $("#registered-form [name=filterable]").val([data.filterable]);
-            $("#registered-form [name=latching]").val([data.latching]);
-            $("#registered-ondelay-input").val(data.ondelayseconds);
-            $("#registered-offdelay-input").val(data.offdelayseconds);
-            $("#registered-maskedby-input").val(data.maskedby);
-            $("#registered-screenpath-input").val(data.screenpath);
-            $("#epicspv-input").val(data.epicspv);
+            ui.fillRegistrationForm(data);
 
             $("#registration-dialog").dialog("option", "title", "Edit Registration")
             $("#registration-dialog").dialog("open");
