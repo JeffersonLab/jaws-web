@@ -121,7 +121,7 @@ public class SSE implements ServletContextListener {
                     try {
                         while (!sink.isClosed()) {
                             sink.send(sse.newEvent("ping", ":"));  // Actively check for connection
-                            System.err.println("Looping checking for disconnect");
+                            // Looping waiting for client disconnect
                             Thread.sleep(5000);
                         }
                     } catch (InterruptedException e) {
@@ -129,8 +129,7 @@ public class SSE implements ServletContextListener {
                         e.printStackTrace();
                     }
                 }
-
-                System.err.println("Proxy disconnected");
+                // Client disconnected if here
             }
         });
     }
