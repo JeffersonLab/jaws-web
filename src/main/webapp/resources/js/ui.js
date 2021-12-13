@@ -117,9 +117,9 @@ class UserInterface {
                 ],
                 columns: [
                     {title: "name", field: "name"},
-                    {title: "priority", field: "priority"},
-                    {title: "location", field: "location"},
                     {title: "category", field: "category"},
+                    {title: "location", field: "location"},
+                    {title: "priority", field: "priority"},
                     {title: "contact", field: "pointofcontactusername"}
                 ]
             };
@@ -142,11 +142,10 @@ class UserInterface {
             ],
             columns: [
                 {title: "name", field: "name"},
-                {title: "class", field: "class"},
-                {title: "priority", field: "priority"},
-                {title: "location", field: "location"},
                 {title: "category", field: "category"},
-                {title: "contact", field: "pointofcontactusername"}
+                {title: "class", field: "class"},
+                {title: "location", field: "location"},
+                {title: "epicspv", field: "epicspv"}
             ]
         };
 
@@ -168,10 +167,10 @@ class UserInterface {
                 ],
                 columns: [
                     {title: "name", field: "name"},
-                    {title: "class", field: "class"},
-                    {title: "priority", field: "priority"},
-                    {title: "location", field: "location"},
                     {title: "category", field: "category"},
+                    {title: "class", field: "class"},
+                    {title: "location", field: "location"},
+                    {title: "priority", field: "priority"},
                     {title: "contact", field: "pointofcontactusername"}
                 ]
             };
