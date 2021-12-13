@@ -91,16 +91,16 @@
                     <input type="text" name="pocusername" id="class-pocusername-input" value=""/>
                     <fieldset>
                         <legend>Filterable</legend>
-                        <label>True</label>
+                        <label class="radio-label">True</label>
                         <input type="radio" name="filterable" checked="checked" value="true"/>
-                        <label>False</label>
+                        <label class="radio-label">False</label>
                         <input type="radio" name="filterable" value="false"/>
                     </fieldset>
                     <fieldset>
                         <legend>Latching</legend>
-                        <label>True</label>
+                        <label class="radio-label">True</label>
                         <input type="radio" name="latching" checked="checked" value="true"/>
-                        <label>False</label>
+                        <label class="radio-label">False</label>
                         <input type="radio" name="latching" value="false"/>
                     </fieldset><label>On Delay Seconds</label>
                     <input type="number" name="ondelayseconds" id="class-ondelay-input" value=""/>
@@ -212,20 +212,20 @@
                     <input type="text" name="pocusername" id="registered-pocusername-input" value=""/>
                     <fieldset>
                         <legend>Filterable</legend>
-                        <label>True</label>
+                        <label class="radio-label">True</label>
                         <input type="radio" name="filterable" value="true"/>
-                        <label>False</label>
+                        <label class="radio-label">False</label>
                         <input type="radio" name="filterable" value="false"/>
-                        <label>Inherit</label>
+                        <label class="radio-label">Inherit</label>
                         <input type="radio" name="filterable" checked="checked" value=""/>
                     </fieldset>
                     <fieldset>
                         <legend>Latching</legend>
-                        <label>True</label>
+                        <label class="radio-label">True</label>
                         <input type="radio" name="latching" value="true"/>
-                        <label>False</label>
+                        <label class="radio-label">False</label>
                         <input type="radio" name="latching" value="false"/>
-                        <label>Inherit</label>
+                        <label class="radio-label">Inherit</label>
                         <input type="radio" name="latching" checked="checked" value=""/>
                     </fieldset><label>On Delay Seconds</label>
                     <input type="number" name="ondelayseconds" id="registered-ondelay-input" value=""/>
