@@ -2,17 +2,17 @@ import db from './resources/js/db.js';
 import {AlarmClass, AlarmRegistration, EffectiveRegistration, KafkaLogPosition} from "./resources/js/entities.js";
 
 async function init() {
-    const [classPos, regPos, effPos] = await db.positions.bulkGet(["class", "registration", "effective"]);
+    const [classPos, instancePos, effectivePos] = await db.positions.bulkGet(["class", "instance", "effective"]);
 
     let classIndex = classPos === undefined ? -1 : classPos.position + 1;
-    let regIndex = regPos === undefined ? -1 : regPos.position + 1;
-    let effIndex = effPos === undefined ? -1 : effPos.position + 1;
+    let instanceIndex = instancePos === undefined ? -1 : instancePos.position + 1;
+    let effectiveIndex = effectivePos === undefined ? -1 : effectivePos.position + 1;
 
-    //console.log('classIndex: ', classIndex, ', regIndex: ', regIndex, ', effIndex: ', effIndex);
+    //console.log('classIndex: ', classIndex, ', instanceIndex: ', instanceIndex, ', effectiveIndex: ', effectiveIndex);
 
     const evtSource = new EventSource('proxy/sse?classIndex=' + classIndex +
-        '&registrationIndex=' + regIndex +
-        '&effectiveIndex=' + effIndex);
+        '&instanceIndex=' + instanceIndex +
+        '&effectiveIndex=' + effectiveIndex);
 
     evtSource.addEventListener("class", async (e) => {
         let records = JSON.parse(e.data);
@@ -62,7 +62,7 @@ async function init() {
         postMessage("class");
     });
 
-    evtSource.addEventListener("registration", async (e) => {
+    evtSource.addEventListener("instance", async (e) => {
         let records = JSON.parse(e.data);
 
         let remove = [];
@@ -96,20 +96,20 @@ async function init() {
         }
 
         if(remove.length > 0) {
-            await db.registrations.bulkDelete(remove);
+            await db.instances.bulkDelete(remove);
         }
 
         if(updateOrAdd.length > 0) {
-            await db.registrations.bulkPut(updateOrAdd);
+            await db.instances.bulkPut(updateOrAdd);
         }
 
         if(records.length > 0) {
             let resumeIndex = records[records.length - 1].offset;
-            await db.positions.put(new KafkaLogPosition('registration', resumeIndex));
-            //console.log('Saved registration resume index: ', resumeIndex);
+            await db.positions.put(new KafkaLogPosition('instance', resumeIndex));
+            //console.log('Saved instance resume index: ', resumeIndex);
         }
 
-        postMessage("registration");
+        postMessage("instance");
     });
 
     evtSource.addEventListener("effective", async (e) => {
@@ -146,11 +146,11 @@ async function init() {
         }
 
         if(remove.length > 0) {
-            await db.effective.bulkDelete(remove);
+            await db.effectives.bulkDelete(remove);
         }
 
         if(updateOrAdd.length > 0) {
-            await db.effective.bulkPut(updateOrAdd);
+            await db.effectives.bulkPut(updateOrAdd);
         }
 
         if(records.length > 0) {
@@ -166,8 +166,8 @@ async function init() {
         postMessage("class-highwatermark");
     });
 
-    evtSource.addEventListener("registration-highwatermark", function (e) {
-        postMessage("registration-highwatermark");
+    evtSource.addEventListener("instance-highwatermark", function (e) {
+        postMessage("instance-highwatermark");
     });
 
     evtSource.addEventListener("effective-highwatermark", function (e) {

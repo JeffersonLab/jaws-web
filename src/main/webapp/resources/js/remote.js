@@ -71,12 +71,12 @@ worker.onmessage = function(e) {
             event = new CustomEvent("class-highwatermark", { detail: null });
             remote.dispatchEvent(event);
             break;
-        case "registration":
-            event = new CustomEvent("registration", { detail: null });
+        case "instance":
+            event = new CustomEvent("instance", { detail: null });
             remote.dispatchEvent(event);
             break;
-        case "registration-highwatermark":
-            event = new CustomEvent("registration-highwatermark", { detail: null });
+        case "instance-highwatermark":
+            event = new CustomEvent("instance-highwatermark", { detail: null });
             remote.dispatchEvent(event);
             break;
         case "effective":

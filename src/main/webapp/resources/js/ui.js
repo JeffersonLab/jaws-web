@@ -10,7 +10,30 @@ class UserInterface {
     constructor() {
         this.tabs = {
             init: function() {
-                page('/effective');
+                page('/registrations');
+            },
+            registration: async function(ctx, next) {
+                $("#tabs").tabs({ active: 0 });
+
+                let data = await db.effectives.get(ctx.params.name);
+
+                $("#view-effective-name").text(data.name);
+                $("#view-effective-class").text(data.class || 'None');
+                $("#view-effective-epicspv").text(data.epicspv || 'None');
+                $("#view-effective-priority").text(data.priority || 'None');
+                $("#view-effective-location").text(data.location || 'None');
+                $("#view-effective-category").text(data.category || 'None');
+                $("#view-effective-rationale").text(data.rationale || 'None');
+                $("#view-effective-action").text(data.correctiveaction || 'None');
+                $("#view-effective-contact").text(data.pointofcontactusername || 'None');
+                $("#view-effective-filterable").text(data.filterable || 'None');
+                $("#view-effective-latching").text(data.latching || 'None');
+                $("#view-effective-on-delay").text(data.ondelayseconds || 'None');
+                $("#view-effective-off-delay").text(data.offdelayseconds || 'None');
+                $("#view-effective-masked-by").text(data.maskedby || 'None');
+                $("#view-effective-screen-path").text(data.screenpath || 'None');
+
+                $("#view-effective-dialog").dialog("open");
             },
             class: async function(ctx, next) {
                 $("#tabs").tabs({ active: 1 });
@@ -33,10 +56,10 @@ class UserInterface {
 
                 $("#view-class-dialog").dialog("open");
             },
-            registration: async function(ctx, next) {
+            instance: async function(ctx, next) {
                 $("#tabs").tabs({ active: 2 });
 
-                let data = await db.registrations.get(ctx.params.name);
+                let data = await db.instances.get(ctx.params.name);
 
                 $("#view-registration-name").text(data.name);
                 $("#view-registration-class").text(data.class || 'None');
@@ -56,36 +79,13 @@ class UserInterface {
 
                 $("#view-registration-dialog").dialog("open");
             },
-            effect: async function(ctx, next) {
-                $("#tabs").tabs({ active: 0 });
-
-                let data = await db.effective.get(ctx.params.name);
-
-                $("#view-effective-name").text(data.name);
-                $("#view-effective-class").text(data.class || 'None');
-                $("#view-effective-epicspv").text(data.epicspv || 'None');
-                $("#view-effective-priority").text(data.priority || 'None');
-                $("#view-effective-location").text(data.location || 'None');
-                $("#view-effective-category").text(data.category || 'None');
-                $("#view-effective-rationale").text(data.rationale || 'None');
-                $("#view-effective-action").text(data.correctiveaction || 'None');
-                $("#view-effective-contact").text(data.pointofcontactusername || 'None');
-                $("#view-effective-filterable").text(data.filterable || 'None');
-                $("#view-effective-latching").text(data.latching || 'None');
-                $("#view-effective-on-delay").text(data.ondelayseconds || 'None');
-                $("#view-effective-off-delay").text(data.offdelayseconds || 'None');
-                $("#view-effective-masked-by").text(data.maskedby || 'None');
-                $("#view-effective-screen-path").text(data.screenpath || 'None');
-
-                $("#view-effective-dialog").dialog("open");
-            },
-            effective: function() {
+            registrations: function() {
                 $("#tabs").tabs({ active: 0 });
             },
             classes: function() {
                 $("#tabs").tabs({ active: 1 });
             },
-            registrations: function() {
+            instances: function() {
                 $("#tabs").tabs({ active: 2 });
             }
         };
@@ -93,12 +93,12 @@ class UserInterface {
         page.base(contextPath + '/view');
 
         page('/', this.tabs.init);
-        page('/classes', this.tabs.classes);
         page('/registrations', this.tabs.registrations);
-        page('/effective', this.tabs.effective);
-        page('/classes/:name', this.tabs.class);
+        page('/classes', this.tabs.classes);
+        page('/instances', this.tabs.instances);
         page('/registrations/:name', this.tabs.registration);
-        page('/effective/:name', this.tabs.effect);
+        page('/classes/:name', this.tabs.class);
+        page('/instances/:name', this.tabs.instance);
         page();
 
         let panelElement = "#classes-panel",
@@ -150,7 +150,7 @@ class UserInterface {
             ]
         };
 
-        this.registrations = new TableUI(panelElement, tableElement, options);
+        this.instances = new TableUI(panelElement, tableElement, options);
 
         panelElement = "#effective-panel",
             tableElement = "#effective-table",
@@ -176,7 +176,7 @@ class UserInterface {
                 ]
             };
 
-        this.effective = new TableUI(panelElement, tableElement, options);
+        this.effectives = new TableUI(panelElement, tableElement, options);
 
         // bind this on properties
         const props = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
@@ -214,16 +214,16 @@ class UserInterface {
         ui.search(filterText, ui.classes, db.classes);
     }
 
-    registrationSearch() {
+    instanceSearch() {
         let filterText = $("#registration-search-input").val();
 
-        ui.search(filterText, ui.registrations, db.registrations);
+        ui.search(filterText, ui.instances, db.instances);
     }
 
     effectiveSearch() {
         let filterText = $("#effective-search-input").val();
 
-        ui.search(filterText, ui.effective, db.effective);
+        ui.search(filterText, ui.effectives, db.effectives);
     }
 
     setRegistrationBatch() {
@@ -236,7 +236,7 @@ class UserInterface {
 
         let promises = [];
 
-        for(const r of ui.registrations.data) {
+        for(const r of ui.instances.data) {
             let record = JSON.parse(JSON.stringify(r));
             record[property] = value;
 
@@ -454,14 +454,14 @@ class UserInterface {
                     i.newPanel.css("display", "flex");
 
                     switch (i.newTab.context.innerText) {
+                        case 'Registrations':
+                            page('/registrations');
+                            break;
                         case 'Classes':
                             page('/classes');
                             break;
                         case 'Instances':
-                            page('/registrations');
-                            break;
-                        case 'Registrations':
-                            page('/effective');
+                            page('/instances');
                             break;
                         default:
                             console.log('Unknown tab activation: ', event, i);
@@ -539,7 +539,7 @@ class UserInterface {
                 buttons: {
                     OK: function () {
                         viewEffectiveDialog.dialog("close");
-                        page('/effective');
+                        page('/registrations');
                     }
                 }
             });
@@ -582,7 +582,7 @@ class UserInterface {
         });
 
         $(document).on("click", "#edit-registration-button", function () {
-            let selectedData = ui.registrations.tabulator.getSelectedData(),
+            let selectedData = ui.instances.tabulator.getSelectedData(),
                 data = selectedData[0];
 
             ui.fillRegistrationForm(data);
@@ -592,7 +592,7 @@ class UserInterface {
         });
 
         $(document).on("click", "#delete-registration-button", function () {
-            let selectedData = ui.registrations.tabulator.getSelectedData();
+            let selectedData = ui.instances.tabulator.getSelectedData();
 
             let params = "name=" + selectedData[0].name;
 
@@ -617,11 +617,11 @@ class UserInterface {
 
         $(document).on("submit", "#registered-search-form", function (event) {
             event.preventDefault();
-            ui.registrationSearch();
+            ui.instanceSearch();
         });
 
         $(document).on("click", "#search-registration-button", function () {
-            ui.registrationSearch();
+            ui.instanceSearch();
         });
 
         $(document).on("click", "#new-class-button", function () {
@@ -640,17 +640,17 @@ class UserInterface {
         });
 
         $(document).on("click", "#view-registration-button", function() {
-            let selectedData = ui.registrations.tabulator.getSelectedData(),
+            let selectedData = ui.instances.tabulator.getSelectedData(),
                 data = selectedData[0];
 
-            page('/registrations/' + data.name);
+            page('/instances/' + data.name);
         });
 
         $(document).on("click", "#view-effective-button", function() {
-            let selectedData = ui.effective.tabulator.getSelectedData(),
+            let selectedData = ui.effectives.tabulator.getSelectedData(),
                 data = selectedData[0];
 
-            page('/effective/' + data.name);
+            page('/registrations/' + data.name);
         });
 
         $(document).on("click", "#edit-class-button", function () {
@@ -704,11 +704,11 @@ class UserInterface {
         });
 
         $(document).on("click", "#next-registration-button", function(){
-            ui.registrations.next(db.registrations);
+            ui.instances.next(db.instances);
         });
 
         $(document).on("click", "#next-effective-button", function() {
-            ui.effective.next(db.effective);
+            ui.effectives.next(db.effectives);
         });
 
         $(document).on("click", "#previous-class-button", function() {
@@ -716,11 +716,11 @@ class UserInterface {
         });
 
         $(document).on("click", "#previous-registration-button", function() {
-            ui.registrations.previous(db.registrations);
+            ui.instances.previous(db.instances);
         });
 
         $(document).on("click", "#previous-effective-button", function() {
-            ui.effective.previous(db.effective);
+            ui.effectives.previous(db.effectives);
         });
 
         $(document).on("submit", "#class-search-form", function (event) {

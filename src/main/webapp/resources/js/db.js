@@ -4,15 +4,15 @@ import {AlarmClass, AlarmRegistration, EffectiveRegistration, KafkaLogPosition} 
 const db = new Dexie("jaws");
 
 db.version(1).stores({
+    effectives: "name",
     classes: "name",
-    registrations: "name",
-    effective: "name",
+    instances: "name",
     positions: "name"
 });
 
+db.effectives.mapToClass(EffectiveRegistration);
 db.classes.mapToClass(AlarmClass);
-db.registrations.mapToClass(AlarmRegistration);
-db.effective.mapToClass(EffectiveRegistration);
+db.instances.mapToClass(AlarmRegistration);
 db.positions.mapToClass(KafkaLogPosition);
 
 export default db;

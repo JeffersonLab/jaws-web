@@ -20,7 +20,7 @@
         <li><a href="#registrations-panel">Instances</a></li>
     </ul>
     <div id="classes-panel">
-        <h2>Alarm Classes</h2>
+        <h2>Alarm Registration Classes</h2>
         <div class="toolbar">
             <form id="class-search-form" class="search-form" onsubmit="return false;">
                 <input type="text" value="" id="class-search-input" class="search-input" placeholder="field=value,field~value"/>
@@ -131,7 +131,7 @@
         <div class="table-wrap">
             <div id="registrations-table"></div>
         </div>
-        <div id="view-registration-dialog" class="dialog" title="Registration">
+        <div id="view-registration-dialog" class="dialog" title="Registration (Instance)">
             <dl>
                 <dt>Name</dt>
                 <dd id="view-registration-name"></dd>
@@ -180,7 +180,7 @@
                 <input id="batch-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
             </form>
         </div>
-        <div id="registration-dialog" class="dialog" title="New Registration">
+        <div id="registration-dialog" class="dialog" title="New Registration (Instance)">
             <form id="registered-form" onsubmit="return false;">
                 <fieldset>
                     <label>Alarm Name</label>
@@ -236,7 +236,7 @@
         </div>
     </div>
     <div id="effective-panel">
-        <h2>Alarm Registrations (Effective)</h2>
+        <h2>Effective Alarm Registrations (Class + Instance)</h2>
         <div class="toolbar">
             <form id="effective-search-form" class="search-form" onsubmit="return false;">
                 <input type="text" value="" id="effective-search-input" class="search-input" placeholder="field=value,field~value"/>
@@ -250,7 +250,7 @@
         <div class="table-wrap">
             <div id="effective-table"></div>
         </div>
-        <div id="view-effective-dialog" class="dialog" title="Effective">
+        <div id="view-effective-dialog" class="dialog" title="Registration (Effective)">
             <dl>
                 <dt>Name</dt>
                 <dd id="view-effective-name"></dd>

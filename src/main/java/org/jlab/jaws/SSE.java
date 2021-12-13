@@ -65,7 +65,7 @@ public class SSE implements ServletContextListener {
             @Override
             public void run() {
                 final Properties classProps = getClassProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
-                final Properties registrationProps = getRegistrationProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
+                final Properties registrationProps = getInstanceProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
                 final Properties effectiveProps = getEffectiveProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
                 try (
@@ -90,12 +90,12 @@ public class SSE implements ServletContextListener {
                     registrationTable.addListener(new EventSourceListener<String, AlarmRegistration>() {
                         @Override
                         public void highWaterOffset() {
-                            sink.send(sse.newEvent("registration-highwatermark", ""));
+                            sink.send(sse.newEvent("instance-highwatermark", ""));
                         }
 
                         @Override
                         public void batch(LinkedHashMap<String, EventSourceRecord<String, AlarmRegistration>> records) {
-                            sendRegistrationRecords(sink, records.values());
+                            sendInstanceRecords(sink, records.values());
                         }
 
                     });
@@ -152,7 +152,7 @@ public class SSE implements ServletContextListener {
         return props;
     }
 
-    private Properties getRegistrationProps(String servers, String registry) {
+    private Properties getInstanceProps(String servers, String registry) {
         final Properties props = new Properties();
 
         final SpecificAvroSerde<AlarmRegistration> VALUE_SERDE = new SpecificAvroSerde<>();
@@ -226,7 +226,7 @@ public class SSE implements ServletContextListener {
         sink.send(sse.newEvent("class", builder.toString()));
     }
 
-    private void sendRegistrationRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmRegistration>> records) {
+    private void sendInstanceRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmRegistration>> records) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 
@@ -264,7 +264,7 @@ public class SSE implements ServletContextListener {
             builder.replace(i, i + 1, "]");
         }
 
-        sink.send(sse.newEvent("registration", builder.toString()));
+        sink.send(sse.newEvent("instance", builder.toString()));
     }
 
     private void sendEffectiveRecords(SseEventSink sink, Collection<EventSourceRecord<String, EffectiveRegistration>> records) {
