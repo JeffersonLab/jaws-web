@@ -96,11 +96,19 @@ body .ui-tabs .ui-tabs-panel {
 }
 
 .dialog label,
-.dialog dt {
+.dialog dt,
+.dialog fieldset {
     margin-top: 0.5em;
 }
 
-body .toastui-editor-contents {
+.dialog fieldset label {
+    margin-top: 0;
+}
+
+body .dialog .toastui-editor-contents,
+body .dialog .toastui-editor-defaultUI,
+body .dialog .toastui-editor-defaultUI .ProseMirror {
     font-family: inherit;
     font-size: inherit;
+    line-height: 160%;
 }
