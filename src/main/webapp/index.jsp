@@ -81,10 +81,12 @@
                     <select id="location-select" name="location"></select>
                     <label>Category</label>
                     <select id="category-select" name="category"></select>
-                    <label>Rationale</label>
-                    <textarea name="rationale" id="class-rationale-textarea"></textarea>
-                    <label>Corrective Action</label>
-                    <textarea name="correctiveaction" id="class-correctiveaction-textarea"></textarea>
+                    <label>Rationale (Markdown format)</label>
+                    <textarea name="rationale" id="class-rationale-textarea" style="display: none;"></textarea>
+                    <div id="class-rationale-editor"></div>
+                    <label>Corrective Action (Markdown format)</label>
+                    <textarea name="correctiveaction" id="class-correctiveaction-textarea" style="display: none;"></textarea>
+                    <div id="class-correctiveaction-editor"></div>
                     <label>Point of Contact Username</label>
                     <input type="text" name="pocusername" id="class-pocusername-input" value=""/>
                     <fieldset>

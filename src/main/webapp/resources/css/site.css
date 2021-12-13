@@ -95,6 +95,12 @@ body .ui-tabs .ui-tabs-panel {
     font-style: italic;
 }
 
-.dialog label {
+.dialog label,
+.dialog dt {
     margin-top: 0.5em;
+}
+
+body .toastui-editor-contents {
+    font-family: inherit;
+    font-size: inherit;
 }

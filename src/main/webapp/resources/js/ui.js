@@ -3,6 +3,7 @@ import db from './db.js';
 import TableUI from './table-ui.js';
 import page from './page-1.11.6.js';
 import Editor from './toastui-3.1.1-all.min.js';
+import Viewer from './toastui-3.1.1-viewer.js';
 
 const meta = document.querySelector('meta');
 const contextPath = meta && meta.dataset.contextPath || '';
@@ -24,8 +25,8 @@ class UserInterface {
                 $("#view-effective-priority").text(data.priority || 'None');
                 $("#view-effective-location").text(data.location || 'None');
                 $("#view-effective-category").text(data.category || 'None');
-                $("#view-effective-rationale").text(data.rationale || 'None');
-                $("#view-effective-action").text(data.correctiveaction || 'None');
+                //$("#view-effective-rationale").text(data.rationale || 'None');
+                //$("#view-effective-action").text(data.correctiveaction || 'None');
                 $("#view-effective-contact").text(data.pointofcontactusername || 'None');
                 $("#view-effective-filterable").text(data.filterable || 'None');
                 $("#view-effective-latching").text(data.latching || 'None');
@@ -33,6 +34,9 @@ class UserInterface {
                 $("#view-effective-off-delay").text(data.offdelayseconds || 'None');
                 $("#view-effective-masked-by").text(data.maskedby || 'None');
                 $("#view-effective-screen-path").text(data.screenpath || 'None');
+
+                ui.effectiverationaleviewer.setMarkdown(data.rationale || 'None');
+                ui.effectivecorrectiveactionviewer.setMarkdown(data.correctiveaction || 'None');
 
                 $("#view-effective-dialog").dialog("open");
             },
@@ -45,8 +49,8 @@ class UserInterface {
                 $("#view-class-priority").text(data.priority || 'None');
                 $("#view-class-location").text(data.location || 'None');
                 $("#view-class-category").text(data.category || 'None');
-                $("#view-class-rationale").text(data.rationale || 'None');
-                $("#view-class-action").text(data.correctiveaction || 'None');
+                //$("#view-class-rationale").text(data.rationale || 'None');
+                //$("#view-class-action").text(data.correctiveaction || 'None');
                 $("#view-class-contact").text(data.pointofcontactusername || 'None');
                 $("#view-class-filterable").text(data.filterable || 'None');
                 $("#view-class-latching").text(data.latching || 'None');
@@ -54,6 +58,9 @@ class UserInterface {
                 $("#view-class-off-delay").text(data.offdelayseconds || 'None');
                 $("#view-class-masked-by").text(data.maskedby || 'None');
                 $("#view-class-screen-path").text(data.screenpath || 'None');
+
+                ui.classrationaleviewer.setMarkdown(data.rationale || 'None');
+                ui.classcorrectiveactionviewer.setMarkdown(data.correctiveaction || 'None');
 
                 $("#view-class-dialog").dialog("open");
             },
@@ -68,8 +75,8 @@ class UserInterface {
                 $("#view-registration-priority").text(data.priority || 'Inherit');
                 $("#view-registration-location").text(data.location || 'Inherit');
                 $("#view-registration-category").text(data.category || 'Inherit');
-                $("#view-registration-rationale").text(data.rationale || 'Inherit');
-                $("#view-registration-action").text(data.correctiveaction || 'Inherit');
+                //$("#view-registration-rationale").text(data.rationale || 'Inherit');
+                //$("#view-registration-action").text(data.correctiveaction || 'Inherit');
                 $("#view-registration-contact").text(data.pointofcontactusername || 'Inherit');
                 $("#view-registration-filterable").text(data.filterable || 'Inherit');
                 $("#view-registration-latching").text(data.latching || 'Inherit');
@@ -77,6 +84,9 @@ class UserInterface {
                 $("#view-registration-off-delay").text(data.offdelayseconds || 'Inherit');
                 $("#view-registration-masked-by").text(data.maskedby || 'Inherit');
                 $("#view-registration-screen-path").text(data.screenpath || 'Inherit');
+
+                ui.instancerationaleviewer.setMarkdown(data.rationale || 'Inherit');
+                ui.instancecorrectiveactionviewer.setMarkdown(data.correctiveaction || 'Inherit');
 
                 $("#view-registration-dialog").dialog("open");
             },
@@ -196,14 +206,60 @@ class UserInterface {
             el: document.querySelector('#registered-correctiveaction-editor'),
             height: '300px',
             initialEditType: 'markdown',
-            previewStyle: 'tab'
+            previewStyle: 'tab',
+            autofocus: false
         };
 
         let rationaleOptions = JSON.parse(JSON.stringify(correctiveactionOptions));
         rationaleOptions.el = document.querySelector("#registered-rationale-editor");
 
+        let classcorrectiveactionOptions = JSON.parse(JSON.stringify(correctiveactionOptions));
+        classcorrectiveactionOptions.el = document.querySelector("#class-correctiveaction-editor");
+
+        let classrationaleOptions = JSON.parse(JSON.stringify(correctiveactionOptions));
+        classrationaleOptions.el = document.querySelector("#class-rationale-editor");
+
         this.instancecorrectiveactioneditor = new Editor(correctiveactionOptions);
         this.instancerationaleeditor = new Editor(rationaleOptions);
+
+        this.classcorrectiveactioneditor = new Editor(classcorrectiveactionOptions);
+        this.classrationaleeditor = new Editor(classrationaleOptions);
+
+        this.instancerationaleviewer = new Viewer({
+            usageStatistics: false,
+            autofocus: false,
+            el: document.querySelector('#view-registration-rationale')
+        });
+
+        this.instancecorrectiveactionviewer = new Viewer({
+            usageStatistics: false,
+            autofocus: false,
+            el: document.querySelector('#view-registration-action')
+        });
+
+        this.effectiverationaleviewer = new Viewer({
+            usageStatistics: false,
+            autofocus: false,
+            el: document.querySelector('#view-effective-rationale')
+        });
+
+        this.effectivecorrectiveactionviewer = new Viewer({
+            usageStatistics: false,
+            autofocus: false,
+            el: document.querySelector('#view-effective-action')
+        });
+
+        this.classrationaleviewer = new Viewer({
+            usageStatistics: false,
+            autofocus: false,
+            el: document.querySelector('#view-class-rationale')
+        });
+
+        this.classcorrectiveactionviewer = new Viewer({
+            usageStatistics: false,
+            autofocus: false,
+            el: document.querySelector('#view-class-action')
+        });
     }
 
     search(filterText, uitab, dbtab) {
@@ -324,6 +380,9 @@ class UserInterface {
     }
 
     setClass() {
+        $("#class-rationale-textarea").val(ui.classrationaleeditor.getMarkdown());
+        $("#class-correctiveaction-textarea").val(ui.classcorrectiveactioneditor.getMarkdown());
+
         let form = document.getElementById("class-form"),
             formData = new FormData(form);
 
@@ -696,6 +755,9 @@ class UserInterface {
             $("#class-offdelay-input").val(data.offdelayseconds);
             $("#class-maskedby-input").val(data.maskedby);
             $("#class-screenpath-input").val(data.screenpath);
+
+            ui.classrationaleeditor.setMarkdown(data.rationale || '');
+            ui.classcorrectiveactioneditor.setMarkdown(data.correctiveaction || '');
 
             $("#class-dialog").dialog("option", "title", "Edit Class")
             $("#class-dialog").dialog("open");
