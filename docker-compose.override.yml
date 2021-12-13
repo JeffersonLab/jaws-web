@@ -3,4 +3,4 @@ version: '3.8'
 
 services:
   admin:
-    image: slominskir/jaws-admin-gui:1.0.0
+    image: slominskir/jaws-admin-gui:1.1.0
