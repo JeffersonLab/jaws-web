@@ -38,8 +38,6 @@ class UserInterface {
 
                 let data = await db.registrations.get(ctx.params.name);
 
-                console.log(data);
-
                 $("#view-registration-name").text(data.name);
                 $("#view-registration-class").text(data.class || 'None');
                 $("#view-registration-epicspv").text(data.epicspv || 'None');
