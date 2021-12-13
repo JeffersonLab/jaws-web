@@ -18,18 +18,18 @@ class UserInterface {
                 let data = await db.classes.get(ctx.params.name);
 
                 $("#view-class-name").text(data.name);
-                $("#view-class-priority").text(data.priority);
-                $("#view-class-location").text(data.location);
-                $("#view-class-category").text(data.category);
-                $("#view-class-rationale").text(data.rationale);
-                $("#view-class-action").text(data.correctiveaction);
-                $("#view-class-contact").text(data.pointofcontactusername);
-                $("#view-class-filterable").text([data.filterable]);
-                $("#view-class-latching").text([data.latching]);
-                $("#view-class-on-delay").text(data.ondelayseconds);
-                $("#view-class-off-delay").text(data.offdelayseconds);
-                $("#view-class-masked-by").text(data.maskedby);
-                $("#view-class-screen-path").text(data.screenpath);
+                $("#view-class-priority").text(data.priority || 'None');
+                $("#view-class-location").text(data.location || 'None');
+                $("#view-class-category").text(data.category || 'None');
+                $("#view-class-rationale").text(data.rationale || 'None');
+                $("#view-class-action").text(data.correctiveaction || 'None');
+                $("#view-class-contact").text(data.pointofcontactusername || 'None');
+                $("#view-class-filterable").text(data.filterable || 'None');
+                $("#view-class-latching").text(data.latching || 'None');
+                $("#view-class-on-delay").text(data.ondelayseconds || 'None');
+                $("#view-class-off-delay").text(data.offdelayseconds || 'None');
+                $("#view-class-masked-by").text(data.maskedby || 'None');
+                $("#view-class-screen-path").text(data.screenpath || 'None');
 
                 $("#view-class-dialog").dialog("open");
             },
@@ -38,21 +38,23 @@ class UserInterface {
 
                 let data = await db.registrations.get(ctx.params.name);
 
+                console.log(data);
+
                 $("#view-registration-name").text(data.name);
-                $("#view-registration-class").text(data.class);
-                $("#view-registration-epicspv").text(data.epicspv);
-                $("#view-registration-priority").text(data.priority);
-                $("#view-registration-location").text(data.location);
-                $("#view-registration-category").text(data.category);
-                $("#view-registration-rationale").text(data.rationale);
-                $("#view-registration-action").text(data.correctiveaction);
-                $("#view-registration-contact").text(data.pointofcontactusername);
-                $("#view-registration-filterable").text([data.filterable]);
-                $("#view-registration-latching").text([data.latching]);
-                $("#view-registration-on-delay").text(data.ondelayseconds);
-                $("#view-registration-off-delay").text(data.offdelayseconds);
-                $("#view-registration-masked-by").text(data.maskedby);
-                $("#view-registration-screen-path").text(data.screenpath);
+                $("#view-registration-class").text(data.class || 'None');
+                $("#view-registration-epicspv").text(data.epicspv || 'None');
+                $("#view-registration-priority").text(data.priority || 'Inherit');
+                $("#view-registration-location").text(data.location || 'Inherit');
+                $("#view-registration-category").text(data.category || 'Inherit');
+                $("#view-registration-rationale").text(data.rationale || 'Inherit');
+                $("#view-registration-action").text(data.correctiveaction || 'Inherit');
+                $("#view-registration-contact").text(data.pointofcontactusername || 'Inherit');
+                $("#view-registration-filterable").text(data.filterable || 'Inherit');
+                $("#view-registration-latching").text(data.latching || 'Inherit');
+                $("#view-registration-on-delay").text(data.ondelayseconds || 'Inherit');
+                $("#view-registration-off-delay").text(data.offdelayseconds || 'Inherit');
+                $("#view-registration-masked-by").text(data.maskedby || 'Inherit');
+                $("#view-registration-screen-path").text(data.screenpath || 'Inherit');
 
                 $("#view-registration-dialog").dialog("open");
             },
@@ -62,20 +64,20 @@ class UserInterface {
                 let data = await db.effective.get(ctx.params.name);
 
                 $("#view-effective-name").text(data.name);
-                $("#view-effective-class").text(data.class);
-                $("#view-effective-epicspv").text(data.epicspv);
-                $("#view-effective-priority").text(data.priority);
-                $("#view-effective-location").text(data.location);
-                $("#view-effective-category").text(data.category);
-                $("#view-effective-rationale").text(data.rationale);
-                $("#view-effective-action").text(data.correctiveaction);
-                $("#view-effective-contact").text(data.pointofcontactusername);
-                $("#view-effective-filterable").text([data.filterable]);
-                $("#view-effective-latching").text([data.latching]);
-                $("#view-effective-on-delay").text(data.ondelayseconds);
-                $("#view-effective-off-delay").text(data.offdelayseconds);
-                $("#view-effective-masked-by").text(data.maskedby);
-                $("#view-effective-screen-path").text(data.screenpath);
+                $("#view-effective-class").text(data.class || 'None');
+                $("#view-effective-epicspv").text(data.epicspv || 'None');
+                $("#view-effective-priority").text(data.priority || 'None');
+                $("#view-effective-location").text(data.location || 'None');
+                $("#view-effective-category").text(data.category || 'None');
+                $("#view-effective-rationale").text(data.rationale || 'None');
+                $("#view-effective-action").text(data.correctiveaction || 'None');
+                $("#view-effective-contact").text(data.pointofcontactusername || 'None');
+                $("#view-effective-filterable").text(data.filterable || 'None');
+                $("#view-effective-latching").text(data.latching || 'None');
+                $("#view-effective-on-delay").text(data.ondelayseconds || 'None');
+                $("#view-effective-off-delay").text(data.offdelayseconds || 'None');
+                $("#view-effective-masked-by").text(data.maskedby || 'None');
+                $("#view-effective-screen-path").text(data.screenpath || 'None');
 
                 $("#view-effective-dialog").dialog("open");
             },
@@ -471,8 +473,8 @@ class UserInterface {
 
             let registrationDialog = $("#registration-dialog").dialog({
                 autoOpen: false,
-                height: 400,
-                width: 400,
+                height: 550,
+                width: 750,
                 modal: true,
                 buttons: {
                     Set: ui.setRegistration,
@@ -489,8 +491,8 @@ class UserInterface {
 
             let batchDialog = $("#batch-registration-dialog").dialog({
                 autoOpen: false,
-                height: 400,
-                width: 400,
+                height: 550,
+                width: 750,
                 modal: true,
                 buttons: {
                     Set: ui.setRegistrationBatch,
@@ -546,8 +548,8 @@ class UserInterface {
 
             let classDialog = $("#class-dialog").dialog({
                 autoOpen: false,
-                height: 400,
-                width: 400,
+                height: 550,
+                width: 750,
                 modal: true,
                 buttons: {
                     Set: ui.setClass,
