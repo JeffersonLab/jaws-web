@@ -94,3 +94,7 @@ body .ui-tabs .ui-tabs-panel {
     font-size: 14px;
     font-style: italic;
 }
+
+.dialog label {
+    margin-top: 0.5em;
+}

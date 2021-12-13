@@ -2,6 +2,7 @@ import remote from './remote.js';
 import db from './db.js';
 import TableUI from './table-ui.js';
 import page from './page-1.11.6.js';
+import Editor from './toastui-3.1.1-all.min.js';
 
 const meta = document.querySelector('meta');
 const contextPath = meta && meta.dataset.contextPath || '';
@@ -183,6 +184,26 @@ class UserInterface {
         props
             .filter(prop => (prop !== 'constructor'))
             .forEach((prop) => { this[prop] = this[prop].bind(this);});
+
+
+        let correctiveactionOptions = {
+            toolbarItems: [
+                ['heading', 'bold', 'italic'],
+                ['ul', 'ol', 'task', 'indent', 'outdent', 'link']
+            ],
+            hideModeSwitch: true,
+            usageStatistics: false,
+            el: document.querySelector('#registered-correctiveaction-editor'),
+            height: '300px',
+            initialEditType: 'markdown',
+            previewStyle: 'tab'
+        };
+
+        let rationaleOptions = JSON.parse(JSON.stringify(correctiveactionOptions));
+        rationaleOptions.el = document.querySelector("#registered-rationale-editor");
+
+        this.instancecorrectiveactioneditor = new Editor(correctiveactionOptions);
+        this.instancerationaleeditor = new Editor(rationaleOptions);
     }
 
     search(filterText, uitab, dbtab) {
@@ -257,16 +278,22 @@ class UserInterface {
         $("#registered-rationale-textarea").val(data.rationale);
         $("#registered-correctiveaction-textarea").val(data.correctiveaction);
         $("#registered-pocusername-input").val(data.pointofcontactusername);
-        $("#registered-form [name=filterable]").val([data.filterable]);
-        $("#registered-form [name=latching]").val([data.latching]);
+        $("#registered-form [name=filterable]").val(data.filterable);
+        $("#registered-form [name=latching]").val(data.latching);
         $("#registered-ondelay-input").val(data.ondelayseconds);
         $("#registered-offdelay-input").val(data.offdelayseconds);
         $("#registered-maskedby-input").val(data.maskedby);
         $("#registered-screenpath-input").val(data.screenpath);
         $("#epicspv-input").val(data.epicspv);
+
+        this.instancerationaleeditor.setMarkdown(data.rationale || '');
+        this.instancecorrectiveactioneditor.setMarkdown(data.correctiveaction || '');
     }
 
     setRegistration() {
+        $("#registered-rationale-textarea").val(this.instancerationaleeditor.getMarkdown());
+        $("#registered-correctiveaction-textarea").val(this.instancecorrectiveactioneditor.getMarkdown());
+
         let form = document.getElementById("registered-form"),
             formData = new FormData(form);
 

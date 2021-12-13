@@ -6,7 +6,8 @@
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/img/favicon.ico"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/site.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/jquery-ui-1.12.1.smoothness/jquery-ui.min.css">
-    <link href="${pageContext.request.contextPath}/resources/tabulator-4.9.3/css/tabulator.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/tabulator-4.9.3/css/tabulator.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/toastui-3.1.1.min.css"/>
 </head>
 <body>
 <header>
@@ -199,10 +200,12 @@
                     <span id="registered-location-select-span"></span>
                     <label>Category</label>
                     <span id="registered-category-select-span"></span>
-                    <label>Rationale</label>
-                    <textarea name="rationale" id="registered-rationale-textarea"></textarea>
-                    <label>Corrective Action</label>
-                    <textarea name="correctiveaction" id="registered-correctiveaction-textarea"></textarea>
+                    <label>Rationale (Markdown format)</label>
+                    <textarea name="rationale" id="registered-rationale-textarea" style="display: none;"></textarea>
+                    <div id="registered-rationale-editor"></div>
+                    <label>Corrective Action (Markdown format)</label>
+                    <textarea name="correctiveaction" id="registered-correctiveaction-textarea" style="display: none;"></textarea>
+                    <div id="registered-correctiveaction-editor"></div>
                     <label>Point of Contact Username</label>
                     <input type="text" name="pocusername" id="registered-pocusername-input" value=""/>
                     <fieldset>
@@ -286,6 +289,7 @@
         </div>
     </div>
 </div>
+<script type="module" src="${pageContext.request.contextPath}/resources/js/toastui-3.1.1-all.min.js"></script>
 <script type="module" src="${pageContext.request.contextPath}/resources/js/page-1.11.6.js"></script>
 <script type="module" src="${pageContext.request.contextPath}/resources/js/dexie-3.0.3.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/tabulator-4.9.3/js/tabulator.min.js"></script>
