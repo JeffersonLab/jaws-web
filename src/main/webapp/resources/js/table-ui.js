@@ -11,12 +11,12 @@ class TableUI extends EventTarget {
 
         me.options = options || {};
 
-        me.rowDeselected = function() {
+        me.rowSelected = function() {
             $(me.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", true);
             $(me.panelElement + " .toolbar .selected-row-action").button("option", "disabled", false);
         }
 
-        me.rowSelected = function() {
+        me.rowDeselected = function() {
             $(me.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", false);
             $(me.panelElement + " .toolbar .selected-row-action").button("option", "disabled", true);
         }
@@ -24,13 +24,18 @@ class TableUI extends EventTarget {
         me.$nextButton = $(me.panelElement + " .next-button");
         me.$prevButton = $(me.panelElement + " .prev-button");
 
-        me.options.rowSelected = me.rowDeselected;
+        me.options.rowSelected = me.rowSelected;
 
-        me.options.rowDeselected = me.rowSelected;
+        me.options.rowDeselected = me.rowDeselected;
 
         me.filters = [];
 
         me.tabulator = new Tabulator(me.tableElement, me.options);
+
+        me.deselectRow = function() {
+            me.tabulator.deselectRow();
+            me.rowDeselected();
+        }
 
         me.updatePaginationToolbar = function() {
             me.updateCountLabel(me.firstOffset, me.lastOffset,  me.count);
@@ -53,6 +58,8 @@ class TableUI extends EventTarget {
         }
 
         me.refresh = async function(table) {
+            me.deselectRow();
+
             let countCollection = table.orderBy('name');
 
             for(const filter of me.filters) {
@@ -92,6 +99,8 @@ class TableUI extends EventTarget {
         }
 
         me.next = async function(table) {
+            me.deselectRow();
+
             let selectCollection = table.where('name')
                 .above(me.lastEntry.name);
 
@@ -129,6 +138,8 @@ class TableUI extends EventTarget {
         }
 
         me.previous = async function(table) {
+            me.deselectRow();
+
             let selectCollection = table.where('name')
                 .below(me.firstEntry.name);
 
