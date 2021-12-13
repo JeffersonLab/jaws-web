@@ -10,10 +10,10 @@ class UserInterface {
     constructor() {
         this.tabs = {
             init: function() {
-                page('/classes');
+                page('/effective');
             },
             class: async function(ctx, next) {
-                $("#tabs").tabs({ active: 0 });
+                $("#tabs").tabs({ active: 1 });
 
                 let data = await db.classes.get(ctx.params.name);
 
@@ -34,7 +34,7 @@ class UserInterface {
                 $("#view-class-dialog").dialog("open");
             },
             registration: async function(ctx, next) {
-                $("#tabs").tabs({ active: 1 });
+                $("#tabs").tabs({ active: 2 });
 
                 let data = await db.registrations.get(ctx.params.name);
 
@@ -57,7 +57,7 @@ class UserInterface {
                 $("#view-registration-dialog").dialog("open");
             },
             effect: async function(ctx, next) {
-                $("#tabs").tabs({ active: 2 });
+                $("#tabs").tabs({ active: 0 });
 
                 let data = await db.effective.get(ctx.params.name);
 
@@ -79,13 +79,13 @@ class UserInterface {
 
                 $("#view-effective-dialog").dialog("open");
             },
-            classes: function() {
+            effective: function() {
                 $("#tabs").tabs({ active: 0 });
             },
-            registrations: function() {
+            classes: function() {
                 $("#tabs").tabs({ active: 1 });
             },
-            effective: function() {
+            registrations: function() {
                 $("#tabs").tabs({ active: 2 });
             }
         };
@@ -457,10 +457,10 @@ class UserInterface {
                         case 'Classes':
                             page('/classes');
                             break;
-                        case 'Registrations':
+                        case 'Instances':
                             page('/registrations');
                             break;
-                        case 'Effective':
+                        case 'Registrations':
                             page('/effective');
                             break;
                         default:

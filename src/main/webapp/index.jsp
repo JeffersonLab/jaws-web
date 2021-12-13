@@ -15,9 +15,9 @@
 </header>
 <div id="tabs">
     <ul>
+        <li><a href="#effective-panel">Registrations</a></li>
         <li><a href="#classes-panel">Classes</a></li>
-        <li><a href="#registrations-panel">Registrations</a></li>
-        <li><a href="#effective-panel">Effective</a></li>
+        <li><a href="#registrations-panel">Instances</a></li>
     </ul>
     <div id="classes-panel">
         <h2>Alarm Classes</h2>
@@ -113,7 +113,7 @@
         </div>
     </div>
     <div id="registrations-panel">
-        <h2>Alarm Registrations</h2>
+        <h2>Alarm Registration Instances</h2>
         <div class="toolbar">
             <form id="registered-search-form" class="search-form" onsubmit="return false;">
                 <input type="text" value="" id="registration-search-input" class="search-input" placeholder="field=value,field~value"/>
@@ -236,7 +236,7 @@
         </div>
     </div>
     <div id="effective-panel">
-        <h2>Effective Registrations</h2>
+        <h2>Alarm Registrations (Effective)</h2>
         <div class="toolbar">
             <form id="effective-search-form" class="search-form" onsubmit="return false;">
                 <input type="text" value="" id="effective-search-input" class="search-input" placeholder="field=value,field~value"/>
