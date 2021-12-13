@@ -126,8 +126,8 @@ class UserInterface {
 
        this.classes = new TableUI(panelElement, tableElement, options);
 
-        panelElement = "#registrations-panel",
-            tableElement = "#registrations-table",
+        panelElement = "#instances-panel",
+            tableElement = "#instances-table",
             options = {
             data: [],
             headerSort: false,

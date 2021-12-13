@@ -17,7 +17,7 @@
     <ul>
         <li><a href="#effective-panel">Registrations</a></li>
         <li><a href="#classes-panel">Classes</a></li>
-        <li><a href="#registrations-panel">Instances</a></li>
+        <li><a href="#instances-panel">Instances</a></li>
     </ul>
     <div id="classes-panel">
         <h2>Alarm Registration Classes</h2>
@@ -112,7 +112,7 @@
             </form>
         </div>
     </div>
-    <div id="registrations-panel">
+    <div id="instances-panel">
         <h2>Alarm Registration Instances</h2>
         <div class="toolbar">
             <form id="registered-search-form" class="search-form" onsubmit="return false;">
@@ -129,7 +129,7 @@
             <span>Records: </span><span class="record-count"></span>
         </div>
         <div class="table-wrap">
-            <div id="registrations-table"></div>
+            <div id="instances-table"></div>
         </div>
         <div id="view-registration-dialog" class="dialog" title="Registration (Instance)">
             <dl>
