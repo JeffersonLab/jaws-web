@@ -112,3 +112,8 @@ body .dialog .toastui-editor-defaultUI .ProseMirror {
     font-size: inherit;
     line-height: 160%;
 }
+
+#version-div {
+    text-align: right;
+    padding: 0.5em;
+}

@@ -6,6 +6,10 @@
          version="4.0">
     <display-name>jaws-admin-gui</display-name>
     <welcome-file-list><welcome-file>view</welcome-file></welcome-file-list>
+    <context-param>
+        <param-name>releaseNumber</param-name>
+        <param-value>@VERSION@</param-value>
+    </context-param>
     <filter>
         <filter-name>urlrewritefilter</filter-name>
         <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>

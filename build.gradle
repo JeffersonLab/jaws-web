@@ -2,6 +2,10 @@ plugins {
     id 'war'
 }
 
+description 'Jefferson Lab Alarm Warning System (JAWS) web admin interface'
+group 'org.jlab'
+version '1.1.0'
+
 repositories {
     mavenCentral()
 
@@ -20,6 +24,15 @@ dependencies {
             'com.fasterxml.jackson.core:jackson-databind:2.11.3',
             'org.tuckey:urlrewritefilter:4.0.4'
     providedCompile 'javax:javaee-api:8.0'
+}
+
+war {
+    archiveName 'jaws-admin-gui.war'
+    filesMatching('WEB-INF/web.xml') {
+        filter {
+            String line -> line.replaceAll("@VERSION@", project.version)
+        }
+    }
 }
 
 tasks.war.doLast {
