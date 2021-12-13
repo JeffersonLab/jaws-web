@@ -89,3 +89,8 @@ body .ui-tabs .ui-tabs-panel {
 .dialog dt {
     font-weight: bold;
 }
+
+.header-subtext {
+    font-size: 14px;
+    font-style: italic;
+}

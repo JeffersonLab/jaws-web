@@ -236,7 +236,7 @@
         </div>
     </div>
     <div id="effective-panel">
-        <h2>Effective Alarm Registrations (Class + Instance)</h2>
+        <h2>Effective Alarm Registrations <span class="header-subtext">(Class + Instance)</span></h2>
         <div class="toolbar">
             <form id="effective-search-form" class="search-form" onsubmit="return false;">
                 <input type="text" value="" id="effective-search-input" class="search-input" placeholder="field=value,field~value"/>
