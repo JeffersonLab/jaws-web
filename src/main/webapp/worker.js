@@ -1,5 +1,5 @@
 import db from './resources/js/db.js';
-import {AlarmClass, AlarmRegistration, EffectiveRegistration, KafkaLogPosition} from "./resources/js/entities.js";
+import {AlarmClass, AlarmInstance, EffectiveRegistration, KafkaLogPosition} from "./resources/js/entities.js";
 
 async function init() {
     const [classPos, instancePos, effectivePos] = await db.positions.bulkGet(["class", "instance", "effective"]);
@@ -75,7 +75,7 @@ async function init() {
             if(value == null) {
                 remove.push(key);
             } else {
-                updateOrAdd.push(new AlarmRegistration(
+                updateOrAdd.push(new AlarmInstance(
                     key,
                     value.class,
                     value.priority,

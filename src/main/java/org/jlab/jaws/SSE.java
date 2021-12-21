@@ -54,10 +54,10 @@ public class SSE implements ServletContextListener {
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void listen(@Context final SseEventSink sink,
                        @QueryParam("classIndex") @DefaultValue("-1") long classIndex,
-                       @QueryParam("registrationIndex") @DefaultValue("-1") long registrationIndex,
+                       @QueryParam("instanceIndex") @DefaultValue("-1") long instanceIndex,
                        @QueryParam("effectiveIndex") @DefaultValue("-1") long effectiveIndex) {
         System.err.println("Proxy connected: classIndex: " + classIndex +
-                ", registrationIndex: " + registrationIndex +
+                ", instanceIndex: " + instanceIndex +
                 ", effectiveIndex: " + effectiveIndex);
 
         exec.execute(new Runnable() {
@@ -70,7 +70,7 @@ public class SSE implements ServletContextListener {
 
                 try (
                         EventSourceTable<String, AlarmClass> classTable = new EventSourceTable<>(classProps, classIndex);
-                        EventSourceTable<String, AlarmRegistration> registrationTable = new EventSourceTable<>(registrationProps, registrationIndex);
+                        EventSourceTable<String, AlarmInstance> instanceTable = new EventSourceTable<>(registrationProps, instanceIndex);
                         EventSourceTable<String, EffectiveRegistration> effectiveTable = new EventSourceTable<>(effectiveProps, effectiveIndex);
                 ) {
 
@@ -87,14 +87,14 @@ public class SSE implements ServletContextListener {
 
                     });
 
-                    registrationTable.addListener(new EventSourceListener<String, AlarmRegistration>() {
+                    instanceTable.addListener(new EventSourceListener<String, AlarmInstance>() {
                         @Override
                         public void highWaterOffset() {
                             sink.send(sse.newEvent("instance-highwatermark", ""));
                         }
 
                         @Override
-                        public void batch(LinkedHashMap<String, EventSourceRecord<String, AlarmRegistration>> records) {
+                        public void batch(LinkedHashMap<String, EventSourceRecord<String, AlarmInstance>> records) {
                             sendInstanceRecords(sink, records.values());
                         }
 
@@ -114,7 +114,7 @@ public class SSE implements ServletContextListener {
                     });
 
                     classTable.start();
-                    registrationTable.start();
+                    instanceTable.start();
                     effectiveTable.start();
 
 
@@ -155,7 +155,7 @@ public class SSE implements ServletContextListener {
     private Properties getInstanceProps(String servers, String registry) {
         final Properties props = new Properties();
 
-        final SpecificAvroSerde<AlarmRegistration> VALUE_SERDE = new SpecificAvroSerde<>();
+        final SpecificAvroSerde<AlarmInstance> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
         props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.REGISTRATION_TOPIC);
@@ -226,20 +226,20 @@ public class SSE implements ServletContextListener {
         sink.send(sse.newEvent("class", builder.toString()));
     }
 
-    private void sendInstanceRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmRegistration>> records) {
+    private void sendInstanceRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmInstance>> records) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 
         ObjectMapper mapper = new ObjectMapper();
 
-        mapper.addMixIn(AlarmRegistration.class, AlarmRegistrationMixin.class);
+        mapper.addMixIn(AlarmInstance.class, AlarmInstanceMixin.class);
         mapper.addMixIn(SimpleProducer.class, SimpleProducerMixin.class);
         mapper.addMixIn(EPICSProducer.class, EPICSProducerMixin.class);
         mapper.addMixIn(CALCProducer.class, CALCProducerMixin.class);
 
-        for (EventSourceRecord<String, AlarmRegistration> record : records) {
+        for (EventSourceRecord<String, AlarmInstance> record : records) {
             String key = record.getKey();
-            AlarmRegistration value = record.getValue();
+            AlarmInstance value = record.getValue();
 
             String jsonValue = null;
 
@@ -274,7 +274,7 @@ public class SSE implements ServletContextListener {
         ObjectMapper mapper = new ObjectMapper();
 
         mapper.addMixIn(EffectiveRegistration.class, EffectiveRegistrationMixin.class);
-        mapper.addMixIn(AlarmRegistration.class, AlarmRegistrationMixin.class);
+        mapper.addMixIn(AlarmInstance.class, AlarmInstanceMixin.class);
         mapper.addMixIn(SimpleProducer.class, SimpleProducerMixin.class);
         mapper.addMixIn(EPICSProducer.class, EPICSProducerMixin.class);
         mapper.addMixIn(CALCProducer.class, CALCProducerMixin.class);
