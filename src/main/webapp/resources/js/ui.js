@@ -88,7 +88,7 @@ class UserInterface {
                 ui.instancerationaleviewer.setMarkdown(data.rationale || 'Inherit');
                 ui.instancecorrectiveactionviewer.setMarkdown(data.correctiveaction || 'Inherit');
 
-                $("#view-registration-dialog").dialog("open");
+                $("#view-instance-dialog").dialog("open");
             },
             registrations: function() {
                 $("#tabs").tabs({ active: 0 });
@@ -603,15 +603,15 @@ class UserInterface {
                 }
             });
 
-            let viewRegistrationDialog = $("#view-registration-dialog").dialog({
+            let viewInstanceDialog = $("#view-instance-dialog").dialog({
                 autoOpen: false,
                 height: 550,
                 width: 750,
                 modal: true,
                 buttons: {
                     OK: function () {
-                        viewRegistrationDialog.dialog("close");
-                        page('/registrations');
+                        viewInstanceDialog.dialog("close");
+                        page('/instances');
                     }
                 }
             });

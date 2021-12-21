@@ -134,7 +134,7 @@
         <div class="table-wrap">
             <div id="instances-table"></div>
         </div>
-        <div id="view-registration-dialog" class="dialog" title="Registration (Instance)">
+        <div id="view-instance-dialog" class="dialog" title="Registration (Instance)">
             <dl>
                 <dt>Name</dt>
                 <dd id="view-registration-name"></dd>
