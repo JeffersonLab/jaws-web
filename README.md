@@ -1,5 +1,5 @@
 # jaws-admin-gui [![Docker](https://img.shields.io/docker/v/slominskir/jaws-admin-gui?sort=semver&label=DockerHub)](https://hub.docker.com/r/slominskir/jaws-admin-gui)
-Web Admin interface for [JAWS](https://github.com/JeffersonLab/jaws) to manage alarm classes and registrations.
+Web Admin interface for [JAWS](https://github.com/JeffersonLab/jaws) to manage alarm classes and instances.
 
 <p>
 <a href="#"><img src="https://raw.githubusercontent.com/JeffersonLab/jaws-web-admin/master/Screenshot.png"/></a>     
