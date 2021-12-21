@@ -48,10 +48,10 @@
                 <dd id="view-class-location"></dd>
                 <dt>Category</dt>
                 <dd id="view-class-category"></dd>
-                <dt>Rationale</dt>
-                <dd id="view-class-rationale"></dd>
                 <dt>Corrective Action</dt>
                 <dd id="view-class-action"></dd>
+                <dt>Rationale</dt>
+                <dd id="view-class-rationale"></dd>
                 <dt>Point of Contact Username</dt>
                 <dd id="view-class-contact"></dd>
                 <dt>Filterable</dt>
@@ -81,12 +81,12 @@
                     <select id="location-select" name="location"></select>
                     <label>Category</label>
                     <select id="category-select" name="category"></select>
-                    <label>Rationale (Markdown format)</label>
-                    <textarea name="rationale" id="class-rationale-textarea" style="display: none;"></textarea>
-                    <div id="class-rationale-editor"></div>
                     <label>Corrective Action (Markdown format)</label>
                     <textarea name="correctiveaction" id="class-correctiveaction-textarea" style="display: none;"></textarea>
                     <div id="class-correctiveaction-editor"></div>
+                    <label>Rationale (Markdown format)</label>
+                    <textarea name="rationale" id="class-rationale-textarea" style="display: none;"></textarea>
+                    <div id="class-rationale-editor"></div>
                     <label>Point of Contact Username</label>
                     <input type="text" name="pocusername" id="class-pocusername-input" value=""/>
                     <fieldset>
@@ -148,10 +148,10 @@
                 <dd id="view-registration-location"></dd>
                 <dt>Category</dt>
                 <dd id="view-registration-category"></dd>
-                <dt>Rationale</dt>
-                <dd id="view-registration-rationale"></dd>
                 <dt>Corrective Action</dt>
                 <dd id="view-registration-action"></dd>
+                <dt>Rationale</dt>
+                <dd id="view-registration-rationale"></dd>
                 <dt>Point of Contact Username</dt>
                 <dd id="view-registration-contact"></dd>
                 <dt>Filterable</dt>
@@ -202,12 +202,12 @@
                     <span id="registered-location-select-span"></span>
                     <label>Category</label>
                     <span id="registered-category-select-span"></span>
-                    <label>Rationale (Markdown format)</label>
-                    <textarea name="rationale" id="registered-rationale-textarea" style="display: none;"></textarea>
-                    <div id="registered-rationale-editor"></div>
                     <label>Corrective Action (Markdown format)</label>
                     <textarea name="correctiveaction" id="registered-correctiveaction-textarea" style="display: none;"></textarea>
                     <div id="registered-correctiveaction-editor"></div>
+                    <label>Rationale (Markdown format)</label>
+                    <textarea name="rationale" id="registered-rationale-textarea" style="display: none;"></textarea>
+                    <div id="registered-rationale-editor"></div>
                     <label>Point of Contact Username</label>
                     <input type="text" name="pocusername" id="registered-pocusername-input" value=""/>
                     <fieldset>
@@ -269,10 +269,10 @@
                 <dd id="view-effective-location"></dd>
                 <dt>Category</dt>
                 <dd id="view-effective-category"></dd>
-                <dt>Rationale</dt>
-                <dd id="view-effective-rationale"></dd>
                 <dt>Corrective Action</dt>
                 <dd id="view-effective-action"></dd>
+                <dt>Rationale</dt>
+                <dd id="view-effective-rationale"></dd>
                 <dt>Point of Contact Username</dt>
                 <dd id="view-effective-contact"></dd>
                 <dt>Filterable</dt>
