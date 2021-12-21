@@ -7,7 +7,7 @@ remote.start();
 
 let classHighOffsetReached = false,
     effectiveHighOffsetReached = false,
-    registrationHighOffsetReached = false;
+    instanceHighOffsetReached = false;
 
 remote.addEventListener("class-highwatermark", async () => {
         await ui.classes.refresh(db.classes);
@@ -22,11 +22,11 @@ remote.addEventListener("class", async () => {
 
 remote.addEventListener("instance-highwatermark", async () => {
     await ui.instances.refresh(db.instances);
-    registrationHighOffsetReached = true;
+    instanceHighOffsetReached = true;
 });
 
 remote.addEventListener("instance", async () => {
-    if(registrationHighOffsetReached) {
+    if(instanceHighOffsetReached) {
         await ui.instances.refresh(db.instances);
     }
 });

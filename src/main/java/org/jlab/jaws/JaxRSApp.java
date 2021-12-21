@@ -9,7 +9,7 @@ public class JaxRSApp extends Application {
     public static final String SCHEMA_REGISTRY = System.getenv("SCHEMA_REGISTRY");
 
     public static final String CLASSES_TOPIC = "alarm-classes";
-    public static final String REGISTRATION_TOPIC = "alarm-registrations";
+    public static final String REGISTRATION_TOPIC = "alarm-instances";
     public static final String EFFECTIVE_TOPIC = "effective-registrations";
 
 

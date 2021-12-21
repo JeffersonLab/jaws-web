@@ -65,12 +65,12 @@ public class SSE implements ServletContextListener {
             @Override
             public void run() {
                 final Properties classProps = getClassProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
-                final Properties registrationProps = getInstanceProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
+                final Properties instanceProps = getInstanceProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
                 final Properties effectiveProps = getEffectiveProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
                 try (
                         EventSourceTable<String, AlarmClass> classTable = new EventSourceTable<>(classProps, classIndex);
-                        EventSourceTable<String, AlarmInstance> instanceTable = new EventSourceTable<>(registrationProps, instanceIndex);
+                        EventSourceTable<String, AlarmInstance> instanceTable = new EventSourceTable<>(instanceProps, instanceIndex);
                         EventSourceTable<String, EffectiveRegistration> effectiveTable = new EventSourceTable<>(effectiveProps, effectiveIndex);
                 ) {
 
