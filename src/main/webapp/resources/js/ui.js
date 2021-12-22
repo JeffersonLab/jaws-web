@@ -353,7 +353,7 @@ class UserInterface {
         let form = document.getElementById("registered-form"),
             formData = new FormData(form);
 
-        let promise = remote.setRegistration(formData);
+        let promise = remote.setInstance(formData);
 
         promise.then(response => {
             if (response.ok) {
@@ -681,7 +681,7 @@ class UserInterface {
 
             let params = "name=" + selectedData[0].name;
 
-            let promise = fetch(contextPath + "/proxy/rest/registered", {
+            let promise = fetch(contextPath + "/proxy/rest/instance", {
                 method: "DELETE",
                 body: new URLSearchParams(params),
                 headers: {

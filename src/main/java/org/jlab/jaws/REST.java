@@ -43,7 +43,7 @@ public class REST {
     }
 
     @DELETE
-    @Path("/registered")
+    @Path("/instance")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public void deleteRegistration(
         @FormParam("name") @NotNull(message = "alarm name is required") String name) {
@@ -51,7 +51,7 @@ public class REST {
 
         String key = name;
 
-        Properties props = getRegisteredProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
+        Properties props = getInstanceProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
         try(KafkaProducer<String, AlarmInstance> p = new KafkaProducer<>(props)) {
             p.send(new ProducerRecord<>(JaxRSApp.REGISTRATION_TOPIC, key, null));
@@ -59,9 +59,9 @@ public class REST {
     }
 
     @PUT
-    @Path("/registered")
+    @Path("/instance")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public void putRegistration(            @FormParam("name") @NotNull(message = "alarm name is required") String name,
+    public void putInstance(            @FormParam("name") @NotNull(message = "alarm name is required") String name,
                                             @FormParam("class") @NotNull(message = "class is required") String clazz,
                                             @FormParam("expression") String expression,
                                             @FormParam("priority") String priority,
@@ -122,11 +122,11 @@ public class REST {
         value.setFilterable(filterable);
         value.setLatching(latching);
         value.setMaskedby(maskedby);
-        value.setOffdelayseconds(ondelayseconds);
-        value.setOndelayseconds(offdelayseconds);
+        value.setOndelayseconds(ondelayseconds);
+        value.setOffdelayseconds(offdelayseconds);
         value.setScreenpath(screenpath);
 
-        Properties props = getRegisteredProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
+        Properties props = getInstanceProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
         try(KafkaProducer<String, AlarmInstance> p = new KafkaProducer<>(props)) {
             p.send(new ProducerRecord<>(JaxRSApp.REGISTRATION_TOPIC, key, value));
@@ -134,7 +134,7 @@ public class REST {
     }
 
 
-    private Properties getRegisteredProps(String servers, String registry) {
+    private Properties getInstanceProps(String servers, String registry) {
         final Properties props = new Properties();
 
         final SpecificAvroSerde<AlarmInstance> VALUE_SERDE = new SpecificAvroSerde<>();
@@ -158,7 +158,7 @@ public class REST {
 
         String key = name;
 
-        Properties props = getRegisteredProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
+        Properties props = getInstanceProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
         try(KafkaProducer<String, AlarmClass> p = new KafkaProducer<>(props)) {
             p.send(new ProducerRecord<>(JaxRSApp.CLASSES_TOPIC, key, null));
@@ -215,8 +215,8 @@ public class REST {
         value.setFilterable(filterable);
         value.setLatching(latching);
         value.setMaskedby(maskedby);
-        value.setOffdelayseconds(ondelayseconds);
-        value.setOndelayseconds(offdelayseconds);
+        value.setOndelayseconds(ondelayseconds);
+        value.setOffdelayseconds(offdelayseconds);
         value.setScreenpath(screenpath);
 
         Properties props = getClassProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);

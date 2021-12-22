@@ -6,7 +6,7 @@ class Remote extends EventTarget {
 
     }
 
-    setRegistration(formData) {
+    setInstance(formData) {
         /*Treat empty string as no-field*/
         for (var pair of Array.from(formData.entries())) {
             if (pair[1] === "") {
@@ -14,7 +14,7 @@ class Remote extends EventTarget {
             }
         }
 
-        return fetch(contextPath + "/proxy/rest/registered", {
+        return fetch(contextPath + "/proxy/rest/instance", {
             method: "PUT",
             body: new URLSearchParams(formData),
             headers: {
