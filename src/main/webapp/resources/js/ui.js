@@ -25,8 +25,6 @@ class UserInterface {
                 $("#view-effective-priority").text(data.priority || 'None');
                 $("#view-effective-location").text(data.location || 'None');
                 $("#view-effective-category").text(data.category || 'None');
-                //$("#view-effective-rationale").text(data.rationale || 'None');
-                //$("#view-effective-action").text(data.correctiveaction || 'None');
                 $("#view-effective-contact").text(data.pointofcontactusername || 'None');
                 $("#view-effective-filterable").text(data.filterable || 'None');
                 $("#view-effective-latching").text(data.latching || 'None');
@@ -47,17 +45,12 @@ class UserInterface {
 
                 $("#view-class-name").text(data.name);
                 $("#view-class-priority").text(data.priority || 'None');
-                $("#view-class-location").text(data.location || 'None');
                 $("#view-class-category").text(data.category || 'None');
-                //$("#view-class-rationale").text(data.rationale || 'None');
-                //$("#view-class-action").text(data.correctiveaction || 'None');
                 $("#view-class-contact").text(data.pointofcontactusername || 'None');
                 $("#view-class-filterable").text(data.filterable || 'None');
                 $("#view-class-latching").text(data.latching || 'None');
                 $("#view-class-on-delay").text(data.ondelayseconds || 'None');
                 $("#view-class-off-delay").text(data.offdelayseconds || 'None');
-                $("#view-class-masked-by").text(data.maskedby || 'None');
-                $("#view-class-screen-path").text(data.screenpath || 'None');
 
                 ui.classrationaleviewer.setMarkdown(data.rationale || 'None');
                 ui.classcorrectiveactionviewer.setMarkdown(data.correctiveaction || 'None');
@@ -72,23 +65,30 @@ class UserInterface {
                 $("#view-registration-name").text(data.name);
                 $("#view-registration-class").text(data.class || 'None');
                 $("#view-registration-epicspv").text(data.epicspv || 'None');
-                $("#view-registration-priority").text(data.priority || 'Inherit');
-                $("#view-registration-location").text(data.location || 'Inherit');
-                $("#view-registration-category").text(data.category || 'Inherit');
-                //$("#view-registration-rationale").text(data.rationale || 'Inherit');
-                //$("#view-registration-action").text(data.correctiveaction || 'Inherit');
-                $("#view-registration-contact").text(data.pointofcontactusername || 'Inherit');
-                $("#view-registration-filterable").text(data.filterable || 'Inherit');
-                $("#view-registration-latching").text(data.latching || 'Inherit');
-                $("#view-registration-on-delay").text(data.ondelayseconds || 'Inherit');
-                $("#view-registration-off-delay").text(data.offdelayseconds || 'Inherit');
-                $("#view-registration-masked-by").text(data.maskedby || 'Inherit');
-                $("#view-registration-screen-path").text(data.screenpath || 'Inherit');
-
-                ui.instancerationaleviewer.setMarkdown(data.rationale || 'Inherit');
-                ui.instancecorrectiveactionviewer.setMarkdown(data.correctiveaction || 'Inherit');
+                $("#view-registration-location").text(data.location || 'None');
+                $("#view-registration-masked-by").text(data.maskedby || 'None');
+                $("#view-registration-screen-command").text(data.screencommand || 'None');
 
                 $("#view-instance-dialog").dialog("open");
+            },
+            location: async function(ctx, next) {
+                $("#tabs").tabs({ active: 3 });
+
+                let data = await db.locations.get(ctx.params.name);
+
+                $("#view-location-name").text(data.name);
+                $("#view-location-parent").text(data.parent || 'None');
+
+                $("#view-location-dialog").dialog("open");
+            },
+            category: async function(ctx, next) {
+                $("#tabs").tabs({ active: 4 });
+
+                let data = await db.catgories.get(ctx.params.name);
+
+                $("#view-category-name").text(data.name);
+
+                $("#view-category-dialog").dialog("open");
             },
             registrations: function() {
                 $("#tabs").tabs({ active: 0 });
@@ -98,6 +98,12 @@ class UserInterface {
             },
             instances: function() {
                 $("#tabs").tabs({ active: 2 });
+            },
+            locations: function() {
+                $("#tabs").tabs({ active: 3 });
+            },
+            categories: function() {
+                $("#tabs").tabs({ active: 4 });
             }
         };
 
@@ -107,14 +113,39 @@ class UserInterface {
         page('/registrations', this.tabs.registrations);
         page('/classes', this.tabs.classes);
         page('/instances', this.tabs.instances);
+        page('/locations', this.tabs.locations);
+        page('/categories', this.tabs.categories);
         page('/registrations/:name', this.tabs.registration);
         page('/classes/:name', this.tabs.class);
         page('/instances/:name', this.tabs.instance);
+        page('/categories/:name', this.tabs.category);
+        page('/locations/:name', this.tabs.location);
         page();
 
-        let panelElement = "#classes-panel",
-            tableElement = "#classes-table",
+        let panelElement = "#categories-panel",
+            tableElement = "#categories-table",
             options = {
+                data: [],
+                headerSort: false,
+                reactiveData: false,
+                height: "100%", // enables the Virtual DOM
+                layout: "fitColumns",
+                responsiveLayout: "collapse",
+                index: "name",
+                selectable: 1,
+                initialSort: [
+                    {column: "name", dir: "asc"}
+                ],
+                columns: [
+                    {title: "name", field: "name"}
+                ]
+            };
+
+        this.categories = new TableUI(panelElement, tableElement, options);
+
+        panelElement = "#classes-panel",
+        tableElement = "#classes-table",
+        options = {
                 data: [],
                 headerSort: false,
                 reactiveData: false,
@@ -161,6 +192,28 @@ class UserInterface {
         };
 
         this.instances = new TableUI(panelElement, tableElement, options);
+
+        panelElement = "#locations-panel",
+            tableElement = "#locations-table",
+            options = {
+                data: [],
+                headerSort: false,
+                reactiveData: false,
+                height: "100%", // enables the Virtual DOM
+                layout: "fitColumns",
+                responsiveLayout: "collapse",
+                index: "name",
+                selectable: 1,
+                initialSort: [
+                    {column: "name", dir: "asc"}
+                ],
+                columns: [
+                    {title: "name", field: "name"},
+                    {title: "parent", field: "parent"}
+                ]
+            };
+
+        this.locations = new TableUI(panelElement, tableElement, options);
 
         panelElement = "#effective-panel",
             tableElement = "#effective-table",
@@ -547,6 +600,12 @@ class UserInterface {
                             break;
                         case 'Instances':
                             page('/instances');
+                            break;
+                        case 'Locations':
+                            page('/locations');
+                            break;
+                        case 'Categories':
+                            page('/categories')
                             break;
                         default:
                             console.log('Unknown tab activation: ', event, i);

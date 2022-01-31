@@ -415,6 +415,7 @@ public class SSE implements ServletContextListener {
         mapper.addMixIn(SimpleProducer.class, SimpleProducerMixin.class);
         mapper.addMixIn(EPICSProducer.class, EPICSProducerMixin.class);
         mapper.addMixIn(CALCProducer.class, CALCProducerMixin.class);
+        mapper.addMixIn(AlarmClass.class, AlarmClassMixin.class);
 
         for (EventSourceRecord<String, EffectiveRegistration> record : records) {
             String key = record.getKey();

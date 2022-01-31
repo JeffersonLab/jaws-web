@@ -1,9 +1,8 @@
 class AlarmClass {
-    constructor(name, priority, location, category, rationale, correctiveaction, pointofcontactusername, filterable,
-                latching, ondelayseconds, offdelayseconds, maskedby, screenpath) {
+    constructor(name, priority, category, rationale, correctiveaction, pointofcontactusername, filterable,
+                latching, ondelayseconds, offdelayseconds) {
         this.name = name;
         this.priority = priority;
-        this.location = location;
         this.category = category;
         this.rationale = rationale;
         this.correctiveaction = correctiveaction;
@@ -12,29 +11,24 @@ class AlarmClass {
         this.latching = latching;
         this.ondelayseconds = ondelayseconds;
         this.offdelayseconds = offdelayseconds;
-        this.maskedby = maskedby;
-        this.screenpath = screenpath;
     }
 }
 
 class AlarmInstance {
-    constructor(name, clazz, priority, location, category, rationale, correctiveaction, pointofcontactusername,
-                filterable, latching, ondelayseconds, offdelayseconds, maskedby, screenpath, epicspv) {
+    constructor(name, clazz, location, maskedby, screencommand, epicspv) {
         this.name = name;
         this.class = clazz;
-        this.priority = priority;
         this.location = location;
-        this.category = category;
-        this.rationale = rationale;
-        this.correctiveaction = correctiveaction;
-        this.pointofcontactusername = pointofcontactusername;
-        this.filterable = filterable;
-        this.latching = latching;
-        this.ondelayseconds = ondelayseconds;
-        this.offdelayseconds = offdelayseconds;
         this.maskedby = maskedby;
-        this.screenpath = screenpath;
+        this.screencommand = screencommand;
         this.epicspv = epicspv;
+    }
+}
+
+class AlarmLocation {
+    constructor(name, parent) {
+        this.name = name;
+        this.parent = parent;
     }
 }
 
@@ -66,4 +60,4 @@ class KafkaLogPosition {
     }
 }
 
-export {AlarmClass, AlarmInstance, EffectiveRegistration, KafkaLogPosition}
+export {AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition}

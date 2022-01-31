@@ -19,7 +19,43 @@
         <li><a href="#effective-panel">Registrations</a></li>
         <li><a href="#classes-panel">Classes</a></li>
         <li><a href="#instances-panel">Instances</a></li>
+        <li><a href="#locations-panel">Locations</a></li>
+        <li><a href="#categories-panel">Categories</a></li>
     </ul>
+    <div id="categories-panel">
+        <h2>Alarm Registration Categories</h2>
+        <div class="toolbar">
+            <form id="category-search-form" class="search-form" onsubmit="return false;">
+                <input type="text" value="" id="category-search-input" class="search-input" placeholder="field=value,field~value"/>
+                <button type="button" id="search-category-button">Search</button> |
+            </form>
+            <button type="button" id="new-category-button">New</button> |
+            <button type="button" id="view-category-button" class="selected-row-action" disabled="disabled">View</button>
+            <button type="button" id="edit-category-button" class="selected-row-action" disabled="disabled">Edit</button>
+            <button type="button" id="delete-category-button" class="selected-row-action" disabled="disabled">Delete</button> |
+            <button type="button" class="prev-button" id="previous-category-button" disabled="disabled">Previous</button>
+            <button type="button" class="next-button" id="next-category-button" disabled="disabled">Next</button> |
+            <span>Records: </span><span class="record-count"></span>
+        </div>
+        <div class="table-wrap">
+            <div id="categories-table"></div>
+        </div>
+        <div id="view-category-dialog" class="dialog" title="Class">
+            <dl>
+                <dt>Name</dt>
+                <dd id="view-category-name"></dd>
+            </dl>
+        </div>
+        <div id="category-dialog" class="dialog" title="New Category">
+            <form id="category-form" onsubmit="return false;">
+                <fieldset>
+                    <label>Category Name</label>
+                    <input type="text" name="name" id="category-name-input" value=""/>
+                </fieldset>
+                <input id="category-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+            </form>
+        </div>
+    </div>
     <div id="classes-panel">
         <h2>Alarm Registration Classes</h2>
         <div class="toolbar">
@@ -237,6 +273,46 @@
                     <input type="text" name="screenpath" id="registered-screenpath-input" value=""/>
                 </fieldset>
                 <input id="registered-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
+            </form>
+        </div>
+    </div>
+    <div id="locations-panel">
+        <h2>Alarm Registration Locations</h2>
+        <div class="toolbar">
+            <form id="location-search-form" class="search-form" onsubmit="return false;">
+                <input type="text" value="" id="location-search-input" class="search-input" placeholder="field=value,field~value"/>
+                <button type="button" id="search-location-button">Search</button> |
+            </form>
+            <button type="button" id="new-location-button">New</button> |
+            <button type="button" id="view-location-button" class="selected-row-action" disabled="disabled">View</button>
+            <button type="button" id="edit-location-button" class="selected-row-action" disabled="disabled">Edit</button>
+            <button type="button" id="delete-location-button" class="selected-row-action" disabled="disabled">Delete</button> |
+            <button type="button" class="prev-button" id="previous-location-button" disabled="disabled">Previous</button>
+            <button type="button" class="next-button" id="next-location-button" disabled="disabled">Next</button> |
+            <span>Records: </span><span class="record-count"></span>
+        </div>
+        <div class="table-wrap">
+            <div id="locations-table"></div>
+        </div>
+        <div id="view-location-dialog" class="dialog" title="Location">
+            <dl>
+                <dt>Name</dt>
+                <dd id="view-location-name"></dd>
+                <dt>Parent</dt>
+                <dd id="view-location-parent"></dd>
+            </dl>
+        </div>
+        <div id="location-dialog" class="dialog" title="New Location">
+            <form id="location-form" onsubmit="return false;">
+                <fieldset>
+                    <label>Location Name</label>
+                    <input type="text" name="name" id="location-name-input" value=""/>
+                </fieldset>
+                <fieldset>
+                    <label>Parent</label>
+                    <input type="text" name="parent" id="location-parent-input" value=""/>
+                </fieldset>
+                <input id="location-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
             </form>
         </div>
     </div>
