@@ -40,7 +40,7 @@
         <div class="table-wrap">
             <div id="categories-table"></div>
         </div>
-        <div id="view-category-dialog" class="dialog" title="Class">
+        <div id="view-category-dialog" class="dialog" title="Category">
             <dl>
                 <dt>Name</dt>
                 <dd id="view-category-name"></dd>
@@ -80,8 +80,6 @@
                 <dd id="view-class-name"></dd>
                 <dt>Priority</dt>
                 <dd id="view-class-priority"></dd>
-                <dt>Location</dt>
-                <dd id="view-class-location"></dd>
                 <dt>Category</dt>
                 <dd id="view-class-category"></dd>
                 <dt>Corrective Action</dt>
@@ -98,10 +96,6 @@
                 <dd id="view-class-on-delay"></dd>
                 <dt>Off-Delay Seconds</dt>
                 <dd id="view-class-off-delay"></dd>
-                <dt>Masked By</dt>
-                <dd id="view-class-masked-by"></dd>
-                <dt>Screen Path</dt>
-                <dd id="view-class-screen-path"></dd>
             </dl>
         </div>
         <div id="class-dialog" class="dialog" title="New Class">
@@ -113,8 +107,6 @@
                 <fieldset>
                     <label>Priority</label>
                     <select id="priority-select" name="priority"></select>
-                    <label>Location</label>
-                    <select id="location-select" name="location"></select>
                     <label>Category</label>
                     <select id="category-select" name="category"></select>
                     <label>Corrective Action (Markdown format)</label>
@@ -142,10 +134,6 @@
                     <input type="number" name="ondelayseconds" id="class-ondelay-input" value=""/>
                     <label>Off Delay Seconds</label>
                     <input type="number" name="offdelayseconds" id="class-offdelay-input" value=""/>
-                    <label>Masked By</label>
-                    <input type="text" name="maskedby" id="class-maskedby-input" value=""/>
-                    <label>Screen Path</label>
-                    <input type="text" name="screenpath" id="class-screenpath-input" value=""/>
                 </fieldset>
                 <input id="class-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
             </form>
@@ -178,30 +166,12 @@
                 <dd id="view-registration-class"></dd>
                 <dt>EPICS PV</dt>
                 <dd id="view-registration-epicspv"></dd>
-                <dt>Priority</dt>
-                <dd id="view-registration-priority"></dd>
                 <dt>Location</dt>
                 <dd id="view-registration-location"></dd>
-                <dt>Category</dt>
-                <dd id="view-registration-category"></dd>
-                <dt>Corrective Action</dt>
-                <dd id="view-registration-action"></dd>
-                <dt>Rationale</dt>
-                <dd id="view-registration-rationale"></dd>
-                <dt>Point of Contact Username</dt>
-                <dd id="view-registration-contact"></dd>
-                <dt>Filterable</dt>
-                <dd id="view-registration-filterable"></dd>
-                <dt>Latching</dt>
-                <dd id="view-registration-latching"></dd>
-                <dt>On-Delay Seconds</dt>
-                <dd id="view-registration-on-delay"></dd>
-                <dt>Off-Delay Seconds</dt>
-                <dd id="view-registration-off-delay"></dd>
                 <dt>Masked By</dt>
                 <dd id="view-registration-masked-by"></dd>
-                <dt>Screen Path</dt>
-                <dd id="view-registration-screen-path"></dd>
+                <dt>Screen Command</dt>
+                <dd id="view-registration-screen-command"></dd>
             </dl>
         </div>
         <div id="batch-registration-dialog" class="dialog" title="Edit All On Current Page">
@@ -210,8 +180,6 @@
                 <label>Field to modify</label>
                 <select id="batch-update-select">
                     <option value="class" selected="selected">Class</option>
-                    <option value="category">Category</option>
-                    <option value="priority">Priority</option>
                     <option value="location">Location</option>
                 </select>
                 <label>Value</label>
@@ -228,49 +196,12 @@
                     <input type="text" name="class" id="registered-class-input" value=""/>
                     <label>EPICS PV</label>
                     <input type="text" name="epicspv" id="epicspv-input" value=""/>
-                </fieldset>
-                <h2>Class Overrides</h2>
-                <div class="footnote">(Blank fields inherit from class)</div>
-                <fieldset>
-                    <label>Priority</label>
-                    <span id="registered-priority-select-span"></span>
                     <label>Location</label>
                     <span id="registered-location-select-span"></span>
-                    <label>Category</label>
-                    <span id="registered-category-select-span"></span>
-                    <label>Corrective Action (Markdown format)</label>
-                    <textarea name="correctiveaction" id="registered-correctiveaction-textarea" style="display: none;"></textarea>
-                    <div id="registered-correctiveaction-editor"></div>
-                    <label>Rationale (Markdown format)</label>
-                    <textarea name="rationale" id="registered-rationale-textarea" style="display: none;"></textarea>
-                    <div id="registered-rationale-editor"></div>
-                    <label>Point of Contact Username</label>
-                    <input type="text" name="pocusername" id="registered-pocusername-input" value=""/>
-                    <fieldset>
-                        <legend>Filterable</legend>
-                        <label class="radio-label">True</label>
-                        <input type="radio" name="filterable" value="true"/>
-                        <label class="radio-label">False</label>
-                        <input type="radio" name="filterable" value="false"/>
-                        <label class="radio-label">Inherit</label>
-                        <input type="radio" name="filterable" checked="checked" value=""/>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Latching</legend>
-                        <label class="radio-label">True</label>
-                        <input type="radio" name="latching" value="true"/>
-                        <label class="radio-label">False</label>
-                        <input type="radio" name="latching" value="false"/>
-                        <label class="radio-label">Inherit</label>
-                        <input type="radio" name="latching" checked="checked" value=""/>
-                    </fieldset><label>On Delay Seconds</label>
-                    <input type="number" name="ondelayseconds" id="registered-ondelay-input" value=""/>
-                    <label>Off Delay Seconds</label>
-                    <input type="number" name="offdelayseconds" id="registered-offdelay-input" value=""/>
                     <label>Masked By</label>
                     <input type="text" name="maskedby" id="registered-maskedby-input" value=""/>
-                    <label>Screen Path</label>
-                    <input type="text" name="screenpath" id="registered-screenpath-input" value=""/>
+                    <label>Screen Command</label>
+                    <input type="text" name="screenpath" id="registered-screencommand-input" value=""/>
                 </fieldset>
                 <input id="registered-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
             </form>

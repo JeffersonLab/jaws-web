@@ -261,8 +261,6 @@ class UserInterface {
             autofocus: false
         };
 
-        let rationaleOptions = JSON.parse(JSON.stringify(correctiveactionOptions));
-        rationaleOptions.el = document.querySelector("#registered-rationale-editor");
 
         let classcorrectiveactionOptions = JSON.parse(JSON.stringify(correctiveactionOptions));
         classcorrectiveactionOptions.el = document.querySelector("#class-correctiveaction-editor");
@@ -270,23 +268,8 @@ class UserInterface {
         let classrationaleOptions = JSON.parse(JSON.stringify(correctiveactionOptions));
         classrationaleOptions.el = document.querySelector("#class-rationale-editor");
 
-        this.instancecorrectiveactioneditor = new Editor(correctiveactionOptions);
-        this.instancerationaleeditor = new Editor(rationaleOptions);
-
         this.classcorrectiveactioneditor = new Editor(classcorrectiveactionOptions);
         this.classrationaleeditor = new Editor(classrationaleOptions);
-
-        this.instancerationaleviewer = new Viewer({
-            usageStatistics: false,
-            autofocus: false,
-            el: document.querySelector('#view-registration-rationale')
-        });
-
-        this.instancecorrectiveactionviewer = new Viewer({
-            usageStatistics: false,
-            autofocus: false,
-            el: document.querySelector('#view-registration-action')
-        });
 
         this.effectiverationaleviewer = new Viewer({
             usageStatistics: false,
