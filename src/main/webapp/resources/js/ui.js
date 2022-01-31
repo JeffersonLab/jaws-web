@@ -160,7 +160,6 @@ class UserInterface {
                 columns: [
                     {title: "name", field: "name"},
                     {title: "category", field: "category"},
-                    {title: "location", field: "location"},
                     {title: "priority", field: "priority"},
                     {title: "contact", field: "pointofcontactusername"}
                 ]
@@ -184,7 +183,6 @@ class UserInterface {
             ],
             columns: [
                 {title: "name", field: "name"},
-                {title: "category", field: "category"},
                 {title: "class", field: "class"},
                 {title: "location", field: "location"},
                 {title: "epicspv", field: "epicspv"}

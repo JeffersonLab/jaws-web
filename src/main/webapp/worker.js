@@ -1,5 +1,5 @@
 import db from './resources/js/db.js';
-import {AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition} from "./resources/js/entities.js";
+import {AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition} from "./resources/js/entities.js";
 
 async function init() {
     const [categoryPos, classPos, instancePos, locationPos, effectivePos] = await db.positions.bulkGet(["category", "class", "instance", "location", "effective"]);
@@ -31,7 +31,7 @@ async function init() {
             if(value == null) {
                 remove.push(key);
             } else {
-                updateOrAdd.push(key);
+                updateOrAdd.push(new AlarmCategory(key));
             }
         }
 
@@ -68,7 +68,6 @@ async function init() {
                 updateOrAdd.push(new AlarmClass(
                     key,
                     value.priority,
-                    value.location,
                     value.category,
                     value.rationale,
                     value.correctiveaction,
@@ -76,9 +75,7 @@ async function init() {
                     value.filterable,
                     value.latching,
                     value.ondelayseconds,
-                    value.offdelayseconds,
-                    value.maskedby,
-                    value.screenpath
+                    value.offdelayseconds
                 ));
             }
         }
@@ -116,18 +113,9 @@ async function init() {
                 updateOrAdd.push(new AlarmInstance(
                     key,
                     value.class,
-                    value.priority,
                     value.location,
-                    value.category,
-                    value.rationale,
-                    value.correctiveaction,
-                    value.pointofcontactusername,
-                    value.filterable,
-                    value.latching,
-                    value.ondelayseconds,
-                    value.offdelayseconds,
                     value.maskedby,
-                    value.screenpath,
+                    value.screencommand,
                     value.producer.pv
                 ));
             }

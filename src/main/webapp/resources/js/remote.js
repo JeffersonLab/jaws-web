@@ -63,6 +63,14 @@ worker.onmessage = function(e) {
     let event;
 
     switch(e.data) {
+        case "category":
+            event = new CustomEvent("category", { detail: null });
+            remote.dispatchEvent(event);
+            break;
+        case "category-highwatermark":
+            event = new CustomEvent("category-highwatermark", { detail: null });
+            remote.dispatchEvent(event);
+            break;
         case "class":
              event = new CustomEvent("class", { detail: null });
             remote.dispatchEvent(event);
@@ -77,6 +85,14 @@ worker.onmessage = function(e) {
             break;
         case "instance-highwatermark":
             event = new CustomEvent("instance-highwatermark", { detail: null });
+            remote.dispatchEvent(event);
+            break;
+        case "location":
+            event = new CustomEvent("location", { detail: null });
+            remote.dispatchEvent(event);
+            break;
+        case "location-highwatermark":
+            event = new CustomEvent("location-highwatermark", { detail: null });
             remote.dispatchEvent(event);
             break;
         case "effective":

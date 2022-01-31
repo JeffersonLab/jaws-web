@@ -1,3 +1,9 @@
+class AlarmCategory {
+    constructor(name) {
+        this.name = name;
+    }
+}
+
 class AlarmClass {
     constructor(name, priority, category, rationale, correctiveaction, pointofcontactusername, filterable,
                 latching, ondelayseconds, offdelayseconds) {
@@ -60,4 +66,4 @@ class KafkaLogPosition {
     }
 }
 
-export {AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition}
+export {AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition}

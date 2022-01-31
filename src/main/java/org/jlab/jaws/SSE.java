@@ -148,8 +148,10 @@ public class SSE implements ServletContextListener {
 
                     });
 
+                    categoryTable.start();
                     classTable.start();
                     instanceTable.start();
+                    locationTable.start();
                     effectiveTable.start();
 
 
@@ -373,6 +375,8 @@ public class SSE implements ServletContextListener {
         builder.append("[");
 
         ObjectMapper mapper = new ObjectMapper();
+
+        mapper.addMixIn(AlarmLocation.class, AlarmLocationMixin.class);
 
         for (EventSourceRecord<String, AlarmLocation> record : records) {
             String key = record.getKey();
