@@ -4,7 +4,7 @@ plugins {
 
 description 'Jefferson Lab Alarm Warning System (JAWS) web admin interface'
 group 'org.jlab'
-version '1.2.0'
+version '1.3.0'
 
 repositories {
     mavenCentral()
@@ -19,11 +19,11 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jlab:jaws-libj:1.8.0',
+    implementation 'org.jlab:jaws-libj:1.9.0',
             'io.confluent:kafka-streams-avro-serde:6.1.0',
-            'com.fasterxml.jackson.core:jackson-databind:2.11.3',
+            'com.fasterxml.jackson.core:jackson-databind:2.13.1',
             'org.tuckey:urlrewritefilter:4.0.4'
-    providedCompile 'javax:javaee-api:8.0'
+    providedCompile 'javax:javaee-api:8.0.1'
 }
 
 war {

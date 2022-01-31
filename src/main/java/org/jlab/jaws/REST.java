@@ -12,6 +12,7 @@ import org.jlab.jaws.entity.*;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 import java.util.Properties;
 
 @Path("/rest")
@@ -23,23 +24,6 @@ public class REST {
     public String getPriorities() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(AlarmPriority.values());
-    }
-
-
-    @GET
-    @Path("locations")
-    @Produces("application/json")
-    public String getLocations() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(AlarmLocation.values());
-    }
-
-    @GET
-    @Path("categories")
-    @Produces("application/json")
-    public String getCategories() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(AlarmCategory.values());
     }
 
     @DELETE
@@ -54,7 +38,7 @@ public class REST {
         Properties props = getInstanceProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
         try(KafkaProducer<String, AlarmInstance> p = new KafkaProducer<>(props)) {
-            p.send(new ProducerRecord<>(JaxRSApp.REGISTRATION_TOPIC, key, null));
+            p.send(new ProducerRecord<>(JaxRSApp.INSTANCES_TOPIC, key, null));
         }
     }
 
@@ -64,18 +48,9 @@ public class REST {
     public void putInstance(            @FormParam("name") @NotNull(message = "alarm name is required") String name,
                                             @FormParam("class") @NotNull(message = "class is required") String clazz,
                                             @FormParam("expression") String expression,
-                                            @FormParam("priority") String priority,
-                                            @FormParam("location") String location,
-                                            @FormParam("category") String category,
-                                            @FormParam("rationale") String rationale,
-                                            @FormParam("correctiveaction") String correctiveaction,
-                                            @FormParam("pocusername") String pocusername,
-                                            @FormParam("filterable") Boolean filterable,
-                                            @FormParam("latching") Boolean latching,
+                                            @FormParam("location") List<String> location,
                                             @FormParam("maskedby") String maskedby,
-                                            @FormParam("ondelayseconds") Long ondelayseconds,
-                                            @FormParam("offdelayseconds") Long offdelayseconds,
-                                            @FormParam("screenpath") String screenpath,
+                                            @FormParam("screencommand") String screencommand,
                                             @FormParam("epicspv") String epicspv)
     {
         System.out.println("PUT received: " + name);
@@ -95,41 +70,14 @@ public class REST {
         }
 
         value.setProducer(producer);
-
-        value.setRationale(rationale);
-
-        AlarmPriority ap = null;
-        if(priority != null) {
-            ap = AlarmPriority.valueOf(priority);
-        }
-        value.setPriority(ap);
-
-        AlarmLocation al = null;
-        if(location != null) {
-            al = AlarmLocation.valueOf(location);
-        }
-        value.setLocation(al);
-
-        AlarmCategory ac = null;
-
-        if(category != null) {
-            ac = AlarmCategory.valueOf(category);
-        }
-        value.setCategory(ac);
-
-        value.setCorrectiveaction(correctiveaction);
-        value.setPointofcontactusername(pocusername);
-        value.setFilterable(filterable);
-        value.setLatching(latching);
+        value.setLocation(location);
         value.setMaskedby(maskedby);
-        value.setOndelayseconds(ondelayseconds);
-        value.setOffdelayseconds(offdelayseconds);
-        value.setScreenpath(screenpath);
+        value.setScreencommand(screencommand);
 
         Properties props = getInstanceProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
         try(KafkaProducer<String, AlarmInstance> p = new KafkaProducer<>(props)) {
-            p.send(new ProducerRecord<>(JaxRSApp.REGISTRATION_TOPIC, key, value));
+            p.send(new ProducerRecord<>(JaxRSApp.INSTANCES_TOPIC, key, value));
         }
     }
 
@@ -171,17 +119,14 @@ public class REST {
     public void putClass(
             @FormParam("name") @NotNull(message = "class name is required") String name,
             @FormParam("priority") @NotNull(message = "priority is required") String priority,
-            @FormParam("location") @NotNull(message = "location is required") String location,
             @FormParam("category") @NotNull(message = "category is required") String category,
             @FormParam("rationale") @NotNull(message = "rationale is required") String rationale,
             @FormParam("correctiveaction") @NotNull(message = "correctiveaction is required") String correctiveaction,
             @FormParam("pocusername") @NotNull(message = "pocusername is required") String pocusername,
             @FormParam("filterable") Boolean filterable,
             @FormParam("latching") Boolean latching,
-            @FormParam("maskedby") String maskedby,
             @FormParam("ondelayseconds") Long ondelayseconds,
-            @FormParam("offdelayseconds") Long offdelayseconds,
-            @FormParam("screenpath") @NotNull(message = "screenpath is required") String screenpath)
+            @FormParam("offdelayseconds") Long offdelayseconds)
     {
         System.out.println("PUT received: " + name);
 
@@ -197,27 +142,13 @@ public class REST {
         }
         value.setPriority(ap);
 
-        AlarmLocation al = null;
-        if(location != null) {
-            al = AlarmLocation.valueOf(location);
-        }
-        value.setLocation(al);
-
-        AlarmCategory ac = null;
-
-        if(category != null) {
-            ac = AlarmCategory.valueOf(category);
-        }
-        value.setCategory(ac);
-
+        value.setCategory(category);
         value.setCorrectiveaction(correctiveaction);
         value.setPointofcontactusername(pocusername);
         value.setFilterable(filterable);
         value.setLatching(latching);
-        value.setMaskedby(maskedby);
         value.setOndelayseconds(ondelayseconds);
         value.setOffdelayseconds(offdelayseconds);
-        value.setScreenpath(screenpath);
 
         Properties props = getClassProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 

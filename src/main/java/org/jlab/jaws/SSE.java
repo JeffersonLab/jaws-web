@@ -53,26 +53,48 @@ public class SSE implements ServletContextListener {
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void listen(@Context final SseEventSink sink,
+                       @QueryParam("categoryIndex") @DefaultValue("-1") long categoryIndex,
                        @QueryParam("classIndex") @DefaultValue("-1") long classIndex,
                        @QueryParam("instanceIndex") @DefaultValue("-1") long instanceIndex,
+                       @QueryParam("locationIndex") @DefaultValue("-1") long locationIndex,
                        @QueryParam("effectiveIndex") @DefaultValue("-1") long effectiveIndex) {
-        System.err.println("Proxy connected: classIndex: " + classIndex +
+        System.err.println("Proxy connected: " +
+                "categoryIndex: " + categoryIndex +
+                ", classIndex: " + classIndex +
                 ", instanceIndex: " + instanceIndex +
+                ", locationIndex: " + locationIndex +
                 ", effectiveIndex: " + effectiveIndex);
 
         exec.execute(new Runnable() {
 
             @Override
             public void run() {
+                final Properties categoryProps = getCategoryProps(JaxRSApp.BOOTSTRAP_SERVERS);
                 final Properties classProps = getClassProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
                 final Properties instanceProps = getInstanceProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
+                final Properties locationProps = getLocationProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
                 final Properties effectiveProps = getEffectiveProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
 
                 try (
+                        EventSourceTable<String, String> categoryTable = new EventSourceTable<>(categoryProps, categoryIndex);
                         EventSourceTable<String, AlarmClass> classTable = new EventSourceTable<>(classProps, classIndex);
                         EventSourceTable<String, AlarmInstance> instanceTable = new EventSourceTable<>(instanceProps, instanceIndex);
+                        EventSourceTable<String, AlarmLocation> locationTable = new EventSourceTable<>(locationProps, locationIndex);
                         EventSourceTable<String, EffectiveRegistration> effectiveTable = new EventSourceTable<>(effectiveProps, effectiveIndex);
                 ) {
+
+                    categoryTable.addListener(new EventSourceListener<String, String>() {
+                        @Override
+                        public void highWaterOffset() {
+                            sink.send(sse.newEvent("category-highwatermark", ""));
+                        }
+
+                        @Override
+                        public void batch(LinkedHashMap<String, EventSourceRecord<String, String>> records) {
+                            sendCategoryRecords(sink, records.values());
+                        }
+
+                    });
 
                     classTable.addListener(new EventSourceListener<String, AlarmClass>() {
                         @Override
@@ -96,6 +118,19 @@ public class SSE implements ServletContextListener {
                         @Override
                         public void batch(LinkedHashMap<String, EventSourceRecord<String, AlarmInstance>> records) {
                             sendInstanceRecords(sink, records.values());
+                        }
+
+                    });
+
+                    locationTable.addListener(new EventSourceListener<String, AlarmLocation>() {
+                        @Override
+                        public void highWaterOffset() {
+                            sink.send(sse.newEvent("location-highwatermark", ""));
+                        }
+
+                        @Override
+                        public void batch(LinkedHashMap<String, EventSourceRecord<String, AlarmLocation>> records) {
+                            sendLocationRecords(sink, records.values());
                         }
 
                     });
@@ -134,6 +169,36 @@ public class SSE implements ServletContextListener {
         });
     }
 
+    private Properties getCategoryProps(String servers) {
+        final Properties props = new Properties();
+
+        props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
+        props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.CATEGORIES_TOPIC);
+        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
+        props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
+
+        return props;
+    }
+
+    private Properties getLocationProps(String servers, String registry) {
+        final Properties props = new Properties();
+
+        final SpecificAvroSerde<AlarmLocation> VALUE_SERDE = new SpecificAvroSerde<>();
+
+        props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
+        props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.LOCATIONS_TOPIC);
+        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
+        props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
+
+        // Deserializer specific configs
+        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, registry);
+        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
+
+        return props;
+    }
+
     private Properties getClassProps(String servers, String registry) {
         final Properties props = new Properties();
 
@@ -158,7 +223,7 @@ public class SSE implements ServletContextListener {
         final SpecificAvroSerde<AlarmInstance> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
-        props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.REGISTRATION_TOPIC);
+        props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.INSTANCES_TOPIC);
         props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
         props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
         props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
@@ -186,6 +251,42 @@ public class SSE implements ServletContextListener {
         props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
 
         return props;
+    }
+
+    private void sendCategoryRecords(SseEventSink sink, Collection<EventSourceRecord<String, String>> records) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        for (EventSourceRecord<String, String> record : records) {
+            String key = record.getKey();
+            String value = record.getValue();
+
+            String jsonValue = null;
+
+            if (value != null) {
+                try {
+                    jsonValue = mapper.writeValueAsString(value);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + ", \"offset\": " + record.getOffset() + "},";
+
+            builder.append(recordString);
+        }
+
+        int i = builder.lastIndexOf(",");
+
+        if(i == -1) {
+            builder.append("]");
+        } else {
+            builder.replace(i, i + 1, "]");
+        }
+
+        sink.send(sse.newEvent("category", builder.toString()));
     }
 
     private void sendClassRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmClass>> records) {
@@ -265,6 +366,42 @@ public class SSE implements ServletContextListener {
         }
 
         sink.send(sse.newEvent("instance", builder.toString()));
+    }
+
+    private void sendLocationRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmLocation>> records) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        for (EventSourceRecord<String, AlarmLocation> record : records) {
+            String key = record.getKey();
+            AlarmLocation value = record.getValue();
+
+            String jsonValue = null;
+
+            if (value != null) {
+                try {
+                    jsonValue = mapper.writeValueAsString(value);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + ", \"offset\": " + record.getOffset() + "},";
+
+            builder.append(recordString);
+        }
+
+        int i = builder.lastIndexOf(",");
+
+        if(i == -1) {
+            builder.append("]");
+        } else {
+            builder.replace(i, i + 1, "]");
+        }
+
+        sink.send(sse.newEvent("location", builder.toString()));
     }
 
     private void sendEffectiveRecords(SseEventSink sink, Collection<EventSourceRecord<String, EffectiveRegistration>> records) {
