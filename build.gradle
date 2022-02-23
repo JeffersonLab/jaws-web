@@ -50,6 +50,6 @@ war {
 tasks.war.doLast {
     copy {
         from war
-        into 'dockerWarVolume'
+        into './run'
     }
 }
