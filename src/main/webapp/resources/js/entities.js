@@ -40,7 +40,7 @@ class AlarmLocation {
 
 class EffectiveRegistration {
     constructor(name, clazz, priority, location, category, rationale, correctiveaction, pointofcontactusername,
-                filterable, latching, ondelayseconds, offdelayseconds, maskedby, screenpath, epicspv) {
+                filterable, latching, ondelayseconds, offdelayseconds, maskedby, screencommand, epicspv) {
         this.name = name;
         this.class = clazz;
         this.priority = priority;
@@ -54,7 +54,7 @@ class EffectiveRegistration {
         this.ondelayseconds = ondelayseconds;
         this.offdelayseconds = offdelayseconds;
         this.maskedby = maskedby;
-        this.screenpath = screenpath;
+        this.screencommand = screencommand;
         this.epicspv = epicspv;
     }
 }

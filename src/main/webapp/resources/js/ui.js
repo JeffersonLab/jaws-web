@@ -31,7 +31,7 @@ class UserInterface {
                 $("#view-effective-on-delay").text(data.ondelayseconds || 'None');
                 $("#view-effective-off-delay").text(data.offdelayseconds || 'None');
                 $("#view-effective-masked-by").text(data.maskedby || 'None');
-                $("#view-effective-screen-path").text(data.screenpath || 'None');
+                $("#view-effective-screen-command").text(data.screencommand || 'None');
 
                 ui.effectiverationaleviewer.setMarkdown(data.rationale || 'None');
                 ui.effectivecorrectiveactionviewer.setMarkdown(data.correctiveaction || 'None');
@@ -373,7 +373,7 @@ class UserInterface {
         $("#registered-ondelay-input").val(data.ondelayseconds);
         $("#registered-offdelay-input").val(data.offdelayseconds);
         $("#registered-maskedby-input").val(data.maskedby);
-        $("#registered-screenpath-input").val(data.screenpath);
+        $("#registered-screencommand-input").val(data.screencommand);
         $("#epicspv-input").val(data.epicspv);
 
         this.instancerationaleeditor.setMarkdown(data.rationale || '');
@@ -711,7 +711,6 @@ class UserInterface {
 
             $("#class-name-input").val(data.name);
             $("#priority-select").val(data.priority);
-            $("#location-select").val(data.location);
             $("#category-select").val(data.category);
             $("#class-rationale-textarea").val(data.rationale);
             $("#class-correctiveaction-textarea").val(data.correctiveaction);
@@ -720,8 +719,6 @@ class UserInterface {
             $("#class-form [name=latching]").val([data.latching]);
             $("#class-ondelay-input").val(data.ondelayseconds);
             $("#class-offdelay-input").val(data.offdelayseconds);
-            $("#class-maskedby-input").val(data.maskedby);
-            $("#class-screenpath-input").val(data.screenpath);
 
             ui.classrationaleeditor.setMarkdown(data.rationale || '');
             ui.classcorrectiveactioneditor.setMarkdown(data.correctiveaction || '');

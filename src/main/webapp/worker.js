@@ -202,7 +202,7 @@ async function init() {
                     value.ondelayseconds,
                     value.offdelayseconds,
                     value.maskedby,
-                    value.screenpath,
+                    value.screencommand,
                     value.producer.pv
                 ));
             }

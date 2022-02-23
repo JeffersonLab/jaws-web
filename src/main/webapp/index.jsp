@@ -201,7 +201,7 @@
                     <label>Masked By</label>
                     <input type="text" name="maskedby" id="registered-maskedby-input" value=""/>
                     <label>Screen Command</label>
-                    <input type="text" name="screenpath" id="registered-screencommand-input" value=""/>
+                    <input type="text" name="screencommand" id="registered-screencommand-input" value=""/>
                 </fieldset>
                 <input id="registered-submit" type="submit" tabindex="-1" style="position:absolute; top:-1000px"/>
             </form>
@@ -292,8 +292,8 @@
                 <dd id="view-effective-off-delay"></dd>
                 <dt>Masked By</dt>
                 <dd id="view-effective-masked-by"></dd>
-                <dt>Screen Path</dt>
-                <dd id="view-effective-screen-path"></dd>
+                <dt>Screen Command</dt>
+                <dd id="view-effective-screen-command"></dd>
             </dl>
         </div>
     </div>
