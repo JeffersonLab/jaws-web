@@ -38,6 +38,12 @@ http://localhost:8080/jaws-admin-gui
 
 **Note**: The docker-compose up command implicitly reads both _docker-compose.yml_ and _docker-compose.override.yml_.
 
+### Install
+   1. Download [Wildfly 26](https://www.wildfly.org/downloads/)
+   1. Download [jaws-admin-gui.war](https://github.com/JeffersonLab/jaws-admin-gui/releases) and deploy it to Wildfly
+   1. Navigate your web browser to localhost:8080/jaws-admin-gui
+
+
 ## Configure
 The following environment variables are required:
 
