@@ -23,10 +23,18 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jlab:jaws-libj:1.9.0',
-            'io.confluent:kafka-streams-avro-serde:6.1.0',
-            'com.fasterxml.jackson.core:jackson-databind:2.13.1',
-            'org.tuckey:urlrewritefilter:4.0.4'
+    if (project.hasProperty("provided")) {
+        providedCompile 'org.jlab:jaws-libj:1.9.0',
+                'io.confluent:kafka-streams-avro-serde:6.1.0',
+                'com.fasterxml.jackson.core:jackson-databind:2.13.1',
+                'org.tuckey:urlrewritefilter:4.0.4'
+    } else {
+        implementation 'org.jlab:jaws-libj:1.9.0',
+                'io.confluent:kafka-streams-avro-serde:6.1.0',
+                'com.fasterxml.jackson.core:jackson-databind:2.13.1',
+                'org.tuckey:urlrewritefilter:4.0.4'
+    }
+
     providedCompile 'javax:javaee-api:8.0.1'
 }
 
