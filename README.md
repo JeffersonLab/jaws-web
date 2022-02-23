@@ -40,7 +40,7 @@ http://localhost:8080/jaws-admin-gui
 
 ### Install
    1. Download [Wildfly 26](https://www.wildfly.org/downloads/)
-   1. Download [jaws-admin-gui.war](https://github.com/JeffersonLab/jaws-admin-gui/releases) and deploy it to Wildfly
+   1. Build [jaws-admin-gui.war](https://github.com/JeffersonLab/jaws-admin-gui#build) and deploy it to Wildfly
    1. Navigate your web browser to localhost:8080/jaws-admin-gui
 
 
