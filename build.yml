@@ -1,0 +1,36 @@
+---
+version: '3.9'
+
+services:
+  zookeeper:
+    extends:
+      file: docker-compose.yml
+      service: zookeeper
+
+  kafka:
+    extends:
+      file: docker-compose.yml
+      service: kafka
+
+  registry:
+    extends:
+      file: docker-compose.yml
+      service: registry
+
+  jaws:
+    extends:
+      file: docker-compose.yml
+      service: jaws
+
+  effective:
+    extends:
+      file: docker-compose.yml
+      service: effective
+
+  admin:
+    extends:
+      file: docker-compose.yml
+      service: admin
+    build:
+      context: .
+      dockerfile: Dockerfile

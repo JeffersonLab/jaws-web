@@ -1,0 +1,35 @@
+---
+version: '3.9'
+
+services:
+  zookeeper:
+    extends:
+      file: build.yml
+      service: zookeeper
+
+  kafka:
+    extends:
+      file: build.yml
+      service: kafka
+
+  registry:
+    extends:
+      file: build.yml
+      service: registry
+
+  jaws:
+    extends:
+      file: build.yml
+      service: jaws
+
+  effective:
+    extends:
+      file: build.yml
+      service: effective
+
+  admin:
+    extends:
+      file: build.yml
+      service: admin
+    volumes:
+      - ./run/wildfly/standalone/deployments:/opt/jboss/wildfly/standalone/staging
