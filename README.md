@@ -1,4 +1,4 @@
-# jaws-admin-gui [![Docker](https://img.shields.io/docker/v/slominskir/jaws-admin-gui?sort=semver&label=DockerHub)](https://hub.docker.com/r/slominskir/jaws-admin-gui)
+# jaws-admin-gui [![Java CI with Gradle](https://github.com/JeffersonLab/jaws-admin-gui/actions/workflows/gradle.yml/badge.svg)](https://github.com/JeffersonLab/jaws-admin-gui/actions/workflows/gradle.yml) [![Docker](https://img.shields.io/docker/v/slominskir/jaws-admin-gui?sort=semver&label=DockerHub)](https://hub.docker.com/r/slominskir/jaws-admin-gui)
 Web Admin interface for [JAWS](https://github.com/JeffersonLab/jaws) to manage alarm registration classes and instances.
 
 <p>
