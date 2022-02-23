@@ -474,15 +474,6 @@ class UserInterface {
                             option.text = data[i];
                             prioritySelect.add(option);
                         }
-
-                        let other = prioritySelect.cloneNode(true);
-                        other.id = 'registered-priority-select';
-
-                        let emptyOption = document.createElement('option');
-                        emptyOption.selected = "selected";
-                        other.insertBefore(emptyOption, other.options[0]);
-
-                        document.getElementById("registered-priority-select-span").appendChild(other);
                     });
                 }
             )
@@ -493,74 +484,10 @@ class UserInterface {
 
     initLocations() {
         let locationSelect = document.getElementById('location-select');
-        remote.getLocations()
-            .then(
-                function (response) {
-                    if (response.status !== 200) {
-                        console.warn('Error. Status Code: ' +
-                            response.status);
-                        return;
-                    }
-
-                    response.json().then(function (data) {
-                        let option;
-
-                        for (let i = 0; i < data.length; i++) {
-                            option = document.createElement('option');
-                            option.text = data[i];
-                            locationSelect.add(option);
-                        }
-
-                        let other = locationSelect.cloneNode(true);
-                        other.id = 'registered-location-select';
-
-                        let emptyOption = document.createElement('option');
-                        emptyOption.selected = "selected";
-                        other.insertBefore(emptyOption, other.options[0]);
-
-                        document.getElementById("registered-location-select-span").appendChild(other);
-                    });
-                }
-            )
-            .catch(function (err) {
-                console.error('Fetch Error -', err);
-            });
     }
 
     initCategories() {
         let categorySelect = document.getElementById('category-select');
-        remote.getCategories()
-            .then(
-                function (response) {
-                    if (response.status !== 200) {
-                        console.warn('Error. Status Code: ' +
-                            response.status);
-                        return;
-                    }
-
-                    response.json().then(function (data) {
-                        let option;
-
-                        for (let i = 0; i < data.length; i++) {
-                            option = document.createElement('option');
-                            option.text = data[i];
-                            categorySelect.add(option);
-                        }
-
-                        let other = categorySelect.cloneNode(true);
-                        other.id = 'registered-category-select';
-
-                        let emptyOption = document.createElement('option');
-                        emptyOption.selected = "selected";
-                        other.insertBefore(emptyOption, other.options[0]);
-
-                        document.getElementById("registered-category-select-span").appendChild(other);
-                    });
-                }
-            )
-            .catch(function (err) {
-                console.error('Fetch Error -', err);
-            });
     }
 
     start() {
