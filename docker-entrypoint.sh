@@ -11,4 +11,6 @@ while [ $(curl -s -o /dev/null -w %{http_code} $url/subjects/alarm-overrides-val
 done
 
 # Launch original container CMD
-/opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0
+/opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 &
+
+sleep infinity
