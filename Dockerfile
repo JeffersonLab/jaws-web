@@ -60,6 +60,8 @@ FROM quay.io/wildfly/wildfly:26.0.1.Final as final-product
 
 USER root
 
+COPY --from=builder-chooser /jaws-admin-gui/docker-entrypoint.sh /docker-entrypoint.sh
+
 # This must be last and separate from other copy command for caching purposes (local-artifact scenario)
 COPY --from=builder-chooser /jaws-admin-gui/build/libs /opt/jboss/wildfly/standalone/deployments
 
