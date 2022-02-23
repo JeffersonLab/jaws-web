@@ -36,7 +36,7 @@ http://localhost:8080/jaws-admin-gui
 ```
 **Note**: The docker-compose services require significant system resources - tested with 4 CPUs and 4GB memory.
 
-**Note**: The docker-compose up command implicitly reads both _docker-compose.yml_ and _docker-compose.override.yml_.
+**See**: [Docker Compose Strategy](https://gist.github.com/slominskir/a7da801e8259f5974c978f9c3091d52c)
 
 ### Install
    1. Download [Wildfly 26](https://www.wildfly.org/downloads/)
