@@ -28,7 +28,7 @@ cd jaws-admin-gui
 ```
 2. Launch Docker
 ```
-docker-compose up
+docker compose up
 ```
 3. Launch web browser
 ```
