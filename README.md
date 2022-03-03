@@ -7,9 +7,8 @@ Web Admin interface for [JAWS](https://github.com/JeffersonLab/jaws) to manage a
 
 ---
  - [Overview](https://github.com/JeffersonLab/jaws-admin-gui#overview)
- - [Usage](https://github.com/JeffersonLab/jaws-admin-gui#usage)
-    - [Quick Start with Compose](https://github.com/JeffersonLab/jaws-admin-gui#quick-start-with-compose) 
-    - [Install](https://github.com/JeffersonLab/jaws-admin-gui#install)
+ - [Quick Start with Compose](https://github.com/JeffersonLab/jaws-admin-gui#quick-start-with-compose) 
+ - [Install](https://github.com/JeffersonLab/jaws-admin-gui#install)
  - [Configure](https://github.com/JeffersonLab/jaws-admin-gui#configure)
  - [Build](https://github.com/JeffersonLab/jaws-admin-gui#build)
  - [See Also](https://github.com/JeffersonLab/jaws-admin-gui#see-also)
@@ -18,9 +17,7 @@ Web Admin interface for [JAWS](https://github.com/JeffersonLab/jaws) to manage a
 ## Overview
 Alarm system registration data consists of locations, categories, classes, and instances.  Collectively the data forms effective registrations.
 
-## Usage
-
-### Quick Start with Compose
+## Quick Start with Compose
 1. Grab project
 ```
 git clone https://github.com/JeffersonLab/jaws-admin-gui
@@ -38,7 +35,7 @@ http://localhost:8080/jaws-admin-gui
 
 **See**: [Docker Compose Strategy](https://gist.github.com/slominskir/a7da801e8259f5974c978f9c3091d52c)
 
-### Install
+## Install
    1. Download [Wildfly 26](https://www.wildfly.org/downloads/)
    1. Build [jaws-admin-gui.war](https://github.com/JeffersonLab/jaws-admin-gui#build) and deploy it to Wildfly
    1. Navigate your web browser to localhost:8080/jaws-admin-gui
