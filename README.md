@@ -36,9 +36,12 @@ http://localhost:8080/jaws-admin-gui
 **See**: [Docker Compose Strategy](https://gist.github.com/slominskir/a7da801e8259f5974c978f9c3091d52c)
 
 ## Install
+This application requires a Java 11+ JVM and standard library at run time, plus a Java EE 8+ application server (developed with Wildfly).
+
    1. Download [Wildfly 26](https://www.wildfly.org/downloads/)
    1. Build [jaws-admin-gui.war](https://github.com/JeffersonLab/jaws-admin-gui#build) and deploy it to Wildfly
-   1. Navigate your web browser to localhost:8080/jaws-admin-gui
+   2. Configure Wildfly and start it
+   3. Navigate your web browser to localhost:8080/jaws-admin-gui
 
 
 ## Configure
@@ -50,7 +53,7 @@ The following environment variables are required:
 | SCHEMA_REGISTRY | URL to Confluent Schema Registry; example: `http://registry:8081` |
 
 ## Build
-This [Java 17](https://adoptium.net/) project (compiled to Java 11 bytecode) uses the [Gradle 7](https://gradle.org/) build tool to automatically download dependencies and build the project from source:
+This project is built with [Java 17](https://adoptium.net/) (compiled to Java 11 bytecode), and uses the [Gradle 7](https://gradle.org/) build tool to automatically download dependencies and build the project from source:
 
 ```
 git clone https://github.com/JeffersonLab/jaws-admin-gui
