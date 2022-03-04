@@ -36,7 +36,7 @@ http://localhost:8080/jaws-admin-gui
 **See**: [Docker Compose Strategy](https://gist.github.com/slominskir/a7da801e8259f5974c978f9c3091d52c)
 
 ## Install
-This application requires a Java 11+ JVM and standard library at run time, plus a Java EE 8+ application server (developed with Wildfly).
+This application requires a Java 11+ JVM and standard library to run, plus a Java EE 8+ application server (developed with Wildfly).
 
    1. Download [Wildfly 26](https://www.wildfly.org/downloads/)
    1. Build [jaws-admin-gui.war](https://github.com/JeffersonLab/jaws-admin-gui#build) and deploy it to Wildfly
