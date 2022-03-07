@@ -12,6 +12,7 @@ WORKDIR /
 RUN if [ -z "${CUSTOM_CRT_URL}" ] ; then echo "No custom cert needed"; else \
        wget -O /usr/local/share/ca-certificates/customcert.crt $CUSTOM_CRT_URL \
        && update-ca-certificates \
+       && keytool -import -alias custom -file /usr/local/share/ca-certificates/customcert.crt -storetype JKS -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt \
        && export OPTIONAL_CERT_ARG=--cert=/etc/ssl/certs/ca-certificates.crt \
     ; fi
 COPY . /app
