@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 @WebListener
 public class SSE implements ServletContextListener {
     // max 10 concurrent users
-    private ExecutorService exec = Executors.newFixedThreadPool(10);
+    private final ExecutorService exec = Executors.newFixedThreadPool(10);
     private Sse sse;
 
     @Override
@@ -69,18 +69,18 @@ public class SSE implements ServletContextListener {
 
             @Override
             public void run() {
-                final Properties categoryProps = getCategoryProps(JaxRSApp.BOOTSTRAP_SERVERS);
-                final Properties classProps = getClassProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
-                final Properties instanceProps = getInstanceProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
-                final Properties locationProps = getLocationProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
-                final Properties effectiveProps = getEffectiveProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
+                final Properties categoryProps = getCategoryProps();
+                final Properties classProps = getClassProps();
+                final Properties instanceProps = getInstanceProps();
+                final Properties locationProps = getLocationProps();
+                final Properties effectiveProps = getEffectiveProps();
 
                 try (
                         EventSourceTable<String, String> categoryTable = new EventSourceTable<>(categoryProps, categoryIndex);
                         EventSourceTable<String, AlarmClass> classTable = new EventSourceTable<>(classProps, classIndex);
                         EventSourceTable<String, AlarmInstance> instanceTable = new EventSourceTable<>(instanceProps, instanceIndex);
                         EventSourceTable<String, AlarmLocation> locationTable = new EventSourceTable<>(locationProps, locationIndex);
-                        EventSourceTable<String, EffectiveRegistration> effectiveTable = new EventSourceTable<>(effectiveProps, effectiveIndex);
+                        EventSourceTable<String, EffectiveRegistration> effectiveTable = new EventSourceTable<>(effectiveProps, effectiveIndex)
                 ) {
 
                     categoryTable.addListener(new EventSourceListener<String, String>() {
@@ -171,85 +171,85 @@ public class SSE implements ServletContextListener {
         });
     }
 
-    private Properties getCategoryProps(String servers) {
+    private Properties getCategoryProps() {
         final Properties props = new Properties();
 
         props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
         props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.CATEGORIES_TOPIC);
-        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
+        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, JaxRSApp.BOOTSTRAP_SERVERS);
         props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
         props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
 
         return props;
     }
 
-    private Properties getLocationProps(String servers, String registry) {
+    private Properties getLocationProps() {
         final Properties props = new Properties();
 
         final SpecificAvroSerde<AlarmLocation> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
         props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.LOCATIONS_TOPIC);
-        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
+        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, JaxRSApp.BOOTSTRAP_SERVERS);
         props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
         props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
 
         // Deserializer specific configs
-        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, registry);
+        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, JaxRSApp.SCHEMA_REGISTRY);
         props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
 
         return props;
     }
 
-    private Properties getClassProps(String servers, String registry) {
+    private Properties getClassProps() {
         final Properties props = new Properties();
 
         final SpecificAvroSerde<AlarmClass> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
         props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.CLASSES_TOPIC);
-        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
+        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, JaxRSApp.BOOTSTRAP_SERVERS);
         props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
         props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
 
         // Deserializer specific configs
-        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, registry);
+        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, JaxRSApp.SCHEMA_REGISTRY);
         props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
 
         return props;
     }
 
-    private Properties getInstanceProps(String servers, String registry) {
+    private Properties getInstanceProps() {
         final Properties props = new Properties();
 
         final SpecificAvroSerde<AlarmInstance> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
         props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.INSTANCES_TOPIC);
-        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
+        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, JaxRSApp.BOOTSTRAP_SERVERS);
         props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
         props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
 
         // Deserializer specific configs
-        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, registry);
+        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, JaxRSApp.SCHEMA_REGISTRY);
         props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
 
         return props;
     }
 
-    private Properties getEffectiveProps(String servers, String registry) {
+    private Properties getEffectiveProps() {
         final Properties props = new Properties();
 
         final SpecificAvroSerde<EffectiveRegistration> VALUE_SERDE = new SpecificAvroSerde<>();
 
         props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
         props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.EFFECTIVE_TOPIC);
-        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, servers);
+        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, JaxRSApp.BOOTSTRAP_SERVERS);
         props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
         props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
 
         // Deserializer specific configs
-        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, registry);
+        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, JaxRSApp.SCHEMA_REGISTRY);
         props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
 
         return props;
