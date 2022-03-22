@@ -16,9 +16,9 @@
   "use strict";
 
   if (typeof define === 'function' && define.amd) {
-    define(['jquery', 'tabulator', 'jquery-ui'], factory);
+    define(['jquery', 'webapp/resources/libs/tabulator-4.9.3/js/tabulator', 'jquery-ui'], factory);
   } else if (typeof module !== 'undefined' && module.exports) {
-    module.exports = factory(require('jquery'), require('tabulator'), require('jquery-ui'));
+    module.exports = factory(require('jquery'), require('webapp/resources/libs/tabulator-4.9.3/js/tabulator'), require('jquery-ui'));
   } else {
     factory(jQuery, Tabulator);
   }

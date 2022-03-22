@@ -1,8 +1,8 @@
 import remote from './remote.js';
 import db from './db.js';
 import TableUI from './table-ui.js';
-import page from './page-1.11.6.js';
-import Editor from './toastui-3.1.3-all.min.js';
+import page from '../libs/page-1.11.6/page.js';
+import Editor from '../libs/toastui-3.1.3/toastui-all.min.js';
 
 const meta = document.querySelector('meta');
 const contextPath = meta && meta.dataset.contextPath || '';
