@@ -2,8 +2,7 @@ import remote from './remote.js';
 import db from './db.js';
 import TableUI from './table-ui.js';
 import page from './page-1.11.6.js';
-import Editor from './toastui-3.1.1-all.min.js';
-import Viewer from './toastui-3.1.1-viewer.js';
+import Editor from './toastui-3.1.3-all.min.js';
 
 const meta = document.querySelector('meta');
 const contextPath = meta && meta.dataset.contextPath || '';
@@ -271,25 +270,29 @@ class UserInterface {
         this.classcorrectiveactioneditor = new Editor(classcorrectiveactionOptions);
         this.classrationaleeditor = new Editor(classrationaleOptions);
 
-        this.effectiverationaleviewer = new Viewer({
+        this.effectiverationaleviewer = Editor.factory({
+            viewer: true,
             usageStatistics: false,
             autofocus: false,
             el: document.querySelector('#view-effective-rationale')
         });
 
-        this.effectivecorrectiveactionviewer = new Viewer({
+        this.effectivecorrectiveactionviewer = Editor.factory({
+            viewer: true,
             usageStatistics: false,
             autofocus: false,
             el: document.querySelector('#view-effective-action')
         });
 
-        this.classrationaleviewer = new Viewer({
+        this.classrationaleviewer = Editor.factory({
+            viewer: true,
             usageStatistics: false,
             autofocus: false,
             el: document.querySelector('#view-class-rationale')
         });
 
-        this.classcorrectiveactionviewer = new Viewer({
+        this.classcorrectiveactionviewer = Editor.factory({
+            viewer: true,
             usageStatistics: false,
             autofocus: false,
             el: document.querySelector('#view-class-action')
