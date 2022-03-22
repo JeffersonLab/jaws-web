@@ -301,7 +301,7 @@
 <div id="version-div">v${initParam['releaseNumber']}</div>
 <script type="module" src="${pageContext.request.contextPath}/resources/js/toastui-3.1.1-all.min.js"></script>
 <script type="module" src="${pageContext.request.contextPath}/resources/js/page-1.11.6.js"></script>
-<script type="module" src="${pageContext.request.contextPath}/resources/js/dexie-3.0.3.js"></script>
+<script type="module" src="${pageContext.request.contextPath}/resources/js/dexie-3.2.1.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/tabulator-4.9.3/js/tabulator.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/jquery-ui-1.12.1.smoothness/external/jquery/jquery.js"></script>
 <script src="${pageContext.request.contextPath}/resources/jquery-ui-1.12.1.smoothness/jquery-ui.min.js"></script>

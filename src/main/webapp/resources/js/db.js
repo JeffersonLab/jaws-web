@@ -1,4 +1,4 @@
-import Dexie from './dexie-3.0.3.js';
+import Dexie from './dexie-3.2.1.js';
 import {AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition} from "./entities.js";
 
 const db = new Dexie("jaws");
