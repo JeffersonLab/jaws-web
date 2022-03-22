@@ -10,6 +10,10 @@
         <param-name>releaseNumber</param-name>
         <param-value>@VERSION@</param-value>
     </context-param>
+    <mime-mapping>
+        <extension>mjs</extension>
+        <mime-type>text/javascript</mime-type>
+    </mime-mapping>
     <filter>
         <filter-name>urlrewritefilter</filter-name>
         <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
