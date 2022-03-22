@@ -9,10 +9,12 @@
     "jquery-ui": "1.12.1"
   },
   "devDependencies": {
-    "webpack": "^5.38.1",
-    "webpack-cli": "^4.7.2"
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2",
+    "terser": "^5.12.1"
   },
   "scripts": {
+    "minify-page": "terser node_modules/page/page.mjs -c > build/page.min.mjs",
     "pack-toast": "webpack build --config src/main/js/webpack.toast.config.js"
   }
 }

@@ -49,8 +49,13 @@ task webpack(type: NpmTask, dependsOn: 'npmInstall') {
     args = ['run', 'pack-toast' ]
 }
 
+task minify(type: NpmTask, dependsOn: 'npmInstall') {
+    args = ['run', 'minify-page' ]
+}
+
 war {
     dependsOn('webpack')
+    dependsOn('minify')
 
     archiveFileName =  'jaws-admin-gui.war'
     filesMatching('WEB-INF/web.xml') {
@@ -59,7 +64,7 @@ war {
         }
     }
 
-    from('node_modules/page/page.mjs') {
+    from('build/page.min.mjs') {
         into('resources/libs/page-1.11.6')
     }
 
