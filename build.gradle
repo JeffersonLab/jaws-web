@@ -45,8 +45,12 @@ dependencies {
     providedCompile 'javax:javaee-api:8.0.1'
 }
 
+task webpack(type: NpmTask, dependsOn: 'npmInstall') {
+    args = ['run', 'pack-toast' ]
+}
+
 war {
-    dependsOn('npmInstall')
+    dependsOn('webpack')
 
     archiveFileName =  'jaws-admin-gui.war'
     filesMatching('WEB-INF/web.xml') {
@@ -61,6 +65,14 @@ war {
 
     from('node_modules/dexie/dist/modern/dexie.min.mjs') {
         into('resources/libs/dexie-3.2.1')
+    }
+
+    from('build/toastui-all.min.mjs') {
+        into('resources/libs/toast-ui-3.1.3')
+    }
+
+    from('node_modules/@toast-ui/editor/dist/toastui-editor.css') {
+        into('resources/libs/toast-ui-3.1.3')
     }
 }
 

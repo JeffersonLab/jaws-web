@@ -2,7 +2,7 @@ import remote from './remote.js';
 import db from './db.js';
 import TableUI from './table-ui.js';
 import page from '../libs/page-1.11.6/page.mjs';
-import Editor from '../libs/toast-ui-3.1.3/toastui-all.min.js';
+import Editor from '../libs/toast-ui-3.1.3/toastui-all.min.mjs';
 
 const meta = document.querySelector('meta');
 const contextPath = meta && meta.dataset.contextPath || '';

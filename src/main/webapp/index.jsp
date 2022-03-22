@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/site.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/libs/jquery-ui-1.12.1.smoothness/jquery-ui.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/libs/tabulator-4.9.3/css/tabulator.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/libs/toast-ui-3.1.3/toastui.min.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/libs/toast-ui-3.1.3/toastui-editor.css"/>
 </head>
 <body>
 <header>
@@ -299,7 +299,7 @@
     </div>
 </div>
 <div id="version-div">v${initParam['releaseNumber']}</div>
-<script type="module" src="${pageContext.request.contextPath}/resources/libs/toast-ui-3.1.3/toastui-all.min.js"></script>
+<script type="module" src="${pageContext.request.contextPath}/resources/libs/toast-ui-3.1.3/toastui-all.min.mjs"></script>
 <script type="module" src="${pageContext.request.contextPath}/resources/libs/page-1.11.6/page.mjs"></script>
 <script type="module" src="${pageContext.request.contextPath}/resources/libs/dexie-3.2.1/dexie.min.mjs"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/libs/tabulator-4.9.3/js/tabulator.min.js"></script>
