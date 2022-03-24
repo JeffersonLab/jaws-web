@@ -1,6 +1,9 @@
 import db from './resources/js/db.js';
 import {AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition} from "./resources/js/entities.js";
 
+const urlObject = new URL(self.location);
+const contextPath = '/' + urlObject.pathname.split('/')[1];
+
 async function init() {
     const [categoryPos, classPos, instancePos, locationPos, effectivePos] = await db.positions.bulkGet(["category", "class", "instance", "location", "effective"]);
 
@@ -12,7 +15,7 @@ async function init() {
 
     //console.log('classIndex: ', classIndex, ', instanceIndex: ', instanceIndex, ', effectiveIndex: ', effectiveIndex);
 
-    const evtSource = new EventSource('proxy/sse?categoryIndex=' + categoryIndex +
+    const evtSource = new EventSource(contextPath + '/proxy/sse?categoryIndex=' + categoryIndex +
         '&classIndex=' + classIndex +
         '&instanceIndex=' + instanceIndex +
         '&locationIndex=' + locationIndex +

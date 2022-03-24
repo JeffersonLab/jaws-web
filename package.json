@@ -15,6 +15,7 @@
   },
   "scripts": {
     "minify-page": "terser node_modules/page/page.mjs -c > build/page.min.mjs",
-    "pack-toast": "webpack build --config src/main/js/webpack.toast.config.js"
+    "pack-toast": "webpack build --config src/main/js/webpack.toast.config.js",
+    "pack-worker": "webpack build --config src/main/js/webpack.worker.config.js"
   }
 }

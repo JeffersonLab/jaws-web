@@ -57,7 +57,31 @@ class Remote extends EventTarget {
 
 const remote = new Remote();
 
-const worker = new Worker(contextPath + '/worker.js', {"type": "module"});
+function supportsWorkerType() {
+    let supports = false;
+    const tester = {
+        get type() { supports = true; } // it's been called, it's supported
+    };
+    try {
+        // We use "blob://" as url to avoid a useless network request.
+        // This will either throw in Chrome
+        // either fire an error event in Firefox
+        // which is perfect since
+        // we don't need the worker to actually start,
+        // checking for the type of the script is done before trying to load it.
+        const worker = new Worker('blob://', tester);
+    } finally {
+        return supports;
+    }
+}
+
+let worker;
+
+if( supportsWorkerType() ) {
+    worker = new Worker(contextPath + '/worker.mjs', {"type": "module"});
+} else {
+    worker = new Worker(contextPath + '/worker.js');
+}
 
 worker.onmessage = function(e) {
     let event;
