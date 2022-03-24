@@ -1,13 +1,18 @@
+<%@page contentType="text/html" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" data-context-path="${pageContext.request.contextPath}"/>
     <title>JAWS Admin GUI</title>
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/img/favicon.ico"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/site.css"/>
+    <c:url value="/resources/css/site.css" var="siteCssUrl">
+        <c:param name="v" value="${initParam['releaseNumber']}"/>
+    </c:url>
+    <link rel="stylesheet" href="${siteCssUrl}"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/libs/jquery-ui-1.12.1.smoothness/jquery-ui.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/libs/tabulator-4.9.3/css/tabulator.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/libs/toast-ui-3.1.3/toastui-editor.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/toast-ui-3.1.3/toastui-editor.css"/>
 </head>
 <body>
 <header>
@@ -298,13 +303,13 @@
         </div>
     </div>
 </div>
-<div id="version-div">v${initParam['releaseNumber']}</div>
-<script type="module" src="${pageContext.request.contextPath}/resources/libs/toast-ui-3.1.3/toastui-all.min.mjs"></script>
-<script type="module" src="${pageContext.request.contextPath}/resources/libs/page-1.11.6/page.min.mjs"></script>
-<script type="module" src="${pageContext.request.contextPath}/resources/libs/dexie-3.2.1/dexie.min.mjs"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/libs/tabulator-4.9.3/js/tabulator.min.js"></script>
+<div id="version-div">v<c:out value="${initParam['releaseNumber']}"/></div>
+<script src="${pageContext.request.contextPath}/resources/libs/tabulator-4.9.3/js/tabulator.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/libs/jquery-ui-1.12.1.smoothness/external/jquery/jquery.js"></script>
 <script src="${pageContext.request.contextPath}/resources/libs/jquery-ui-1.12.1.smoothness/jquery-ui.min.js"></script>
-<script type="module" src="${pageContext.request.contextPath}/resources/js/main.js"></script>
+<script type="module" src="${pageContext.request.contextPath}/resources/modules/toast-ui-3.1.3/toastui-all.min.mjs"></script>
+<script type="module" src="${pageContext.request.contextPath}/resources/modules/page-1.11.6/page.min.mjs"></script>
+<script type="module" src="${pageContext.request.contextPath}/resources/modules/dexie-3.2.1/dexie.min.mjs"></script>
+<script type="module" src="${pageContext.request.contextPath}/resources/modules/jaws-admin-gui-${initParam['releaseNumber']}/main.mjs"></script>
 </body>
 </html>

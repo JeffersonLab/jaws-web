@@ -20,4 +20,9 @@
         <from>^/view/?(.*)</from>
         <to>/index.jsp</to>
     </rule>
+    <rule>
+        <note>Rewrite app version for cache busting</note>
+        <from>^/resources/modules/jaws-admin-gui-(.*)/(.*)$</from>
+        <to>/resources/modules/jaws-admin-gui/$2</to>
+    </rule>
 </urlrewrite>

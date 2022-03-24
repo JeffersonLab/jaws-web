@@ -1,8 +1,8 @@
-import remote from './remote.js';
-import db from './db.js';
-import TableUI from './table-ui.js';
-import page from '../libs/page-1.11.6/page.min.mjs';
-import Editor from '../libs/toast-ui-3.1.3/toastui-all.min.mjs';
+import remote from './remote.mjs';
+import db from './db.mjs';
+import TableUI from './table-ui.mjs';
+import page from '../page-1.11.6/page.min.mjs';
+import Editor from '../toast-ui-3.1.3/toastui-all.min.mjs';
 
 const meta = document.querySelector('meta');
 const contextPath = meta && meta.dataset.contextPath || '';

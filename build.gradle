@@ -67,19 +67,19 @@ task minifyPage(type: NpmTask, dependsOn: 'npmInstall') {
 
 tasks.register("copyPage", Copy) {
     from layout.buildDirectory.file("page.min.mjs")
-    into layout.buildDirectory.dir("webapp/resources/libs/page-1.11.6")
+    into layout.buildDirectory.dir("webapp/resources/modules/page-1.11.6")
     dependsOn('minifyPage')
 }
 
 tasks.register("copyToast", Copy) {
     from layout.projectDirectory.file("node_modules/@toast-ui/editor/dist/toastui-editor.css")
-    into layout.buildDirectory.dir("webapp/resources/libs/toast-ui-3.1.3")
+    into layout.buildDirectory.dir("webapp/resources/modules/toast-ui-3.1.3")
     dependsOn('packToast')
 }
 
 tasks.register("copyDexie", Copy) {
     from layout.projectDirectory.file("node_modules/dexie/dist/modern/dexie.min.mjs")
-    into layout.buildDirectory.dir("webapp/resources/libs/dexie-3.2.1")
+    into layout.buildDirectory.dir("webapp/resources/modules/dexie-3.2.1")
     dependsOn('packToast')
 }
 
@@ -100,19 +100,19 @@ war {
     }
 
     from('build/page.min.mjs') {
-        into('resources/libs/page-1.11.6')
+        into('resources/modules/page-1.11.6')
     }
 
     from('node_modules/dexie/dist/modern/dexie.min.mjs') {
-        into('resources/libs/dexie-3.2.1')
+        into('resources/modules/dexie-3.2.1')
     }
 
     from('build/toastui-all.min.mjs') {
-        into('resources/libs/toast-ui-3.1.3')
+        into('resources/modules/toast-ui-3.1.3')
     }
 
     from('node_modules/@toast-ui/editor/dist/toastui-editor.css') {
-        into('resources/libs/toast-ui-3.1.3')
+        into('resources/css/toast-ui-3.1.3')
     }
 
     from('build/worker.js') {

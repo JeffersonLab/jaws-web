@@ -1,6 +1,6 @@
-import db from './db.js';
-import ui from './ui.js';
-import remote from './remote.js';
+import db from './db.mjs';
+import ui from './ui.mjs';
+import remote from './remote.mjs';
 
 ui.start();
 remote.start();

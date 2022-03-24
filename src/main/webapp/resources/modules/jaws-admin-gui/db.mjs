@@ -1,5 +1,5 @@
-import Dexie from '../libs/dexie-3.2.1/dexie.min.mjs';
-import {AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition} from "./entities.js";
+import Dexie from '../dexie-3.2.1/dexie.min.mjs';
+import {AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition} from "./entities.mjs";
 
 const db = new Dexie("jaws");
 
