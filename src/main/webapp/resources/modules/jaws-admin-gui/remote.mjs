@@ -1,5 +1,6 @@
 const meta = document.querySelector('meta');
 const contextPath = meta && meta.dataset.contextPath || '';
+const appVersion = meta && meta.dataset.appVersion || '';
 
 class Remote extends EventTarget {
     start() {
@@ -78,9 +79,9 @@ function supportsWorkerType() {
 let worker;
 
 if( supportsWorkerType() ) {
-    worker = new Worker(contextPath + '/worker.mjs', {"type": "module"});
+    worker = new Worker(contextPath + '/worker-' + appVersion + '.mjs', {"type": "module"});
 } else {
-    worker = new Worker(contextPath + '/worker.js');
+    worker = new Worker(contextPath + '/worker-' + appVersion + '.js');
 }
 
 worker.onmessage = function(e) {

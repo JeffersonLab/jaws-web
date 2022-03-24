@@ -87,6 +87,11 @@ tasks.register("copySrc", Copy) {
     from layout.projectDirectory.dir("src/main/webapp")
     include "**/*js"
     into layout.buildDirectory.dir("webapp")
+    filesMatching('worker.mjs') {
+        filter {
+            String line -> line.replaceAll("-@VERSION@", "")
+        }
+    }
 }
 
 war {
@@ -94,6 +99,12 @@ war {
 
     archiveFileName =  'jaws-admin-gui.war'
     filesMatching('WEB-INF/web.xml') {
+        filter {
+            String line -> line.replaceAll("@VERSION@", project.version)
+        }
+    }
+
+    filesMatching('worker.mjs') {
         filter {
             String line -> line.replaceAll("@VERSION@", project.version)
         }

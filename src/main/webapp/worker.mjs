@@ -1,5 +1,5 @@
-import db from './resources/modules/jaws-admin-gui/db.mjs';
-import {AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition} from "./resources/modules/jaws-admin-gui/entities.mjs";
+import db from './resources/modules/jaws-admin-gui-@VERSION@/db.mjs';
+import {AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition} from "./resources/modules/jaws-admin-gui-@VERSION@/entities.mjs";
 
 const urlObject = new URL(self.location);
 const contextPath = '/' + urlObject.pathname.split('/')[1];

@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" data-context-path="${pageContext.request.contextPath}"/>
+    <meta charset="utf-8" data-context-path="${pageContext.request.contextPath}" data-app-version="${initParam['releaseNumber']}"/>
     <title>JAWS Admin GUI</title>
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/img/favicon.ico"/>
     <c:url value="/resources/css/site.css" var="siteCssUrl">
