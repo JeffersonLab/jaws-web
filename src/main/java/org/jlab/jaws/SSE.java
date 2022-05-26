@@ -31,6 +31,29 @@ public class SSE implements ServletContextListener {
     private final ExecutorService exec = Executors.newFixedThreadPool(10);
     private Sse sse;
 
+    private final List<Mixin> CLASS_MIXINS = new ArrayList<>();
+    private final List<Mixin> INSTANCE_MIXINS = new ArrayList<>();
+    private final List<Mixin> LOCATION_MIXINS = new ArrayList<>();
+    private final List<Mixin> REGISTRATION_MIXINS = new ArrayList<>();
+
+    {
+        CLASS_MIXINS.add(new Mixin(AlarmClass.class, AlarmClassMixin.class));
+
+        INSTANCE_MIXINS.add(new Mixin(AlarmInstance.class, AlarmInstanceMixin.class));
+        INSTANCE_MIXINS.add(new Mixin(SimpleProducer.class, SimpleProducerMixin.class));
+        INSTANCE_MIXINS.add(new Mixin(EPICSProducer.class, EPICSProducerMixin.class));
+        INSTANCE_MIXINS.add(new Mixin(CALCProducer.class, CALCProducerMixin.class));
+
+        LOCATION_MIXINS.add(new Mixin(AlarmLocation.class, AlarmLocationMixin.class));
+
+        REGISTRATION_MIXINS.add(new Mixin(EffectiveRegistration.class, EffectiveRegistrationMixin.class));
+        REGISTRATION_MIXINS.add(new Mixin(AlarmInstance.class, AlarmInstanceMixin.class));
+        REGISTRATION_MIXINS.add(new Mixin(SimpleProducer.class, SimpleProducerMixin.class));
+        REGISTRATION_MIXINS.add(new Mixin(EPICSProducer.class, EPICSProducerMixin.class));
+        REGISTRATION_MIXINS.add(new Mixin(CALCProducer.class, CALCProducerMixin.class));
+        REGISTRATION_MIXINS.add(new Mixin(AlarmClass.class, AlarmClassMixin.class));
+    }
+
     @Override
     public void contextDestroyed(ServletContextEvent event) {
         System.err.println("Attempting to stop executor service");
@@ -82,89 +105,11 @@ public class SSE implements ServletContextListener {
                         LocationConsumer locationConsumer = new LocationConsumer(locationProps);
                         EffectiveRegistrationConsumer registrationConsumer = new EffectiveRegistrationConsumer(effectiveProps)
                 ) {
-                    categoryConsumer.addListener(new EventSourceListener<String, String>() {
-                        @Override
-                        public void highWaterOffset(LinkedHashMap<String, EventSourceRecord<String, String>> records) {
-                            sink.send(sse.newEvent("category-highwatermark", ""));
-                        }
-
-                        @Override
-                        public void batch(List<EventSourceRecord<String, String>> records, boolean highWaterReached) {
-                            sendRecords(sink, "category", records, null);
-                        }
-
-                    });
-
-                    classConsumer.addListener(new EventSourceListener<String, AlarmClass>() {
-                        @Override
-                        public void highWaterOffset(LinkedHashMap<String, EventSourceRecord<String, AlarmClass>> records) {
-                            sink.send(sse.newEvent("class-highwatermark", ""));
-                        }
-
-                        @Override
-                        public void batch(List<EventSourceRecord<String, AlarmClass>> records, boolean highWaterReached) {
-                            List<Mixin> mixins = new ArrayList<>();
-                            mixins.add(new Mixin(AlarmClass.class, AlarmClassMixin.class));
-                            sendRecords(sink, "class", records, mixins);
-                        }
-
-                    });
-
-                    instanceConsumer.addListener(new EventSourceListener<String, AlarmInstance>() {
-                        @Override
-                        public void highWaterOffset(LinkedHashMap<String, EventSourceRecord<String, AlarmInstance>> records) {
-                            sink.send(sse.newEvent("instance-highwatermark", ""));
-                        }
-
-                        @Override
-                        public void batch(List<EventSourceRecord<String, AlarmInstance>> records, boolean highWaterReached) {
-                            List<Mixin> mixins = new ArrayList<>();
-                            mixins.add(new Mixin(AlarmInstance.class, AlarmInstanceMixin.class));
-                            mixins.add(new Mixin(SimpleProducer.class, SimpleProducerMixin.class));
-                            mixins.add(new Mixin(EPICSProducer.class, EPICSProducerMixin.class));
-                            mixins.add(new Mixin(CALCProducer.class, CALCProducerMixin.class));
-
-                            sendRecords(sink, "instance", records, mixins);
-                        }
-
-                    });
-
-                    locationConsumer.addListener(new EventSourceListener<String, AlarmLocation>() {
-                        @Override
-                        public void highWaterOffset(LinkedHashMap<String, EventSourceRecord<String, AlarmLocation>> records) {
-                            sink.send(sse.newEvent("location-highwatermark", ""));
-                        }
-
-                        @Override
-                        public void batch(List<EventSourceRecord<String, AlarmLocation>> records, boolean highWaterReached) {
-                            List<Mixin> mixins = new ArrayList<>();
-                            mixins.add(new Mixin(AlarmLocation.class, AlarmLocationMixin.class));
-
-                            sendRecords(sink, "location", records, mixins);
-                        }
-
-                    });
-
-                    registrationConsumer.addListener(new EventSourceListener<String, EffectiveRegistration>() {
-                        @Override
-                        public void highWaterOffset(LinkedHashMap<String, EventSourceRecord<String, EffectiveRegistration>> records) {
-                            sink.send(sse.newEvent("effective-highwatermark", ""));
-                        }
-
-                        @Override
-                        public void batch(List<EventSourceRecord<String, EffectiveRegistration>> records, boolean highWaterReached) {
-                            List<Mixin> mixins = new ArrayList<>();
-                            mixins.add(new Mixin(EffectiveRegistration.class, EffectiveRegistrationMixin.class));
-                            mixins.add(new Mixin(AlarmInstance.class, AlarmInstanceMixin.class));
-                            mixins.add(new Mixin(SimpleProducer.class, SimpleProducerMixin.class));
-                            mixins.add(new Mixin(EPICSProducer.class, EPICSProducerMixin.class));
-                            mixins.add(new Mixin(CALCProducer.class, CALCProducerMixin.class));
-                            mixins.add(new Mixin(AlarmClass.class, AlarmClassMixin.class));
-
-                            sendRecords(sink, "effective", records, mixins);
-                        }
-
-                    });
+                    categoryConsumer.addListener(createListener(sink, "category", null));
+                    classConsumer.addListener(createListener(sink, "class", CLASS_MIXINS));
+                    instanceConsumer.addListener(createListener(sink, "instance", INSTANCE_MIXINS));
+                    locationConsumer.addListener(createListener(sink, "location", LOCATION_MIXINS));
+                    registrationConsumer.addListener(createListener(sink, "effective", REGISTRATION_MIXINS));
 
                     categoryConsumer.start();
                     classConsumer.start();
@@ -187,6 +132,20 @@ public class SSE implements ServletContextListener {
                 // Client disconnected if here
             }
         });
+    }
+
+    private <K, V> EventSourceListener<K, V> createListener(SseEventSink sink, String eventName, List<Mixin> mixins) {
+        return new EventSourceListener<K, V>() {
+            @Override
+            public void highWaterOffset(LinkedHashMap<K, EventSourceRecord<K, V>> records) {
+                sink.send(sse.newEvent(eventName + "-highwatermark", ""));
+            }
+
+            @Override
+            public void batch(List<EventSourceRecord<K, V>> records, boolean highWaterReached) {
+                sendRecords(sink, eventName, records, mixins);
+            }
+        };
     }
 
     private Properties getConsumerProps(long resumeOffset) {
