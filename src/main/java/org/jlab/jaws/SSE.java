@@ -90,7 +90,7 @@ public class SSE implements ServletContextListener {
 
                         @Override
                         public void batch(List<EventSourceRecord<String, String>> records, boolean highWaterReached) {
-                            sendCategoryRecords(sink, records);
+                            sendRecords(sink, "category", records, null);
                         }
 
                     });
@@ -103,7 +103,9 @@ public class SSE implements ServletContextListener {
 
                         @Override
                         public void batch(List<EventSourceRecord<String, AlarmClass>> records, boolean highWaterReached) {
-                            sendClassRecords(sink, records);
+                            List<Mixin> mixins = new ArrayList<>();
+                            mixins.add(new Mixin(AlarmClass.class, AlarmClassMixin.class));
+                            sendRecords(sink, "class", records, mixins);
                         }
 
                     });
@@ -116,7 +118,13 @@ public class SSE implements ServletContextListener {
 
                         @Override
                         public void batch(List<EventSourceRecord<String, AlarmInstance>> records, boolean highWaterReached) {
-                            sendInstanceRecords(sink, records);
+                            List<Mixin> mixins = new ArrayList<>();
+                            mixins.add(new Mixin(AlarmInstance.class, AlarmInstanceMixin.class));
+                            mixins.add(new Mixin(SimpleProducer.class, SimpleProducerMixin.class));
+                            mixins.add(new Mixin(EPICSProducer.class, EPICSProducerMixin.class));
+                            mixins.add(new Mixin(CALCProducer.class, CALCProducerMixin.class));
+
+                            sendRecords(sink, "instance", records, mixins);
                         }
 
                     });
@@ -129,7 +137,10 @@ public class SSE implements ServletContextListener {
 
                         @Override
                         public void batch(List<EventSourceRecord<String, AlarmLocation>> records, boolean highWaterReached) {
-                            sendLocationRecords(sink, records);
+                            List<Mixin> mixins = new ArrayList<>();
+                            mixins.add(new Mixin(AlarmLocation.class, AlarmLocationMixin.class));
+
+                            sendRecords(sink, "location", records, mixins);
                         }
 
                     });
@@ -142,7 +153,15 @@ public class SSE implements ServletContextListener {
 
                         @Override
                         public void batch(List<EventSourceRecord<String, EffectiveRegistration>> records, boolean highWaterReached) {
-                            sendEffectiveRecords(sink, records);
+                            List<Mixin> mixins = new ArrayList<>();
+                            mixins.add(new Mixin(EffectiveRegistration.class, EffectiveRegistrationMixin.class));
+                            mixins.add(new Mixin(AlarmInstance.class, AlarmInstanceMixin.class));
+                            mixins.add(new Mixin(SimpleProducer.class, SimpleProducerMixin.class));
+                            mixins.add(new Mixin(EPICSProducer.class, EPICSProducerMixin.class));
+                            mixins.add(new Mixin(CALCProducer.class, CALCProducerMixin.class));
+                            mixins.add(new Mixin(AlarmClass.class, AlarmClassMixin.class));
+
+                            sendRecords(sink, "effective", records, mixins);
                         }
 
                     });
@@ -189,53 +208,31 @@ public class SSE implements ServletContextListener {
         return props;
     }
 
-    private void sendCategoryRecords(SseEventSink sink, List<EventSourceRecord<String, String>> records) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
+    class Mixin {
+        public Class<?> target;
+        public Class<?> mixinSource;
 
-        ObjectMapper mapper = new ObjectMapper();
-
-        for (EventSourceRecord<String, String> record : records) {
-            String key = record.getKey();
-            String value = record.getValue();
-
-            String jsonValue = null;
-
-            if (value != null) {
-                try {
-                    jsonValue = mapper.writeValueAsString(value);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + ", \"offset\": " + record.getOffset() + "},";
-
-            builder.append(recordString);
+        public Mixin(Class<?> target, Class<?> mixinSource) {
+            this.target = target;
+            this.mixinSource = mixinSource;
         }
-
-        int i = builder.lastIndexOf(",");
-
-        if(i == -1) {
-            builder.append("]");
-        } else {
-            builder.replace(i, i + 1, "]");
-        }
-
-        sink.send(sse.newEvent("category", builder.toString()));
     }
 
-    private void sendClassRecords(SseEventSink sink, List<EventSourceRecord<String, AlarmClass>> records) {
+    private <K, V> void sendRecords(SseEventSink sink, String eventName, List<EventSourceRecord<K, V>> records, List<Mixin> mixins) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 
         ObjectMapper mapper = new ObjectMapper();
 
-        mapper.addMixIn(AlarmClass.class, AlarmClassMixin.class);
+        if(mixins != null) {
+            for(Mixin m: mixins) {
+                mapper.addMixIn(m.target, m.mixinSource);
+            }
+        }
 
-        for (EventSourceRecord<String, AlarmClass> record : records) {
-            String key = record.getKey();
-            AlarmClass value = record.getValue();
+        for (EventSourceRecord<K, V> record : records) {
+            K key = record.getKey();
+            V value = record.getValue();
 
             String jsonValue = null;
 
@@ -260,128 +257,6 @@ public class SSE implements ServletContextListener {
             builder.replace(i, i + 1, "]");
         }
 
-        sink.send(sse.newEvent("class", builder.toString()));
-    }
-
-    private void sendInstanceRecords(SseEventSink sink, List<EventSourceRecord<String, AlarmInstance>> records) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        mapper.addMixIn(AlarmInstance.class, AlarmInstanceMixin.class);
-        mapper.addMixIn(SimpleProducer.class, SimpleProducerMixin.class);
-        mapper.addMixIn(EPICSProducer.class, EPICSProducerMixin.class);
-        mapper.addMixIn(CALCProducer.class, CALCProducerMixin.class);
-
-        for (EventSourceRecord<String, AlarmInstance> record : records) {
-            String key = record.getKey();
-            AlarmInstance value = record.getValue();
-
-            String jsonValue = null;
-
-            if (value != null) {
-                try {
-                    jsonValue = mapper.writeValueAsString(value);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + ", \"offset\": " + record.getOffset() + "},";
-
-            builder.append(recordString);
-        }
-
-        int i = builder.lastIndexOf(",");
-
-        if(i == -1) {
-            builder.append("]");
-        } else {
-            builder.replace(i, i + 1, "]");
-        }
-
-        sink.send(sse.newEvent("instance", builder.toString()));
-    }
-
-    private void sendLocationRecords(SseEventSink sink, List<EventSourceRecord<String, AlarmLocation>> records) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        mapper.addMixIn(AlarmLocation.class, AlarmLocationMixin.class);
-
-        for (EventSourceRecord<String, AlarmLocation> record : records) {
-            String key = record.getKey();
-            AlarmLocation value = record.getValue();
-
-            String jsonValue = null;
-
-            if (value != null) {
-                try {
-                    jsonValue = mapper.writeValueAsString(value);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + ", \"offset\": " + record.getOffset() + "},";
-
-            builder.append(recordString);
-        }
-
-        int i = builder.lastIndexOf(",");
-
-        if(i == -1) {
-            builder.append("]");
-        } else {
-            builder.replace(i, i + 1, "]");
-        }
-
-        sink.send(sse.newEvent("location", builder.toString()));
-    }
-
-    private void sendEffectiveRecords(SseEventSink sink, List<EventSourceRecord<String, EffectiveRegistration>> records) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        mapper.addMixIn(EffectiveRegistration.class, EffectiveRegistrationMixin.class);
-        mapper.addMixIn(AlarmInstance.class, AlarmInstanceMixin.class);
-        mapper.addMixIn(SimpleProducer.class, SimpleProducerMixin.class);
-        mapper.addMixIn(EPICSProducer.class, EPICSProducerMixin.class);
-        mapper.addMixIn(CALCProducer.class, CALCProducerMixin.class);
-        mapper.addMixIn(AlarmClass.class, AlarmClassMixin.class);
-
-        for (EventSourceRecord<String, EffectiveRegistration> record : records) {
-            String key = record.getKey();
-            EffectiveRegistration value = record.getValue();
-
-            String jsonValue = null;
-
-            if (value != null) {
-                try {
-                    jsonValue = mapper.writeValueAsString(value);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + ", \"offset\": " + record.getOffset() + "},";
-
-            builder.append(recordString);
-        }
-
-        int i = builder.lastIndexOf(",");
-
-        if(i == -1) {
-            builder.append("]");
-        } else {
-            builder.replace(i, i + 1, "]");
-        }
-
-        sink.send(sse.newEvent("effective", builder.toString()));
+        sink.send(sse.newEvent(eventName, builder.toString()));
     }
 }
