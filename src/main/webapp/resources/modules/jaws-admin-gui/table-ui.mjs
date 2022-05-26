@@ -1,15 +1,18 @@
+import db from "./db.mjs";
+import ui from "./ui.mjs";
+
 let PAGE_SIZE = 100;
 
 class TableUI extends EventTarget {
-    constructor(panelElement, tableElement, options) {
+    constructor(panelElement, tableElement, options, db) {
         super();
 
         let me = this;
 
         me.panelElement = panelElement;
         me.tableElement = tableElement;
-
         me.options = options || {};
+        me.db = db;
 
         me.rowSelected = function() {
             $(me.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", true);
@@ -24,9 +27,34 @@ class TableUI extends EventTarget {
         me.$nextButton = $(me.panelElement + " .next-button");
         me.$prevButton = $(me.panelElement + " .prev-button");
 
+        $(me.$nextButton).on("click", function() {
+            me.next(db);
+        });
+
+        $(me.$prevButton).on("click", function() {
+            me.previous(db);
+        });
+
         me.options.rowSelected = me.rowSelected;
 
         me.options.rowDeselected = me.rowDeselected;
+
+        me.$searchTextElement = $(me.panelElement + " .search-input");
+        me.$searchForm = $(me.panelElement + " .search-form");
+        me.$searchButton = $(me.panelElement + " .search-button");
+
+        $(me.$searchButton).on("click", function() {
+            me.search();
+        });
+
+        $(me.$searchForm).on("submit", function (event) {
+            event.preventDefault();
+            me.search();
+        });
+
+        $(document).on("click", "#search-class-button", function () {
+            ui.classSearch();
+        });
 
         me.filters = [];
 
@@ -187,6 +215,30 @@ class TableUI extends EventTarget {
 
         me.setData = function(data) {
             me.tabulator.setData(data);
+        }
+
+        me.search = function() {
+            let filterText = me.$searchTextElement.val();
+
+            let filterArray = filterText.split(",");
+
+            me.filters = [];
+
+            for (let filter of filterArray) {
+                if(filter.indexOf('=') > -1) { // exact match equals search
+                    let keyValue = filter.split("=");
+                    me.filters.push(record => record[keyValue[0]] === keyValue[1]);
+                } else if(filter.indexOf('~') > -1) { // case-insensitive contains search
+                    let keyValue = filter.split("~");
+                    me.filters.push(record => {
+                        let haystack = record[keyValue[0]] || "";
+                        let needle = keyValue[1] || "";
+                        return haystack.toLowerCase().includes(needle.toLowerCase());
+                    });
+                }
+            }
+
+            me.refresh(me.db);
         }
     }
 }

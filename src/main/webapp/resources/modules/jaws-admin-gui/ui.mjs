@@ -140,7 +140,7 @@ class UserInterface {
                 ]
             };
 
-        this.categories = new TableUI(panelElement, tableElement, options);
+        this.categories = new TableUI(panelElement, tableElement, options, db.categories);
 
         panelElement = "#classes-panel",
         tableElement = "#classes-table",
@@ -164,7 +164,7 @@ class UserInterface {
                 ]
             };
 
-       this.classes = new TableUI(panelElement, tableElement, options);
+       this.classes = new TableUI(panelElement, tableElement, options, db.classes);
 
         panelElement = "#instances-panel",
             tableElement = "#instances-table",
@@ -188,7 +188,7 @@ class UserInterface {
             ]
         };
 
-        this.instances = new TableUI(panelElement, tableElement, options);
+        this.instances = new TableUI(panelElement, tableElement, options, db.instances);
 
         panelElement = "#locations-panel",
             tableElement = "#locations-table",
@@ -210,10 +210,10 @@ class UserInterface {
                 ]
             };
 
-        this.locations = new TableUI(panelElement, tableElement, options);
+        this.locations = new TableUI(panelElement, tableElement, options, db.locations);
 
-        panelElement = "#effective-panel",
-            tableElement = "#effective-table",
+        panelElement = "#registrations-panel",
+            tableElement = "#registrations-table",
             options = {
                 data: [],
                 headerSort: false,
@@ -236,7 +236,7 @@ class UserInterface {
                 ]
             };
 
-        this.effectives = new TableUI(panelElement, tableElement, options);
+        this.effectives = new TableUI(panelElement, tableElement, options, db.effectives);
 
         // bind this on properties
         const props = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
@@ -297,46 +297,6 @@ class UserInterface {
             autofocus: false,
             el: document.querySelector('#view-class-action')
         });
-    }
-
-    search(filterText, uitab, dbtab) {
-        let filterArray = filterText.split(",");
-
-        uitab.filters = [];
-
-        for (let filter of filterArray) {
-            if(filter.indexOf('=') > -1) { // exact match equals search
-                let keyValue = filter.split("=");
-                uitab.filters.push(record => record[keyValue[0]] === keyValue[1]);
-            } else if(filter.indexOf('~') > -1) { // case-insensitive contains search
-                let keyValue = filter.split("~");
-                uitab.filters.push(record => {
-                    let haystack = record[keyValue[0]] || "";
-                    let needle = keyValue[1] || "";
-                    return haystack.toLowerCase().includes(needle.toLowerCase());
-                });
-            }
-        }
-
-        uitab.refresh(dbtab);
-    }
-
-    classSearch() {
-        let filterText = $("#class-search-input").val();
-
-        ui.search(filterText, ui.classes, db.classes);
-    }
-
-    instanceSearch() {
-        let filterText = $("#registration-search-input").val();
-
-        ui.search(filterText, ui.instances, db.instances);
-    }
-
-    effectiveSearch() {
-        let filterText = $("#effective-search-input").val();
-
-        ui.search(filterText, ui.effectives, db.effectives);
     }
 
     setRegistrationBatch() {
@@ -670,15 +630,6 @@ class UserInterface {
                 });
         });
 
-        $(document).on("submit", "#registered-search-form", function (event) {
-            event.preventDefault();
-            ui.instanceSearch();
-        });
-
-        $(document).on("click", "#search-registration-button", function () {
-            ui.instanceSearch();
-        });
-
         $(document).on("click", "#new-class-button", function () {
 
             document.getElementById("class-form").reset();
@@ -752,49 +703,6 @@ class UserInterface {
                 .catch(error => {
                     console.error('Delete failed: ', error)
                 });
-        });
-
-        $(document).on("click", "#next-class-button", function(){
-            ui.classes.next(db.classes);
-        });
-
-        $(document).on("click", "#next-registration-button", function(){
-            ui.instances.next(db.instances);
-        });
-
-        $(document).on("click", "#next-effective-button", function() {
-            ui.effectives.next(db.effectives);
-        });
-
-        $(document).on("click", "#previous-class-button", function() {
-            ui.classes.previous(db.classes);
-        });
-
-        $(document).on("click", "#previous-registration-button", function() {
-            ui.instances.previous(db.instances);
-        });
-
-        $(document).on("click", "#previous-effective-button", function() {
-            ui.effectives.previous(db.effectives);
-        });
-
-        $(document).on("submit", "#class-search-form", function (event) {
-            event.preventDefault();
-            ui.classSearch();
-        });
-
-        $(document).on("click", "#search-class-button", function () {
-            ui.classSearch();
-        });
-
-
-        $(document).on("click", "#search-effective-button", function () {
-            ui.effectiveSearch();
-        });
-
-        $(document).on("submit", "#effective-search-form", function (event) {
-            event.preventDefault();
-            ui.effectiveSearch();
         });
     }
 }
