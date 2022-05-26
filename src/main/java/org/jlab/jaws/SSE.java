@@ -2,10 +2,10 @@ package org.jlab.jaws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
-import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
+import org.jlab.jaws.clients.*;
 import org.jlab.jaws.entity.*;
-import org.jlab.jaws.eventsource.*;
 import org.jlab.jaws.json.*;
+import org.jlab.kafka.eventsource.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.ServletContextEvent;
@@ -69,90 +69,89 @@ public class SSE implements ServletContextListener {
 
             @Override
             public void run() {
-                final Properties categoryProps = getCategoryProps();
-                final Properties classProps = getClassProps();
-                final Properties instanceProps = getInstanceProps();
-                final Properties locationProps = getLocationProps();
-                final Properties effectiveProps = getEffectiveProps();
+                final Properties categoryProps = getConsumerProps(categoryIndex);
+                final Properties classProps = getConsumerPropsWithRegistry(classIndex);
+                final Properties instanceProps = getConsumerPropsWithRegistry(instanceIndex);
+                final Properties locationProps = getConsumerPropsWithRegistry(locationIndex);
+                final Properties effectiveProps = getConsumerPropsWithRegistry(effectiveIndex);
 
                 try (
-                        EventSourceTable<String, String> categoryTable = new EventSourceTable<>(categoryProps, categoryIndex);
-                        EventSourceTable<String, AlarmClass> classTable = new EventSourceTable<>(classProps, classIndex);
-                        EventSourceTable<String, AlarmInstance> instanceTable = new EventSourceTable<>(instanceProps, instanceIndex);
-                        EventSourceTable<String, AlarmLocation> locationTable = new EventSourceTable<>(locationProps, locationIndex);
-                        EventSourceTable<String, EffectiveRegistration> effectiveTable = new EventSourceTable<>(effectiveProps, effectiveIndex)
+                        CategoryConsumer categoryConsumer = new CategoryConsumer(categoryProps);
+                        ClassConsumer classConsumer = new ClassConsumer(classProps);
+                        InstanceConsumer instanceConsumer = new InstanceConsumer(instanceProps);
+                        LocationConsumer locationConsumer = new LocationConsumer(locationProps);
+                        EffectiveRegistrationConsumer registrationConsumer = new EffectiveRegistrationConsumer(effectiveProps)
                 ) {
-
-                    categoryTable.addListener(new EventSourceListener<String, String>() {
+                    categoryConsumer.addListener(new EventSourceListener<String, String>() {
                         @Override
-                        public void highWaterOffset() {
+                        public void highWaterOffset(LinkedHashMap<String, EventSourceRecord<String, String>> records) {
                             sink.send(sse.newEvent("category-highwatermark", ""));
                         }
 
                         @Override
-                        public void batch(LinkedHashMap<String, EventSourceRecord<String, String>> records) {
-                            sendCategoryRecords(sink, records.values());
+                        public void batch(List<EventSourceRecord<String, String>> records, boolean highWaterReached) {
+                            sendCategoryRecords(sink, records);
                         }
 
                     });
 
-                    classTable.addListener(new EventSourceListener<String, AlarmClass>() {
+                    classConsumer.addListener(new EventSourceListener<String, AlarmClass>() {
                         @Override
-                        public void highWaterOffset() {
+                        public void highWaterOffset(LinkedHashMap<String, EventSourceRecord<String, AlarmClass>> records) {
                             sink.send(sse.newEvent("class-highwatermark", ""));
                         }
 
                         @Override
-                        public void batch(LinkedHashMap<String, EventSourceRecord<String, AlarmClass>> records) {
-                            sendClassRecords(sink, records.values());
+                        public void batch(List<EventSourceRecord<String, AlarmClass>> records, boolean highWaterReached) {
+                            sendClassRecords(sink, records);
                         }
 
                     });
 
-                    instanceTable.addListener(new EventSourceListener<String, AlarmInstance>() {
+                    instanceConsumer.addListener(new EventSourceListener<String, AlarmInstance>() {
                         @Override
-                        public void highWaterOffset() {
+                        public void highWaterOffset(LinkedHashMap<String, EventSourceRecord<String, AlarmInstance>> records) {
                             sink.send(sse.newEvent("instance-highwatermark", ""));
                         }
 
                         @Override
-                        public void batch(LinkedHashMap<String, EventSourceRecord<String, AlarmInstance>> records) {
-                            sendInstanceRecords(sink, records.values());
+                        public void batch(List<EventSourceRecord<String, AlarmInstance>> records, boolean highWaterReached) {
+                            sendInstanceRecords(sink, records);
                         }
 
                     });
 
-                    locationTable.addListener(new EventSourceListener<String, AlarmLocation>() {
+                    locationConsumer.addListener(new EventSourceListener<String, AlarmLocation>() {
                         @Override
-                        public void highWaterOffset() {
+                        public void highWaterOffset(LinkedHashMap<String, EventSourceRecord<String, AlarmLocation>> records) {
                             sink.send(sse.newEvent("location-highwatermark", ""));
                         }
 
                         @Override
-                        public void batch(LinkedHashMap<String, EventSourceRecord<String, AlarmLocation>> records) {
-                            sendLocationRecords(sink, records.values());
+                        public void batch(List<EventSourceRecord<String, AlarmLocation>> records, boolean highWaterReached) {
+                            sendLocationRecords(sink, records);
                         }
 
                     });
 
-                    effectiveTable.addListener(new EventSourceListener<String, EffectiveRegistration>() {
+                    registrationConsumer.addListener(new EventSourceListener<String, EffectiveRegistration>() {
                         @Override
-                        public void highWaterOffset() {
+                        public void highWaterOffset(LinkedHashMap<String, EventSourceRecord<String, EffectiveRegistration>> records) {
                             sink.send(sse.newEvent("effective-highwatermark", ""));
                         }
 
                         @Override
-                        public void batch(LinkedHashMap<String, EventSourceRecord<String, EffectiveRegistration>> records) {
-                            sendEffectiveRecords(sink, records.values());
+                        public void batch(List<EventSourceRecord<String, EffectiveRegistration>> records, boolean highWaterReached) {
+                            sendEffectiveRecords(sink, records);
                         }
 
                     });
 
-                    categoryTable.start();
-                    classTable.start();
-                    instanceTable.start();
-                    locationTable.start();
-                    effectiveTable.start();
+                    categoryConsumer.start();
+                    classConsumer.start();
+                    instanceConsumer.start();
+                    locationConsumer.start();
+                    registrationConsumer.start();
 
 
                     try {
@@ -171,91 +170,26 @@ public class SSE implements ServletContextListener {
         });
     }
 
-    private Properties getCategoryProps() {
+    private Properties getConsumerProps(long resumeOffset) {
         final Properties props = new Properties();
 
         props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
-        props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.CATEGORIES_TOPIC);
         props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, JaxRSApp.BOOTSTRAP_SERVERS);
-        props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put(EventSourceConfig.EVENT_SOURCE_RESUME_OFFSET, resumeOffset);
+        props.put(EventSourceConfig.EVENT_SOURCE_COMPACTED_CACHE, false);
 
         return props;
     }
 
-    private Properties getLocationProps() {
-        final Properties props = new Properties();
+    private Properties getConsumerPropsWithRegistry(long resumeOffset) {
+        final Properties props = getConsumerProps(resumeOffset);
 
-        final SpecificAvroSerde<AlarmLocation> VALUE_SERDE = new SpecificAvroSerde<>();
-
-        props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
-        props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.LOCATIONS_TOPIC);
-        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, JaxRSApp.BOOTSTRAP_SERVERS);
-        props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
-
-        // Deserializer specific configs
         props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, JaxRSApp.SCHEMA_REGISTRY);
-        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
 
         return props;
     }
 
-    private Properties getClassProps() {
-        final Properties props = new Properties();
-
-        final SpecificAvroSerde<AlarmClass> VALUE_SERDE = new SpecificAvroSerde<>();
-
-        props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
-        props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.CLASSES_TOPIC);
-        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, JaxRSApp.BOOTSTRAP_SERVERS);
-        props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
-
-        // Deserializer specific configs
-        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, JaxRSApp.SCHEMA_REGISTRY);
-        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
-
-        return props;
-    }
-
-    private Properties getInstanceProps() {
-        final Properties props = new Properties();
-
-        final SpecificAvroSerde<AlarmInstance> VALUE_SERDE = new SpecificAvroSerde<>();
-
-        props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
-        props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.INSTANCES_TOPIC);
-        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, JaxRSApp.BOOTSTRAP_SERVERS);
-        props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
-
-        // Deserializer specific configs
-        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, JaxRSApp.SCHEMA_REGISTRY);
-        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
-
-        return props;
-    }
-
-    private Properties getEffectiveProps() {
-        final Properties props = new Properties();
-
-        final SpecificAvroSerde<EffectiveRegistration> VALUE_SERDE = new SpecificAvroSerde<>();
-
-        props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
-        props.put(EventSourceConfig.EVENT_SOURCE_TOPIC, JaxRSApp.EFFECTIVE_TOPIC);
-        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, JaxRSApp.BOOTSTRAP_SERVERS);
-        props.put(EventSourceConfig.EVENT_SOURCE_KEY_DESERIALIZER, "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put(EventSourceConfig.EVENT_SOURCE_VALUE_DESERIALIZER, VALUE_SERDE.deserializer().getClass().getName());
-
-        // Deserializer specific configs
-        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, JaxRSApp.SCHEMA_REGISTRY);
-        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
-
-        return props;
-    }
-
-    private void sendCategoryRecords(SseEventSink sink, Collection<EventSourceRecord<String, String>> records) {
+    private void sendCategoryRecords(SseEventSink sink, List<EventSourceRecord<String, String>> records) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 
@@ -291,7 +225,7 @@ public class SSE implements ServletContextListener {
         sink.send(sse.newEvent("category", builder.toString()));
     }
 
-    private void sendClassRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmClass>> records) {
+    private void sendClassRecords(SseEventSink sink, List<EventSourceRecord<String, AlarmClass>> records) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 
@@ -329,7 +263,7 @@ public class SSE implements ServletContextListener {
         sink.send(sse.newEvent("class", builder.toString()));
     }
 
-    private void sendInstanceRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmInstance>> records) {
+    private void sendInstanceRecords(SseEventSink sink, List<EventSourceRecord<String, AlarmInstance>> records) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 
@@ -370,7 +304,7 @@ public class SSE implements ServletContextListener {
         sink.send(sse.newEvent("instance", builder.toString()));
     }
 
-    private void sendLocationRecords(SseEventSink sink, Collection<EventSourceRecord<String, AlarmLocation>> records) {
+    private void sendLocationRecords(SseEventSink sink, List<EventSourceRecord<String, AlarmLocation>> records) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 
@@ -408,7 +342,7 @@ public class SSE implements ServletContextListener {
         sink.send(sse.newEvent("location", builder.toString()));
     }
 
-    private void sendEffectiveRecords(SseEventSink sink, Collection<EventSourceRecord<String, EffectiveRegistration>> records) {
+    private void sendEffectiveRecords(SseEventSink sink, List<EventSourceRecord<String, EffectiveRegistration>> records) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 

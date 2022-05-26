@@ -7,6 +7,8 @@ import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.jlab.jaws.clients.ClassProducer;
+import org.jlab.jaws.clients.InstanceProducer;
 import org.jlab.jaws.entity.*;
 
 import javax.validation.constraints.NotNull;
@@ -17,6 +19,22 @@ import java.util.Properties;
 
 @Path("/rest")
 public class REST {
+
+    private Properties getProducerProps() {
+        final Properties props = new Properties();
+
+        props.put("bootstrap.servers", JaxRSApp.BOOTSTRAP_SERVERS);
+
+        return props;
+    }
+
+    private Properties getProducerPropsWithRegistry() {
+        final Properties props = getProducerProps();
+
+        props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, JaxRSApp.SCHEMA_REGISTRY);
+
+        return props;
+    }
 
     @GET
     @Path("priorities")
@@ -29,29 +47,29 @@ public class REST {
     @DELETE
     @Path("/instance")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public void deleteRegistration(
+    public void deleteInstance(
         @FormParam("name") @NotNull(message = "alarm name is required") String name) {
         System.err.println("Deleting registration: " + name);
 
         String key = name;
 
-        Properties props = getInstanceProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
+        Properties props = getProducerPropsWithRegistry();
 
-        try(KafkaProducer<String, AlarmInstance> p = new KafkaProducer<>(props)) {
-            p.send(new ProducerRecord<>(JaxRSApp.INSTANCES_TOPIC, key, null));
+        try(InstanceProducer p = new InstanceProducer(props)) {
+            p.send(key, null);
         }
     }
 
     @PUT
     @Path("/instance")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public void putInstance(            @FormParam("name") @NotNull(message = "alarm name is required") String name,
-                                            @FormParam("class") @NotNull(message = "class is required") String clazz,
-                                            @FormParam("expression") String expression,
-                                            @FormParam("location") List<String> location,
-                                            @FormParam("maskedby") String maskedby,
-                                            @FormParam("screencommand") String screencommand,
-                                            @FormParam("epicspv") String epicspv)
+    public void putInstance(@FormParam("name") @NotNull(message = "alarm name is required") String name,
+                            @FormParam("class") @NotNull(message = "class is required") String clazz,
+                            @FormParam("expression") String expression,
+                            @FormParam("location") List<String> location,
+                            @FormParam("maskedby") String maskedby,
+                            @FormParam("screencommand") String screencommand,
+                            @FormParam("epicspv") String epicspv)
     {
         System.out.println("PUT received: " + name);
 
@@ -74,27 +92,11 @@ public class REST {
         value.setMaskedby(maskedby);
         value.setScreencommand(screencommand);
 
-        Properties props = getInstanceProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
+        Properties props = getProducerPropsWithRegistry();
 
-        try(KafkaProducer<String, AlarmInstance> p = new KafkaProducer<>(props)) {
-            p.send(new ProducerRecord<>(JaxRSApp.INSTANCES_TOPIC, key, value));
+        try(InstanceProducer p = new InstanceProducer(props)) {
+            p.send(key, value);
         }
-    }
-
-
-    private Properties getInstanceProps(String servers, String registry) {
-        final Properties props = new Properties();
-
-        final SpecificAvroSerde<AlarmInstance> VALUE_SERDE = new SpecificAvroSerde<>();
-
-        props.put("bootstrap.servers", servers);
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", VALUE_SERDE.serializer().getClass().getName());
-
-        // Serializer specific configs
-        props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, registry);
-
-        return props;
     }
 
     @DELETE
@@ -106,10 +108,10 @@ public class REST {
 
         String key = name;
 
-        Properties props = getInstanceProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
+        Properties props = getProducerPropsWithRegistry();
 
-        try(KafkaProducer<String, AlarmClass> p = new KafkaProducer<>(props)) {
-            p.send(new ProducerRecord<>(JaxRSApp.CLASSES_TOPIC, key, null));
+        try(ClassProducer p = new ClassProducer(props)) {
+            p.send(key, null);
         }
     }
 
@@ -150,25 +152,10 @@ public class REST {
         value.setOndelayseconds(ondelayseconds);
         value.setOffdelayseconds(offdelayseconds);
 
-        Properties props = getClassProps(JaxRSApp.BOOTSTRAP_SERVERS, JaxRSApp.SCHEMA_REGISTRY);
+        Properties props = getProducerPropsWithRegistry();
 
-        try(KafkaProducer<String, AlarmClass> producer = new KafkaProducer<>(props)) {
-            producer.send(new ProducerRecord<>(JaxRSApp.CLASSES_TOPIC, key, value));
+        try(ClassProducer producer = new ClassProducer(props)) {
+            producer.send(key, value);
         }
-    }
-
-    private Properties getClassProps(String servers, String registry) {
-        final Properties props = new Properties();
-
-        final SpecificAvroSerde<AlarmClass> VALUE_SERDE = new SpecificAvroSerde<>();
-
-        props.put("bootstrap.servers", servers);
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", VALUE_SERDE.serializer().getClass().getName());
-
-        // Serializer specific configs
-        props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, registry);
-
-        return props;
     }
 }
