@@ -76,47 +76,46 @@ public class SSE implements ServletContextListener {
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void listen(@Context final SseEventSink sink,
-                       @QueryParam("categoryIndex") @DefaultValue("-1") long categoryIndex,
+                       @QueryParam("registrationIndex") @DefaultValue("-1") long registrationIndex,
                        @QueryParam("classIndex") @DefaultValue("-1") long classIndex,
                        @QueryParam("instanceIndex") @DefaultValue("-1") long instanceIndex,
                        @QueryParam("locationIndex") @DefaultValue("-1") long locationIndex,
-                       @QueryParam("effectiveIndex") @DefaultValue("-1") long effectiveIndex) {
+                       @QueryParam("categoryIndex") @DefaultValue("-1") long categoryIndex) {
         System.err.println("Proxy connected: " +
-                "categoryIndex: " + categoryIndex +
+                "registrationIndex: " + registrationIndex +
                 ", classIndex: " + classIndex +
                 ", instanceIndex: " + instanceIndex +
                 ", locationIndex: " + locationIndex +
-                ", effectiveIndex: " + effectiveIndex);
+                ", categoryIndex: " + categoryIndex);
 
         exec.execute(new Runnable() {
 
             @Override
             public void run() {
-                final Properties categoryProps = getConsumerProps(categoryIndex);
+                final Properties registrationProps = getConsumerPropsWithRegistry(registrationIndex);
                 final Properties classProps = getConsumerPropsWithRegistry(classIndex);
                 final Properties instanceProps = getConsumerPropsWithRegistry(instanceIndex);
                 final Properties locationProps = getConsumerPropsWithRegistry(locationIndex);
-                final Properties effectiveProps = getConsumerPropsWithRegistry(effectiveIndex);
+                final Properties categoryProps = getConsumerProps(categoryIndex);
 
                 try (
                         CategoryConsumer categoryConsumer = new CategoryConsumer(categoryProps);
                         ClassConsumer classConsumer = new ClassConsumer(classProps);
                         InstanceConsumer instanceConsumer = new InstanceConsumer(instanceProps);
                         LocationConsumer locationConsumer = new LocationConsumer(locationProps);
-                        EffectiveRegistrationConsumer registrationConsumer = new EffectiveRegistrationConsumer(effectiveProps)
+                        EffectiveRegistrationConsumer registrationConsumer = new EffectiveRegistrationConsumer(registrationProps)
                 ) {
                     categoryConsumer.addListener(createListener(sink, "category", null));
                     classConsumer.addListener(createListener(sink, "class", CLASS_MIXINS));
                     instanceConsumer.addListener(createListener(sink, "instance", INSTANCE_MIXINS));
                     locationConsumer.addListener(createListener(sink, "location", LOCATION_MIXINS));
-                    registrationConsumer.addListener(createListener(sink, "effective", REGISTRATION_MIXINS));
+                    registrationConsumer.addListener(createListener(sink, "registration", REGISTRATION_MIXINS));
 
                     categoryConsumer.start();
                     classConsumer.start();
                     instanceConsumer.start();
                     locationConsumer.start();
                     registrationConsumer.start();
-
 
                     try {
                         while (!sink.isClosed()) {

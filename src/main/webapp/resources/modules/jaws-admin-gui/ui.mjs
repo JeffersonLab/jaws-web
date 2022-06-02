@@ -1,6 +1,6 @@
 import remote from './remote.mjs';
 import db from './db.mjs';
-import TableUI from './table-ui.mjs';
+import PanelUI from './panel-ui.mjs';
 import page from '../page-1.11.6/page.min.mjs';
 import Editor from '../toast-ui-3.1.3/toastui-all.min.mjs';
 
@@ -16,7 +16,7 @@ class UserInterface {
             registration: async function(ctx, next) {
                 $("#tabs").tabs({ active: 0 });
 
-                let data = await db.effectives.get(ctx.params.name);
+                let data = await db.registrations.get(ctx.params.name);
 
                 $("#view-effective-name").text(data.name);
                 $("#view-effective-class").text(data.class || 'None');
@@ -35,7 +35,7 @@ class UserInterface {
                 ui.effectiverationaleviewer.setMarkdown(data.rationale || 'None');
                 ui.effectivecorrectiveactionviewer.setMarkdown(data.correctiveaction || 'None');
 
-                $("#view-effective-dialog").dialog("open");
+                $("#registrations-view-dialog").dialog("open");
             },
             class: async function(ctx, next) {
                 $("#tabs").tabs({ active: 1 });
@@ -54,7 +54,7 @@ class UserInterface {
                 ui.classrationaleviewer.setMarkdown(data.rationale || 'None');
                 ui.classcorrectiveactionviewer.setMarkdown(data.correctiveaction || 'None');
 
-                $("#view-class-dialog").dialog("open");
+                $("#classes-view-dialog").dialog("open");
             },
             instance: async function(ctx, next) {
                 $("#tabs").tabs({ active: 2 });
@@ -68,7 +68,7 @@ class UserInterface {
                 $("#view-registration-masked-by").text(data.maskedby || 'None');
                 $("#view-registration-screen-command").text(data.screencommand || 'None');
 
-                $("#view-instance-dialog").dialog("open");
+                $("#instances-view-dialog").dialog("open");
             },
             location: async function(ctx, next) {
                 $("#tabs").tabs({ active: 3 });
@@ -78,7 +78,7 @@ class UserInterface {
                 $("#view-location-name").text(data.name);
                 $("#view-location-parent").text(data.parent || 'None');
 
-                $("#view-location-dialog").dialog("open");
+                $("#locations-view-dialog").dialog("open");
             },
             category: async function(ctx, next) {
                 $("#tabs").tabs({ active: 4 });
@@ -87,7 +87,7 @@ class UserInterface {
 
                 $("#view-category-name").text(data.name);
 
-                $("#view-category-dialog").dialog("open");
+                $("#categories-view-dialog").dialog("open");
             },
             registrations: function() {
                 $("#tabs").tabs({ active: 0 });
@@ -121,122 +121,11 @@ class UserInterface {
         page('/locations/:name', this.tabs.location);
         page();
 
-        let panelElement = "#categories-panel",
-            tableElement = "#categories-table",
-            options = {
-                data: [],
-                headerSort: false,
-                reactiveData: false,
-                height: "100%", // enables the Virtual DOM
-                layout: "fitColumns",
-                responsiveLayout: "collapse",
-                index: "name",
-                selectable: 1,
-                initialSort: [
-                    {column: "name", dir: "asc"}
-                ],
-                columns: [
-                    {title: "name", field: "name"}
-                ]
-            };
-
-        this.categories = new TableUI(panelElement, tableElement, options, db.categories);
-
-        panelElement = "#classes-panel",
-        tableElement = "#classes-table",
-        options = {
-                data: [],
-                headerSort: false,
-                reactiveData: false,
-                height: "100%", // enables the Virtual DOM
-                layout: "fitColumns",
-                responsiveLayout: "collapse",
-                index: "name",
-                selectable: 1,
-                initialSort: [
-                    {column: "name", dir: "asc"}
-                ],
-                columns: [
-                    {title: "name", field: "name"},
-                    {title: "category", field: "category"},
-                    {title: "priority", field: "priority"},
-                    {title: "contact", field: "pointofcontactusername"}
-                ]
-            };
-
-       this.classes = new TableUI(panelElement, tableElement, options, db.classes);
-
-        panelElement = "#instances-panel",
-            tableElement = "#instances-table",
-            options = {
-            data: [],
-            headerSort: false,
-            reactiveData: false,
-            height: "100%", // enables the Virtual DOM
-            layout: "fitColumns",
-            responsiveLayout: "collapse",
-            index: "name",
-            selectable: 1,
-            initialSort: [
-                {column: "name", dir: "asc"}
-            ],
-            columns: [
-                {title: "name", field: "name"},
-                {title: "class", field: "class"},
-                {title: "location", field: "location"},
-                {title: "epicspv", field: "epicspv"}
-            ]
-        };
-
-        this.instances = new TableUI(panelElement, tableElement, options, db.instances);
-
-        panelElement = "#locations-panel",
-            tableElement = "#locations-table",
-            options = {
-                data: [],
-                headerSort: false,
-                reactiveData: false,
-                height: "100%", // enables the Virtual DOM
-                layout: "fitColumns",
-                responsiveLayout: "collapse",
-                index: "name",
-                selectable: 1,
-                initialSort: [
-                    {column: "name", dir: "asc"}
-                ],
-                columns: [
-                    {title: "name", field: "name"},
-                    {title: "parent", field: "parent"}
-                ]
-            };
-
-        this.locations = new TableUI(panelElement, tableElement, options, db.locations);
-
-        panelElement = "#registrations-panel",
-            tableElement = "#registrations-table",
-            options = {
-                data: [],
-                headerSort: false,
-                reactiveData: false,
-                height: "100%", // enables the Virtual DOM
-                layout: "fitColumns",
-                responsiveLayout: "collapse",
-                index: "name",
-                selectable: 1,
-                initialSort: [
-                    {column: "name", dir: "asc"}
-                ],
-                columns: [
-                    {title: "name", field: "name"},
-                    {title: "category", field: "category"},
-                    {title: "class", field: "class"},
-                    {title: "location", field: "location"},
-                    {title: "priority", field: "priority"},
-                    {title: "contact", field: "pointofcontactusername"}
-                ]
-            };
-
-        this.effectives = new TableUI(panelElement, tableElement, options, db.effectives);
+        this.registrations = new PanelUI("#registrations", db.registrations, '/registrations');
+        this.classes = new PanelUI("#classes", db.classes, '/classes');
+        this.instances = new PanelUI("#instances", db.instances, '/instances');
+        this.locations = new PanelUI("#locations", db.locations, '/locations');
+        this.categories = new PanelUI("#categories", db.categories, '/categories');
 
         // bind this on properties
         const props = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
@@ -260,7 +149,7 @@ class UserInterface {
             autofocus: false
         };
 
-
+/*
         let classcorrectiveactionOptions = JSON.parse(JSON.stringify(correctiveactionOptions));
         classcorrectiveactionOptions.el = document.querySelector("#class-correctiveaction-editor");
 
@@ -296,7 +185,7 @@ class UserInterface {
             usageStatistics: false,
             autofocus: false,
             el: document.querySelector('#view-class-action')
-        });
+        });*/
     }
 
     setRegistrationBatch() {
@@ -533,32 +422,6 @@ class UserInterface {
                 }
             });
 
-            let viewInstanceDialog = $("#view-instance-dialog").dialog({
-                autoOpen: false,
-                height: 550,
-                width: 750,
-                modal: true,
-                buttons: {
-                    OK: function () {
-                        viewInstanceDialog.dialog("close");
-                        page('/instances');
-                    }
-                }
-            });
-
-            let viewEffectiveDialog = $("#view-effective-dialog").dialog({
-                autoOpen: false,
-                height: 550,
-                width: 750,
-                modal: true,
-                buttons: {
-                    OK: function () {
-                        viewEffectiveDialog.dialog("close");
-                        page('/registrations');
-                    }
-                }
-            });
-
             let classDialog = $("#class-dialog").dialog({
                 autoOpen: false,
                 height: 550,
@@ -577,9 +440,9 @@ class UserInterface {
                 ui.setClass();
             });
 
-            ui.initPriorities();
-            ui.initLocations();
-            ui.initCategories();
+            //ui.initPriorities();
+            //ui.initLocations();
+            //ui.initCategories();
         });
 
         $(document).on("click", "#batch-edit-button", function(){
@@ -636,27 +499,6 @@ class UserInterface {
 
             $("#class-dialog").dialog("option", "title", "New Class")
             $("#class-dialog").dialog("open");
-        });
-
-        $(document).on("click", "#view-class-button", function() {
-            let selectedData = ui.classes.tabulator.getSelectedData(),
-                data = selectedData[0];
-
-            page('/classes/' + data.name);
-        });
-
-        $(document).on("click", "#view-registration-button", function() {
-            let selectedData = ui.instances.tabulator.getSelectedData(),
-                data = selectedData[0];
-
-            page('/instances/' + data.name);
-        });
-
-        $(document).on("click", "#view-effective-button", function() {
-            let selectedData = ui.effectives.tabulator.getSelectedData(),
-                data = selectedData[0];
-
-            page('/registrations/' + data.name);
         });
 
         $(document).on("click", "#edit-class-button", function () {

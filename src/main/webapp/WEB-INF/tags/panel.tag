@@ -24,9 +24,7 @@
         <span>Records: </span><span class="record-count"></span>
     </div>
     <div class="table-wrap">
-        <div id="${id}-table"></div>
+        <t:table id="${id}" fields="${fields}"/>
     </div>
-    <t:table id="${id}" fields="${fields}"/>
     <t:view-dialog id="${id}" title="${title}" fields="${fields}"/>
-    <jsp:doBody/>
 </div>

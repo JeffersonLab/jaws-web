@@ -1,18 +1,19 @@
-import db from "./db.mjs";
+import page from '../page-1.11.6/page.min.mjs';
 import ui from "./ui.mjs";
 
 let PAGE_SIZE = 100;
 
-class TableUI extends EventTarget {
-    constructor(panelElement, tableElement, options, db) {
+class PanelUI extends EventTarget {
+    constructor(id, store, path) {
         super();
 
         let me = this;
 
-        me.panelElement = panelElement;
-        me.tableElement = tableElement;
-        me.options = options || {};
-        me.db = db;
+        me.panelElement = id + "-panel";
+        me.tableElement = id + "-table";
+        me.viewDialogElement = id + "-view-dialog";
+        me.store = store;
+        me.path = path;
 
         me.rowSelected = function() {
             $(me.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", true);
@@ -24,8 +25,8 @@ class TableUI extends EventTarget {
             $(me.panelElement + " .toolbar .selected-row-action").button("option", "disabled", true);
         }
 
-        $(me.tableElement + "2").on("click", "tbody tr", function () {
-            let $previouslySelected = $(me.tableElement + "2" + " .selected-row"),
+        $(me.tableElement).on("click", "tbody tr", function () {
+            let $previouslySelected = $(me.tableElement + " .selected-row"),
                 deselect = $(this).hasClass("selected-row");
 
             $previouslySelected.removeClass("selected-row");
@@ -36,24 +37,41 @@ class TableUI extends EventTarget {
                 $(this).addClass("selected-row");
                 me.rowSelected();
             }
+        });
 
+        $(me.panelElement).on("click", ".view-button", function() {
+            let key = $(me.tableElement + " .selected-row td:first").text();
 
+            page(me.path + "/" + key);
+        });
+
+        let closeDialog = function() {
+            me.$viewDialog.dialog("close");
+            page(me.path);
+            me.deselectRow();
+        }
+
+        me.$viewDialog = $(me.viewDialogElement).dialog({
+            autoOpen: false,
+            height: 550,
+            width: 750,
+            modal: true,
+            close: closeDialog,
+            buttons: {
+                OK: closeDialog
+            }
         });
 
         me.$nextButton = $(me.panelElement + " .next-button");
         me.$prevButton = $(me.panelElement + " .prev-button");
 
         $(me.$nextButton).on("click", function() {
-            me.next(db);
+            me.next(store);
         });
 
         $(me.$prevButton).on("click", function() {
-            me.previous(db);
+            me.previous(store);
         });
-
-        me.options.rowSelected = me.rowSelected;
-
-        me.options.rowDeselected = me.rowDeselected;
 
         me.$searchTextElement = $(me.panelElement + " .search-input");
         me.$searchForm = $(me.panelElement + " .search-form");
@@ -74,10 +92,8 @@ class TableUI extends EventTarget {
 
         me.filters = [];
 
-        me.tabulator = new Tabulator(me.tableElement, me.options);
-
         me.deselectRow = function() {
-            me.tabulator.deselectRow();
+            $(me.tableElement + " .selected-row").removeClass("selected-row");
             me.rowDeselected();
         }
 
@@ -229,13 +245,12 @@ class TableUI extends EventTarget {
 
         me.setData = function(data) {
             me.data = data;
-            me.tabulator.setData(data);
             me.updateTableData(data);
         }
 
         me.updateTableData = function(data) {
-            let $th = $(me.tableElement + "2" + " thead th"),
-                $tbody = $(me.tableElement + "2" + " tbody"),
+            let $th = $(me.tableElement + " thead th"),
+                $tbody = $(me.tableElement + " tbody"),
                 columns = [...$th].map(th => $(th).text());
 
             $tbody.empty();
@@ -276,9 +291,9 @@ class TableUI extends EventTarget {
                 }
             }
 
-            me.refresh(me.db);
+            me.refresh(me.store);
         }
     }
 }
 
-export default TableUI
+export default PanelUI

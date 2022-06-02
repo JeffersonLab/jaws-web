@@ -5,21 +5,21 @@ const urlObject = new URL(self.location);
 const contextPath = '/' + urlObject.pathname.split('/')[1];
 
 async function init() {
-    const [categoryPos, classPos, instancePos, locationPos, effectivePos] = await db.positions.bulkGet(["category", "class", "instance", "location", "effective"]);
+    const [categoryPos, classPos, instancePos, locationPos, registrationPos] = await db.positions.bulkGet(["category", "class", "instance", "location", "registration"]);
 
     let categoryIndex = categoryPos === undefined ? -1 : categoryPos.position + 1;
     let classIndex = classPos === undefined ? -1 : classPos.position + 1;
     let instanceIndex = instancePos === undefined ? -1 : instancePos.position + 1;
     let locationIndex = locationPos === undefined ? -1 : locationPos.position + 1;
-    let effectiveIndex = effectivePos === undefined ? -1 : effectivePos.position + 1;
+    let registrationIndex = registrationPos === undefined ? -1 : registrationPos.position + 1;
 
-    //console.log('classIndex: ', classIndex, ', instanceIndex: ', instanceIndex, ', effectiveIndex: ', effectiveIndex);
+    //console.log('classIndex: ', classIndex, ', instanceIndex: ', instanceIndex, ', registrationIndex: ', registrationIndex);
 
     const evtSource = new EventSource(contextPath + '/proxy/sse?categoryIndex=' + categoryIndex +
         '&classIndex=' + classIndex +
         '&instanceIndex=' + instanceIndex +
         '&locationIndex=' + locationIndex +
-        '&effectiveIndex=' + effectiveIndex);
+        '&registrationIndex=' + registrationIndex);
 
     evtSource.addEventListener("category", async (e) => {
         let records = JSON.parse(e.data);
@@ -178,8 +178,10 @@ async function init() {
         postMessage("location");
     });
 
-    evtSource.addEventListener("effective", async (e) => {
+    evtSource.addEventListener("registration", async (e) => {
         let records = JSON.parse(e.data);
+
+        console.log('got registration message', records);
 
         let remove = [];
         let updateOrAdd = [];
@@ -212,20 +214,20 @@ async function init() {
         }
 
         if(remove.length > 0) {
-            await db.effectives.bulkDelete(remove);
+            await db.registrations.bulkDelete(remove);
         }
 
         if(updateOrAdd.length > 0) {
-            await db.effectives.bulkPut(updateOrAdd);
+            await db.registrations.bulkPut(updateOrAdd);
         }
 
         if(records.length > 0) {
             let resumeIndex = records[records.length - 1].offset;
-            await db.positions.put(new KafkaLogPosition('effective', resumeIndex));
-            //console.log('Saved effective resume index: ', resumeIndex);
+            await db.positions.put(new KafkaLogPosition('registration', resumeIndex));
+            //console.log('Saved registration resume index: ', resumeIndex);
         }
 
-        postMessage("effective");
+        postMessage("registration");
     });
 
     evtSource.addEventListener("category-highwatermark", function (e) {
@@ -244,8 +246,8 @@ async function init() {
         postMessage("location-highwatermark");
     });
 
-    evtSource.addEventListener("effective-highwatermark", function (e) {
-        postMessage("effective-highwatermark");
+    evtSource.addEventListener("registration-highwatermark", function (e) {
+        postMessage("registration-highwatermark");
     });
 }
 

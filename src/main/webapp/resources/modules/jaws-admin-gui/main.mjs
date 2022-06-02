@@ -6,19 +6,19 @@ ui.start();
 remote.start();
 
 let classHighOffsetReached = false,
-    effectiveHighOffsetReached = false,
+    registrationHighOffsetReached = false,
     instanceHighOffsetReached = false,
     locationHighOffsetReached = false,
     categoryHighOffsetReached = false;
 
-remote.addEventListener("category-highwatermark", async () => {
-    await ui.categories.refresh(db.categories);
-    categoryHighOffsetReached = true;
+remote.addEventListener("registration-highwatermark", async () => {
+    await ui.registrations.refresh(db.registrations);
+    registrationHighOffsetReached = true;
 });
 
-remote.addEventListener("category", async () => {
-    if(categoryHighOffsetReached) {
-        await ui.categories.refresh(db.categories);
+remote.addEventListener("registration", async () => {
+    if(registrationHighOffsetReached) {
+        await ui.registrations.refresh(db.registrations);
     }
 });
 
@@ -55,13 +55,13 @@ remote.addEventListener("location", async () => {
     }
 });
 
-remote.addEventListener("effective-highwatermark", async () => {
-    await ui.effectives.refresh(db.effectives);
-    effectiveHighOffsetReached = true;
+remote.addEventListener("category-highwatermark", async () => {
+    await ui.categories.refresh(db.categories);
+    categoryHighOffsetReached = true;
 });
 
-remote.addEventListener("effective", async () => {
-    if(effectiveHighOffsetReached) {
-        await ui.effectives.refresh(db.effectives);
+remote.addEventListener("category", async () => {
+    if(categoryHighOffsetReached) {
+        await ui.categories.refresh(db.categories);
     }
 });

@@ -50,19 +50,19 @@ class CacheDB extends Dexie {
 const db = new CacheDB("jaws", cacheVersion);
 
 db.version(cacheVersion).stores({
-    categories: "name",
+    registrations: "name",
     classes: "name",
-    effectives: "name",
     instances: "name",
     locations: "name",
+    categories: "name",
     positions: "name"
 });
 
-db.categories.mapToClass(AlarmCategory);
+db.registrations.mapToClass(EffectiveRegistration);
 db.classes.mapToClass(AlarmClass);
-db.effectives.mapToClass(EffectiveRegistration);
 db.instances.mapToClass(AlarmInstance);
 db.locations.mapToClass(AlarmLocation);
+db.categories.mapToClass(AlarmCategory);
 db.positions.mapToClass(KafkaLogPosition);
 
 export default db;

@@ -3,11 +3,11 @@
 <%@attribute name="id" required="true" type="java.lang.String"%>
 <%@attribute name="title" required="true" type="java.lang.String"%>
 <%@attribute name="fields" required="true" type="java.util.List"%>
-<div class="dialog" id="${id}-view-dialog2" title="${title}">
+<div class="dialog" id="${id}-view-dialog" title="${title}">
     <dl>
         <c:forEach items="${fields}" var="field">
             <dt><c:out value="${field.name}"/></dt>
-            <dd id="${id}-view"></dd>
+            <dd class="${field.name}-view"></dd>
         </c:forEach>
     </dl>
 </div>
