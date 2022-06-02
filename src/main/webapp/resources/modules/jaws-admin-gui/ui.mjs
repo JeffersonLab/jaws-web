@@ -9,6 +9,14 @@ const contextPath = meta && meta.dataset.contextPath || '';
 
 class UserInterface {
     constructor() {
+        let me = this;
+
+        this.registrations = new PanelUI("#registrations", db.registrations, '/registrations');
+        this.classes = new PanelUI("#classes", db.classes, '/classes');
+        this.instances = new PanelUI("#instances", db.instances, '/instances');
+        this.locations = new PanelUI("#locations", db.locations, '/locations');
+        this.categories = new PanelUI("#categories", db.categories, '/categories');
+
         this.tabs = {
             init: function() {
                 page('/registrations');
@@ -16,78 +24,27 @@ class UserInterface {
             registration: async function(ctx, next) {
                 $("#tabs").tabs({ active: 0 });
 
-                let data = await db.registrations.get(ctx.params.name);
-
-                $("#view-effective-name").text(data.name);
-                $("#view-effective-class").text(data.class || 'None');
-                $("#view-effective-epicspv").text(data.epicspv || 'None');
-                $("#view-effective-priority").text(data.priority || 'None');
-                $("#view-effective-location").text(data.location || 'None');
-                $("#view-effective-category").text(data.category || 'None');
-                $("#view-effective-contact").text(data.pointofcontactusername || 'None');
-                $("#view-effective-filterable").text(data.filterable || 'None');
-                $("#view-effective-latching").text(data.latching || 'None');
-                $("#view-effective-on-delay").text(data.ondelayseconds || 'None');
-                $("#view-effective-off-delay").text(data.offdelayseconds || 'None');
-                $("#view-effective-masked-by").text(data.maskedby || 'None');
-                $("#view-effective-screen-command").text(data.screencommand || 'None');
-
-                ui.effectiverationaleviewer.setMarkdown(data.rationale || 'None');
-                ui.effectivecorrectiveactionviewer.setMarkdown(data.correctiveaction || 'None');
-
-                $("#registrations-view-dialog").dialog("open");
+                await me.registrations.showViewDialog(ctx.params.name);
             },
             class: async function(ctx, next) {
                 $("#tabs").tabs({ active: 1 });
 
-                let data = await db.classes.get(ctx.params.name);
-
-                $("#view-class-name").text(data.name);
-                $("#view-class-priority").text(data.priority || 'None');
-                $("#view-class-category").text(data.category || 'None');
-                $("#view-class-contact").text(data.pointofcontactusername || 'None');
-                $("#view-class-filterable").text(data.filterable || 'None');
-                $("#view-class-latching").text(data.latching || 'None');
-                $("#view-class-on-delay").text(data.ondelayseconds || 'None');
-                $("#view-class-off-delay").text(data.offdelayseconds || 'None');
-
-                ui.classrationaleviewer.setMarkdown(data.rationale || 'None');
-                ui.classcorrectiveactionviewer.setMarkdown(data.correctiveaction || 'None');
-
-                $("#classes-view-dialog").dialog("open");
+                await me.classes.showViewDialog(ctx.params.name);
             },
             instance: async function(ctx, next) {
                 $("#tabs").tabs({ active: 2 });
 
-                let data = await db.instances.get(ctx.params.name);
-
-                $("#view-registration-name").text(data.name);
-                $("#view-registration-class").text(data.class || 'None');
-                $("#view-registration-epicspv").text(data.epicspv || 'None');
-                $("#view-registration-location").text(data.location || 'None');
-                $("#view-registration-masked-by").text(data.maskedby || 'None');
-                $("#view-registration-screen-command").text(data.screencommand || 'None');
-
-                $("#instances-view-dialog").dialog("open");
+                await me.instances.showViewDialog(ctx.params.name);
             },
             location: async function(ctx, next) {
                 $("#tabs").tabs({ active: 3 });
 
-                let data = await db.locations.get(ctx.params.name);
-
-                $("#view-location-name").text(data.name);
-                $("#view-location-parent").text(data.parent || 'None');
-
-                $("#locations-view-dialog").dialog("open");
+                await me.locations.showViewDialog(ctx.params.name);
             },
             category: async function(ctx, next) {
                 $("#tabs").tabs({ active: 4 });
 
-                let data = await db.catgories.get(ctx.params.name);
-
-                $("#view-category-name").text(data.name);
-
-                $("#categories-view-dialog").dialog("open");
+                await me.categories.showViewDialog(ctx.params.name);
             },
             registrations: function() {
                 $("#tabs").tabs({ active: 0 });
@@ -120,12 +77,6 @@ class UserInterface {
         page('/categories/:name', this.tabs.category);
         page('/locations/:name', this.tabs.location);
         page();
-
-        this.registrations = new PanelUI("#registrations", db.registrations, '/registrations');
-        this.classes = new PanelUI("#classes", db.classes, '/classes');
-        this.instances = new PanelUI("#instances", db.instances, '/instances');
-        this.locations = new PanelUI("#locations", db.locations, '/locations');
-        this.categories = new PanelUI("#categories", db.categories, '/categories');
 
         // bind this on properties
         const props = Object.getOwnPropertyNames(Object.getPrototypeOf(this));

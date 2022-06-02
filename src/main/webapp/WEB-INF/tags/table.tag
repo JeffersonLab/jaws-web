@@ -6,7 +6,9 @@
     <thead>
         <tr>
         <c:forEach items="${fields}" var="field">
-            <th><c:out value="${field.name}"/></th>
+            <c:if test="${field.inTable}">
+                <th><c:out value="${field.name}"/></th>
+            </c:if>
         </c:forEach>
         </tr>
     </thead>

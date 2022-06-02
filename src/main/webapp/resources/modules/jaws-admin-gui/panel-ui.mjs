@@ -1,5 +1,6 @@
 import page from '../page-1.11.6/page.min.mjs';
 import ui from "./ui.mjs";
+import db from "./db.mjs";
 
 let PAGE_SIZE = 100;
 
@@ -61,6 +62,19 @@ class PanelUI extends EventTarget {
                 OK: closeDialog
             }
         });
+
+
+        me.showViewDialog = async function(key) {
+            let data = await me.store.get(key);
+
+            const map = new Map(Object.entries(data));
+
+            for (const [key, value] of map) {
+                $(me.viewDialogElement + " ." + key + "-view").text(value);
+            }
+
+            me.$viewDialog.dialog("open");
+        }
 
         me.$nextButton = $(me.panelElement + " .next-button");
         me.$prevButton = $(me.panelElement + " .prev-button");
