@@ -26,7 +26,7 @@ class PanelUI extends EventTarget {
             $(me.panelElement + " .toolbar .selected-row-action").button("option", "disabled", true);
         }
 
-        $(me.tableElement).on("click", "tbody tr", function () {
+        $(me.tableElement).on("click", ".inner-table tbody tr", function () {
             let $previouslySelected = $(me.tableElement + " .selected-row"),
                 deselect = $(this).hasClass("selected-row");
 
@@ -264,8 +264,10 @@ class PanelUI extends EventTarget {
 
         me.updateTableData = function(data) {
             let $th = $(me.tableElement + " thead th"),
-                $tbody = $(me.tableElement + " tbody"),
+                $tbody = $(me.tableElement + " .inner-table tbody"),
                 columns = [...$th].map(th => $(th).text());
+
+            columns.pop(); // expand icon column
 
             $tbody.empty();
 
