@@ -181,8 +181,6 @@ async function init() {
     evtSource.addEventListener("registration", async (e) => {
         let records = JSON.parse(e.data);
 
-        console.log('got registration message', records);
-
         let remove = [];
         let updateOrAdd = [];
 
