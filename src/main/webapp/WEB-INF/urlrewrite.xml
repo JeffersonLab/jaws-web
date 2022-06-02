@@ -7,20 +7,6 @@
         <to type="redirect">view</to>
     </rule>
     <rule>
-        <note>
-            Redirect from concrete HTML to view path
-        </note>
-        <from>^/index.jsp(.*)</from>
-        <to type="redirect">view</to>
-    </rule>
-    <rule>
-        <note>
-            Enable client side routing by forwarding all frontend requests to index.jsp
-        </note>
-        <from>^/view/?(.*)</from>
-        <to>/index.jsp</to>
-    </rule>
-    <rule>
         <note>Rewrite app version in modules for cache busting</note>
         <from>^/resources/modules/jaws-admin-gui-(.*)/(.*)$</from>
         <to>/resources/modules/jaws-admin-gui/$2</to>

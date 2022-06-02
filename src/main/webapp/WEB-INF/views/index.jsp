@@ -28,7 +28,7 @@
         <li><a href="#locations-panel">Locations</a></li>
         <li><a href="#categories-panel">Categories</a></li>
     </ul>
-    <t:panel id="registrations" title="Registrations" editable="false">
+    <t:panel id="registrations" title="Registrations" fields="${registrationFields}" editable="false">
         <jsp:body>
             <div id="view-effective-dialog" class="dialog" title="Registration (Effective)">
                 <dl>
@@ -66,7 +66,7 @@
             </div>
         </jsp:body>
     </t:panel>
-    <t:panel id="classes" title="Classes">
+    <t:panel id="classes" title="Classes" fields="${classFields}">
         <jsp:body>
             <div id="view-class-dialog" class="dialog" title="Class">
                 <dl>
@@ -134,7 +134,7 @@
             </div>
         </jsp:body>
     </t:panel>
-    <t:panel id="instances" title="Instances">
+    <t:panel id="instances" title="Instances" fields="${instanceFields}">
         <jsp:body>
             <div id="view-instance-dialog" class="dialog" title="Registration (Instance)">
                 <dl>
@@ -186,7 +186,7 @@
             </div>
         </jsp:body>
     </t:panel>
-    <t:panel id="locations" title="Locations">
+    <t:panel id="locations" title="Locations" fields="${locationFields}">
         <jsp:body>
             <div id="view-location-dialog" class="dialog" title="Location">
                 <dl>
@@ -211,7 +211,7 @@
             </div>
         </jsp:body>
     </t:panel>
-    <t:panel id="categories" title="Categories">
+    <t:panel id="categories" title="Categories" fields="${categoryFields}">
         <jsp:body>
             <div id="view-category-dialog" class="dialog" title="Category">
                 <dl>

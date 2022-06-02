@@ -1,7 +1,9 @@
 <%@tag description="Panel Widget" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@attribute name="id" required="true" type="java.lang.String"%>
 <%@attribute name="title" required="true" type="java.lang.String"%>
+<%@attribute name="fields" required="true" type="java.util.List"%>
 <%@attribute name="editable" required="false" type="java.lang.Boolean"%>
 <div class="panel" id="${id}-panel">
     <div class="toolbar">
@@ -24,5 +26,7 @@
     <div class="table-wrap">
         <div id="${id}-table"></div>
     </div>
+    <t:table id="${id}" fields="${fields}"/>
+    <t:view-dialog id="${id}" title="${title}" fields="${fields}"/>
     <jsp:doBody/>
 </div>

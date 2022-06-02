@@ -24,6 +24,22 @@ class TableUI extends EventTarget {
             $(me.panelElement + " .toolbar .selected-row-action").button("option", "disabled", true);
         }
 
+        $(me.tableElement + "2").on("click", "tbody tr", function () {
+            let $previouslySelected = $(me.tableElement + "2" + " .selected-row"),
+                deselect = $(this).hasClass("selected-row");
+
+            $previouslySelected.removeClass("selected-row");
+
+            if(deselect) {
+                me.rowDeselected();
+            } else {
+                $(this).addClass("selected-row");
+                me.rowSelected();
+            }
+
+
+        });
+
         me.$nextButton = $(me.panelElement + " .next-button");
         me.$prevButton = $(me.panelElement + " .prev-button");
 
@@ -100,7 +116,6 @@ class TableUI extends EventTarget {
                 .limit(PAGE_SIZE)
                 .toArray()
                 .then((data) => {
-                me.data = data;
                 me.setData(data);
 
                 if(data.length == 0) {
@@ -143,7 +158,6 @@ class TableUI extends EventTarget {
                 .limit(PAGE_SIZE)
                 .toArray()
                 .then((data) => {
-                me.data = data;
                 me.setData(data);
 
                 if(data.length === 0) {
@@ -183,9 +197,6 @@ class TableUI extends EventTarget {
                 .limit(PAGE_SIZE)
                 .toArray()
                 .then((data) => {
-                    me.data = data;
-                    me.setData(data);
-
                     if(data.length === 0) {
                         // Uh oh
                     } else {
@@ -194,6 +205,9 @@ class TableUI extends EventTarget {
                         me.firstEntry = data[data.length - 1];
                         me.lastEntry = data[0];
                     }
+
+                    data.reverse();
+                    me.setData(data);
                 });
 
             let countPromise = countCollection.count().then((count) => {
@@ -214,7 +228,31 @@ class TableUI extends EventTarget {
         }
 
         me.setData = function(data) {
+            me.data = data;
             me.tabulator.setData(data);
+            me.updateTableData(data);
+        }
+
+        me.updateTableData = function(data) {
+            let $th = $(me.tableElement + "2" + " thead th"),
+                $tbody = $(me.tableElement + "2" + " tbody"),
+                columns = [...$th].map(th => $(th).text());
+
+            $tbody.empty();
+
+            for(const record of data) {
+                let row = "<tr>";
+
+                const map = new Map(Object.entries(record));
+
+                for (const column of columns) {
+                    row = row + "<td>" + map.get(column) + "</td>";
+                }
+
+                row = row + "</tr>";
+
+                $tbody.append(row);
+            }
         }
 
         me.search = function() {

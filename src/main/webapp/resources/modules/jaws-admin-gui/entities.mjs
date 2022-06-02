@@ -5,18 +5,18 @@ class AlarmCategory {
 }
 
 class AlarmClass {
-    constructor(name, priority, category, rationale, correctiveaction, pointofcontactusername, filterable,
-                latching, ondelayseconds, offdelayseconds) {
+    constructor(name, priority, category, rationale, action, contact, filterable,
+                latching, ondelay, offdelay) {
         this.name = name;
         this.priority = priority;
         this.category = category;
         this.rationale = rationale;
-        this.correctiveaction = correctiveaction;
-        this.pointofcontactusername = pointofcontactusername;
+        this.action = action;
+        this.contact = contact;
         this.filterable = filterable;
         this.latching = latching;
-        this.ondelayseconds = ondelayseconds;
-        this.offdelayseconds = offdelayseconds;
+        this.ondelay = ondelay;
+        this.offdelay = offdelay;
     }
 }
 
@@ -39,20 +39,20 @@ class AlarmLocation {
 }
 
 class EffectiveRegistration {
-    constructor(name, clazz, priority, location, category, rationale, correctiveaction, pointofcontactusername,
-                filterable, latching, ondelayseconds, offdelayseconds, maskedby, screencommand, epicspv) {
+    constructor(name, clazz, priority, location, category, rationale, action, contact,
+                filterable, latching, ondelay, offdelay, maskedby, screencommand, epicspv) {
         this.name = name;
         this.class = clazz;
         this.priority = priority;
         this.location = location;
         this.category = category;
         this.rationale = rationale;
-        this.correctiveaction = correctiveaction;
-        this.pointofcontactusername = pointofcontactusername;
+        this.action = action;
+        this.contact = contact;
         this.filterable = filterable;
         this.latching = latching;
-        this.ondelayseconds = ondelayseconds;
-        this.offdelayseconds = offdelayseconds;
+        this.ondelayseconds = ondelay;
+        this.offdelayseconds = offdelay;
         this.maskedby = maskedby;
         this.screencommand = screencommand;
         this.epicspv = epicspv;
