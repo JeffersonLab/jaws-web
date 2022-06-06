@@ -1,6 +1,6 @@
 import page from '../page-1.11.6/page.min.mjs';
 import ui from "./ui.mjs";
-import db from "./db.mjs";
+import Editor from '../toast-ui-3.1.3/toastui-all.min.mjs';
 
 let PAGE_SIZE = 100;
 
@@ -70,7 +70,22 @@ class PanelUI extends EventTarget {
             const map = new Map(Object.entries(data));
 
             for (const [key, value] of map) {
-                $(me.viewDialogElement + " ." + key + "-view").text(value);
+
+                let selector = me.viewDialogElement + " ." + key + "-view";
+
+                let displayValue = value == null ? 'None' : value;
+
+                $(selector).text(displayValue);
+
+                if (key == 'rationale') {
+                    me.markdownviewer = Editor.factory({
+                        viewer: true,
+                        usageStatistics: false,
+                        autofocus: false,
+                        initialValue: displayValue,
+                        el: document.querySelector(selector)
+                    });
+                }
             }
 
             me.$viewDialog.dialog("open");
