@@ -137,17 +137,19 @@ body .dialog .toastui-editor-defaultUI .ProseMirror {
 .data-table,
 .data-table {
     margin: 1em 0;
+    height: 100%;
 }
 .data-table th {
     background-color: lightgray;
 }
 .scroll-table thead {
     display: table;
-    width: calc(100% - 17px);
+    width: calc(100% - 17px); /*Scrollbar is 17px*/
+    height: 45px; /*Fixed height so we can calculate tbody height*/
 }
 .scroll-table tbody {
     display: block;
-    max-height: 400px;
+    height: calc(100% - 45px);
     overflow-y: scroll;
 }
 .scroll-table th, td {
