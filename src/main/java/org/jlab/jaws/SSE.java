@@ -31,12 +31,19 @@ public class SSE implements ServletContextListener {
     private final ExecutorService exec = Executors.newFixedThreadPool(10);
     private Sse sse;
 
+    private final List<Mixin> ACTIVATION_MIXINS = new ArrayList<>();
     private final List<Mixin> CLASS_MIXINS = new ArrayList<>();
     private final List<Mixin> INSTANCE_MIXINS = new ArrayList<>();
     private final List<Mixin> LOCATION_MIXINS = new ArrayList<>();
     private final List<Mixin> REGISTRATION_MIXINS = new ArrayList<>();
 
     {
+        ACTIVATION_MIXINS.add(new Mixin(AlarmActivationUnion.class, AlarmActivationMixin.class));
+        ACTIVATION_MIXINS.add(new Mixin(SimpleAlarming.class, SimpleAlarmingMixin.class));
+        ACTIVATION_MIXINS.add(new Mixin(NoteAlarming.class, NoteAlarmingMixin.class));
+        ACTIVATION_MIXINS.add(new Mixin(EPICSAlarming.class, EPICSAlarmingMixin.class));
+        ACTIVATION_MIXINS.add(new Mixin(ChannelError.class, ChannelErrorMixin.class));
+
         CLASS_MIXINS.add(new Mixin(AlarmClass.class, AlarmClassMixin.class));
 
         INSTANCE_MIXINS.add(new Mixin(AlarmInstance.class, AlarmInstanceMixin.class));
