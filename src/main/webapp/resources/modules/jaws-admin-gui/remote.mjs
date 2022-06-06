@@ -3,10 +3,6 @@ const contextPath = meta && meta.dataset.contextPath || '';
 const appVersion = meta && meta.dataset.appVersion || '';
 
 class Remote extends EventTarget {
-    start() {
-
-    }
-
     setEntity(formData, path) {
         /*Treat empty string as no-field*/
         for (var pair of Array.from(formData.entries())) {

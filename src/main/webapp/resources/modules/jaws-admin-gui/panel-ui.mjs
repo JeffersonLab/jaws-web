@@ -1,5 +1,4 @@
 import page from '../page-1.11.6/page.min.mjs';
-import ui from "./ui.mjs";
 import Editor from '../toast-ui-3.1.3/toastui-all.min.mjs';
 
 let PAGE_SIZE = 100;
@@ -134,10 +133,6 @@ class PanelUI extends EventTarget {
             me.search();
         });
 
-        $(document).on("click", "#search-class-button", function () {
-            ui.classSearch();
-        });
-
         me.filters = [];
 
         me.deselectRow = function() {
@@ -165,10 +160,10 @@ class PanelUI extends EventTarget {
             }
         }
 
-        me.refresh = async function(table) {
+        me.refresh = async function() {
             me.deselectRow();
 
-            let countCollection = table.orderBy('name');
+            let countCollection = me.store.orderBy('name');
 
             for(const filter of me.filters) {
                 countCollection = countCollection.and(filter);
@@ -339,7 +334,7 @@ class PanelUI extends EventTarget {
                 }
             }
 
-            me.refresh(me.store);
+            me.refresh();
         }
     }
 }

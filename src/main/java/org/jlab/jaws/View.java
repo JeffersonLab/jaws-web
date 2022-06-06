@@ -28,22 +28,15 @@ public class View extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        List<FieldDefinition> registrationFields = new ArrayList<>();
-        registrationFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
-        registrationFields.add(new FieldDefinition("category", FieldType.STRING, false, true));
-        registrationFields.add(new FieldDefinition("class", FieldType.STRING, false, true));
-        registrationFields.add(new FieldDefinition("location", FieldType.MULTI_ENUM, false, true));
-        registrationFields.add(new FieldDefinition("priority", FieldType.ENUM, false, true));
-        registrationFields.add(new FieldDefinition("rationale", FieldType.MARKDOWN, false, false));
-        registrationFields.add(new FieldDefinition("action", FieldType.MARKDOWN, false, false));
-        registrationFields.add(new FieldDefinition("latching", FieldType.BOOLEAN, false, false));
-        registrationFields.add(new FieldDefinition("filterable", FieldType.BOOLEAN, false, false));
-        registrationFields.add(new FieldDefinition("ondelay", FieldType.NUMBER, false, false));
-        registrationFields.add(new FieldDefinition("offdelay", FieldType.NUMBER, false, false));
-        registrationFields.add(new FieldDefinition("contact", FieldType.STRING, false, true));
-        registrationFields.add(new FieldDefinition("epicspv", FieldType.STRING, false, true));
-        registrationFields.add(new FieldDefinition("maskedby", FieldType.STRING, false, false));
-        registrationFields.add(new FieldDefinition("screencommand", FieldType.STRING, false, false));
+        List<FieldDefinition> activationFields = new ArrayList<>();
+        activationFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
+        activationFields.add(new FieldDefinition("error", FieldType.STRING, false, true));
+        activationFields.add(new FieldDefinition("note", FieldType.STRING, false, false));
+        activationFields.add(new FieldDefinition("sevr", FieldType.STRING, false, false));
+        activationFields.add(new FieldDefinition("stat", FieldType.STRING, false, false));
+
+        List<FieldDefinition> categoryFields = new ArrayList<>();
+        categoryFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
 
         List<FieldDefinition> classFields = new ArrayList<>();
         classFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
@@ -69,14 +62,29 @@ public class View extends HttpServlet {
         locationFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
         locationFields.add(new FieldDefinition("parent", FieldType.STRING, false, true));
 
-        List<FieldDefinition> categoryFields = new ArrayList<>();
-        categoryFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
+        List<FieldDefinition> registrationFields = new ArrayList<>();
+        registrationFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
+        registrationFields.add(new FieldDefinition("category", FieldType.STRING, false, true));
+        registrationFields.add(new FieldDefinition("class", FieldType.STRING, false, true));
+        registrationFields.add(new FieldDefinition("location", FieldType.MULTI_ENUM, false, true));
+        registrationFields.add(new FieldDefinition("priority", FieldType.ENUM, false, true));
+        registrationFields.add(new FieldDefinition("rationale", FieldType.MARKDOWN, false, false));
+        registrationFields.add(new FieldDefinition("action", FieldType.MARKDOWN, false, false));
+        registrationFields.add(new FieldDefinition("latching", FieldType.BOOLEAN, false, false));
+        registrationFields.add(new FieldDefinition("filterable", FieldType.BOOLEAN, false, false));
+        registrationFields.add(new FieldDefinition("ondelay", FieldType.NUMBER, false, false));
+        registrationFields.add(new FieldDefinition("offdelay", FieldType.NUMBER, false, false));
+        registrationFields.add(new FieldDefinition("contact", FieldType.STRING, false, true));
+        registrationFields.add(new FieldDefinition("epicspv", FieldType.STRING, false, true));
+        registrationFields.add(new FieldDefinition("maskedby", FieldType.STRING, false, false));
+        registrationFields.add(new FieldDefinition("screencommand", FieldType.STRING, false, false));
 
-        request.setAttribute("registrationFields", registrationFields);
+        request.setAttribute("activationFields", activationFields);
+        request.setAttribute("categoryFields", categoryFields);
         request.setAttribute("classFields", classFields);
         request.setAttribute("instanceFields", instanceFields);
         request.setAttribute("locationFields", locationFields);
-        request.setAttribute("categoryFields", categoryFields);
+        request.setAttribute("registrationFields", registrationFields);
 
         request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
     }

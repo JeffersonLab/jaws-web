@@ -1,3 +1,13 @@
+class AlarmActivation {
+    constructor(name, error, note, sevr, stat) {
+        this.name = name;
+        this.error = error;
+        this.note = note;
+        this.sevr = sevr;
+        this.stat = stat;
+    }
+}
+
 class AlarmCategory {
     constructor(name) {
         this.name = name;
@@ -59,6 +69,27 @@ class EffectiveRegistration {
     }
 }
 
+class EffectiveAlarm {
+    constructor(name, clazz, priority, location, category, rationale, action, contact,
+                filterable, latching, ondelay, offdelay, maskedby, screencommand, epicspv) {
+        this.name = name;
+        this.class = clazz;
+        this.priority = priority;
+        this.location = location;
+        this.category = category;
+        this.rationale = rationale;
+        this.action = action;
+        this.contact = contact;
+        this.filterable = filterable;
+        this.latching = latching;
+        this.ondelay = ondelay;
+        this.offdelay = offdelay;
+        this.maskedby = maskedby;
+        this.screencommand = screencommand;
+        this.epicspv = epicspv;
+    }
+}
+
 class KafkaLogPosition {
     constructor(name, position) {
         this.name = name;
@@ -66,4 +97,4 @@ class KafkaLogPosition {
     }
 }
 
-export {AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition}
+export {AlarmActivation, AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition}
