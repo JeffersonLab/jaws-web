@@ -10,11 +10,11 @@ class UserInterface {
     constructor() {
         let me = this;
 
-        this.registrations = new PanelUI("#registrations", db.registrations, '/registrations');
-        this.classes = new PanelUI("#classes", db.classes, '/classes');
-        this.instances = new PanelUI("#instances", db.instances, '/instances');
-        this.locations = new PanelUI("#locations", db.locations, '/locations');
-        this.categories = new PanelUI("#categories", db.categories, '/categories');
+        this.registrations = new PanelUI("#registrations", "Registration", "Registrations", db.registrations, '/registrations');
+        this.classes = new PanelUI("#classes", "Class", "Classes", db.classes, '/classes');
+        this.instances = new PanelUI("#instances", "Instance", "Instances", db.instances, '/instances');
+        this.locations = new PanelUI("#locations", "Location", "Locations", db.locations, '/locations');
+        this.categories = new PanelUI("#categories", "Category", "Categories", db.categories, '/categories');
 
         this.tabs = {
             init: function() {

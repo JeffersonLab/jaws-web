@@ -6,8 +6,10 @@
 <div class="dialog" id="${id}-view-dialog" title="${title}">
     <dl>
         <c:forEach items="${fields}" var="field">
-            <dt><c:out value="${field.name}"/></dt>
-            <dd class="${field.name}-view"></dd>
+            <c:if test="${!field.isKey()}">
+                <dt><c:out value="${field.name}"/></dt>
+                <dd class="${field.name}-view"></dd>
+            </c:if>
         </c:forEach>
     </dl>
 </div>

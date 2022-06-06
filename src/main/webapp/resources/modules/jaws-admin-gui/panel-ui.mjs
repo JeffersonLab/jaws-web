@@ -5,16 +5,20 @@ import Editor from '../toast-ui-3.1.3/toastui-all.min.mjs';
 let PAGE_SIZE = 100;
 
 class PanelUI extends EventTarget {
-    constructor(id, store, path) {
+    constructor(idPrefix, singularEntity, pluralEntity, store, path) {
         super();
 
         let me = this;
 
-        me.panelElement = id + "-panel";
-        me.tableElement = id + "-table";
-        me.viewDialogElement = id + "-view-dialog";
+        me.idPrefix = idPrefix;
+        me.singularEntity = singularEntity;
+        me.pluralEntity = pluralEntity;
         me.store = store;
         me.path = path;
+
+        me.panelElement = idPrefix + "-panel";
+        me.tableElement = idPrefix + "-table";
+        me.viewDialogElement = idPrefix + "-view-dialog";
 
         me.rowSelected = function() {
             $(me.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", true);
@@ -76,24 +80,32 @@ class PanelUI extends EventTarget {
 
             const map = new Map(Object.entries(data));
 
+            let primaryKey = '';
+
             for (const [key, value] of map) {
 
-                let selector = me.viewDialogElement + " ." + key + "-view";
+                if(key == 'name') {
+                    primaryKey = value;
+                } else {
+                    let selector = me.viewDialogElement + " ." + key + "-view";
 
-                let displayValue = value == null ? 'None' : value;
+                    let displayValue = value == null ? 'None' : value;
 
-                $(selector).text(displayValue);
+                    $(selector).text(displayValue);
 
-                if (key == 'rationale' || key == 'action') {
-                    me.markdownwidgets.push(Editor.factory({
-                        viewer: true,
-                        usageStatistics: false,
-                        autofocus: false,
-                        initialValue: displayValue,
-                        el: document.querySelector(selector)
-                    }));
+                    if (key == 'rationale' || key == 'action') {
+                        me.markdownwidgets.push(Editor.factory({
+                            viewer: true,
+                            usageStatistics: false,
+                            autofocus: false,
+                            initialValue: displayValue,
+                            el: document.querySelector(selector)
+                        }));
+                    }
                 }
             }
+
+            me.$viewDialog.dialog('option', 'title', me.singularEntity + ": " + primaryKey);
 
             me.$viewDialog.dialog("open");
         }
