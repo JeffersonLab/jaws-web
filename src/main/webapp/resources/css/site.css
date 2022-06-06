@@ -134,9 +134,7 @@ body .dialog .toastui-editor-defaultUI .ProseMirror {
 .data-table th {
     padding: 0.5em;
 }
-.data-table,
 .data-table {
-    margin: 1em 0;
     height: 100%;
 }
 .data-table th {
@@ -145,6 +143,9 @@ body .dialog .toastui-editor-defaultUI .ProseMirror {
 .scroll-table thead {
     display: table;
     width: calc(100% - 17px); /*Scrollbar is 17px*/
+}
+.scroll-table thead th {
+    padding: 0;
     height: 45px; /*Fixed height so we can calculate tbody height*/
 }
 .scroll-table tbody {
