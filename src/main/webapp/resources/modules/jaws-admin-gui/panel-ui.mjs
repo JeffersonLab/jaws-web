@@ -50,6 +50,12 @@ class PanelUI extends EventTarget {
             me.$viewDialog.dialog("close");
             page(me.path);
             me.deselectRow();
+
+            for(const widget of me.markdownwidgets) {
+                widget.destroy();
+            }
+
+            me.markdownwidgets = [];
         }
 
         me.$viewDialog = $(me.viewDialogElement).dialog({
@@ -63,6 +69,7 @@ class PanelUI extends EventTarget {
             }
         });
 
+        me.markdownwidgets = [];
 
         me.showViewDialog = async function(key) {
             let data = await me.store.get(key);
@@ -77,14 +84,14 @@ class PanelUI extends EventTarget {
 
                 $(selector).text(displayValue);
 
-                if (key == 'rationale') {
-                    me.markdownviewer = Editor.factory({
+                if (key == 'rationale' || key == 'action') {
+                    me.markdownwidgets.push(Editor.factory({
                         viewer: true,
                         usageStatistics: false,
                         autofocus: false,
                         initialValue: displayValue,
                         el: document.querySelector(selector)
-                    });
+                    }));
                 }
             }
 
