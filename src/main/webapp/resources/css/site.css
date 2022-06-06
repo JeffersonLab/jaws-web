@@ -74,6 +74,8 @@ body .ui-tabs .ui-tabs-panel {
     flex-direction: column;
 
     min-height: 0; /*Flexbox child can't shrink less than content size without this!*/
+
+    overflow: auto;
 }
 
 .table-wrap {
@@ -120,6 +122,7 @@ body .dialog .toastui-editor-defaultUI .ProseMirror {
 
 .data-table {
     background-color: white;
+    width: 100%;
 }
 .data-table,
 .data-table td,
@@ -138,58 +141,27 @@ body .dialog .toastui-editor-defaultUI .ProseMirror {
 .data-table th {
     background-color: lightgray;
 }
+.scroll-table thead {
+    display: table;
+    width: calc(100% - 17px);
+}
+.scroll-table tbody {
+    display: block;
+    max-height: 400px;
+    overflow-y: scroll;
+}
+.scroll-table th, td {
+    width: var(--column-width);
+    word-break: break-all;
+}
+.scroll-table tr {
+    display: table;
+    width: 100%;
+    box-sizing: border-box;
+}
 .stripped-table tr:nth-child(even) {
     background-color: #f5f5f5;
 }
-.constrained-table {
-    table-layout: fixed;
-    width: 100%;
-}
-.constrained-table td {
-    word-wrap: break-word;
-}
-.compact-table {
-    font-size: 12px;
-}
-/*Scrollable Table*/
-.inner-table {
-    margin: 0;
-    width: 100%;
-}
-td.inner-table-cell {
-    padding: 0;
-}
-.pane-decorator {
-    border: 1px solid gray;
-    box-shadow: 0 -1px 1px #666, -1px 0 2px #666, 0 1px 1px rgba(255, 255, 255, 0.8) inset, -1px 0 1px rgba(0, 0, 0, 0.8) inset;
-    margin: 3px;
-}
-.table-scroll-pane {
-    height: 500px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-}
-th.scrollbar-header {
-    padding: 0;
-    width: 21px;
-}
-.inner-table tbody th:last-child {
-    width: 0;
-    border: 1px solid lightgray;
-}
-.expand-icon {
-    width: 16px;
-    height: 16px;
-    background: rgba(0, 0, 0, 0) url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABPlBMVEUAAABSvuooqORZweoCiNc+qOEGf9M6o98AaslIpeANYcQOeM8QYcInouAAS7onouAAS7onouAnouAAS7oRTbQPQKYWWbgKKpMNQq0KKpMJOKEHHYYIO6QIKJEHPZ4IKJH///+o6Pbx//+V6vqn9P6N1fD1//+e7Ppy3PVx3PSo9v99yu2X8Ptn1/Jx2PRq0/Je0vGR9P54xuqR3vJf0e6Q3/WF4Pdhz+9hze5Zze8nouBhzu0kfM6N6vpNxetSxu1Kxe965vc7vOlBwOw/xe9q3vUrruU0s+gwuOxb1/QipOEopeIfouIrl9wfnOE3t+ccmd0al9sTk90MbswNdtQOR7A2yPUesOoWk9sVjtoOhtcLg9gKkeUKXrwYnuUSl+IMgdYJfNQKjuMLWLwLhdwKh90LjeMKXr4Lmu8KaskYEDmaAAAAIHRSTlMA7mDJcM+HzYbGqMWjw+up46fB58WjxtjNxc/NycLuq0wC+VQAAAABYktHRCCzaz2AAAAACXBIWXMAAABIAAAASABGyWs+AAAAlklEQVQY02NggABGJgYUwKygyILMZ1VSVlFlQ/DZ1dQ1NLW0OWB8TgUdXT19A0MjLgif29jE1MzcwtLK2oYHpobX1s7egQ/JUH5HJ2cXASQBQVc3dw9kASFPL28fYRhPxNfPyj8gMCg4JFQUIiIWFh4RGRUdEysOUyMRF5+QmJQsiTBDKiU1LV0a2TMyGZmyqN6Vk4cyAO04FihcM+gYAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE2LTA3LTI3VDA5OjAwOjIzLTA0OjAwxhCF9AAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNi0wNy0yN1QwOTowMDoyMy0wNDowMLdNPUgAAAAASUVORK5CYII=") repeat scroll 0 0;
-    cursor: pointer;
-    display: block;
-    margin: 0 auto;
-}
-.expanded-table .table-scroll-pane {
-    height: auto;
-    min-height: 500px;
-}
-
 .uniselect-table tbody tr:hover {
     background-color: lightskyblue;
     cursor: pointer;
