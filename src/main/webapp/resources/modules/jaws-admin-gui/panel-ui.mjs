@@ -89,7 +89,7 @@ class PanelUI extends EventTarget {
                 } else {
                     let selector = me.viewDialogElement + " ." + key + "-view";
 
-                    let displayValue = value == null ? 'None' : value;
+                    let displayValue = (value === null || value === '') ? 'None' : value;
 
                     $(selector).text(displayValue);
 

@@ -51,8 +51,8 @@ class EffectiveRegistration {
         this.contact = contact;
         this.filterable = filterable;
         this.latching = latching;
-        this.ondelayseconds = ondelay;
-        this.offdelayseconds = offdelay;
+        this.ondelay = ondelay;
+        this.offdelay = offdelay;
         this.maskedby = maskedby;
         this.screencommand = screencommand;
         this.epicspv = epicspv;
