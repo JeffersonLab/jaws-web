@@ -74,8 +74,6 @@ body .ui-tabs .ui-tabs-panel {
     flex-direction: column;
 
     min-height: 0; /*Flexbox child can't shrink less than content size without this!*/
-
-    overflow: auto;
 }
 
 .table-wrap {
