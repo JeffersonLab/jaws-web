@@ -44,22 +44,23 @@ class PanelController {
             $("#tabs").tabs({ active: me.order });
         }
 
-        page(path, me.showAllRecords);
-        page(path + '/:name', me.showSingleRecord);
+        page(me.path, me.showAllRecords);
+        page(me.path + '/:name', me.showSingleRecord);
     }
 }
 
-let controllers = [new PanelController(0, 'activation', '#activations', 'Activation', 'Activations', db.activations, '/activations'),
-                   new PanelController(1, 'category', '#categories', 'Category', 'Categories', db.categories, '/categories'),
+let controllers = [new PanelController(0, 'registration', '#registrations', 'Registration', 'Registrations', db.registrations, '/registrations'),
+                   new PanelController(1, 'activation', '#activations', 'Activation', 'Activations', db.activations, '/activations'),
                    new PanelController(2, 'class', '#classes', 'Class', 'Classes', db.classes, '/classes'),
                    new PanelController(3, 'instance', '#instances', 'Instance', 'Instances', db.instances, '/instances'),
                    new PanelController(4, 'location', '#locations', 'Location', 'Locations', db.locations, '/locations'),
-                   new PanelController(5, 'registration', '#registrations', 'Registration', 'Registrations', db.registrations, '/registrations')];
+                   new PanelController(5, 'category', '#categories', 'Category', 'Categories', db.categories, '/categories')];
 
 
 page.base(contextPath + '/view');
 
 page('/', function() {
+    console.log('tabs init');
     page('/registrations');
 });
 
@@ -77,7 +78,7 @@ $(function () {
                     page('/activations');
                     break;
                 case 'Categories':
-                    page('/categories')
+                    page('/categories');
                     break;
                 case 'Classes':
                     page('/classes');
