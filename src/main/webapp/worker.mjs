@@ -22,12 +22,16 @@ class BackgroundWorker {
 
             let remove = [];
             let updateOrAdd = [];
+            let compacted = new Map();
 
-            for (const record of records) {
-                let key = record.key;
-                let value = record.value;
+            /* Compact, in-order */
+            for(const record of records) {
+                compacted.set(record.key, record.value);
+            }
 
-                if(value == null) {
+            for (const [key, value] of compacted.entries()) {
+
+                if(value === null) {
                     remove.push(key);
                 } else {
                     updateOrAdd.push(me.toEntityFunc(key, value));
