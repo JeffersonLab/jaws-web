@@ -100,7 +100,9 @@ body .ui-tabs .ui-tabs-panel {
 .dialog fieldset {
     margin-top: 0.5em;
 }
-
+.dialog dd {
+    min-height: 1em;
+}
 .dialog fieldset .radio-label {
     margin-top: 0;
 }

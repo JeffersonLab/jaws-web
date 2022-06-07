@@ -3,8 +3,8 @@ import Editor from '../toast-ui-3.1.3/toastui-all.min.mjs';
 
 let PAGE_SIZE = 100;
 
-let toDisplayValue = function(value) {
-    return  (value === null || value === undefined ||  value === '') ? 'None' : value;
+let toDisplayValue = function(value, emptyValue) {
+    return  (value === null || value === undefined ||  value === '') ? emptyValue : value;
 }
 
 class PanelUI extends EventTarget {
@@ -92,7 +92,7 @@ class PanelUI extends EventTarget {
                 } else {
                     let selector = me.viewDialogElement + " ." + key + "-view";
 
-                    let displayValue = toDisplayValue(value);
+                    let displayValue = toDisplayValue(value, ' ');
 
                     $(selector).text(displayValue);
 
@@ -309,7 +309,7 @@ class PanelUI extends EventTarget {
 
                 for (const column of columns) {
                     let value = map.get(column),
-                        displayValue = toDisplayValue(value);
+                        displayValue = toDisplayValue(value, ' ');
                     row = row + "<td>" + displayValue + "</td>";
                 }
 
