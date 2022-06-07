@@ -54,8 +54,6 @@ class BackgroundWorker {
 }
 
 let toActivation = function(key, value) {
-    console.log('toActivation', key, value);
-
     return new AlarmActivation(
         key,
         value.msg.error,
