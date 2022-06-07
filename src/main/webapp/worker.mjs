@@ -58,10 +58,10 @@ let toActivation = function(key, value) {
 
     return new AlarmActivation(
         key,
-        value.error,
-        value.note,
-        value.sevr,
-        value.stat
+        value.msg.error,
+        value.msg.note,
+        value.msg.sevr,
+        value.msg.stat
     );
 }
 
