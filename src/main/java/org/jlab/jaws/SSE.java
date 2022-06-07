@@ -116,7 +116,7 @@ public class SSE implements ServletContextListener {
                         LocationConsumer locationConsumer = new LocationConsumer(locationProps);
                         EffectiveRegistrationConsumer registrationConsumer = new EffectiveRegistrationConsumer(registrationProps)
                 ) {
-                    activationConsumer.addListener(createListener(sink, "activation", null));
+                    activationConsumer.addListener(createListener(sink, "activation", ACTIVATION_MIXINS));
                     categoryConsumer.addListener(createListener(sink, "category", null));
                     classConsumer.addListener(createListener(sink, "class", CLASS_MIXINS));
                     instanceConsumer.addListener(createListener(sink, "instance", INSTANCE_MIXINS));
