@@ -64,6 +64,11 @@ public class View extends HttpServlet {
 
         List<FieldDefinition> overrideFields = new ArrayList<>();
         overrideFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
+        overrideFields.add(new FieldDefinition("comments", FieldType.STRING, false, false));
+        overrideFields.add(new FieldDefinition("expiration", FieldType.UNIX_TIMESTAMP, false, false));
+        overrideFields.add(new FieldDefinition("filtername", FieldType.STRING, false, false));
+        overrideFields.add(new FieldDefinition("oneshot", FieldType.BOOLEAN, false, false));
+        overrideFields.add(new FieldDefinition("reason", FieldType.ENUM, false, false));
 
         List<FieldDefinition> registrationFields = new ArrayList<>();
         registrationFields.add(new FieldDefinition("name", FieldType.STRING, true, true));

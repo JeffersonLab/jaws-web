@@ -49,8 +49,13 @@ class AlarmLocation {
 }
 
 class AlarmOverride {
-    constructor(name) {
+    constructor(name, comments, expiration, filtername, oneshot, reason) {
         this.name = name;
+        this.comments = comments;
+        this.expiration = expiration;
+        this.filtername = filtername;
+        this.oneshot = oneshot;
+        this.reason = reason;
     }
 }
 

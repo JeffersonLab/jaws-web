@@ -55,6 +55,13 @@ public class SSE implements ServletContextListener {
         LOCATION_MIXINS.add(new Mixin(AlarmLocation.class, AlarmLocationMixin.class));
 
         OVERRIDE_MIXINS.add(new Mixin(AlarmOverrideUnion.class, AlarmOverrideMixin.class));
+        OVERRIDE_MIXINS.add(new Mixin(DisabledOverride.class, DisabledOverrideMixin.class));
+        OVERRIDE_MIXINS.add(new Mixin(FilteredOverride.class, FilteredOverrideMixin.class));
+        OVERRIDE_MIXINS.add(new Mixin(LatchedOverride.class, LatchedOverrideMixin.class));
+        OVERRIDE_MIXINS.add(new Mixin(OffDelayedOverride.class, OffDelayedOverrideMixin.class));
+        OVERRIDE_MIXINS.add(new Mixin(OnDelayedOverride.class, OnDelayedOverrideMixin.class));
+        OVERRIDE_MIXINS.add(new Mixin(MaskedOverride.class, MaskedOverrideMixin.class));
+        OVERRIDE_MIXINS.add(new Mixin(ShelvedOverride.class, ShelvedOverrideMixin.class));
 
         REGISTRATION_MIXINS.add(new Mixin(EffectiveRegistration.class, EffectiveRegistrationMixin.class));
         REGISTRATION_MIXINS.add(new Mixin(AlarmInstance.class, AlarmInstanceMixin.class));
@@ -123,13 +130,15 @@ public class SSE implements ServletContextListener {
                         OverrideConsumer overrideConsumer = new OverrideConsumer(overrideProps);
                         EffectiveRegistrationConsumer registrationConsumer = new EffectiveRegistrationConsumer(registrationProps)
                 ) {
-                    activationConsumer.addListener(createListener(sink, "activation", ACTIVATION_MIXINS));
-                    categoryConsumer.addListener(createListener(sink, "category", null));
-                    classConsumer.addListener(createListener(sink, "class", CLASS_MIXINS));
-                    instanceConsumer.addListener(createListener(sink, "instance", INSTANCE_MIXINS));
-                    locationConsumer.addListener(createListener(sink, "location", LOCATION_MIXINS));
-                    overrideConsumer.addListener(createListener(sink, "override", OVERRIDE_MIXINS));
-                    registrationConsumer.addListener(createListener(sink, "registration", REGISTRATION_MIXINS));
+                    StringKeyConverter strKeyConv = new StringKeyConverter();
+
+                    activationConsumer.addListener(createListener(sink, "activation", strKeyConv, ACTIVATION_MIXINS));
+                    categoryConsumer.addListener(createListener(sink, "category", strKeyConv, null));
+                    classConsumer.addListener(createListener(sink, "class", strKeyConv, CLASS_MIXINS));
+                    instanceConsumer.addListener(createListener(sink, "instance", strKeyConv, INSTANCE_MIXINS));
+                    locationConsumer.addListener(createListener(sink, "location", strKeyConv, LOCATION_MIXINS));
+                    overrideConsumer.addListener(createListener(sink, "override", new OverrideKeyConverter(), OVERRIDE_MIXINS));
+                    registrationConsumer.addListener(createListener(sink, "registration", strKeyConv, REGISTRATION_MIXINS));
 
                     activationConsumer.start();
                     categoryConsumer.start();
@@ -155,7 +164,7 @@ public class SSE implements ServletContextListener {
         });
     }
 
-    private <K, V> EventSourceListener<K, V> createListener(SseEventSink sink, String eventName, List<Mixin> mixins) {
+    private <K, V> EventSourceListener<K, V> createListener(SseEventSink sink, String eventName, KeyConverter keyConverter, List<Mixin> mixins) {
         return new EventSourceListener<K, V>() {
             @Override
             public void highWaterOffset(LinkedHashMap<K, EventSourceRecord<K, V>> records) {
@@ -164,7 +173,7 @@ public class SSE implements ServletContextListener {
 
             @Override
             public void batch(List<EventSourceRecord<K, V>> records, boolean highWaterReached) {
-                sendRecords(sink, eventName, records, mixins);
+                sendRecords(sink, eventName, records, keyConverter, mixins);
             }
         };
     }
@@ -198,7 +207,26 @@ public class SSE implements ServletContextListener {
         }
     }
 
-    private <K, V> void sendRecords(SseEventSink sink, String eventName, List<EventSourceRecord<K, V>> records, List<Mixin> mixins) {
+    interface KeyConverter<K> {
+        public String toString(K key);
+    }
+
+    class StringKeyConverter implements KeyConverter<String> {
+        public String toString(String key) {
+            return key;
+        }
+    }
+
+    class OverrideKeyConverter implements KeyConverter<OverriddenAlarmKey> {
+
+        @Override
+        public String toString(OverriddenAlarmKey key) {
+            return key.getName() + " " + key.getType();
+        }
+    }
+
+    private <K, V> void sendRecords(SseEventSink sink, String eventName, List<EventSourceRecord<K, V>> records,
+                                    KeyConverter keyConverter, List<Mixin> mixins) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 
@@ -214,6 +242,7 @@ public class SSE implements ServletContextListener {
             K key = record.getKey();
             V value = record.getValue();
 
+            String keyStr = keyConverter.toString(key);
             String jsonValue = null;
 
             if (value != null) {
@@ -224,7 +253,7 @@ public class SSE implements ServletContextListener {
                 }
             }
 
-            String recordString = "{\"key\": \"" + key + "\", \"value\": " + jsonValue + ", \"offset\": " + record.getOffset() + "},";
+            String recordString = "{\"key\": \"" + keyStr + "\", \"value\": " + jsonValue + ", \"offset\": " + record.getOffset() + "},";
 
             builder.append(recordString);
         }

@@ -106,7 +106,12 @@ let toLocation = function(key, value) {
 
 let toOverride = function(key, value) {
     return new AlarmOverride(
-        key
+        key,
+        value.msg.comments,
+        value.msg.expiration,
+        value.msg.filtername,
+        value.msg.oneshot,
+        value.msg.reason
     )
 }
 
