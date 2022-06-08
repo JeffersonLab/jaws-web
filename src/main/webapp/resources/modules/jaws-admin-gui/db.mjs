@@ -1,5 +1,5 @@
 import Dexie from '../dexie-3.2.1/dexie.min.mjs';
-import {AlarmActivation, AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, EffectiveRegistration, KafkaLogPosition} from "./entities.mjs";
+import {AlarmActivation, AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, AlarmOverride, EffectiveRegistration, KafkaLogPosition} from "./entities.mjs";
 
 const cacheVersion = '@CACHE_VERSION@';
 
@@ -55,6 +55,7 @@ db.version(cacheVersion).stores({
     classes: "name",
     instances: "name",
     locations: "name",
+    overrides: "name",
     positions: "name",
     registrations: "name"
 });
@@ -64,6 +65,7 @@ db.categories.mapToClass(AlarmCategory);
 db.classes.mapToClass(AlarmClass);
 db.instances.mapToClass(AlarmInstance);
 db.locations.mapToClass(AlarmLocation);
+db.overrides.mapToClass(AlarmOverride);
 db.positions.mapToClass(KafkaLogPosition);
 db.registrations.mapToClass(EffectiveRegistration);
 

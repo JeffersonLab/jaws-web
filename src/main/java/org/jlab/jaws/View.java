@@ -62,6 +62,9 @@ public class View extends HttpServlet {
         locationFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
         locationFields.add(new FieldDefinition("parent", FieldType.STRING, false, true));
 
+        List<FieldDefinition> overrideFields = new ArrayList<>();
+        overrideFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
+
         List<FieldDefinition> registrationFields = new ArrayList<>();
         registrationFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
         registrationFields.add(new FieldDefinition("category", FieldType.STRING, false, true));
@@ -84,6 +87,7 @@ public class View extends HttpServlet {
         request.setAttribute("classFields", classFields);
         request.setAttribute("instanceFields", instanceFields);
         request.setAttribute("locationFields", locationFields);
+        request.setAttribute("overrideFields", overrideFields);
         request.setAttribute("registrationFields", registrationFields);
 
         request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);

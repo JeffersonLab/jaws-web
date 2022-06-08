@@ -35,6 +35,7 @@ public class SSE implements ServletContextListener {
     private final List<Mixin> CLASS_MIXINS = new ArrayList<>();
     private final List<Mixin> INSTANCE_MIXINS = new ArrayList<>();
     private final List<Mixin> LOCATION_MIXINS = new ArrayList<>();
+    private final List<Mixin> OVERRIDE_MIXINS = new ArrayList<>();
     private final List<Mixin> REGISTRATION_MIXINS = new ArrayList<>();
 
     {
@@ -52,6 +53,8 @@ public class SSE implements ServletContextListener {
         INSTANCE_MIXINS.add(new Mixin(CALCProducer.class, CALCProducerMixin.class));
 
         LOCATION_MIXINS.add(new Mixin(AlarmLocation.class, AlarmLocationMixin.class));
+
+        OVERRIDE_MIXINS.add(new Mixin(AlarmOverrideUnion.class, AlarmOverrideMixin.class));
 
         REGISTRATION_MIXINS.add(new Mixin(EffectiveRegistration.class, EffectiveRegistrationMixin.class));
         REGISTRATION_MIXINS.add(new Mixin(AlarmInstance.class, AlarmInstanceMixin.class));
@@ -88,6 +91,7 @@ public class SSE implements ServletContextListener {
                        @QueryParam("classIndex") @DefaultValue("-1") long classIndex,
                        @QueryParam("instanceIndex") @DefaultValue("-1") long instanceIndex,
                        @QueryParam("locationIndex") @DefaultValue("-1") long locationIndex,
+                       @QueryParam("overrideIndex") @DefaultValue("-1") long overrideIndex,
                        @QueryParam("registrationIndex") @DefaultValue("-1") long registrationIndex) {
         System.err.println("Proxy connected: " +
                 "activationIndex: " + activationIndex +
@@ -95,6 +99,7 @@ public class SSE implements ServletContextListener {
                 ", classIndex: " + classIndex +
                 ", instanceIndex: " + instanceIndex +
                 ", locationIndex: " + locationIndex +
+                ", overrideIndex: " + overrideIndex +
                 ", registrationIndex: " + registrationIndex);
 
         exec.execute(new Runnable() {
@@ -106,6 +111,7 @@ public class SSE implements ServletContextListener {
                 final Properties classProps = getConsumerPropsWithRegistry(classIndex);
                 final Properties instanceProps = getConsumerPropsWithRegistry(instanceIndex);
                 final Properties locationProps = getConsumerPropsWithRegistry(locationIndex);
+                final Properties overrideProps = getConsumerPropsWithRegistry(overrideIndex);
                 final Properties registrationProps = getConsumerPropsWithRegistry(registrationIndex);
 
                 try (
@@ -114,6 +120,7 @@ public class SSE implements ServletContextListener {
                         ClassConsumer classConsumer = new ClassConsumer(classProps);
                         InstanceConsumer instanceConsumer = new InstanceConsumer(instanceProps);
                         LocationConsumer locationConsumer = new LocationConsumer(locationProps);
+                        OverrideConsumer overrideConsumer = new OverrideConsumer(overrideProps);
                         EffectiveRegistrationConsumer registrationConsumer = new EffectiveRegistrationConsumer(registrationProps)
                 ) {
                     activationConsumer.addListener(createListener(sink, "activation", ACTIVATION_MIXINS));
@@ -121,6 +128,7 @@ public class SSE implements ServletContextListener {
                     classConsumer.addListener(createListener(sink, "class", CLASS_MIXINS));
                     instanceConsumer.addListener(createListener(sink, "instance", INSTANCE_MIXINS));
                     locationConsumer.addListener(createListener(sink, "location", LOCATION_MIXINS));
+                    overrideConsumer.addListener(createListener(sink, "override", OVERRIDE_MIXINS));
                     registrationConsumer.addListener(createListener(sink, "registration", REGISTRATION_MIXINS));
 
                     activationConsumer.start();
@@ -128,6 +136,7 @@ public class SSE implements ServletContextListener {
                     classConsumer.start();
                     instanceConsumer.start();
                     locationConsumer.start();
+                    overrideConsumer.start();
                     registrationConsumer.start();
 
                     try {

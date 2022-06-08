@@ -8,9 +8,6 @@ import java.util.List;
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public
 interface AlarmInstanceMixin {
-    @JsonProperty
-    String getName();
-
     @JsonProperty("class")
     String getClass$();
 

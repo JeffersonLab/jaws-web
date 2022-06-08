@@ -8,9 +8,6 @@ import org.jlab.jaws.entity.AlarmPriority;
 public
 interface AlarmClassMixin {
     @JsonProperty
-    String getName();
-
-    @JsonProperty
     String getCategory();
 
     @JsonProperty

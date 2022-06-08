@@ -51,10 +51,11 @@ class PanelController {
 
 let controllers = [new PanelController(0, 'registration', '#registrations', 'Registration', 'Registrations', db.registrations, '/registrations'),
                    new PanelController(1, 'activation', '#activations', 'Activation', 'Activations', db.activations, '/activations'),
-                   new PanelController(2, 'class', '#classes', 'Class', 'Classes', db.classes, '/classes'),
-                   new PanelController(3, 'instance', '#instances', 'Instance', 'Instances', db.instances, '/instances'),
-                   new PanelController(4, 'location', '#locations', 'Location', 'Locations', db.locations, '/locations'),
-                   new PanelController(5, 'category', '#categories', 'Category', 'Categories', db.categories, '/categories')];
+                   new PanelController(2, 'override', '#overrides', 'Override', 'Overrides', db.overrides, '/overrides'),
+                   new PanelController(3, 'class', '#classes', 'Class', 'Classes', db.classes, '/classes'),
+                   new PanelController(4, 'instance', '#instances', 'Instance', 'Instances', db.instances, '/instances'),
+                   new PanelController(5, 'location', '#locations', 'Location', 'Locations', db.locations, '/locations'),
+                   new PanelController(6, 'category', '#categories', 'Category', 'Categories', db.categories, '/categories')];
 
 
 page.base(contextPath + '/view');
@@ -88,6 +89,9 @@ $(function () {
                     break;
                 case 'Locations':
                     page('/locations');
+                    break;
+                case 'Overrides':
+                    page('/overrides');
                     break;
                 case 'Registrations':
                     page('/registrations');

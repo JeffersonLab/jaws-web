@@ -23,6 +23,7 @@
     <ul>
         <li><a href="#registrations-panel">Registrations</a></li>
         <li><a href="#activations-panel">Activations</a></li>
+        <li><a href="#overrides-panel">Overrides</a></li>
         <li><a href="#classes-panel">Classes</a></li>
         <li><a href="#instances-panel">Instances</a></li>
         <li><a href="#locations-panel">Locations</a></li>
@@ -30,6 +31,7 @@
     </ul>
     <t:panel id="registrations" title="Registrations" fields="${registrationFields}" editable="false"/>
     <t:panel id="activations" title="Activations" fields="${activationFields}" editable="false"/>
+    <t:panel id="overrides" title="Overrides" fields="${overrideFields}"/>
     <t:panel id="classes" title="Classes" fields="${classFields}"/>
     <t:panel id="instances" title="Instances" fields="${instanceFields}"/>
     <t:panel id="locations" title="Locations" fields="${locationFields}"/>
