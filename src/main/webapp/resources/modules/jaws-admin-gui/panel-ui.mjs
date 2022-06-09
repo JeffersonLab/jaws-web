@@ -3,8 +3,29 @@ import Editor from '../toast-ui-3.1.3/toastui-all.min.mjs';
 
 let PAGE_SIZE = 100;
 
-let toStringDisplay = function(value, emptyValue) {
+let entityMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '/': '&#x2F;',
+    '`': '&#x60;',
+    '=': '&#x3D;'
+};
+
+let escapeHtml = function(value) {
+    return String(value).replace(/[&<>"'`=\/]/g, function (s) {
+        return entityMap[s];
+    });
+}
+
+let replaceEmpty = function(value, emptyValue) {
     return  (value === null || value === undefined ||  value === '') ? emptyValue : value;
+}
+
+let toStringDisplay = function(value, emptyValue) {
+    return escapeHtml(replaceEmpty(value, emptyValue));
 }
 
 let toUnixTimestampDisplay = function(value, emptyValue) {
@@ -20,7 +41,7 @@ let toUnixTimestampDisplay = function(value, emptyValue) {
 }
 
 class PanelUI extends EventTarget {
-    constructor(idPrefix, singularEntity, pluralEntity, store, path) {
+    constructor(idPrefix, singularEntity, pluralEntity, store, path, types, markdownToHtml) {
         super();
 
         let me = this;
@@ -30,10 +51,12 @@ class PanelUI extends EventTarget {
         me.pluralEntity = pluralEntity;
         me.store = store;
         me.path = path;
+        me.types = types;
+        me.markdownToHtml = markdownToHtml;
 
-        me.panelElement = idPrefix + "-panel";
-        me.tableElement = idPrefix + "-table";
-        me.viewDialogElement = idPrefix + "-view-dialog";
+        me.panelElement = "#" + idPrefix + "-panel";
+        me.tableElement = "#" + idPrefix + "-table";
+        me.viewDialogElement = "#" + idPrefix + "-view-dialog";
 
         me.rowSelected = function() {
             $(me.panelElement + " .toolbar .no-selection-row-action").button("option", "disabled", true);
@@ -70,7 +93,7 @@ class PanelUI extends EventTarget {
             page(me.path);
             me.deselectRow();
 
-            for(const widget of me.markdownwidgets) {
+            for(const widget of me.dialogmarkdownwidgets) {
                 widget.destroy();
             }
 
@@ -88,7 +111,33 @@ class PanelUI extends EventTarget {
             }
         });
 
-        me.markdownwidgets = [];
+        me.dialogmarkdownwidgets = [];
+
+        me.toHtml = function(value, type, emptyValue) {
+            let html;
+
+            switch(type) {
+                case "STRING":
+                case "ENUM":
+                case "MULTI_ENUM":
+                case "BOOLEAN":
+                case "NUMBER":
+                    html = toStringDisplay(value, emptyValue);
+                    break;
+                case "UNIX_TIMESTAMP":
+                    html = toUnixTimestampDisplay(value, emptyValue);
+                    break;
+                case "MARKDOWN":
+                    me.markdownToHtml.setMarkdown(replaceEmpty(value, ' '));
+
+                    html = me.markdownToHtml.getHTML();
+                    break;
+                default:
+                    console.log('Unknown type: ', type);
+            }
+
+            return html;
+        }
 
         me.showViewDialog = async function(key) {
             let data = await me.store.get(key);
@@ -102,23 +151,11 @@ class PanelUI extends EventTarget {
                 if(key == 'name') {
                     primaryKey = value;
                 } else {
-                    let selector = me.viewDialogElement + " ." + key + "-view";
+                    let selector = me.viewDialogElement + " ." + key + "-view",
+                        type = me.types.get(key);
 
-                    if(key === 'rationale' || key === 'action') {
-                        me.markdownwidgets.push(Editor.factory({
-                            viewer: true,
-                            usageStatistics: false,
-                            autofocus: false,
-                            initialValue: displayValue,
-                            el: document.querySelector(selector)
-                        }));
-                    } else if(key === 'expiration') {
-                        let displayValue = toUnixTimestampDisplay(value);
-                        $(selector).text(displayValue);
-                    } else {
-                        let displayValue = toStringDisplay(value, ' ');
-                        $(selector).text(displayValue);
-                    }
+                    let html = me.toHtml(value, type, ' ');
+                    $(selector).html(html);
                 }
             }
 
@@ -323,7 +360,8 @@ class PanelUI extends EventTarget {
 
                 for (const column of columns) {
                     let value = map.get(column),
-                        displayValue = toStringDisplay(value, ' ');
+                        type = me.types.get(column),
+                        displayValue = me.toHtml(value, type, ' ');
                     row = row + "<td>" + displayValue + "</td>";
                 }
 

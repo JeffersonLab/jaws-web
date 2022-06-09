@@ -36,6 +36,7 @@
     <t:panel id="instances" title="Instances" fields="${instanceFields}"/>
     <t:panel id="locations" title="Locations" fields="${locationFields}"/>
     <t:panel id="categories" title="Categories" fields="${categoryFields}"/>
+    <div style="display: none;" id="markdown-to-html"></div>
 </div>
 <div id="version-div">v<c:out value="${initParam['releaseNumber']}"/></div>
 <script src="${pageContext.request.contextPath}/resources/libs/jquery-ui-1.12.1.smoothness/external/jquery/jquery.js"></script>

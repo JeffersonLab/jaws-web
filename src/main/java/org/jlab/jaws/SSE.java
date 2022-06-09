@@ -164,7 +164,7 @@ public class SSE implements ServletContextListener {
         });
     }
 
-    private <K, V> EventSourceListener<K, V> createListener(SseEventSink sink, String eventName, KeyConverter keyConverter, List<Mixin> mixins) {
+    private <K, V> EventSourceListener<K, V> createListener(SseEventSink sink, String eventName, KeyConverter<K> keyConverter, List<Mixin> mixins) {
         return new EventSourceListener<K, V>() {
             @Override
             public void highWaterOffset(LinkedHashMap<K, EventSourceRecord<K, V>> records) {
@@ -226,7 +226,7 @@ public class SSE implements ServletContextListener {
     }
 
     private <K, V> void sendRecords(SseEventSink sink, String eventName, List<EventSourceRecord<K, V>> records,
-                                    KeyConverter keyConverter, List<Mixin> mixins) {
+                                    KeyConverter<K> keyConverter, List<Mixin> mixins) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 

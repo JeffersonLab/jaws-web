@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "View", urlPatterns = {"/view/*"})
-public class View extends HttpServlet {
+@WebServlet(name = "JAWSTypes", urlPatterns = {"/resources/modules/jaws-admin-gui/jaws-types.mjs"})
+public class JAWSTypes extends HttpServlet {
 
     @Inject
     private JAWSModel model;
@@ -37,6 +37,6 @@ public class View extends HttpServlet {
         request.setAttribute("overrideFields", model.getOverrideFields());
         request.setAttribute("registrationFields", model.getRegistrationFields());
 
-        request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/jaws-types.jsp").forward(request, response);
     }
 }

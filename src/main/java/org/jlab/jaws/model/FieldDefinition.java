@@ -9,6 +9,7 @@ public class FieldDefinition {
 
     public FieldDefinition(String name, FieldType type, boolean key, boolean inTable) {
         this.name = name;
+        this.type = type;
         this.key = key;
         this.inTable = inTable;
     }
