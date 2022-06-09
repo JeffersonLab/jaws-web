@@ -3,8 +3,20 @@ import Editor from '../toast-ui-3.1.3/toastui-all.min.mjs';
 
 let PAGE_SIZE = 100;
 
-let toDisplayValue = function(value, emptyValue) {
+let toStringDisplay = function(value, emptyValue) {
     return  (value === null || value === undefined ||  value === '') ? emptyValue : value;
+}
+
+let toUnixTimestampDisplay = function(value, emptyValue) {
+    let displayValue;
+
+    if(value === null || value === undefined ||  value === '') {
+        displayValue = emptyValue;
+    } else {
+        displayValue = (new Date(value)).toLocaleString();
+    }
+
+    return displayValue;
 }
 
 class PanelUI extends EventTarget {
@@ -92,11 +104,7 @@ class PanelUI extends EventTarget {
                 } else {
                     let selector = me.viewDialogElement + " ." + key + "-view";
 
-                    let displayValue = toDisplayValue(value, ' ');
-
-                    $(selector).text(displayValue);
-
-                    if (key == 'rationale' || key == 'action') {
+                    if(key === 'rationale' || key === 'action') {
                         me.markdownwidgets.push(Editor.factory({
                             viewer: true,
                             usageStatistics: false,
@@ -104,6 +112,12 @@ class PanelUI extends EventTarget {
                             initialValue: displayValue,
                             el: document.querySelector(selector)
                         }));
+                    } else if(key === 'expiration') {
+                        let displayValue = toUnixTimestampDisplay(value);
+                        $(selector).text(displayValue);
+                    } else {
+                        let displayValue = toStringDisplay(value, ' ');
+                        $(selector).text(displayValue);
                     }
                 }
             }
@@ -309,7 +323,7 @@ class PanelUI extends EventTarget {
 
                 for (const column of columns) {
                     let value = map.get(column),
-                        displayValue = toDisplayValue(value, ' ');
+                        displayValue = toStringDisplay(value, ' ');
                     row = row + "<td>" + displayValue + "</td>";
                 }
 
