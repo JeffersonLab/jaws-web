@@ -2,7 +2,7 @@
 Web Admin interface for [JAWS](https://github.com/JeffersonLab/jaws) to manage alarm registration classes and instances.
 
 <p>
-<a href="#"><img src="https://raw.githubusercontent.com/JeffersonLab/jaws-web-admin/master/Screenshot.png"/></a>     
+<a href="#"><img src="https://github.com/JeffersonLab/jaws-admin-gui/raw/main/src/main/webapp/resources/img/screenshot1.png"/></a>     
 </p>
 
 ---
