@@ -9,6 +9,7 @@
     <meta name="description" content="JLab Alarm Warning System Admin GUI">
     <title>JAWS Admin GUI</title>
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/img/favicon.ico"/>
+    <link rel="manifest" href="${pageContext.request.contextPath}/manifest.json">
     <c:url value="/resources/css/site.css" var="siteCssUrl">
         <c:param name="v" value="${initParam['releaseNumber']}"/>
     </c:url>
@@ -18,7 +19,7 @@
 </head>
 <body>
 <header>
-    <img width="128" height="128" alt="Logo" src="${pageContext.request.contextPath}/resources/img/logo128x128.png"/>
+    <img width="128" height="128" alt="Logo" src="${pageContext.request.contextPath}/resources/img/logo-128.png"/>
     <h1>JAWS Admin GUI</h1>
 </header>
 <div id="tabs">
