@@ -1,0 +1,16 @@
+FROM alpine
+
+ARG CUSTOM_CRT_URL=http://pki.jlab.org/JLabCA.crt
+
+RUN mkdir -p /usr/local/share/ca-certificates && \
+    wget -O /usr/local/share/ca-certificates/customcert.crt $CUSTOM_CRT_URL && \
+    cat /usr/local/share/ca-certificates/customcert.crt >> /etc/ssl/certs/ca-certificates.crt && \
+    apk update && \
+    apk add --no-cache openssl3 && \
+    rm -rf /var/cache/apk/*  && \
+    echo '#!/bin/sh' > /bin/oneshot &&  \
+    echo 'echo Q | openssl3 "$@"' >> /bin/oneshot && \
+    chmod +x /bin/oneshot
+
+ENTRYPOINT ["/bin/oneshot", "s_client", "-connect"]
+CMD ["jlab.org:443"]
