@@ -5,6 +5,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" data-context-path="${pageContext.request.contextPath}" data-app-version="${initParam['releaseNumber']}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="JLab Alarm Warning System Admin GUI">
     <title>JAWS Admin GUI</title>
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/img/favicon.ico"/>
     <c:url value="/resources/css/site.css" var="siteCssUrl">
@@ -16,7 +18,7 @@
 </head>
 <body>
 <header>
-    <img src="${pageContext.request.contextPath}/resources/img/logo128x128.png"/>
+    <img width="128" height="128" alt="Logo" src="${pageContext.request.contextPath}/resources/img/logo128x128.png"/>
     <h1>JAWS Admin GUI</h1>
 </header>
 <div id="tabs">
