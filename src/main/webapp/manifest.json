@@ -13,7 +13,7 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "/jaws/view/registrations",
+  "start_url": "/jaws/alarms",
   "background_color": "#3367D6",
   "display": "standalone",
   "scope": "/",
@@ -23,7 +23,7 @@
       "name": "Effective Alarm Registrations",
       "short_name": "Registrations",
       "description": "Registered alarm instances with class, location, and category information",
-      "url": "/jaws/view/registrations",
+      "url": "/jaws/registrations",
       "icons": [{ "src": "/jaws/resources/img/logo-192.png", "sizes": "192x192" }]
     }
   ],
@@ -32,7 +32,7 @@
     {
       "src": "/jaws/resources/img/screenshot1.png",
       "type": "image/png",
-      "sizes": "540x720"
+      "sizes": "1800x1307"
     }
   ]
 }
