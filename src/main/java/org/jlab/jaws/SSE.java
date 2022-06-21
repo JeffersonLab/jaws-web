@@ -31,10 +31,12 @@ public class SSE implements ServletContextListener {
     private final ExecutorService exec = Executors.newFixedThreadPool(10);
     private Sse sse;
 
+    private final List<Mixin> ALARM_MIXINS = new ArrayList<>();
     private final List<Mixin> ACTIVATION_MIXINS = new ArrayList<>();
     private final List<Mixin> CLASS_MIXINS = new ArrayList<>();
     private final List<Mixin> INSTANCE_MIXINS = new ArrayList<>();
     private final List<Mixin> LOCATION_MIXINS = new ArrayList<>();
+    private final List<Mixin> NOTIFICATION_MIXINS = new ArrayList<>();
     private final List<Mixin> OVERRIDE_MIXINS = new ArrayList<>();
     private final List<Mixin> REGISTRATION_MIXINS = new ArrayList<>();
 
@@ -63,12 +65,19 @@ public class SSE implements ServletContextListener {
         OVERRIDE_MIXINS.add(new Mixin(MaskedOverride.class, MaskedOverrideMixin.class));
         OVERRIDE_MIXINS.add(new Mixin(ShelvedOverride.class, ShelvedOverrideMixin.class));
 
+        // Effective entities
+        NOTIFICATION_MIXINS.add(new Mixin(EffectiveActivation.class, EffectiveNotificationMixin.class));
+        NOTIFICATION_MIXINS.add(new Mixin(AlarmOverrideSet.class, AlarmOverrideSetMixin.class));
+        NOTIFICATION_MIXINS.addAll(ACTIVATION_MIXINS);
+        NOTIFICATION_MIXINS.addAll(OVERRIDE_MIXINS);
+
         REGISTRATION_MIXINS.add(new Mixin(EffectiveRegistration.class, EffectiveRegistrationMixin.class));
-        REGISTRATION_MIXINS.add(new Mixin(AlarmInstance.class, AlarmInstanceMixin.class));
-        REGISTRATION_MIXINS.add(new Mixin(SimpleProducer.class, SimpleProducerMixin.class));
-        REGISTRATION_MIXINS.add(new Mixin(EPICSProducer.class, EPICSProducerMixin.class));
-        REGISTRATION_MIXINS.add(new Mixin(CALCProducer.class, CALCProducerMixin.class));
-        REGISTRATION_MIXINS.add(new Mixin(AlarmClass.class, AlarmClassMixin.class));
+        REGISTRATION_MIXINS.addAll(INSTANCE_MIXINS);
+        REGISTRATION_MIXINS.addAll(CLASS_MIXINS);
+
+        ALARM_MIXINS.add(new Mixin(EffectiveAlarm.class, EffectiveAlarmMixin.class));
+        ALARM_MIXINS.addAll(NOTIFICATION_MIXINS);
+        ALARM_MIXINS.addAll(REGISTRATION_MIXINS);
     }
 
     @Override
@@ -93,19 +102,23 @@ public class SSE implements ServletContextListener {
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void listen(@Context final SseEventSink sink,
+                       @QueryParam("alarmIndex") @DefaultValue("-1") long alarmIndex,
                        @QueryParam("activationIndex") @DefaultValue("-1") long activationIndex,
                        @QueryParam("categoryIndex") @DefaultValue("-1") long categoryIndex,
                        @QueryParam("classIndex") @DefaultValue("-1") long classIndex,
                        @QueryParam("instanceIndex") @DefaultValue("-1") long instanceIndex,
                        @QueryParam("locationIndex") @DefaultValue("-1") long locationIndex,
+                       @QueryParam("notificationIndex") @DefaultValue("-1") long notificationIndex,
                        @QueryParam("overrideIndex") @DefaultValue("-1") long overrideIndex,
                        @QueryParam("registrationIndex") @DefaultValue("-1") long registrationIndex) {
         System.err.println("Proxy connected: " +
-                "activationIndex: " + activationIndex +
+                "alarmIndex: " + alarmIndex +
+                ", activationIndex: " + activationIndex +
                 ", categoryIndex: " + categoryIndex +
                 ", classIndex: " + classIndex +
                 ", instanceIndex: " + instanceIndex +
                 ", locationIndex: " + locationIndex +
+                ", notificationIndex: " + notificationIndex +
                 ", overrideIndex: " + overrideIndex +
                 ", registrationIndex: " + registrationIndex);
 
@@ -113,38 +126,46 @@ public class SSE implements ServletContextListener {
 
             @Override
             public void run() {
+                final Properties alarmProps = getConsumerPropsWithRegistry(alarmIndex);
                 final Properties activationProps = getConsumerPropsWithRegistry(activationIndex);
                 final Properties categoryProps = getConsumerProps(categoryIndex);
                 final Properties classProps = getConsumerPropsWithRegistry(classIndex);
                 final Properties instanceProps = getConsumerPropsWithRegistry(instanceIndex);
                 final Properties locationProps = getConsumerPropsWithRegistry(locationIndex);
+                final Properties notificationProps = getConsumerPropsWithRegistry(notificationIndex);
                 final Properties overrideProps = getConsumerPropsWithRegistry(overrideIndex);
                 final Properties registrationProps = getConsumerPropsWithRegistry(registrationIndex);
 
                 try (
+                        EffectiveAlarmConsumer alarmConsumer = new EffectiveAlarmConsumer(alarmProps);
                         ActivationConsumer activationConsumer = new ActivationConsumer(activationProps);
                         CategoryConsumer categoryConsumer = new CategoryConsumer(categoryProps);
                         ClassConsumer classConsumer = new ClassConsumer(classProps);
                         InstanceConsumer instanceConsumer = new InstanceConsumer(instanceProps);
                         LocationConsumer locationConsumer = new LocationConsumer(locationProps);
+                        EffectiveActivationConsumer notificationConsumer = new EffectiveActivationConsumer(notificationProps);
                         OverrideConsumer overrideConsumer = new OverrideConsumer(overrideProps);
                         EffectiveRegistrationConsumer registrationConsumer = new EffectiveRegistrationConsumer(registrationProps)
                 ) {
                     StringKeyConverter strKeyConv = new StringKeyConverter();
 
+                    alarmConsumer.addListener(createListener(sink, "alarm", strKeyConv, ALARM_MIXINS));
                     activationConsumer.addListener(createListener(sink, "activation", strKeyConv, ACTIVATION_MIXINS));
                     categoryConsumer.addListener(createListener(sink, "category", strKeyConv, null));
                     classConsumer.addListener(createListener(sink, "class", strKeyConv, CLASS_MIXINS));
                     instanceConsumer.addListener(createListener(sink, "instance", strKeyConv, INSTANCE_MIXINS));
                     locationConsumer.addListener(createListener(sink, "location", strKeyConv, LOCATION_MIXINS));
+                    notificationConsumer.addListener(createListener(sink, "notification", strKeyConv, NOTIFICATION_MIXINS));
                     overrideConsumer.addListener(createListener(sink, "override", new OverrideKeyConverter(), OVERRIDE_MIXINS));
                     registrationConsumer.addListener(createListener(sink, "registration", strKeyConv, REGISTRATION_MIXINS));
 
+                    alarmConsumer.start();
                     activationConsumer.start();
                     categoryConsumer.start();
                     classConsumer.start();
                     instanceConsumer.start();
                     locationConsumer.start();
+                    notificationConsumer.start();
                     overrideConsumer.start();
                     registrationConsumer.start();
 

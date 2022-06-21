@@ -1,5 +1,5 @@
 import db from './resources/modules/jaws-admin-gui-@VERSION@/db.mjs';
-import {AlarmActivation, AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, AlarmOverride, EffectiveRegistration, KafkaLogPosition} from "./resources/modules/jaws-admin-gui-@VERSION@/entities.mjs";
+import {AlarmActivation, AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, AlarmOverride, EffectiveAlarm, EffectiveNotification, EffectiveRegistration, KafkaLogPosition} from "./resources/modules/jaws-admin-gui-@VERSION@/entities.mjs";
 
 const urlObject = new URL(self.location);
 const contextPath = '/' + urlObject.pathname.split('/')[1];
@@ -57,6 +57,13 @@ class BackgroundWorker {
     }
 }
 
+let toAlarm = function(key, value) {
+    return new EffectiveAlarm(
+        key,
+        value.state
+    );
+}
+
 let toActivation = function(key, value) {
     return new AlarmActivation(
         key,
@@ -104,6 +111,13 @@ let toLocation = function(key, value) {
     )
 }
 
+let toNotification = function(key, value) {
+    return new EffectiveNotification(
+        key,
+        value.state
+    );
+}
+
 let toOverride = function(key, value) {
     return new AlarmOverride(
         key,
@@ -136,11 +150,13 @@ let toRegistration = function(key, value) {
 }
 
 async function init() {
-    const workers = [new BackgroundWorker('activation', toActivation, db.activations),
+    const workers = [new BackgroundWorker('alarm', toAlarm, db.alarms),
+        new BackgroundWorker('activation', toActivation, db.activations),
         new BackgroundWorker('category', toCategory, db.categories),
         new BackgroundWorker('class', toClass, db.classes),
         new BackgroundWorker('instance', toInstance, db.instances),
         new BackgroundWorker('location', toLocation, db.locations),
+        new BackgroundWorker('notification', toNotification, db.notifications),
         new BackgroundWorker('override', toOverride, db.overrides),
         new BackgroundWorker('registration', toRegistration, db.registrations)]
 

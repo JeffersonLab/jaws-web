@@ -24,6 +24,8 @@
 </header>
 <div id="tabs">
     <ul>
+        <li><a href="#alarms-panel">Alarms</a></li>
+        <li><a href="#notifications-panel">Notifications</a></li>
         <li><a href="#registrations-panel">Registrations</a></li>
         <li><a href="#activations-panel">Activations</a></li>
         <li><a href="#overrides-panel">Overrides</a></li>
@@ -32,6 +34,8 @@
         <li><a href="#locations-panel">Locations</a></li>
         <li><a href="#categories-panel">Categories</a></li>
     </ul>
+    <t:panel id="alarms" title="Alarms" fields="${alarmFields}" editable="false"/>
+    <t:panel id="notifications" title="Notifications" fields="${notificationFields}" editable="false"/>
     <t:panel id="registrations" title="Registrations" fields="${registrationFields}" editable="false"/>
     <t:panel id="activations" title="Activations" fields="${activationFields}" editable="false"/>
     <t:panel id="overrides" title="Overrides" fields="${overrideFields}"/>

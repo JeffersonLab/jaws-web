@@ -58,19 +58,21 @@ class PanelController {
     }
 }
 
-let controllers = [new PanelController(0, 'registration', 'registrations', 'Registration', 'Registrations', db.registrations, '/registrations'),
-                   new PanelController(1, 'activation', 'activations', 'Activation', 'Activations', db.activations, '/activations'),
-                   new PanelController(2, 'override', 'overrides', 'Override', 'Overrides', db.overrides, '/overrides'),
-                   new PanelController(3, 'class', 'classes', 'Class', 'Classes', db.classes, '/classes'),
-                   new PanelController(4, 'instance', 'instances', 'Instance', 'Instances', db.instances, '/instances'),
-                   new PanelController(5, 'location', 'locations', 'Location', 'Locations', db.locations, '/locations'),
-                   new PanelController(6, 'category', 'categories', 'Category', 'Categories', db.categories, '/categories')];
+let controllers = [new PanelController(0, 'alarm', 'alarms', 'Alarm', 'Alarms', db.alarms, '/alarms'),
+                   new PanelController(1, 'notification', 'notifications', 'Notification', 'Notifications', db.notifications, '/notifications'),
+                   new PanelController(2, 'registration', 'registrations', 'Registration', 'Registrations', db.registrations, '/registrations'),
+                   new PanelController(3, 'activation', 'activations', 'Activation', 'Activations', db.activations, '/activations'),
+                   new PanelController(4, 'override', 'overrides', 'Override', 'Overrides', db.overrides, '/overrides'),
+                   new PanelController(5, 'class', 'classes', 'Class', 'Classes', db.classes, '/classes'),
+                   new PanelController(6, 'instance', 'instances', 'Instance', 'Instances', db.instances, '/instances'),
+                   new PanelController(7, 'location', 'locations', 'Location', 'Locations', db.locations, '/locations'),
+                   new PanelController(8, 'category', 'categories', 'Category', 'Categories', db.categories, '/categories')];
 
 
 page.base(contextPath);
 
 page('/', function() {
-    page('/registrations');
+    page('/alarms');
 });
 
 page();
@@ -83,6 +85,9 @@ $(function () {
             i.newPanel.css("display", "flex");
 
             switch (i.newTab.context.innerText) {
+                case 'Alarms':
+                    page('/alarms');
+                    break;
                 case 'Activations':
                     page('/activations');
                     break;
@@ -97,6 +102,9 @@ $(function () {
                     break;
                 case 'Locations':
                     page('/locations');
+                    break;
+                case 'Notifications':
+                    page('/notifications');
                     break;
                 case 'Overrides':
                     page('/overrides');

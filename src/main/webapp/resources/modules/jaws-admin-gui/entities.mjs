@@ -59,10 +59,11 @@ class AlarmOverride {
     }
 }
 
-class EffectiveRegistration {
-    constructor(name, clazz, priority, location, category, rationale, action, contact,
+class EffectiveAlarm {
+    constructor(name, state, clazz, priority, location, category, rationale, action, contact,
                 filterable, latching, ondelay, offdelay, maskedby, screencommand, epicspv) {
         this.name = name;
+        this.state = state;
         this.class = clazz;
         this.priority = priority;
         this.location = location;
@@ -80,7 +81,14 @@ class EffectiveRegistration {
     }
 }
 
-class EffectiveAlarm {
+class EffectiveNotification {
+    constructor(name, state) {
+        this.name = name;
+        this.state = state;
+    }
+}
+
+class EffectiveRegistration {
     constructor(name, clazz, priority, location, category, rationale, action, contact,
                 filterable, latching, ondelay, offdelay, maskedby, screencommand, epicspv) {
         this.name = name;
@@ -108,4 +116,4 @@ class KafkaLogPosition {
     }
 }
 
-export {AlarmActivation, AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, AlarmOverride, EffectiveRegistration, KafkaLogPosition}
+export {AlarmActivation, AlarmCategory, AlarmClass, AlarmInstance, AlarmLocation, AlarmOverride, EffectiveAlarm, EffectiveNotification, EffectiveRegistration, KafkaLogPosition}
