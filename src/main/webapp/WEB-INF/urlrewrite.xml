@@ -1,12 +1,5 @@
 <urlrewrite>
     <rule>
-        <note>
-            Redirect from root to frontend
-        </note>
-        <from>^/$</from>
-        <to type="redirect">view</to>
-    </rule>
-    <rule>
         <note>Rewrite app version in modules for cache busting</note>
         <from>^/resources/modules/jaws-admin-gui-(.*)/(.*)$</from>
         <to>/resources/modules/jaws-admin-gui/$2</to>

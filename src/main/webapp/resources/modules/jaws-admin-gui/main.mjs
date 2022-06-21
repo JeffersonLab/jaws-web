@@ -67,10 +67,9 @@ let controllers = [new PanelController(0, 'registration', 'registrations', 'Regi
                    new PanelController(6, 'category', 'categories', 'Category', 'Categories', db.categories, '/categories')];
 
 
-page.base(contextPath + '/view');
+page.base(contextPath);
 
 page('/', function() {
-    console.log('tabs init');
     page('/registrations');
 });
 
