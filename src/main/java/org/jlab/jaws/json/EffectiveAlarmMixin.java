@@ -10,10 +10,8 @@ import org.jlab.jaws.entity.EffectiveRegistration;
 public
 interface EffectiveAlarmMixin {
     @JsonProperty
-    @JsonUnwrapped
-    EffectiveActivation getNotification();
+    EffectiveActivation getActivation();
 
     @JsonProperty
-    @JsonUnwrapped
     EffectiveRegistration getRegistration();
 }

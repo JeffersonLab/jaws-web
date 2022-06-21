@@ -58,9 +58,42 @@ class BackgroundWorker {
 }
 
 let toAlarm = function(key, value) {
+
+    value.registration = value.registration || {};
+    value.activation = value.activation || {};
+    value.activation.overrides = value.activation.overrides || {};
+    value.activation.actual = value.activation.actual || {};
+
     return new EffectiveAlarm(
         key,
-        value.state
+        value.registration.priority,
+        value.registration.category,
+        value.registration.rationale,
+        value.registration.action,
+        value.registration.contact,
+        value.registration.filterable,
+        value.registration.latching,
+        value.registration.ondelay,
+        value.registration.offdelay,
+        value.registration.class,
+        value.registration.location,
+        value.registration.maskedby,
+        value.registration.screencommand,
+        value.registration.producer.pv,
+        value.activation.state,
+        value.activation.overrides.disabled ? value.activation.overrides.disabled.comments : undefined,
+        value.activation.overrides.ondelayed ? value.activation.overrides.ondelayed.expiration : undefined,
+        value.activation.overrides.offdelayed ? value.activation.overrides.offdelayed.expiration: undefined,
+        value.activation.overrides.filtered ? value.activation.overrides.filtered.filtername : undefined,
+        value.activation.overrides.shelved ? value.activation.overrides.shelved.oneshot : undefined,
+        value.activation.overrides.shelved ? value.activation.overrides.shelved.reason : undefined,
+        value.activation.overrides.shelved ? value.activation.overrides.shelved.comments : undefined,
+        value.activation.overrides.latched ? true : false,
+        value.activation.overrides.masked ? true : false,
+        value.activation.actual.error,
+        value.activation.actual.note,
+        value.activation.actual.sevr,
+        value.activation.actual.stat
     );
 }
 
@@ -112,9 +145,28 @@ let toLocation = function(key, value) {
 }
 
 let toNotification = function(key, value) {
+
+    console.log(key, value);
+
+    value.overrides = value.overrides || {};
+    value.actual = value.actual || {};
+
     return new EffectiveNotification(
         key,
-        value.state
+        value.state,
+        value.overrides.disabled ? value.overrides.disabled.comments : undefined,
+        value.overrides.ondelayed ? value.overrides.ondelayed.expiration : undefined,
+        value.overrides.offdelayed ? value.overrides.offdelayed.expiration : undefined,
+        value.overrides.filtered ? value.overrides.filtered.filtername : undefined,
+        value.overrides.shelved ? value.overrides.shelved.oneshot : undefined,
+        value.overrides.shelved ? value.overrides.shelved.reason : undefined,
+        value.overrides.shelved ? value.overrides.shelved.comments : undefined,
+        value.overrides.latched ? true : false,
+        value.overrides.masked ? true : false,
+        value.actual.error,
+        value.actual.note,
+        value.actual.sevr,
+        value.actual.stat
     );
 }
 

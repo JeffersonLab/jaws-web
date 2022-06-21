@@ -2,14 +2,12 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@attribute name="id" required="true" type="java.lang.String"%>
 <%@attribute name="title" required="true" type="java.lang.String"%>
-<%@attribute name="fields" required="true" type="java.util.List"%>
+<%@attribute name="model" required="true" type="org.jlab.jaws.model.EntityModel"%>
 <div class="dialog" id="${id}-view-dialog" title="${title}">
     <dl>
-        <c:forEach items="${fields}" var="field">
-            <c:if test="${!field.isKey()}">
-                <dt><c:out value="${field.name}"/></dt>
-                <dd class="${field.name}-view"></dd>
-            </c:if>
+        <c:forEach items="${model.valueFields}" var="field">
+            <dt><c:out value="${field.name}"/></dt>
+            <dd class="${field.name}-view"></dd>
         </c:forEach>
     </dl>
 </div>

@@ -3,7 +3,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@attribute name="id" required="true" type="java.lang.String"%>
 <%@attribute name="title" required="true" type="java.lang.String"%>
-<%@attribute name="fields" required="true" type="java.util.List"%>
+<%@attribute name="model" required="true" type="org.jlab.jaws.model.EntityModel"%>
 <%@attribute name="editable" required="false" type="java.lang.Boolean"%>
 <div class="panel" id="${id}-panel">
     <div class="toolbar">
@@ -24,7 +24,7 @@
         <span>Records: </span><span class="record-count"></span>
     </div>
     <div class="table-wrap">
-        <t:table id="${id}" fields="${fields}"/>
+        <t:table id="${id}" model="${model}"/>
     </div>
-    <t:view-dialog id="${id}" title="${title}" fields="${fields}"/>
+    <t:view-dialog id="${id}" title="${title}" model="${model}"/>
 </div>

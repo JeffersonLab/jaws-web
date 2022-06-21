@@ -29,15 +29,7 @@ public class JAWSTypes extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.setAttribute("alarmFields", model.getAlarmFields());
-        request.setAttribute("activationFields", model.getActivationFields());
-        request.setAttribute("categoryFields", model.getCategoryFields());
-        request.setAttribute("classFields", model.getClassFields());
-        request.setAttribute("instanceFields", model.getInstanceFields());
-        request.setAttribute("locationFields", model.getLocationFields());
-        request.setAttribute("notificationFields", model.getNotificationFields());
-        request.setAttribute("overrideFields", model.getOverrideFields());
-        request.setAttribute("registrationFields", model.getRegistrationFields());
+        request.setAttribute("model", model);
 
         request.getRequestDispatcher("/WEB-INF/views/jaws-types.jsp").forward(request, response);
     }

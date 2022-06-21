@@ -9,11 +9,9 @@ import org.jlab.jaws.entity.*;
 public
 interface EffectiveNotificationMixin {
     @JsonProperty
-    @JsonUnwrapped
     AlarmActivationUnion getActivation();
 
     @JsonProperty
-    @JsonUnwrapped
     AlarmOverrideSet getOverrides();
 
     @JsonProperty

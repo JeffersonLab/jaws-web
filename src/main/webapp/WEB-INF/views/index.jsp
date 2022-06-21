@@ -34,15 +34,15 @@
         <li><a href="#locations-panel">Locations</a></li>
         <li><a href="#categories-panel">Categories</a></li>
     </ul>
-    <t:panel id="alarms" title="Alarms" fields="${alarmFields}" editable="false"/>
-    <t:panel id="notifications" title="Notifications" fields="${notificationFields}" editable="false"/>
-    <t:panel id="registrations" title="Registrations" fields="${registrationFields}" editable="false"/>
-    <t:panel id="activations" title="Activations" fields="${activationFields}" editable="false"/>
-    <t:panel id="overrides" title="Overrides" fields="${overrideFields}"/>
-    <t:panel id="classes" title="Classes" fields="${classFields}"/>
-    <t:panel id="instances" title="Instances" fields="${instanceFields}"/>
-    <t:panel id="locations" title="Locations" fields="${locationFields}"/>
-    <t:panel id="categories" title="Categories" fields="${categoryFields}"/>
+    <t:panel id="alarms" title="Alarms" model="${model.alarmModel}" editable="false"/>
+    <t:panel id="notifications" title="Notifications" model="${model.notificationModel}" editable="false"/>
+    <t:panel id="registrations" title="Registrations" model="${model.registrationModel}" editable="false"/>
+    <t:panel id="activations" title="Activations" model="${model.activationModel}" editable="false"/>
+    <t:panel id="overrides" title="Overrides" model="${model.overrideModel}"/>
+    <t:panel id="classes" title="Classes" model="${model.classModel}"/>
+    <t:panel id="instances" title="Instances" model="${model.instanceModel}"/>
+    <t:panel id="locations" title="Locations" model="${model.locationModel}"/>
+    <t:panel id="categories" title="Categories" model="${model.categoryModel}"/>
     <div style="display: none;" id="markdown-to-html"></div>
 </div>
 <div id="version-div">v<c:out value="${initParam['releaseNumber']}"/></div>

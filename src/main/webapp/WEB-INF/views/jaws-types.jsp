@@ -2,13 +2,13 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 const jawsTypes = {};
-<t:type-map id="alarms" fields="${alarmFields}"/>
-<t:type-map id="registrations" fields="${registrationFields}"/>
-<t:type-map id="activations" fields="${activationFields}"/>
-<t:type-map id="overrides" fields="${overrideFields}"/>
-<t:type-map id="classes" fields="${classFields}"/>
-<t:type-map id="instances" fields="${instanceFields}"/>
-<t:type-map id="notifications" fields="${notificationFields}"/>
-<t:type-map id="locations" fields="${locationFields}"/>
-<t:type-map id="categories" fields="${categoryFields}"/>
+<t:type-map id="alarms" model="${model.alarmModel}"/>
+<t:type-map id="registrations" model="${model.registrationModel}"/>
+<t:type-map id="activations" model="${model.activationModel}"/>
+<t:type-map id="overrides" model="${model.overrideModel}"/>
+<t:type-map id="classes" model="${model.classModel}"/>
+<t:type-map id="instances" model="${model.instanceModel}"/>
+<t:type-map id="notifications" model="${model.notificationModel}"/>
+<t:type-map id="locations" model="${model.locationModel}"/>
+<t:type-map id="categories" model="${model.categoryModel}"/>
 export default jawsTypes;

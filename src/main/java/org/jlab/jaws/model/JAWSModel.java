@@ -2,113 +2,164 @@ package org.jlab.jaws.model;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @ApplicationScoped
 public class JAWSModel {
-    private List<FieldDefinition> alarmFields = new ArrayList<>();
-    private List<FieldDefinition> activationFields = new ArrayList<>();
-    private List<FieldDefinition> categoryFields = new ArrayList<>();
-    private List<FieldDefinition> classFields = new ArrayList<>();
-    private List<FieldDefinition> instanceFields = new ArrayList<>();
-    private List<FieldDefinition> locationFields = new ArrayList<>();
-    private List<FieldDefinition> notificationFields = new ArrayList<>();
-    private List<FieldDefinition> overrideFields = new ArrayList<>();
-    private List<FieldDefinition> registrationFields = new ArrayList<>();
+    private EntityModel alarmModel = new EntityModel();
+    private EntityModel activationModel = new EntityModel();
+    private EntityModel categoryModel = new EntityModel();
+    private EntityModel classModel = new EntityModel();
+    private EntityModel instanceModel = new EntityModel();
+    private EntityModel locationModel = new EntityModel();
+    private EntityModel notificationModel = new EntityModel();
+    private EntityModel overrideModel = new EntityModel();
+    private EntityModel registrationModel = new EntityModel();
 
     public JAWSModel() {
-        alarmFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
-        alarmFields.add(new FieldDefinition("state", FieldType.STRING, false, true));
+        List<FieldDefinition> keyFields;
+        List<FieldDefinition> valueFields;
 
-        activationFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
-        activationFields.add(new FieldDefinition("error", FieldType.STRING, false, true));
-        activationFields.add(new FieldDefinition("note", FieldType.STRING, false, false));
-        activationFields.add(new FieldDefinition("sevr", FieldType.STRING, false, false));
-        activationFields.add(new FieldDefinition("stat", FieldType.STRING, false, false));
+        activationModel.setTableColumns(Arrays.asList(new String[]{"name", "error"}));
+        keyFields = new ArrayList<>();
+        keyFields.add(new FieldDefinition("name", FieldType.STRING));
+        activationModel.setKeyFields(keyFields);
+        valueFields = new ArrayList<>();
+        valueFields.add(new FieldDefinition("error", FieldType.STRING));
+        valueFields.add(new FieldDefinition("note", FieldType.STRING));
+        valueFields.add(new FieldDefinition("sevr", FieldType.STRING));
+        valueFields.add(new FieldDefinition("stat", FieldType.STRING));
+        activationModel.setValueFields(valueFields);
 
-        categoryFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
+        categoryModel.setTableColumns(Arrays.asList(new String[]{"name"}));
+        keyFields = new ArrayList<>();
+        keyFields.add(new FieldDefinition("name", FieldType.STRING));
+        categoryModel.setKeyFields(keyFields);
+        valueFields = new ArrayList<>();
+        categoryModel.setValueFields(valueFields);
 
-        classFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
-        classFields.add(new FieldDefinition("category", FieldType.STRING, false, true));
-        classFields.add(new FieldDefinition("priority", FieldType.ENUM, false, true));
-        classFields.add(new FieldDefinition("rationale", FieldType.MARKDOWN, false, false));
-        classFields.add(new FieldDefinition("action", FieldType.MARKDOWN, false, false));
-        classFields.add(new FieldDefinition("latching", FieldType.BOOLEAN, false, false));
-        classFields.add(new FieldDefinition("filterable", FieldType.BOOLEAN, false, false));
-        classFields.add(new FieldDefinition("ondelay", FieldType.NUMBER,false, false));
-        classFields.add(new FieldDefinition("offdelay", FieldType.NUMBER, false, false));
-        classFields.add(new FieldDefinition("contact", FieldType.STRING, false, true));
+        classModel.setTableColumns(Arrays.asList(new String[]{"name", "category", "priority", "contact"}));
+        keyFields = new ArrayList<>();
+        keyFields.add(new FieldDefinition("name", FieldType.STRING));
+        classModel.setKeyFields(keyFields);
+        valueFields = new ArrayList<>();
+        valueFields.add(new FieldDefinition("category", FieldType.STRING));
+        valueFields.add(new FieldDefinition("priority", FieldType.ENUM));
+        valueFields.add(new FieldDefinition("rationale", FieldType.MARKDOWN));
+        valueFields.add(new FieldDefinition("action", FieldType.MARKDOWN));
+        valueFields.add(new FieldDefinition("latching", FieldType.BOOLEAN));
+        valueFields.add(new FieldDefinition("filterable", FieldType.BOOLEAN));
+        valueFields.add(new FieldDefinition("ondelay", FieldType.NUMBER));
+        valueFields.add(new FieldDefinition("offdelay", FieldType.NUMBER));
+        valueFields.add(new FieldDefinition("contact", FieldType.STRING));
+        classModel.setValueFields(valueFields);
 
-        instanceFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
-        instanceFields.add(new FieldDefinition("class", FieldType.STRING, false, true));
-        instanceFields.add(new FieldDefinition("location", FieldType.MULTI_ENUM, false, true));
-        instanceFields.add(new FieldDefinition("epicspv", FieldType.STRING, false, true));
-        instanceFields.add(new FieldDefinition("maskedby", FieldType.STRING, false, false));
-        instanceFields.add(new FieldDefinition("screencommand", FieldType.STRING, false, false));
+        instanceModel.setTableColumns(Arrays.asList(new String[]{"name", "class", "location", "epicspv"}));
+        keyFields = new ArrayList<>();
+        keyFields.add(new FieldDefinition("name", FieldType.STRING));
+        instanceModel.setKeyFields(keyFields);
+        valueFields = new ArrayList<>();
+        valueFields.add(new FieldDefinition("class", FieldType.STRING));
+        valueFields.add(new FieldDefinition("location", FieldType.MULTI_ENUM));
+        valueFields.add(new FieldDefinition("epicspv", FieldType.STRING));
+        valueFields.add(new FieldDefinition("maskedby", FieldType.STRING));
+        valueFields.add(new FieldDefinition("screencommand", FieldType.STRING));
+        instanceModel.setValueFields(valueFields);
 
-        locationFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
-        locationFields.add(new FieldDefinition("parent", FieldType.STRING, false, true));
+        locationModel.setTableColumns(Arrays.asList(new String[]{"name", "parent"}));
+        keyFields = new ArrayList<>();
+        keyFields.add(new FieldDefinition("name", FieldType.STRING));
+        locationModel.setKeyFields(keyFields);
+        valueFields = new ArrayList<>();
+        valueFields.add(new FieldDefinition("parent", FieldType.STRING));
+        locationModel.setValueFields(valueFields);
 
-        notificationFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
-        notificationFields.add(new FieldDefinition("state", FieldType.STRING, false, true));
+        overrideModel.setTableColumns(Arrays.asList(new String[]{"name"}));
+        keyFields = new ArrayList<>();
+        keyFields.add(new FieldDefinition("name", FieldType.STRING));
+        overrideModel.setKeyFields(keyFields);
+        valueFields = new ArrayList<>();
+        valueFields.add(new FieldDefinition("comments", FieldType.STRING));
+        valueFields.add(new FieldDefinition("expiration", FieldType.UNIX_TIMESTAMP));
+        valueFields.add(new FieldDefinition("filtername", FieldType.STRING));
+        valueFields.add(new FieldDefinition("oneshot", FieldType.BOOLEAN));
+        valueFields.add(new FieldDefinition("reason", FieldType.ENUM));
+        overrideModel.setValueFields(valueFields);
 
-        overrideFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
-        overrideFields.add(new FieldDefinition("comments", FieldType.STRING, false, false));
-        overrideFields.add(new FieldDefinition("expiration", FieldType.UNIX_TIMESTAMP, false, false));
-        overrideFields.add(new FieldDefinition("filtername", FieldType.STRING, false, false));
-        overrideFields.add(new FieldDefinition("oneshot", FieldType.BOOLEAN, false, false));
-        overrideFields.add(new FieldDefinition("reason", FieldType.ENUM, false, false));
 
-        registrationFields.add(new FieldDefinition("name", FieldType.STRING, true, true));
-        registrationFields.add(new FieldDefinition("category", FieldType.STRING, false, true));
-        registrationFields.add(new FieldDefinition("class", FieldType.STRING, false, true));
-        registrationFields.add(new FieldDefinition("location", FieldType.MULTI_ENUM, false, true));
-        registrationFields.add(new FieldDefinition("priority", FieldType.ENUM, false, true));
-        registrationFields.add(new FieldDefinition("rationale", FieldType.MARKDOWN, false, false));
-        registrationFields.add(new FieldDefinition("action", FieldType.MARKDOWN, false, false));
-        registrationFields.add(new FieldDefinition("latching", FieldType.BOOLEAN, false, false));
-        registrationFields.add(new FieldDefinition("filterable", FieldType.BOOLEAN, false, false));
-        registrationFields.add(new FieldDefinition("ondelay", FieldType.NUMBER, false, false));
-        registrationFields.add(new FieldDefinition("offdelay", FieldType.NUMBER, false, false));
-        registrationFields.add(new FieldDefinition("contact", FieldType.STRING, false, true));
-        registrationFields.add(new FieldDefinition("epicspv", FieldType.STRING, false, true));
-        registrationFields.add(new FieldDefinition("maskedby", FieldType.STRING, false, false));
-        registrationFields.add(new FieldDefinition("screencommand", FieldType.STRING, false, false));
+        // Effective entities
+
+        notificationModel.setTableColumns(Arrays.asList(new String[]{"name", "state"}));
+        keyFields = new ArrayList<>();
+        keyFields.add(new FieldDefinition("name", FieldType.STRING));
+        notificationModel.setKeyFields(keyFields);
+        valueFields = new ArrayList<>();
+        valueFields.add(new FieldDefinition("state", FieldType.STRING));
+        valueFields.add(new FieldDefinition("disabled_comments", FieldType.STRING));
+        valueFields.add(new FieldDefinition("ondelayed_expiration", FieldType.UNIX_TIMESTAMP));
+        valueFields.add(new FieldDefinition("offdelayed_expiration", FieldType.UNIX_TIMESTAMP));
+        valueFields.add(new FieldDefinition("filtered_filtername", FieldType.STRING));
+        valueFields.add(new FieldDefinition("shelved_oneshot", FieldType.BOOLEAN));
+        valueFields.add(new FieldDefinition("shelved_reason", FieldType.ENUM));
+        valueFields.add(new FieldDefinition("shelved_comments", FieldType.STRING));
+        valueFields.add(new FieldDefinition("latched", FieldType.BOOLEAN));
+        valueFields.add(new FieldDefinition("masked", FieldType.BOOLEAN));
+        valueFields.addAll(activationModel.getValueFields());
+        notificationModel.setValueFields(valueFields);
+
+        registrationModel.setTableColumns(Arrays.asList(new String[]{"name", "category", "class", "location", "priority", "contact", "epicspv"}));
+        keyFields = new ArrayList<>();
+        keyFields.add(new FieldDefinition("name", FieldType.STRING));
+        registrationModel.setKeyFields(keyFields);
+        valueFields = new ArrayList<>();
+        valueFields.addAll(classModel.getValueFields());
+        valueFields.addAll(instanceModel.getValueFields());
+        registrationModel.setValueFields(valueFields);
+
+        alarmModel.setTableColumns(Arrays.asList(new String[]{"name", "state", "priority"}));
+        keyFields = new ArrayList<>();
+        keyFields.add(new FieldDefinition("name", FieldType.STRING));
+        alarmModel.setKeyFields(keyFields);
+        valueFields = new ArrayList<>();
+        valueFields.addAll(registrationModel.getValueFields());
+        valueFields.addAll(notificationModel.getValueFields());
+        alarmModel.setValueFields(valueFields);
     }
 
-    public List<FieldDefinition> getAlarmFields() {
-        return alarmFields;
+    public EntityModel getAlarmModel() {
+        return alarmModel;
     }
 
-    public List<FieldDefinition> getActivationFields() {
-        return activationFields;
+    public EntityModel getActivationModel() {
+        return activationModel;
     }
 
-    public List<FieldDefinition> getCategoryFields() {
-        return categoryFields;
+    public EntityModel getCategoryModel() {
+        return categoryModel;
     }
 
-    public List<FieldDefinition> getClassFields() {
-        return classFields;
+    public EntityModel getClassModel() {
+        return classModel;
     }
 
-    public List<FieldDefinition> getInstanceFields() {
-        return instanceFields;
+    public EntityModel getInstanceModel() {
+        return instanceModel;
     }
 
-    public List<FieldDefinition> getLocationFields() {
-        return locationFields;
+    public EntityModel getLocationModel() {
+        return locationModel;
     }
 
-    public List<FieldDefinition> getNotificationFields() {
-        return notificationFields;
+    public EntityModel getNotificationModel() {
+        return notificationModel;
     }
 
-    public List<FieldDefinition> getOverrideFields() {
-        return overrideFields;
+    public EntityModel getOverrideModel() {
+        return overrideModel;
     }
 
-    public List<FieldDefinition> getRegistrationFields() {
-        return registrationFields;
+    public EntityModel getRegistrationModel() {
+        return registrationModel;
     }
 }

@@ -60,13 +60,11 @@ class AlarmOverride {
 }
 
 class EffectiveAlarm {
-    constructor(name, state, clazz, priority, location, category, rationale, action, contact,
-                filterable, latching, ondelay, offdelay, maskedby, screencommand, epicspv) {
+    constructor(name, priority, category, rationale, action, contact, filterable, latching,
+                ondelay, offdelay, clazz, location, maskedby, screencommand, epicspv, state) {
         this.name = name;
-        this.state = state;
-        this.class = clazz;
+
         this.priority = priority;
-        this.location = location;
         this.category = category;
         this.rationale = rationale;
         this.action = action;
@@ -75,16 +73,35 @@ class EffectiveAlarm {
         this.latching = latching;
         this.ondelay = ondelay;
         this.offdelay = offdelay;
+
+        this.class = clazz;
+        this.location = location;
         this.maskedby = maskedby;
         this.screencommand = screencommand;
         this.epicspv = epicspv;
+
+        this.state = state;
     }
 }
 
 class EffectiveNotification {
-    constructor(name, state) {
+    constructor(name, state, disabled_comments, ondelayed_expiration, offdelayed_expiration, filtered_filtername,
+                shelved_oneshot, shelved_reason, shelved_comments, latched, masked, error, note, sevr, stat) {
         this.name = name;
         this.state = state;
+        this.disabled_comments = disabled_comments;
+        this.ondelayed_expiration = ondelayed_expiration;
+        this.offdelayed_expiration = offdelayed_expiration;
+        this.filtered_filtername = filtered_filtername;
+        this.shevled_oneshot = shelved_oneshot;
+        this.shelved_reason = shelved_reason;
+        this.shevled_comments = shelved_comments;
+        this.latched = latched;
+        this.masked = masked;
+        this.error = error;
+        this.note = note;
+        this.sevr = sevr;
+        this.stat = stat;
     }
 }
 

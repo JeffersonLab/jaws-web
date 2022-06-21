@@ -4,14 +4,10 @@ public class FieldDefinition {
     private String name;
 
     private FieldType type;
-    private boolean key;
-    private boolean inTable;
 
-    public FieldDefinition(String name, FieldType type, boolean key, boolean inTable) {
+    public FieldDefinition(String name, FieldType type) {
         this.name = name;
         this.type = type;
-        this.key = key;
-        this.inTable = inTable;
     }
 
     public String getName() {
@@ -20,13 +16,5 @@ public class FieldDefinition {
 
     public FieldType getType() {
         return type;
-    }
-
-    public boolean isKey() {
-        return key;
-    }
-
-    public boolean isInTable() {
-        return inTable;
     }
 }
