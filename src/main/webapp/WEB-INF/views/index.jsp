@@ -7,7 +7,7 @@
     <meta charset="utf-8" data-context-path="${pageContext.request.contextPath}" data-app-version="${initParam['releaseNumber']}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="JLab Alarm Warning System Admin GUI">
-    <title>JAWS Admin GUI</title>
+    <title>JAWS</title>
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/img/favicon.ico"/>
     <link rel="manifest" href="${pageContext.request.contextPath}/manifest.json">
     <c:url value="/resources/css/site.css" var="siteCssUrl">
@@ -20,7 +20,7 @@
 <body>
 <header>
     <img width="128" height="128" alt="Logo" src="${pageContext.request.contextPath}/resources/img/logo-128.png"/>
-    <h1>JAWS Admin GUI</h1>
+    <h1>JAWS</h1>
 </header>
 <div id="tabs">
     <ul>

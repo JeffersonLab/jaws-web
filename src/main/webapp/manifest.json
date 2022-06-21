@@ -3,17 +3,17 @@
   "name": "JLab Alarm Warning System",
   "icons": [
     {
-      "src": "/jaws-admin-gui/resources/img/logo-192.png",
+      "src": "/jaws/resources/img/logo-192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/jaws-admin-gui/resources/img/logo-512.png",
+      "src": "/jaws/resources/img/logo-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
-  "start_url": "/jaws-admin-gui/view/registrations",
+  "start_url": "/jaws/view/registrations",
   "background_color": "#3367D6",
   "display": "standalone",
   "scope": "/",
@@ -23,14 +23,14 @@
       "name": "Effective Alarm Registrations",
       "short_name": "Registrations",
       "description": "Registered alarm instances with class, location, and category information",
-      "url": "/jaws-admin-gui/view/registrations",
-      "icons": [{ "src": "/jaws-admin-gui/resources/img/logo-192.png", "sizes": "192x192" }]
+      "url": "/jaws/view/registrations",
+      "icons": [{ "src": "/jaws/resources/img/logo-192.png", "sizes": "192x192" }]
     }
   ],
   "description": "JLab Alarm System Admin App",
   "screenshots": [
     {
-      "src": "/jaws-admin-gui/resources/img/screenshot1.png",
+      "src": "/jaws/resources/img/screenshot1.png",
       "type": "image/png",
       "sizes": "540x720"
     }

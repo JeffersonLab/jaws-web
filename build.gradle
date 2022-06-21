@@ -107,7 +107,7 @@ tasks.register("copySrc", Copy) {
 war {
     dependsOn('packWorker')
 
-    archiveFileName =  'jaws-admin-gui.war'
+    archiveFileName =  'jaws.war'
     filesMatching('WEB-INF/web.xml') {
         filter {
             String line -> line.replaceAll("@VERSION@", project.version)
