@@ -146,8 +146,6 @@ let toLocation = function(key, value) {
 
 let toNotification = function(key, value) {
 
-    console.log(key, value);
-
     value.overrides = value.overrides || {};
     value.actual = value.actual || {};
 
