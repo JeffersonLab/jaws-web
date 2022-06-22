@@ -56,6 +56,11 @@ class CacheDB extends Dexie {
             })
             .then(() => super.open());
     }
+
+    async clear() {
+        db.close();
+        db.delete();
+    }
 }
 
 const db = new CacheDB("jaws", cacheVersion);

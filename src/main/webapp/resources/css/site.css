@@ -115,9 +115,15 @@ body .dialog .toastui-editor-defaultUI .ProseMirror {
     line-height: 160%;
 }
 
+#reset-button {
+    float: right;
+    margin: 0.5em;
+}
+
 #version-div {
-    text-align: right;
-    padding: 0.5em;
+    display: inline-block;
+    float: right;
+    margin: 0.5em;
 }
 
 .data-table {

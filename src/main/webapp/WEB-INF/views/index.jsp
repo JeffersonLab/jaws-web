@@ -45,7 +45,10 @@
     <t:panel id="categories" title="Categories" model="${model.categoryModel}"/>
     <div style="display: none;" id="markdown-to-html"></div>
 </div>
-<div id="version-div">v<c:out value="${initParam['releaseNumber']}"/></div>
+<div id="footer-toolbar">
+    <button id="reset-button" type="button">Reset</button>
+    <div id="version-div">v<c:out value="${initParam['releaseNumber']}"/></div>
+</div>
 <script src="${pageContext.request.contextPath}/resources/libs/jquery-ui-1.12.1.smoothness/external/jquery/jquery.js"></script>
 <script src="${pageContext.request.contextPath}/resources/libs/jquery-ui-1.12.1.smoothness/jquery-ui.min.js"></script>
 <script type="module" src="${pageContext.request.contextPath}/resources/modules/toast-ui-3.1.3/toastui-all.min.mjs"></script>

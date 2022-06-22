@@ -117,4 +117,12 @@ $(function () {
             }
         }
     }).show();
+
+    $("#reset-button").on("click", function() {
+        remote.clear();
+    });
+
+    remote.addEventListener("cleared", async () => {
+        location.reload();
+    });
 });

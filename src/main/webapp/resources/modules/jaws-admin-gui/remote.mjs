@@ -3,6 +3,44 @@ const contextPath = meta && meta.dataset.contextPath || '';
 const appVersion = meta && meta.dataset.appVersion || '';
 
 class Remote extends EventTarget {
+    constructor() {
+        super();
+
+        function supportsWorkerType() {
+            let supports = false;
+            const tester = {
+                get type() { supports = true; } // it's been called, it's supported
+            };
+            try {
+                // We use "blob://" as url to avoid a useless network request.
+                // This will either throw in Chrome
+                // either fire an error event in Firefox
+                // which is perfect since
+                // we don't need the worker to actually start,
+                // checking for the type of the script is done before trying to load it.
+                const worker = new Worker('blob://', tester);
+            } finally {
+                return supports;
+            }
+        }
+
+        let worker;
+
+        if( supportsWorkerType() ) {
+            worker = new Worker(contextPath + '/worker-' + appVersion + '.mjs', {"type": "module"});
+        } else {
+            worker = new Worker(contextPath + '/worker-' + appVersion + '.js');
+        }
+
+        worker.onmessage = function(e) {
+            remote.dispatchEvent(new CustomEvent(e.data, { detail: null }));
+        }
+
+        this.clear = function() {
+            worker.postMessage("clear");
+        }
+    }
+
     setEntity(formData, path) {
         /*Treat empty string as no-field*/
         for (var pair of Array.from(formData.entries())) {
@@ -35,35 +73,5 @@ class Remote extends EventTarget {
 }
 
 const remote = new Remote();
-
-function supportsWorkerType() {
-    let supports = false;
-    const tester = {
-        get type() { supports = true; } // it's been called, it's supported
-    };
-    try {
-        // We use "blob://" as url to avoid a useless network request.
-        // This will either throw in Chrome
-        // either fire an error event in Firefox
-        // which is perfect since
-        // we don't need the worker to actually start,
-        // checking for the type of the script is done before trying to load it.
-        const worker = new Worker('blob://', tester);
-    } finally {
-        return supports;
-    }
-}
-
-let worker;
-
-if( supportsWorkerType() ) {
-    worker = new Worker(contextPath + '/worker-' + appVersion + '.mjs', {"type": "module"});
-} else {
-    worker = new Worker(contextPath + '/worker-' + appVersion + '.js');
-}
-
-worker.onmessage = function(e) {
-    remote.dispatchEvent(new CustomEvent(e.data, { detail: null }));
-}
 
 export default remote;

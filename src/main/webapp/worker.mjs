@@ -199,23 +199,25 @@ let toRegistration = function(key, value) {
     )
 }
 
+const workers = [new BackgroundWorker('alarm', toAlarm, db.alarms),
+    new BackgroundWorker('activation', toActivation, db.activations),
+    new BackgroundWorker('category', toCategory, db.categories),
+    new BackgroundWorker('class', toClass, db.classes),
+    new BackgroundWorker('instance', toInstance, db.instances),
+    new BackgroundWorker('location', toLocation, db.locations),
+    new BackgroundWorker('notification', toNotification, db.notifications),
+    new BackgroundWorker('override', toOverride, db.overrides),
+    new BackgroundWorker('registration', toRegistration, db.registrations)]
+
+let eventNames = [];
+
+for(const worker of workers) {
+    eventNames.push(worker.eventType);
+}
+
+let evtSource = null;
+
 async function init() {
-    const workers = [new BackgroundWorker('alarm', toAlarm, db.alarms),
-        new BackgroundWorker('activation', toActivation, db.activations),
-        new BackgroundWorker('category', toCategory, db.categories),
-        new BackgroundWorker('class', toClass, db.classes),
-        new BackgroundWorker('instance', toInstance, db.instances),
-        new BackgroundWorker('location', toLocation, db.locations),
-        new BackgroundWorker('notification', toNotification, db.notifications),
-        new BackgroundWorker('override', toOverride, db.overrides),
-        new BackgroundWorker('registration', toRegistration, db.registrations)]
-
-    let eventNames = [];
-
-    for(const worker of workers) {
-        eventNames.push(worker.eventType);
-    }
-
     const eventOffsets = await db.positions.bulkGet(eventNames);
 
     let queryParams = '';
@@ -229,7 +231,7 @@ async function init() {
     // Replace first & with ?
     queryParams = '?' + queryParams.substring(1);
 
-    const evtSource = new EventSource(contextPath + '/proxy/sse' + queryParams);
+    evtSource = new EventSource(contextPath + '/proxy/sse' + queryParams);
 
     for(const worker of workers) {
         worker.start(evtSource);
@@ -241,6 +243,12 @@ init().then(()=>{
     console.error(error);
 });
 
-onmessage = function(e) {
-    console.log('Worker: Message received from main script: ', e);
+onmessage = async function(e) {
+    if("clear" === e.data) {
+        evtSource.close();
+
+        await db.clear();
+
+        postMessage("cleared");
+    }
 }
