@@ -33,7 +33,7 @@ class Remote extends EventTarget {
         }
 
         worker.onmessage = function(e) {
-            remote.dispatchEvent(new CustomEvent(e.data, { detail: null }));
+            remote.dispatchEvent(new CustomEvent(e.data.type, {detail: e.data.detail}));
         }
 
         this.clear = function() {

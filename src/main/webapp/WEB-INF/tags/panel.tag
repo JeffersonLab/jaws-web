@@ -22,6 +22,8 @@
         <button type="button" class="prev-button" disabled="disabled">Previous</button>
         <button type="button" class="next-button" disabled="disabled">Next</button> |
         <span>Records: </span><span class="record-count"></span>
+        <span></span><span class="session-message-count"></span>
+        <span></span><span class="stale"></span>
     </div>
     <div class="table-wrap">
         <t:table id="${id}" model="${model}"/>

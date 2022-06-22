@@ -11,10 +11,11 @@ class BackgroundWorker {
         me.eventType = eventType;
         me.toEntityFunc = toEntityFunc;
         me.store = store;
+        me.sessionMessageCount = 0;
 
         me.start = function(evtSource) {
             evtSource.addEventListener(me.eventType + "-highwatermark", function (e) {
-                postMessage(me.eventType + "-highwatermark");
+                postMessage({type: me.eventType + "-highwatermark"});
             });
 
             evtSource.addEventListener(me.eventType, async (e) => {
@@ -23,6 +24,8 @@ class BackgroundWorker {
                 let remove = [];
                 let updateOrAdd = [];
                 let compacted = new Map();
+
+                me.sessionMessageCount = me.sessionMessageCount + records.length;
 
                 /* Compact, in-order */
                 for(const record of records) {
@@ -51,7 +54,7 @@ class BackgroundWorker {
                     await db.positions.put(new KafkaLogPosition(me.eventType, resumeIndex));
                 }
 
-                postMessage(me.eventType);
+                postMessage({type: me.eventType, detail: me.sessionMessageCount });
             });
         }
     }
@@ -249,6 +252,6 @@ onmessage = async function(e) {
 
         await db.clear();
 
-        postMessage("cleared");
+        postMessage({type: "cleared"});
     }
 }

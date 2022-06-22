@@ -33,15 +33,30 @@ class PanelController {
         me.highwaterReached = false;
 
         remote.addEventListener(me.highwaterEventName, async () => {
-            await me.widget.refresh();
             me.highwaterReached = true;
-        });
-
-        remote.addEventListener(me.batchEventName, async () => {
-            if(me.highwaterReached) {
-                await me.widget.refresh();
+            if(me.isVisible()) {
+                await me.render();
             }
         });
+
+        remote.addEventListener(me.batchEventName, async (e) => {
+            me.widget.sessionMessageCount = e.detail;
+            if(me.isVisible()) {
+                await me.widget.renderProgress(true);
+            }
+        });
+
+        me.isVisible = function() {
+            return $("#tabs ul li.ui-state-active").index() === me.order;
+        }
+
+        me.render = async function() {
+            if(me.highwaterReached) {
+                await me.widget.renderTable();
+            }
+
+            await me.widget.renderProgress(false);
+        }
 
         me.showSingleRecord = async function(ctx, next) {
             $("#tabs").tabs({ active: me.order });
@@ -50,6 +65,7 @@ class PanelController {
         }
 
         me.showAllRecords = async function(ctx, next) {
+            await me.render();
             $("#tabs").tabs({ active: me.order });
         }
 
@@ -75,10 +91,10 @@ page('/', function() {
     page('/alarms');
 });
 
-page();
-
 $(function () {
     $(".toolbar button").button();
+
+    page();
 
     $("#tabs").tabs({
         activate: function (event, i) {

@@ -54,6 +54,7 @@ class PanelUI extends EventTarget {
         me.types = types;
         me.markdownToHtml = markdownToHtml;
 
+        me.sessionMessageCount = 0;
         me.panelElement = "#" + idPrefix + "-panel";
         me.tableElement = "#" + idPrefix + "-table";
         me.viewDialogElement = "#" + idPrefix + "-view-dialog";
@@ -215,7 +216,18 @@ class PanelUI extends EventTarget {
             }
         }
 
-        me.refresh = async function() {
+        me.renderProgress = async function(stale) {
+            $(me.panelElement + " .session-message-count").text(me.sessionMessageCount == 0 ? "" : " | Updates: " + me.sessionMessageCount.toLocaleString());
+
+            $(me.panelElement + " .stale").remove();
+
+            if(stale) {
+                $(me.panelElement + " .stale").append('<button type="button" class=".refresh-button">Refresh</button>')
+            }
+        }
+
+        me.renderTable = async function() {
+
             me.deselectRow();
 
             let countCollection = me.store.orderBy('name');
