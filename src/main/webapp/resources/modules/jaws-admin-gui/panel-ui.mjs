@@ -404,7 +404,7 @@ class PanelUI extends EventTarget {
                 }
             }
 
-            me.refresh();
+            me.renderTable();
         }
     }
 }

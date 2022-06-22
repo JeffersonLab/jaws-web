@@ -82,7 +82,7 @@ let toAlarm = function(key, value) {
         value.registration.location,
         value.registration.maskedby,
         value.registration.screencommand,
-        value.registration.producer.pv,
+        value.registration.producer ? value.registration.producer.pv : undefined,
         value.activation.state,
         value.activation.overrides.disabled ? value.activation.overrides.disabled.comments : undefined,
         value.activation.overrides.ondelayed ? value.activation.overrides.ondelayed.expiration : undefined,
