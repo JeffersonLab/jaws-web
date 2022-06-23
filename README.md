@@ -40,9 +40,9 @@ http://localhost:8080/jaws-admin-gui
 This application requires a Java 11+ JVM and standard library to run, plus a Java EE 8+ application server (developed with Wildfly).
 
    1. Download [Wildfly 26](https://www.wildfly.org/downloads/)
-   1. Build [jaws-admin-gui.war](https://github.com/JeffersonLab/jaws-admin-gui#build) and deploy it to Wildfly
+   1. Build [jaws.war](https://github.com/JeffersonLab/jaws-admin-gui#build) and deploy it to Wildfly
    2. Configure Wildfly and start it
-   3. Navigate your web browser to localhost:8080/jaws-admin-gui
+   3. Navigate your web browser to localhost:8080/jaws
 
 
 ## Configure
