@@ -11,50 +11,72 @@ class BackgroundWorker {
         me.eventType = eventType;
         me.toEntityFunc = toEntityFunc;
         me.store = store;
-        me.sessionMessageCount = 0;
+        me.eventQueue = [];
+        me.processing = false;
+
+        /* We must serialize via a queue to ensure highwater event is ordered with respect to batch events;
+           batch events processing is async due to db access, so we must await those and block (by queuing) highwater
+            messages during db write.   This also ensures db writes are serialized */
+        me.processEvents = async function() {
+            if(!me.processing) {
+                me.processing = true;
+                while (me.eventQueue.length > 0) {
+                    let event = me.eventQueue.shift();
+
+                    await event();
+                }
+                me.processing = false;
+            }
+        }
 
         me.start = function(evtSource) {
             evtSource.addEventListener(me.eventType + "-highwatermark", function (e) {
-                postMessage({type: me.eventType + "-highwatermark"});
+                me.eventQueue.push(async function() {
+                    postMessage({type: me.eventType + "-highwatermark"});
+                });
+
+                me.processEvents();
             });
 
-            evtSource.addEventListener(me.eventType, async (e) => {
-                let records = JSON.parse(e.data);
+            evtSource.addEventListener(me.eventType, (e) => {
+                me.eventQueue.push(async function() {
+                    let records = JSON.parse(e.data);
 
-                let remove = [];
-                let updateOrAdd = [];
-                let compacted = new Map();
+                    let remove = [];
+                    let updateOrAdd = [];
+                    let compacted = new Map();
 
-                me.sessionMessageCount = me.sessionMessageCount + records.length;
-
-                /* Compact, in-order */
-                for(const record of records) {
-                    compacted.set(record.key, record.value);
-                }
-
-                for (const [key, value] of compacted.entries()) {
-
-                    if(value === null) {
-                        remove.push(key);
-                    } else {
-                        updateOrAdd.push(me.toEntityFunc(key, value));
+                    /* Compact, in-order */
+                    for (const record of records) {
+                        compacted.set(record.key, record.value);
                     }
-                }
 
-                if(remove.length > 0) {
-                    await me.store.bulkDelete(remove);
-                }
+                    for (const [key, value] of compacted.entries()) {
 
-                if(updateOrAdd.length > 0) {
-                    await me.store.bulkPut(updateOrAdd);
-                }
+                        if (value === null) {
+                            remove.push(key);
+                        } else {
+                            updateOrAdd.push(me.toEntityFunc(key, value));
+                        }
+                    }
 
-                if(records.length > 0) {
-                    let resumeIndex = records[records.length - 1].offset;
-                    await db.positions.put(new KafkaLogPosition(me.eventType, resumeIndex));
-                }
+                    if (remove.length > 0) {
+                        await me.store.bulkDelete(remove);
+                    }
 
-                postMessage({type: me.eventType, detail: me.sessionMessageCount });
+                    if (updateOrAdd.length > 0) {
+                        await me.store.bulkPut(updateOrAdd);
+                    }
+
+                    if (records.length > 0) {
+                        let resumeIndex = records[records.length - 1].offset;
+                        await db.positions.put(new KafkaLogPosition(me.eventType, resumeIndex));
+                    }
+
+                    postMessage({type: me.eventType, detail: records.length});
+                });
+
+                me.processEvents();
             });
         }
     }

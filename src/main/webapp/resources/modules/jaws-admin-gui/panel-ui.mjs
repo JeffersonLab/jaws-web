@@ -55,6 +55,8 @@ class PanelUI extends EventTarget {
         me.markdownToHtml = markdownToHtml;
 
         me.sessionMessageCount = 0;
+        me.visibleMessageCount = 0;
+
         me.panelElement = "#" + idPrefix + "-panel";
         me.tableElement = "#" + idPrefix + "-table";
         me.viewDialogElement = "#" + idPrefix + "-view-dialog";
@@ -216,13 +218,33 @@ class PanelUI extends EventTarget {
             }
         }
 
-        me.renderProgress = async function(stale) {
-            $(me.panelElement + " .session-message-count").text(me.sessionMessageCount == 0 ? "" : " | Updates: " + me.sessionMessageCount.toLocaleString());
+        $(me.panelElement).on("click", ".refresh-button", function() {
+            page(me.path);
+        });
 
-            $(me.panelElement + " .stale").remove();
+        me.renderProgress = function(highwaterReached) {
 
-            if(stale) {
-                $(me.panelElement + " .stale").append('<button type="button" class=".refresh-button">Refresh</button>')
+            $(me.panelElement + " .refresh-span").empty();
+
+            if(me.sessionMessageCount == 0) {
+                $(me.panelElement + " .progress divider").hide();
+            } else {
+                $(me.panelElement + " .progress divider").show();
+
+                if(me.visibleMessageCount > 0) {
+                    //console.log('render updates');
+                    $(me.panelElement + " .progress").addClass("stale");
+
+                    $(me.panelElement + " .session-message-count").text("New Updates: " + me.visibleMessageCount.toLocaleString());
+                    if(highwaterReached) {
+                        $(me.panelElement + " .refresh-span").append('<button type="button" class="refresh-button">Refresh</button>');
+                    }
+                } else {
+                    //console.log('render all good');
+                    $(me.panelElement + " .progress").removeClass("stale");
+
+                    $(me.panelElement + " .session-message-count").text("Compacted: " + me.sessionMessageCount.toLocaleString());
+                }
             }
         }
 

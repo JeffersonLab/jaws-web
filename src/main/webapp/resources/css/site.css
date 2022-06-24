@@ -115,6 +115,21 @@ body .dialog .toastui-editor-defaultUI .ProseMirror {
     line-height: 160%;
 }
 
+.progress .divider {
+    display: none;
+}
+
+.progress.stale .session-message-count {
+    color: red;
+}
+
+.progress:not(.stale) .session-message-count {
+    font-style: italic;
+    font-size: 0.75em;
+    float: right;
+    margin: 0.75em;
+}
+
 #reset-button {
     float: right;
     margin: 0.5em;

@@ -32,17 +32,18 @@ class PanelController {
         me.highwaterEventName = batchEventName + "-highwatermark";
         me.highwaterReached = false;
 
-        remote.addEventListener(me.highwaterEventName, async () => {
-            me.highwaterReached = true;
-            if(me.isVisible()) {
-                await me.render();
+        remote.addEventListener(me.batchEventName, (e) => {
+            me.widget.sessionMessageCount = me.widget.sessionMessageCount + e.detail;
+            if(me.highwaterReached && me.isVisible()) {
+                me.widget.visibleMessageCount = me.widget.visibleMessageCount + e.detail;
+                me.widget.renderProgress(me.highwaterReached);
             }
         });
 
-        remote.addEventListener(me.batchEventName, async (e) => {
-            me.widget.sessionMessageCount = e.detail;
+        remote.addEventListener(me.highwaterEventName, () => {
+            me.highwaterReached = true;
             if(me.isVisible()) {
-                await me.widget.renderProgress(true);
+                me.render();
             }
         });
 
@@ -50,12 +51,13 @@ class PanelController {
             return $("#tabs ul li.ui-state-active").index() === me.order;
         }
 
-        me.render = async function() {
+        me.render = function() {
             if(me.highwaterReached) {
-                await me.widget.renderTable();
+                me.widget.renderTable();
             }
 
-            await me.widget.renderProgress(false);
+            me.widget.visibleMessageCount = 0;
+            me.widget.renderProgress(me.highwaterReached);
         }
 
         me.showSingleRecord = async function(ctx, next) {
@@ -66,6 +68,7 @@ class PanelController {
 
         me.showAllRecords = async function(ctx, next) {
             await me.render();
+
             $("#tabs").tabs({ active: me.order });
         }
 
