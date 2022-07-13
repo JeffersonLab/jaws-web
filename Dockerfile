@@ -27,11 +27,8 @@ RUN cd /app && gradle build -x test --no-watch-fs $OPTIONAL_CERT_ARG
 
 ################## Stage 2
 FROM ${RUN_IMAGE} as runner
-ARG RUN_USER=jboss
 USER root
 COPY --from=builder /app/docker-entrypoint.sh /docker-entrypoint.sh
+USER jboss
 COPY --from=builder /app/build/libs /opt/jboss/wildfly/standalone/deployments
-RUN chown -R ${RUN_USER}:0 ${JBOSS_HOME} \
-    && chmod -R g+rw ${JBOSS_HOME}
-USER ${RUN_USER}
 ENTRYPOINT ["/docker-entrypoint.sh"]
