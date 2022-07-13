@@ -64,7 +64,7 @@ public class REST {
     @Path("/instance")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public void putInstance(@FormParam("name") @NotNull(message = "alarm name is required") String name,
-                            @FormParam("class") @NotNull(message = "class is required") String clazz,
+                            @FormParam("class") @NotNull(message = "class is required") String alarmclass,
                             @FormParam("expression") String expression,
                             @FormParam("location") List<String> location,
                             @FormParam("maskedby") String maskedby,
@@ -77,17 +77,17 @@ public class REST {
 
         AlarmInstance value = new AlarmInstance();
 
-        value.setClass$(clazz);
+        value.setAlarmclass(alarmclass);
 
-        Object producer = new SimpleProducer();
+        Object source = new Source();
 
         if(epicspv != null) {
-            producer = new EPICSProducer(epicspv);
+            source = new EPICSSource(epicspv);
         } else if(expression != null) {
-            producer = new CALCProducer(expression);
+            source = new CALCSource(expression);
         }
 
-        value.setProducer(producer);
+        value.setSource(source);
         value.setLocation(location);
         value.setMaskedby(maskedby);
         value.setScreencommand(screencommand);
@@ -126,7 +126,7 @@ public class REST {
             @FormParam("correctiveaction") @NotNull(message = "correctiveaction is required") String correctiveaction,
             @FormParam("pocusername") @NotNull(message = "pocusername is required") String pocusername,
             @FormParam("filterable") Boolean filterable,
-            @FormParam("latching") Boolean latching,
+            @FormParam("latchable") Boolean latchable,
             @FormParam("ondelayseconds") Long ondelayseconds,
             @FormParam("offdelayseconds") Long offdelayseconds)
     {
@@ -148,7 +148,7 @@ public class REST {
         value.setCorrectiveaction(correctiveaction);
         value.setPointofcontactusername(pocusername);
         value.setFilterable(filterable);
-        value.setLatching(latching);
+        value.setLatchable(latchable);
         value.setOndelayseconds(ondelayseconds);
         value.setOffdelayseconds(offdelayseconds);
 

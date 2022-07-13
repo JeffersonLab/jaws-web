@@ -85,9 +85,9 @@ class BackgroundWorker {
 let toAlarm = function(key, value) {
 
     value.registration = value.registration || {};
-    value.activation = value.activation || {};
-    value.activation.overrides = value.activation.overrides || {};
-    value.activation.actual = value.activation.actual || {};
+    value.notification = value.notification || {};
+    value.notification.overrides = value.notification.overrides || {};
+    value.notification.activation = value.notification.activation || {};
 
     return new EffectiveAlarm(
         key,
@@ -97,38 +97,38 @@ let toAlarm = function(key, value) {
         value.registration.action,
         value.registration.contact,
         value.registration.filterable,
-        value.registration.latching,
+        value.registration.latchable,
         value.registration.ondelay,
         value.registration.offdelay,
         value.registration.class,
         value.registration.location,
         value.registration.maskedby,
         value.registration.screencommand,
-        value.registration.producer ? value.registration.producer.pv : undefined,
-        value.activation.state,
-        value.activation.overrides.disabled ? value.activation.overrides.disabled.comments : undefined,
-        value.activation.overrides.ondelayed ? value.activation.overrides.ondelayed.expiration : undefined,
-        value.activation.overrides.offdelayed ? value.activation.overrides.offdelayed.expiration: undefined,
-        value.activation.overrides.filtered ? value.activation.overrides.filtered.filtername : undefined,
-        value.activation.overrides.shelved ? value.activation.overrides.shelved.oneshot : undefined,
-        value.activation.overrides.shelved ? value.activation.overrides.shelved.reason : undefined,
-        value.activation.overrides.shelved ? value.activation.overrides.shelved.comments : undefined,
-        value.activation.overrides.latched ? true : false,
-        value.activation.overrides.masked ? true : false,
-        value.activation.actual.error,
-        value.activation.actual.note,
-        value.activation.actual.sevr,
-        value.activation.actual.stat
+        value.registration.source ? value.registration.source.pv : undefined,
+        value.notification.state,
+        value.notification.overrides.disabled ? value.notification.overrides.disabled.comments : undefined,
+        value.notification.overrides.ondelayed ? value.notification.overrides.ondelayed.expiration : undefined,
+        value.notification.overrides.offdelayed ? value.notification.overrides.offdelayed.expiration: undefined,
+        value.notification.overrides.filtered ? value.notification.overrides.filtered.filtername : undefined,
+        value.notification.overrides.shelved ? value.notification.overrides.shelved.oneshot : undefined,
+        value.notification.overrides.shelved ? value.notification.overrides.shelved.reason : undefined,
+        value.notification.overrides.shelved ? value.notification.overrides.shelved.comments : undefined,
+        value.notification.overrides.latched ? true : false,
+        value.notification.overrides.masked ? true : false,
+        value.notification.activation.error,
+        value.notification.activation.note,
+        value.notification.activation.sevr,
+        value.notification.activation.stat
     );
 }
 
 let toActivation = function(key, value) {
     return new AlarmActivation(
         key,
-        value.msg.error,
-        value.msg.note,
-        value.msg.sevr,
-        value.msg.stat
+        value.union.error,
+        value.union.note,
+        value.union.sevr,
+        value.union.stat
     );
 }
 
@@ -145,7 +145,7 @@ let toClass = function(key, value) {
         value.correctiveaction,
         value.pointofcontactusername,
         value.filterable,
-        value.latching,
+        value.latchable,
         value.ondelayseconds,
         value.offdelayseconds
     );
@@ -154,11 +154,11 @@ let toClass = function(key, value) {
 let toInstance = function(key, value) {
     return new AlarmInstance(
         key,
-        value.class,
+        value.alarmclass,
         value.location,
         value.maskedby,
         value.screencommand,
-        value.producer.pv
+        value.source.pv
     )
 }
 
@@ -172,7 +172,7 @@ let toLocation = function(key, value) {
 let toNotification = function(key, value) {
 
     value.overrides = value.overrides || {};
-    value.actual = value.actual || {};
+    value.activation = value.activation || {};
 
     return new EffectiveNotification(
         key,
@@ -186,28 +186,28 @@ let toNotification = function(key, value) {
         value.overrides.shelved ? value.overrides.shelved.comments : undefined,
         value.overrides.latched ? true : false,
         value.overrides.masked ? true : false,
-        value.actual.error,
-        value.actual.note,
-        value.actual.sevr,
-        value.actual.stat
+        value.activation.error,
+        value.activation.note,
+        value.activation.sevr,
+        value.activation.stat
     );
 }
 
 let toOverride = function(key, value) {
     return new AlarmOverride(
         key,
-        value.msg.comments,
-        value.msg.expiration,
-        value.msg.filtername,
-        value.msg.oneshot,
-        value.msg.reason
+        value.union.comments,
+        value.union.expiration,
+        value.union.filtername,
+        value.union.oneshot,
+        value.union.reason
     )
 }
 
 let toRegistration = function(key, value) {
     return new EffectiveRegistration(
         key,
-        value.class,
+        value.alarmclass,
         value.priority,
         value.location,
         value.category,
@@ -215,12 +215,12 @@ let toRegistration = function(key, value) {
         value.correctiveaction,
         value.pointofcontactusername,
         value.filterable,
-        value.latching,
+        value.latchable,
         value.ondelayseconds,
         value.offdelayseconds,
         value.maskedby,
         value.screencommand,
-        value.producer.pv
+        value.source.pv
     )
 }
 

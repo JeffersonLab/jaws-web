@@ -48,7 +48,7 @@ public class JAWSModel {
         valueFields.add(new FieldDefinition("priority", FieldType.ENUM));
         valueFields.add(new FieldDefinition("rationale", FieldType.MARKDOWN));
         valueFields.add(new FieldDefinition("action", FieldType.MARKDOWN));
-        valueFields.add(new FieldDefinition("latching", FieldType.BOOLEAN));
+        valueFields.add(new FieldDefinition("latchable", FieldType.BOOLEAN));
         valueFields.add(new FieldDefinition("filterable", FieldType.BOOLEAN));
         valueFields.add(new FieldDefinition("ondelay", FieldType.NUMBER));
         valueFields.add(new FieldDefinition("offdelay", FieldType.NUMBER));

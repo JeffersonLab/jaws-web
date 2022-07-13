@@ -16,7 +16,7 @@ class AlarmCategory {
 
 class AlarmClass {
     constructor(name, priority, category, rationale, action, contact, filterable,
-                latching, ondelay, offdelay) {
+                latchable, ondelay, offdelay) {
         this.name = name;
         this.priority = priority;
         this.category = category;
@@ -24,16 +24,16 @@ class AlarmClass {
         this.action = action;
         this.contact = contact;
         this.filterable = filterable;
-        this.latching = latching;
+        this.latchable = latchable;
         this.ondelay = ondelay;
         this.offdelay = offdelay;
     }
 }
 
 class AlarmInstance {
-    constructor(name, clazz, location, maskedby, screencommand, epicspv) {
+    constructor(name, alarmclass, location, maskedby, screencommand, epicspv) {
         this.name = name;
-        this.class = clazz;
+        this.class = alarmclass;
         this.location = location;
         this.maskedby = maskedby;
         this.screencommand = screencommand;
@@ -60,8 +60,8 @@ class AlarmOverride {
 }
 
 class EffectiveAlarm {
-    constructor(name, priority, category, rationale, action, contact, filterable, latching,
-                ondelay, offdelay, clazz, location, maskedby, screencommand, epicspv, state) {
+    constructor(name, priority, category, rationale, action, contact, filterable, latchable,
+                ondelay, offdelay, alarmclass, location, maskedby, screencommand, epicspv, state) {
         this.name = name;
 
         this.priority = priority;
@@ -70,11 +70,11 @@ class EffectiveAlarm {
         this.action = action;
         this.contact = contact;
         this.filterable = filterable;
-        this.latching = latching;
+        this.latchable = latchable;
         this.ondelay = ondelay;
         this.offdelay = offdelay;
 
-        this.class = clazz;
+        this.class = alarmclass;
         this.location = location;
         this.maskedby = maskedby;
         this.screencommand = screencommand;
@@ -106,10 +106,10 @@ class EffectiveNotification {
 }
 
 class EffectiveRegistration {
-    constructor(name, clazz, priority, location, category, rationale, action, contact,
-                filterable, latching, ondelay, offdelay, maskedby, screencommand, epicspv) {
+    constructor(name, alarmclass, priority, location, category, rationale, action, contact,
+                filterable, latchable, ondelay, offdelay, maskedby, screencommand, epicspv) {
         this.name = name;
-        this.class = clazz;
+        this.class = alarmclass;
         this.priority = priority;
         this.location = location;
         this.category = category;
@@ -117,7 +117,7 @@ class EffectiveRegistration {
         this.action = action;
         this.contact = contact;
         this.filterable = filterable;
-        this.latching = latching;
+        this.latchable = latchable;
         this.ondelay = ondelay;
         this.offdelay = offdelay;
         this.maskedby = maskedby;

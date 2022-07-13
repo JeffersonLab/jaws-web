@@ -35,12 +35,12 @@ repositories {
 
 dependencies {
     if (project.hasProperty("provided")) {
-        providedCompile 'org.jlab:jaws-libj:4.3.1',
+        providedCompile 'org.jlab:jaws-libj:4.4.0',
                 'io.confluent:kafka-streams-avro-serde:7.1.1',
                 'com.fasterxml.jackson.core:jackson-databind:2.13.1',
                 'org.tuckey:urlrewritefilter:4.0.4'
     } else {
-        implementation 'org.jlab:jaws-libj:4.3.1',
+        implementation 'org.jlab:jaws-libj:4.4.0',
                 'io.confluent:kafka-streams-avro-serde:7.1.1',
                 'com.fasterxml.jackson.core:jackson-databind:2.13.1',
                 'org.tuckey:urlrewritefilter:4.0.4'

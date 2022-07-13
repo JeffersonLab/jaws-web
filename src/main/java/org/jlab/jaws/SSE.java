@@ -42,17 +42,18 @@ public class SSE implements ServletContextListener {
 
     {
         ACTIVATION_MIXINS.add(new Mixin(AlarmActivationUnion.class, AlarmActivationMixin.class));
-        ACTIVATION_MIXINS.add(new Mixin(SimpleAlarming.class, SimpleAlarmingMixin.class));
-        ACTIVATION_MIXINS.add(new Mixin(NoteAlarming.class, NoteAlarmingMixin.class));
-        ACTIVATION_MIXINS.add(new Mixin(EPICSAlarming.class, EPICSAlarmingMixin.class));
-        ACTIVATION_MIXINS.add(new Mixin(ChannelError.class, ChannelErrorMixin.class));
+        ACTIVATION_MIXINS.add(new Mixin(Activation.class, ActivationMixin.class));
+        ACTIVATION_MIXINS.add(new Mixin(NoteActivation.class, NoteActivationMixin.class));
+        ACTIVATION_MIXINS.add(new Mixin(EPICSActivation.class, EPICSActivationMixin.class));
+        ACTIVATION_MIXINS.add(new Mixin(ChannelErrorActivation.class, ChannelErrorActivationMixin.class));
+        ACTIVATION_MIXINS.add(new Mixin(NoActivation.class, NoActivationMixin.class));
 
         CLASS_MIXINS.add(new Mixin(AlarmClass.class, AlarmClassMixin.class));
 
         INSTANCE_MIXINS.add(new Mixin(AlarmInstance.class, AlarmInstanceMixin.class));
-        INSTANCE_MIXINS.add(new Mixin(SimpleProducer.class, SimpleProducerMixin.class));
-        INSTANCE_MIXINS.add(new Mixin(EPICSProducer.class, EPICSProducerMixin.class));
-        INSTANCE_MIXINS.add(new Mixin(CALCProducer.class, CALCProducerMixin.class));
+        INSTANCE_MIXINS.add(new Mixin(Source.class, SourceMixin.class));
+        INSTANCE_MIXINS.add(new Mixin(EPICSSource.class, EPICSSourceMixin.class));
+        INSTANCE_MIXINS.add(new Mixin(CALCSource.class, CALCSourceMixin.class));
 
         LOCATION_MIXINS.add(new Mixin(AlarmLocation.class, AlarmLocationMixin.class));
 
@@ -66,7 +67,7 @@ public class SSE implements ServletContextListener {
         OVERRIDE_MIXINS.add(new Mixin(ShelvedOverride.class, ShelvedOverrideMixin.class));
 
         // Effective entities
-        NOTIFICATION_MIXINS.add(new Mixin(EffectiveActivation.class, EffectiveNotificationMixin.class));
+        NOTIFICATION_MIXINS.add(new Mixin(EffectiveNotification.class, EffectiveNotificationMixin.class));
         NOTIFICATION_MIXINS.add(new Mixin(AlarmOverrideSet.class, AlarmOverrideSetMixin.class));
         NOTIFICATION_MIXINS.addAll(ACTIVATION_MIXINS);
         NOTIFICATION_MIXINS.addAll(OVERRIDE_MIXINS);
@@ -143,7 +144,7 @@ public class SSE implements ServletContextListener {
                         ClassConsumer classConsumer = new ClassConsumer(classProps);
                         InstanceConsumer instanceConsumer = new InstanceConsumer(instanceProps);
                         LocationConsumer locationConsumer = new LocationConsumer(locationProps);
-                        EffectiveActivationConsumer notificationConsumer = new EffectiveActivationConsumer(notificationProps);
+                        EffectiveNotificationConsumer notificationConsumer = new EffectiveNotificationConsumer(notificationProps);
                         OverrideConsumer overrideConsumer = new OverrideConsumer(overrideProps);
                         EffectiveRegistrationConsumer registrationConsumer = new EffectiveRegistrationConsumer(registrationProps)
                 ) {
@@ -202,10 +203,10 @@ public class SSE implements ServletContextListener {
     private Properties getConsumerProps(long resumeOffset) {
         final Properties props = new Properties();
 
-        props.put(EventSourceConfig.EVENT_SOURCE_GROUP, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
-        props.put(EventSourceConfig.EVENT_SOURCE_BOOTSTRAP_SERVERS, JaxRSApp.BOOTSTRAP_SERVERS);
-        props.put(EventSourceConfig.EVENT_SOURCE_RESUME_OFFSET, resumeOffset);
-        props.put(EventSourceConfig.EVENT_SOURCE_COMPACTED_CACHE, false);
+        props.put(EventSourceConfig.GROUP_ID_CONFIG, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
+        props.put(EventSourceConfig.BOOTSTRAP_SERVERS_CONFIG, JaxRSApp.BOOTSTRAP_SERVERS);
+        props.put(EventSourceConfig.RESUME_OFFSET_CONFIG, resumeOffset);
+        props.put(EventSourceConfig.COMPACTED_CACHE_CONFIG, false);
 
         return props;
     }
@@ -238,10 +239,10 @@ public class SSE implements ServletContextListener {
         }
     }
 
-    class OverrideKeyConverter implements KeyConverter<OverriddenAlarmKey> {
+    class OverrideKeyConverter implements KeyConverter<AlarmOverrideKey> {
 
         @Override
-        public String toString(OverriddenAlarmKey key) {
+        public String toString(AlarmOverrideKey key) {
             return key.getName() + " " + key.getType();
         }
     }
