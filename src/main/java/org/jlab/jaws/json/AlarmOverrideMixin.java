@@ -6,5 +6,5 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public interface AlarmOverrideMixin {
     @JsonProperty
-    Object getMsg();
+    Object getUnion();
 }
