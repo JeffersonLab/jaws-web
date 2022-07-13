@@ -23,7 +23,7 @@ interface AlarmClassMixin {
     String getPointofcontactusername();
 
     @JsonProperty
-    boolean getLatching();
+    boolean getLatchable();
 
     @JsonProperty
     boolean getFilterable();
