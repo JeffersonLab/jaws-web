@@ -192,6 +192,7 @@ class PanelUI extends EventTarget {
         });
 
         me.filters = [];
+        me.querystring = "";
 
         me.deselectRow = function() {
             $(me.tableElement + " .selected-row").removeClass("selected-row");
@@ -405,17 +406,24 @@ class PanelUI extends EventTarget {
             }
         }
 
-        me.search = function() {
+        me.updateSearchInput = function(querystring) {
+            me.$searchTextElement.val(querystring.replaceAll('&', ',').replaceAll('=~', '~'));
+            me.updateSearchFilter();
+        }
+
+        me.updateSearchFilter = function() {
             let filterText = me.$searchTextElement.val();
 
             let filterArray = filterText.split(",");
 
             me.filters = [];
+            me.querystring = "";
 
             for (let filter of filterArray) {
                 if(filter.indexOf('=') > -1) { // exact match equals search
                     let keyValue = filter.split("=");
                     me.filters.push(record => record[keyValue[0]] === keyValue[1]);
+                    me.querystring = me.querystring + "&" + keyValue[0] + "=" + keyValue[1];
                 } else if(filter.indexOf('~') > -1) { // case-insensitive contains search
                     let keyValue = filter.split("~");
                     me.filters.push(record => {
@@ -423,10 +431,22 @@ class PanelUI extends EventTarget {
                         let needle = keyValue[1] || "";
                         return haystack.toLowerCase().includes(needle.toLowerCase());
                     });
+                    me.querystring = me.querystring + "&" + keyValue[0] + "=~" + keyValue[1];
                 }
             }
 
+            // Replace first & with ?
+            if(filterArray.length > 0) {
+                me.querystring = "?" + me.querystring.substring(1);
+            }
+        }
+
+        me.search = function() {
+            me.updateSearchFilter();
+
             me.renderTable();
+
+            page(me.path + me.querystring);
         }
     }
 }

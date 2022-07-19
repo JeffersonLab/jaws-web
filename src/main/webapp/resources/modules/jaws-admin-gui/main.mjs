@@ -67,9 +67,22 @@ class PanelController {
         }
 
         me.showAllRecords = async function(ctx, next) {
+            console.log('showAllRecords', ctx, next);
+
+            me.widget.updateSearchInput(ctx.querystring);
+
             await me.render();
 
             $("#tabs").tabs({ active: me.order });
+        }
+
+        me.tabActivated = function() {
+            // On initial page load page triggers this automatically so skip if already at this route
+            if(!page.current.startsWith(me.path)) {
+                page(me.path + me.widget.querystring);
+            } else {
+                console.log('skipping since already at route');
+            }
         }
 
         page(me.path, me.showAllRecords);
@@ -103,36 +116,15 @@ $(function () {
         activate: function (event, i) {
             i.newPanel.css("display", "flex");
 
-            switch (i.newTab.context.innerText) {
-                case 'Alarms':
-                    page('/alarms');
+            for(let controller of controllers) {
+
+                console.log('looking for: ', i.newTab.context.innerText);
+
+                if(controller.pluralEntityName === i.newTab.context.innerText) {
+                    console.log('found: ', controller);
+                    controller.tabActivated();
                     break;
-                case 'Activations':
-                    page('/activations');
-                    break;
-                case 'Categories':
-                    page('/categories');
-                    break;
-                case 'Classes':
-                    page('/classes');
-                    break;
-                case 'Instances':
-                    page('/instances');
-                    break;
-                case 'Locations':
-                    page('/locations');
-                    break;
-                case 'Notifications':
-                    page('/notifications');
-                    break;
-                case 'Overrides':
-                    page('/overrides');
-                    break;
-                case 'Registrations':
-                    page('/registrations');
-                    break;
-                default:
-                    console.log('Unknown tab activation: ', event, i);
+                }
             }
         }
     }).show();
