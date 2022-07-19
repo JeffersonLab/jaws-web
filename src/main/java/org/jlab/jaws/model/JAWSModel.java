@@ -21,11 +21,12 @@ public class JAWSModel {
         List<FieldDefinition> keyFields;
         List<FieldDefinition> valueFields;
 
-        activationModel.setTableColumns(Arrays.asList(new String[]{"name", "error"}));
+        activationModel.setTableColumns(Arrays.asList(new String[]{"name", "type", "error"}));
         keyFields = new ArrayList<>();
         keyFields.add(new FieldDefinition("name", FieldType.STRING));
         activationModel.setKeyFields(keyFields);
         valueFields = new ArrayList<>();
+        valueFields.add(new FieldDefinition("type", FieldType.STRING));
         valueFields.add(new FieldDefinition("error", FieldType.STRING));
         valueFields.add(new FieldDefinition("note", FieldType.STRING));
         valueFields.add(new FieldDefinition("sevr", FieldType.STRING));

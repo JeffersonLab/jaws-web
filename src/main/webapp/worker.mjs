@@ -125,6 +125,7 @@ let toAlarm = function(key, value) {
 let toActivation = function(key, value) {
     return new AlarmActivation(
         key,
+        value.union.type,
         value.union.error,
         value.union.note,
         value.union.sevr,
@@ -186,6 +187,7 @@ let toNotification = function(key, value) {
         value.overrides.shelved ? value.overrides.shelved.comments : undefined,
         value.overrides.latched ? true : false,
         value.overrides.masked ? true : false,
+        value.activation.type,
         value.activation.error,
         value.activation.note,
         value.activation.sevr,

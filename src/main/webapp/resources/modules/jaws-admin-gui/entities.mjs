@@ -1,6 +1,7 @@
 class AlarmActivation {
-    constructor(name, error, note, sevr, stat) {
+    constructor(name, type, error, note, sevr, stat) {
         this.name = name;
+        this.type = type;
         this.error = error;
         this.note = note;
         this.sevr = sevr;
@@ -86,7 +87,7 @@ class EffectiveAlarm {
 
 class EffectiveNotification {
     constructor(name, state, disabled_comments, ondelayed_expiration, offdelayed_expiration, filtered_filtername,
-                shelved_oneshot, shelved_reason, shelved_comments, latched, masked, error, note, sevr, stat) {
+                shelved_oneshot, shelved_reason, shelved_comments, latched, masked, type, error, note, sevr, stat) {
         this.name = name;
         this.state = state;
         this.disabled_comments = disabled_comments;
@@ -98,6 +99,7 @@ class EffectiveNotification {
         this.shevled_comments = shelved_comments;
         this.latched = latched;
         this.masked = masked;
+        this.type = type;
         this.error = error;
         this.note = note;
         this.sevr = sevr;
