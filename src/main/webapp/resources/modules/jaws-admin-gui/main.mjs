@@ -67,8 +67,6 @@ class PanelController {
         }
 
         me.showAllRecords = async function(ctx, next) {
-            console.log('showAllRecords', ctx, next);
-
             me.widget.updateSearchInput(ctx.querystring);
 
             await me.render();
@@ -80,8 +78,6 @@ class PanelController {
             // On initial page load page triggers this automatically so skip if already at this route
             if(!page.current.startsWith(me.path)) {
                 page(me.path + me.widget.querystring);
-            } else {
-                console.log('skipping since already at route');
             }
         }
 
@@ -117,11 +113,7 @@ $(function () {
             i.newPanel.css("display", "flex");
 
             for(let controller of controllers) {
-
-                console.log('looking for: ', i.newTab.context.innerText);
-
                 if(controller.pluralEntityName === i.newTab.context.innerText) {
-                    console.log('found: ', controller);
                     controller.tabActivated();
                     break;
                 }
