@@ -436,7 +436,7 @@ class PanelUI extends EventTarget {
             }
 
             // Replace first & with ?
-            if(filterArray.length > 0) {
+            if(me.filters.length > 0) {
                 me.querystring = "?" + me.querystring.substring(1);
             }
         }
