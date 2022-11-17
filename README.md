@@ -24,7 +24,7 @@ Alarm system registration data consists of locations, categories, classes, and i
 git clone https://github.com/JeffersonLab/jaws-admin-gui
 cd jaws-admin-gui
 ```
-2. Launch Docker
+2. Launch [Compose](https://github.com/docker/compose)
 ```
 docker compose up
 ```
