@@ -101,6 +101,7 @@ let toAlarm = function(key, value) {
         value.registration.ondelay,
         value.registration.offdelay,
         value.registration.class,
+        value.registration.device,
         value.registration.location,
         value.registration.maskedby,
         value.registration.screencommand,
@@ -156,6 +157,7 @@ let toInstance = function(key, value) {
     return new AlarmInstance(
         key,
         value.alarmclass,
+        value.device,
         value.location,
         value.maskedby,
         value.screencommand,
@@ -210,6 +212,7 @@ let toRegistration = function(key, value) {
     return new EffectiveRegistration(
         key,
         value.alarmclass,
+        value.device,
         value.priority,
         value.location,
         value.category,

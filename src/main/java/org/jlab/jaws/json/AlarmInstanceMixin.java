@@ -15,6 +15,9 @@ interface AlarmInstanceMixin {
     Object getSource();
 
     @JsonProperty
+    String getDevice();
+
+    @JsonProperty
     List<String> getLocation();
 
     @JsonProperty

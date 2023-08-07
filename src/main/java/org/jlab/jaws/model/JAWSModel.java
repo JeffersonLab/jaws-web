@@ -56,12 +56,13 @@ public class JAWSModel {
         valueFields.add(new FieldDefinition("contact", FieldType.STRING));
         classModel.setValueFields(valueFields);
 
-        instanceModel.setTableColumns(Arrays.asList(new String[]{"name", "class", "location", "epicspv"}));
+        instanceModel.setTableColumns(Arrays.asList(new String[]{"name", "class", "device", "location", "epicspv"}));
         keyFields = new ArrayList<>();
         keyFields.add(new FieldDefinition("name", FieldType.STRING));
         instanceModel.setKeyFields(keyFields);
         valueFields = new ArrayList<>();
         valueFields.add(new FieldDefinition("class", FieldType.STRING));
+        valueFields.add(new FieldDefinition("device", FieldType.STRING));
         valueFields.add(new FieldDefinition("location", FieldType.MULTI_ENUM));
         valueFields.add(new FieldDefinition("epicspv", FieldType.STRING));
         valueFields.add(new FieldDefinition("maskedby", FieldType.STRING));
@@ -109,7 +110,7 @@ public class JAWSModel {
         valueFields.addAll(activationModel.getValueFields());
         notificationModel.setValueFields(valueFields);
 
-        registrationModel.setTableColumns(Arrays.asList(new String[]{"name", "category", "class", "location", "priority", "contact", "epicspv"}));
+        registrationModel.setTableColumns(Arrays.asList(new String[]{"name", "category", "class", "device", "location", "priority", "contact", "epicspv"}));
         keyFields = new ArrayList<>();
         keyFields.add(new FieldDefinition("name", FieldType.STRING));
         registrationModel.setKeyFields(keyFields);

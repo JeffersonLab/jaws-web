@@ -32,9 +32,10 @@ class AlarmClass {
 }
 
 class AlarmInstance {
-    constructor(name, alarmclass, location, maskedby, screencommand, epicspv) {
+    constructor(name, alarmclass, device, location, maskedby, screencommand, epicspv) {
         this.name = name;
         this.class = alarmclass;
+        this.device = device;
         this.location = location;
         this.maskedby = maskedby;
         this.screencommand = screencommand;
@@ -62,7 +63,7 @@ class AlarmOverride {
 
 class EffectiveAlarm {
     constructor(name, priority, category, rationale, action, contact, filterable, latchable,
-                ondelay, offdelay, alarmclass, location, maskedby, screencommand, epicspv, state) {
+                ondelay, offdelay, alarmclass, device, location, maskedby, screencommand, epicspv, state) {
         this.name = name;
 
         this.priority = priority;
@@ -76,6 +77,7 @@ class EffectiveAlarm {
         this.offdelay = offdelay;
 
         this.class = alarmclass;
+        this.device = device;
         this.location = location;
         this.maskedby = maskedby;
         this.screencommand = screencommand;
@@ -108,10 +110,11 @@ class EffectiveNotification {
 }
 
 class EffectiveRegistration {
-    constructor(name, alarmclass, priority, location, category, rationale, action, contact,
+    constructor(name, alarmclass, device, priority, location, category, rationale, action, contact,
                 filterable, latchable, ondelay, offdelay, maskedby, screencommand, epicspv) {
         this.name = name;
         this.class = alarmclass;
+        this.device = device;
         this.priority = priority;
         this.location = location;
         this.category = category;
