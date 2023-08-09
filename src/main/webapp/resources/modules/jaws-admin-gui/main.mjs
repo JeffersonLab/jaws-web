@@ -3,7 +3,6 @@ import db from './db.mjs';
 import PanelUI from './panel-ui.mjs';
 import page from '../page-1.11.6/page.min.mjs';
 import jawsTypes from './jaws-types.mjs';
-import Editor from '../toast-ui-3.1.3/toastui-all.min.mjs';
 
 const meta = document.querySelector('meta');
 const contextPath = meta && meta.dataset.contextPath || '';
@@ -20,12 +19,7 @@ class PanelController {
         me.store = store;
         me.path = path;
 
-        me.markdownToHTMLEditor = Editor.factory({
-            viewer: false, /* No toHTML() method unless full editor! */
-            usageStatistics: false,
-            autofocus: false,
-            el: document.querySelector("#markdown-to-html")
-        });
+        me.markdownToHTMLEditor = null;
 
         me.widget = new PanelUI(idPrefix, singularEntityName, pluralEntityName, store, path, jawsTypes[me.idPrefix], me.markdownToHTMLEditor);
 

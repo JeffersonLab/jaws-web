@@ -19,6 +19,11 @@ services:
       file: docker-compose.yml
       service: effective
 
+  keycloak:
+    extends:
+      file: docker-compose.yml
+      service: keycloak
+
   admin:
     extends:
       file: docker-compose.yml

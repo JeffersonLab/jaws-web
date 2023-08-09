@@ -1,4 +1,4 @@
-import Dexie from '../dexie-3.2.1/dexie.min.mjs';
+import Dexie from '../dexie-3.2.4/dexie.min.mjs';
 import {
     AlarmActivation,
     AlarmCategory,

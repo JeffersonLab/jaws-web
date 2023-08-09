@@ -15,7 +15,6 @@
     </c:url>
     <link rel="stylesheet" href="${siteCssUrl}"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/libs/jquery-ui-1.12.1.smoothness/jquery-ui.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/toast-ui-3.1.3/toastui-editor.css"/>
 </head>
 <body>
 <header>
@@ -51,9 +50,8 @@
 </div>
 <script src="${pageContext.request.contextPath}/resources/libs/jquery-ui-1.12.1.smoothness/external/jquery/jquery.js"></script>
 <script src="${pageContext.request.contextPath}/resources/libs/jquery-ui-1.12.1.smoothness/jquery-ui.min.js"></script>
-<script type="module" src="${pageContext.request.contextPath}/resources/modules/toast-ui-3.1.3/toastui-all.min.mjs"></script>
 <script type="module" src="${pageContext.request.contextPath}/resources/modules/page-1.11.6/page.min.mjs"></script>
-<script type="module" src="${pageContext.request.contextPath}/resources/modules/dexie-3.2.1/dexie.min.mjs"></script>
+<script type="module" src="${pageContext.request.contextPath}/resources/modules/dexie-3.2.4/dexie.min.mjs"></script>
 <script type="module" src="${pageContext.request.contextPath}/resources/modules/jaws-admin-gui-${initParam['releaseNumber']}/main.mjs"></script>
 </body>
 </html>

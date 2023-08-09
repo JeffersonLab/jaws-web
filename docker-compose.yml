@@ -19,6 +19,11 @@ services:
       file: deps.yml
       service: effective
 
+  keycloak:
+    extends:
+      file: deps.yml
+      service: keycloak
+
   admin:
     hostname: admin
     container_name: admin
