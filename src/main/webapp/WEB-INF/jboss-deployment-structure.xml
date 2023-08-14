@@ -1,7 +1,6 @@
 <jboss-deployment-structure>
     <deployment>
         <dependencies>
-            <module name="org.apache.avro"/>
             <module name="com.google.guava"/>
             <module name="org.slf4j"/>
         </dependencies>
