@@ -38,9 +38,6 @@ configurations {
 
 dependencies {
 
-    // Smoothness weblib MUST be included inside WAR (https://github.com/JeffersonLab/smoothness/issues/4)
-    implementation 'org.jlab:smoothness-weblib:4.3.0'
-
     // Smoothness setup should install these into Wildfly as global module
     providedCompile 'org.tuckey:urlrewritefilter:4.0.4'
 
@@ -48,27 +45,11 @@ dependencies {
     providedCompile 'javax:javaee-api:8.0.1',
                     'javax.servlet:jstl:1.2'
 
-    // A custom JBoss Module is expected with: (resolves to 32 jars - ouch)
+    // A custom JBoss Module
     jbossModule 'org.jlab:jaws-libj:4.6.0',
-                //'org.apache.avro:avro:1.11.2',
-                //'com.fasterxml.jackson.core:jackson-databind:2.14.2',
                 'io.confluent:kafka-avro-serializer:7.4.0'
-
-    // Note that Wildfly 26.1.3.Final has the following private modules we don't use because version is old/incompatible:
-    // 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
-    // 'org.apache.avro:avro:1.10.2'
-
-    // Note that Wildfly 26.1.3.Final has the following private modules we don't use because pain to link them to custom
-    // module
-    // 'com.google.guava:guava:31.1-jre',
-    // 'com.google.guava:failureaccess:1.0.1',
-    // 'org.slf4j:slf4j-api:1.7.36'
-    // -- These deps are transitive for jaws-libj/confluent, so including them and linking them is more work than
-    //    just duplicating them in a custom module
 }
 
-// Run installDist and then look inside build/install/jbossModule to see what's expected inside custom jboss module,
-// 21.5 MB of 32 jars would otherwise need to be included inside the WAR file...
 distributions {
     main {
         contents {
