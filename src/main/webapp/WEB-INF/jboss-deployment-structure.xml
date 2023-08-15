@@ -3,6 +3,32 @@
         <dependencies>
             <module name="com.google.guava"/>
             <module name="org.slf4j"/>
+            <module name="kafka"/>
+            <module name="common"/>
+            <module name="jackson"/>
+            <module name="avro"/>
+            <module name="confluent"/>
+            <module name="jaws"/>
         </dependencies>
+        <exclusions>
+            <module name="org.apache.avro"/>
+            <module name="com.fasterxml.jackson.core.jackson-core"/>
+            <module name="com.fasterxml.jackson.core.jackson-databind"/>
+            <module name="com.fasterxml.jackson.core.jackson-annotations"/>
+            <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"/>
+        </exclusions>
     </deployment>
 </jboss-deployment-structure>
+
+<!--
+
+       <dependencies>
+            <module name="com.fasterxml.jackson.core.jackson-core"/>
+            <module name="com.fasterxml.jackson.core.jackson-databind"/>
+        </dependencies>
+
+        <exclusions>
+            <module name="org.apache.avro"/>
+        </exclusions>
+
+ -->
