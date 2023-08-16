@@ -1,3 +1,3 @@
 services:
   admin:
-    image: slominskir/jaws-admin-gui:4.2.0
+    image: jeffersonlab/jaws-admin-gui:4.3.0
