@@ -36,5 +36,5 @@ services:
     environment:
       BOOTSTRAP_SERVERS: "kafka:9092"
       SCHEMA_REGISTRY: "http://registry:8081"
-    volumes:
+#    volumes:
 #      - ./server.p12:/opt/jboss/wildfly/standalone/configuration/server.p12
