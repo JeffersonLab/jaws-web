@@ -32,6 +32,8 @@ docker compose up
 ```
 http://localhost:8080/jaws
 ```
+**Note**: Login with demo username "tbrown" and password "password".
+
 **Note**: The docker-compose services require significant system resources - tested with 4 CPUs and 4GB memory.
 
 **See**: [Docker Compose Strategy](https://gist.github.com/slominskir/a7da801e8259f5974c978f9c3091d52c)
