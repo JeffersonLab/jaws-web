@@ -1,5 +1,5 @@
 ARG BUILD_IMAGE=gradle:7.4-jdk17-alpine
-ARG RUN_IMAGE=jeffersonlab/wildfly:1.3.0
+ARG RUN_IMAGE=jeffersonlab/wildfly:1.4.0
 ARG CUSTOM_CRT_URL=http://pki.jlab.org/JLabCA.crt
 
 ################## Stage 0
@@ -23,6 +23,7 @@ COPY --from=builder /app/docker-entrypoint.sh /docker-entrypoint.sh
 USER root
 RUN /server-setup.sh /server-setup.env wildfly_start_and_wait \
      && /server-setup.sh /server-setup.env config_provided \
+     && /app-setup.sh /app-setup.env config_keycloak_client_dynamic \
      && /server-setup.sh /server-setup.env wildfly_reload \
      && /server-setup.sh /server-setup.env wildfly_stop \
      && rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history
