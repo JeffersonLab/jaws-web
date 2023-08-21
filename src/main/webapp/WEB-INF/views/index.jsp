@@ -1,6 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<c:url var="domainRelativeReturnUrl" scope="request" context="/" value="${requestScope['javax.servlet.forward.request_uri']}${requestScope['javax.servlet.forward.query_string'] ne null ? '?'.concat(requestScope['javax.servlet.forward.query_string']) : ''}"/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +22,26 @@
 <header>
     <img width="128" height="128" alt="Logo" src="${pageContext.request.contextPath}/resources/img/logo-128.png"/>
     <h1>JAWS</h1>
+    <div id="auth">
+        <c:choose>
+            <c:when test="${pageContext.request.userPrincipal ne null}">
+                <div id="username-container">
+                    <c:out value="${pageContext.request.userPrincipal.name}"/>
+                </div>
+                <form id="logout-form" action="${pageContext.request.contextPath}/logout" method="post">
+                    <button type="submit" value="Logout">Logout</button>
+                    <input type="hidden" name="returnUrl" value="${fn:escapeXml(domainRelativeReturnUrl)}"/>
+                </form>
+            </c:when>
+            <c:otherwise>
+                <c:set var="absHostUrl" value="${env['FRONTEND_SERVER_URL']}"/>
+                <c:url value="/sso" var="loginUrl">
+                    <c:param name="returnUrl" value="${absHostUrl.concat(domainRelativeReturnUrl)}"/>
+                </c:url>
+                <a id="login-link" href="${loginUrl}">Login</a>
+            </c:otherwise>
+        </c:choose>
+    </div>
 </header>
 <div id="tabs">
     <ul>

@@ -20,7 +20,12 @@ public class FrontControllerFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         String path = req.getRequestURI().substring(req.getContextPath().length());
-        if (path.startsWith("/resources/") || path.startsWith("/proxy/") || path.startsWith("/manifest.json") || path.startsWith("/worker")) {
+        if (path.startsWith("/resources/") ||
+                path.startsWith("/proxy/") ||
+                path.startsWith("/manifest.json") ||
+                path.startsWith("/worker") ||
+                path.startsWith("/sso") ||
+                path.startsWith("/logout")) {
             chain.doFilter(request, response); // Goes to default servlet.
         } else {
             request.getRequestDispatcher("/view" + path).forward(request, response); // Goes to View front controller servlet.

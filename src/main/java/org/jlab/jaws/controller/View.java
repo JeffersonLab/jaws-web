@@ -1,4 +1,4 @@
-package org.jlab.jaws;
+package org.jlab.jaws.controller;
 
 import org.jlab.jaws.model.JAWSModel;
 
