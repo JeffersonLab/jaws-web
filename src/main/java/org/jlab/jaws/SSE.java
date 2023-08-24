@@ -103,6 +103,7 @@ public class SSE implements ServletContextListener {
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void listen(@Context final SseEventSink sink,
+                       @QueryParam("entitiesCsv") @DefaultValue("alarm,activation,category,class,instance,location,notification,override,registration") String entitiesCsv,
                        @QueryParam("alarmIndex") @DefaultValue("-1") long alarmIndex,
                        @QueryParam("activationIndex") @DefaultValue("-1") long activationIndex,
                        @QueryParam("categoryIndex") @DefaultValue("-1") long categoryIndex,
@@ -113,7 +114,8 @@ public class SSE implements ServletContextListener {
                        @QueryParam("overrideIndex") @DefaultValue("-1") long overrideIndex,
                        @QueryParam("registrationIndex") @DefaultValue("-1") long registrationIndex) {
         System.err.println("Proxy connected: " +
-                "alarmIndex: " + alarmIndex +
+                "entitiesCsv: ('" + entitiesCsv +
+                "), alarmIndex: " + alarmIndex +
                 ", activationIndex: " + activationIndex +
                 ", categoryIndex: " + categoryIndex +
                 ", classIndex: " + classIndex +
@@ -122,6 +124,25 @@ public class SSE implements ServletContextListener {
                 ", notificationIndex: " + notificationIndex +
                 ", overrideIndex: " + overrideIndex +
                 ", registrationIndex: " + registrationIndex);
+
+        String[] tokens = entitiesCsv.split(",");
+        List<String> entities = Arrays.asList(tokens);
+
+        boolean alarm = entities.contains("alarm");
+        boolean activation = entities.contains("activation");
+        boolean category = entities.contains("category");
+        boolean clazz = entities.contains("class");
+        boolean instance = entities.contains("instance");
+        boolean location = entities.contains("location");
+        boolean notification = entities.contains("notification");
+        boolean override = entities.contains("override");
+        boolean registration = entities.contains("registration");
+
+        if(!(alarm || activation || category || clazz || instance || location || notification || override || registration)) {
+            sink.send(sse.newEvent("error", "entitiesCsv must contain at least one known value"));
+            sink.close();
+            return;
+        }
 
         exec.execute(new Runnable() {
 
@@ -160,15 +181,15 @@ public class SSE implements ServletContextListener {
                     overrideConsumer.addListener(createListener(sink, "override", new OverrideKeyConverter(), OVERRIDE_MIXINS));
                     registrationConsumer.addListener(createListener(sink, "registration", strKeyConv, REGISTRATION_MIXINS));
 
-                    alarmConsumer.start();
-                    activationConsumer.start();
-                    categoryConsumer.start();
-                    classConsumer.start();
-                    instanceConsumer.start();
-                    locationConsumer.start();
-                    notificationConsumer.start();
-                    overrideConsumer.start();
-                    registrationConsumer.start();
+                    if (alarm) alarmConsumer.start();
+                    if (activation) activationConsumer.start();
+                    if (category) categoryConsumer.start();
+                    if (clazz) classConsumer.start();
+                    if (instance) instanceConsumer.start();
+                    if (location) locationConsumer.start();
+                    if (notification) notificationConsumer.start();
+                    if (override) overrideConsumer.start();
+                    if (registration) registrationConsumer.start();
 
                     try {
                         while (!sink.isClosed()) {
