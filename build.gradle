@@ -37,9 +37,6 @@ configurations {
 }
 
 dependencies {
-    // Must include in war file https://github.com/JeffersonLab/smoothness/issues/4
-    implementation 'org.jlab:smoothness-weblib:4.4.0'
-
     // Smoothness setup should install these into Wildfly as global module
     providedCompile 'org.tuckey:urlrewritefilter:4.0.4'
 
