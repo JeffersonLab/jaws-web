@@ -1,5 +1,10 @@
 <urlrewrite>
     <rule>
+        <note>Rewrite resource link to strip off directory version</note>
+        <from>^/resources/v([^/]*)/(.*)$</from>
+        <to>/resources/$2</to>
+    </rule>
+    <rule>
         <note>Rewrite app version in modules for cache busting</note>
         <from>^/resources/modules/jaws-admin-gui-(.*)/(.*)$</from>
         <to>/resources/modules/jaws-admin-gui/$2</to>
