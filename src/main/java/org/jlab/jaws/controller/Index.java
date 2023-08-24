@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "View", urlPatterns = {"/view/*"})
-public class View extends HttpServlet {
+@WebServlet(name = "Index", urlPatterns = {"/index"})
+public class Index extends HttpServlet {
 
     @Inject
     private JAWSModel model;

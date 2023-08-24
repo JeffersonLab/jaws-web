@@ -7,6 +7,8 @@ import jawsTypes from './jaws-types.mjs';
 const meta = document.querySelector('meta');
 const contextPath = meta && meta.dataset.contextPath || '';
 
+const pathPrefix = '/debug';
+
 class PanelController {
     constructor(order, batchEventName, idPrefix, singularEntityName, pluralEntityName, store, path) {
         let me = this;
@@ -17,7 +19,7 @@ class PanelController {
         me.singularEntityName = singularEntityName;
         me.pluralEntityName = pluralEntityName;
         me.store = store;
-        me.path = path;
+        me.path = pathPrefix + path;
 
         me.markdownToHTMLEditor = null;
 
