@@ -3,6 +3,14 @@ services:
     image: bitnami/kafka:3.5.0
     hostname: kafka
     container_name: kafka
+    healthcheck:
+      test: kafka-topics.sh --bootstrap-server kafka:9092 --list
+      start_period: 30s
+      start_interval: 5s
+      #      interval: 30s      # waiting for https://github.com/docker/compose/issues/10830
+      interval: 5s
+      timeout: 10s
+      retries: 5
     ports:
       - "9094:9094"
     environment:
@@ -15,17 +23,19 @@ services:
       - KAFKA_CFG_LOG_CLEANER_MAX_COMPACTION_LAG_MS=600000
       - KAFKA_CFG_LOG_CLEANER_MIN_COMPACTION_LAG_MS=300000
       - KAFKA_CFG_LOG_ROLL_MS=300000
-    healthcheck:
-      test: kafka-topics.sh --bootstrap-server kafka:9092 --list
-      start_period: 10s
-      interval: 5s
-      timeout: 10s
-      retries: 5
 
   registry:
     image: bitnami/schema-registry:7.4
     hostname: registry
     container_name: registry
+    healthcheck:
+      test: schema-registry-run-class io.confluent.kafka.schemaregistry.tools.SchemaRegistryPerformance http://localhost:8081 healthcheck 1 1 JSON
+      start_period: 30s
+      start_interval: 5s
+      #      interval: 30s      # waiting for https://github.com/docker/compose/issues/10830
+      interval: 5s
+      timeout: 10s
+      retries: 5
     depends_on:
       kafka:
         condition: service_healthy
@@ -36,14 +46,22 @@ services:
       - SCHEMA_REGISTRY_KAFKA_BROKERS=PLAINTEXT://kafka:9092
 
   jaws:
-    image: jeffersonlab/jaws-libp:4.6.3
+    image: jeffersonlab/jaws-libp:4.7.0
     tty: true
     stdin_open: true
     hostname: jaws
     container_name: jaws
+    healthcheck:
+      test: test $(list_schemas | wc -l) -gt 20
+      start_period: 30s
+      start_interval: 5s
+      #      interval: 30s      # waiting for https://github.com/docker/compose/issues/10830
+      interval: 5s
+      timeout: 10s
+      retries: 5
     depends_on:
-      - kafka
-      - registry
+      registry:
+        condition: service_healthy
     environment:
       TZ: "America/New_York"
       BOOTSTRAP_SERVERS: "kafka:9092"
@@ -57,9 +75,18 @@ services:
   effective:
     hostname: effective
     container_name: effective
-    image: jeffersonlab/jaws-effective-processor:4.3.0
+    image: jeffersonlab/jaws-effective-processor:4.4.0
+    healthcheck:
+      test: test $(ps | grep jaws | wc -l) -gt 1
+      start_period: 30s
+      start_interval: 5s
+      #      interval: 30s      # waiting for https://github.com/docker/compose/issues/10830
+      interval: 5s
+      timeout: 10s
+      retries: 5
     depends_on:
-      - jaws
+      jaws:
+        condition: service_healthy
     environment:
       BOOTSTRAP_SERVERS: "kafka:9092"
       SCHEMA_REGISTRY: "http://registry:8081"
@@ -68,6 +95,14 @@ services:
     image: quay.io/keycloak/keycloak:20.0.5
     hostname: keycloak
     container_name: keycloak
+    healthcheck:
+      test: curl http://localhost:8080 -sf -o /dev/null
+      start_period: 30s
+      start_interval: 5s
+      #      interval: 30s      # waiting for https://github.com/docker/compose/issues/10830
+      interval: 5s
+      timeout: 10s
+      retries: 5
     ports:
       - "8082:8080"
       - "9991:9990"
