@@ -26,6 +26,8 @@ class Remote extends EventTarget {
 
         let worker;
 
+        /* note: if CTRL-SHIFT-R isn't clearing cached worker.js during development open developer console and disable all caching */
+
         if( supportsWorkerType() ) {
             worker = new Worker(contextPath + '/worker-' + appVersion + '.mjs', {"type": "module"});
         } else {
