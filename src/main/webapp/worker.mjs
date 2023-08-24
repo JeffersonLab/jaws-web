@@ -261,6 +261,8 @@ async function init() {
     // Replace first & with ?
     queryParams = '?' + queryParams.substring(1);
 
+    // + '&entitiesCsv=alarm&initiallyActiveOnly=true'
+
     evtSource = new EventSource(contextPath + '/proxy/sse' + queryParams);
 
     for(const worker of workers) {

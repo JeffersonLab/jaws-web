@@ -40,6 +40,8 @@ public class SSE implements ServletContextListener {
     private final List<Mixin> OVERRIDE_MIXINS = new ArrayList<>();
     private final List<Mixin> REGISTRATION_MIXINS = new ArrayList<>();
 
+    private final StringKeyConverter strKeyConv = new StringKeyConverter();
+
     {
         ACTIVATION_MIXINS.add(new Mixin(AlarmActivationUnion.class, AlarmActivationMixin.class));
         ACTIVATION_MIXINS.add(new Mixin(Activation.class, ActivationMixin.class));
@@ -100,10 +102,27 @@ public class SSE implements ServletContextListener {
         this.sse = sse;
     }
 
+    /**
+     * Listen to Server Sent Events associated with JAWS.
+     *
+     * @param sink The Server Sent Events sink
+     * @param entitiesCsv Comma separted values declaring the entities to monitor
+     * @param initiallyActiveOnlyStr If "true", then EffectiveAlarm, EffectiveNotification, and Activation records before highwater are only sent if an Active state;  after highwater all records are sent (so inactivation is provided)
+     * @param alarmIndex The starting EffectiveAlarm index or -1 to receive all records
+     * @param activationIndex The starting AlarmActivation index or -1 to receive all records
+     * @param categoryIndex The starting Category index or -1 to receive all records
+     * @param classIndex The starting AlarmClass index or -1 to receive all records
+     * @param instanceIndex The starting AlarmInstance index or -1 to receive all records
+     * @param locationIndex The starting AlarmLocation index or -1 to receive all records
+     * @param notificationIndex The starting EffectiveNotification index or -1 to receive all records
+     * @param overrideIndex The starting AlarmOverride index or -1 to receive all records
+     * @param registrationIndex The starting AlarmRegistration index or -1 to receive all records
+     */
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void listen(@Context final SseEventSink sink,
                        @QueryParam("entitiesCsv") @DefaultValue("alarm,activation,category,class,instance,location,notification,override,registration") String entitiesCsv,
+                       @QueryParam("initiallyActiveOnly") @DefaultValue("false") String initiallyActiveOnlyStr,
                        @QueryParam("alarmIndex") @DefaultValue("-1") long alarmIndex,
                        @QueryParam("activationIndex") @DefaultValue("-1") long activationIndex,
                        @QueryParam("categoryIndex") @DefaultValue("-1") long categoryIndex,
@@ -114,8 +133,9 @@ public class SSE implements ServletContextListener {
                        @QueryParam("overrideIndex") @DefaultValue("-1") long overrideIndex,
                        @QueryParam("registrationIndex") @DefaultValue("-1") long registrationIndex) {
         System.err.println("Proxy connected: " +
-                "entitiesCsv: ('" + entitiesCsv +
-                "), alarmIndex: " + alarmIndex +
+                "entitiesCsv: (" + entitiesCsv +
+                "), initiallyActiveOnly: " + initiallyActiveOnlyStr +
+                ", alarmIndex: " + alarmIndex +
                 ", activationIndex: " + activationIndex +
                 ", categoryIndex: " + categoryIndex +
                 ", classIndex: " + classIndex +
@@ -124,6 +144,8 @@ public class SSE implements ServletContextListener {
                 ", notificationIndex: " + notificationIndex +
                 ", overrideIndex: " + overrideIndex +
                 ", registrationIndex: " + registrationIndex);
+
+        final boolean initiallyActiveOnly = ("true".equals(initiallyActiveOnlyStr));
 
         String[] tokens = entitiesCsv.split(",");
         List<String> entities = Arrays.asList(tokens);
@@ -169,17 +191,26 @@ public class SSE implements ServletContextListener {
                         OverrideConsumer overrideConsumer = new OverrideConsumer(overrideProps);
                         EffectiveRegistrationConsumer registrationConsumer = new EffectiveRegistrationConsumer(registrationProps)
                 ) {
-                    StringKeyConverter strKeyConv = new StringKeyConverter();
+                    EventSourceListener<String, EffectiveAlarm> alarmListener;
+                    EventSourceListener<String, EffectiveNotification> notificationListener;
 
-                    alarmConsumer.addListener(createListener(sink, "alarm", strKeyConv, ALARM_MIXINS));
-                    activationConsumer.addListener(createListener(sink, "activation", strKeyConv, ACTIVATION_MIXINS));
-                    categoryConsumer.addListener(createListener(sink, "category", strKeyConv, null));
-                    classConsumer.addListener(createListener(sink, "class", strKeyConv, CLASS_MIXINS));
-                    instanceConsumer.addListener(createListener(sink, "instance", strKeyConv, INSTANCE_MIXINS));
-                    locationConsumer.addListener(createListener(sink, "location", strKeyConv, LOCATION_MIXINS));
-                    notificationConsumer.addListener(createListener(sink, "notification", strKeyConv, NOTIFICATION_MIXINS));
-                    overrideConsumer.addListener(createListener(sink, "override", new OverrideKeyConverter(), OVERRIDE_MIXINS));
-                    registrationConsumer.addListener(createListener(sink, "registration", strKeyConv, REGISTRATION_MIXINS));
+                    if(initiallyActiveOnly) {
+                        alarmListener = new AlarmIAOListener(sink);
+                        notificationListener = new NotificationIAOListener(sink);
+                    } else {
+                        alarmListener = new ESListener(sink, "alarm", strKeyConv, ALARM_MIXINS);
+                        notificationListener = new ESListener(sink, "notification", strKeyConv, NOTIFICATION_MIXINS);
+                    }
+
+                    alarmConsumer.addListener(alarmListener);
+                    activationConsumer.addListener(new ESListener(sink, "activation", strKeyConv, ACTIVATION_MIXINS));
+                    categoryConsumer.addListener(new ESListener(sink, "category", strKeyConv, null));
+                    classConsumer.addListener(new ESListener(sink, "class", strKeyConv, CLASS_MIXINS));
+                    instanceConsumer.addListener(new ESListener(sink, "instance", strKeyConv, INSTANCE_MIXINS));
+                    locationConsumer.addListener(new ESListener(sink, "location", strKeyConv, LOCATION_MIXINS));
+                    notificationConsumer.addListener(notificationListener);
+                    overrideConsumer.addListener(new ESListener(sink, "override", new OverrideKeyConverter(), OVERRIDE_MIXINS));
+                    registrationConsumer.addListener(new ESListener(sink, "registration", strKeyConv, REGISTRATION_MIXINS));
 
                     if (alarm) alarmConsumer.start();
                     if (activation) activationConsumer.start();
@@ -207,18 +238,108 @@ public class SSE implements ServletContextListener {
         });
     }
 
-    private <K, V> EventSourceListener<K, V> createListener(SseEventSink sink, String eventName, KeyConverter<K> keyConverter, List<Mixin> mixins) {
-        return new EventSourceListener<K, V>() {
-            @Override
-            public void highWaterOffset(LinkedHashMap<K, EventSourceRecord<K, V>> records) {
-                sink.send(sse.newEvent(eventName + "-highwatermark", ""));
-            }
+    class ESListener<K, V> implements EventSourceListener<K, V> {
+        protected final SseEventSink sink;
+        protected final String eventName;
+        protected final KeyConverter<K> keyConverter;
+        protected final List<Mixin> mixins;
 
-            @Override
-            public void batch(List<EventSourceRecord<K, V>> records, boolean highWaterReached) {
+        ESListener(SseEventSink sink, String eventName, KeyConverter<K> keyConverter, List<Mixin> mixins) {
+            this.sink = sink;
+            this.eventName = eventName;
+            this.keyConverter = keyConverter;
+            this.mixins = mixins;
+        }
+
+        @Override
+        public void highWaterOffset(LinkedHashMap<K, EventSourceRecord<K, V>> records) {
+            sink.send(sse.newEvent(eventName + "-highwatermark", ""));
+        }
+
+        @Override
+        public void batch(List<EventSourceRecord<K, V>> records, boolean highWaterReached) {
+            sendRecords(sink, eventName, records, keyConverter, mixins);
+        }
+    }
+
+    public static boolean isActive(AlarmState state) {
+        return state == AlarmState.Active || state == AlarmState.ActiveLatched || state == AlarmState.ActiveOffDelayed;
+    }
+
+    public static boolean isActiveUnion(Object union) {
+        return union instanceof EPICSActivation || union instanceof NoteActivation || union instanceof Activation;
+    }
+
+    class AlarmIAOListener extends ESListener<String, EffectiveAlarm> {
+
+        AlarmIAOListener(SseEventSink sink) {
+            super(sink, "alarm", strKeyConv, ALARM_MIXINS);
+        }
+
+        @Override
+        public void batch(List<EventSourceRecord<String, EffectiveAlarm>> records, boolean highWaterReached) {
+            if(highWaterReached) {
                 sendRecords(sink, eventName, records, keyConverter, mixins);
+            } else {
+                List<EventSourceRecord<String, EffectiveAlarm>> activeRecords = new ArrayList<>();
+                for(EventSourceRecord<String, EffectiveAlarm> record: records) {
+                    if(isActive(record.getValue().getNotification().getState())) {
+                        activeRecords.add(record);
+                    }
+                }
+                if(!activeRecords.isEmpty()) {
+                    sendRecords(sink, eventName, activeRecords, keyConverter, mixins);
+                }
             }
-        };
+        }
+    }
+
+    class NotificationIAOListener extends ESListener<String, EffectiveNotification> {
+
+        NotificationIAOListener(SseEventSink sink) {
+            super(sink, "notification", strKeyConv, NOTIFICATION_MIXINS);
+        }
+
+        @Override
+        public void batch(List<EventSourceRecord<String, EffectiveNotification>> records, boolean highWaterReached) {
+            if(highWaterReached) {
+                sendRecords(sink, eventName, records, keyConverter, mixins);
+            } else {
+                List<EventSourceRecord<String, EffectiveNotification>> activeRecords = new ArrayList<>();
+                for(EventSourceRecord<String, EffectiveNotification> record: records) {
+                    if(isActive(record.getValue().getState())) {
+                        activeRecords.add(record);
+                    }
+                }
+                if(!activeRecords.isEmpty()) {
+                    sendRecords(sink, eventName, activeRecords, keyConverter, mixins);
+                }
+            }
+        }
+    }
+
+    class ActivationIAOListener extends ESListener<String, AlarmActivationUnion> {
+
+        ActivationIAOListener(SseEventSink sink) {
+            super(sink, "activation", strKeyConv, ACTIVATION_MIXINS);
+        }
+
+        @Override
+        public void batch(List<EventSourceRecord<String, AlarmActivationUnion>> records, boolean highWaterReached) {
+            if(highWaterReached) {
+                sendRecords(sink, eventName, records, keyConverter, mixins);
+            } else {
+                List<EventSourceRecord<String, AlarmActivationUnion>> activeRecords = new ArrayList<>();
+                for(EventSourceRecord<String, AlarmActivationUnion> record: records) {
+                    if(isActiveUnion(record.getValue().getUnion())) {
+                        activeRecords.add(record);
+                    }
+                }
+                if(!activeRecords.isEmpty()) {
+                    sendRecords(sink, eventName, activeRecords, keyConverter, mixins);
+                }
+            }
+        }
     }
 
     private Properties getConsumerProps(long resumeOffset) {
