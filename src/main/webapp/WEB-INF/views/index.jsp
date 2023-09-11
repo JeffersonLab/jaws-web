@@ -42,6 +42,22 @@
         </c:choose>
     </div>
 </header>
-<section><a href="debug">Debug</a></section>
+<section>
+    <table id="alarm-table">
+        <thead>
+            <tr>
+                <th>name</th>
+                <th>priority</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <a href="debug">Debug</a>
+</section>
+<c:url value="/resources/js/notifications.js" var="notificationsJsUrl">
+    <c:param name="v" value="${initParam['releaseNumber']}"/>
+</c:url>
+<script src="${notificationsJsUrl}"></script>
 </body>
 </html>

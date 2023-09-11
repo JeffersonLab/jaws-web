@@ -170,15 +170,15 @@ public class SSE implements ServletContextListener {
 
             @Override
             public void run() {
-                final Properties alarmProps = getConsumerPropsWithRegistry(alarmIndex);
-                final Properties activationProps = getConsumerPropsWithRegistry(activationIndex);
-                final Properties categoryProps = getConsumerProps(categoryIndex);
-                final Properties classProps = getConsumerPropsWithRegistry(classIndex);
-                final Properties instanceProps = getConsumerPropsWithRegistry(instanceIndex);
-                final Properties locationProps = getConsumerPropsWithRegistry(locationIndex);
-                final Properties notificationProps = getConsumerPropsWithRegistry(notificationIndex);
-                final Properties overrideProps = getConsumerPropsWithRegistry(overrideIndex);
-                final Properties registrationProps = getConsumerPropsWithRegistry(registrationIndex);
+                final Properties alarmProps = getConsumerPropsWithRegistry(alarmIndex, initiallyActiveOnly);
+                final Properties activationProps = getConsumerPropsWithRegistry(activationIndex, initiallyActiveOnly);
+                final Properties categoryProps = getConsumerProps(categoryIndex, false);
+                final Properties classProps = getConsumerPropsWithRegistry(classIndex, false);
+                final Properties instanceProps = getConsumerPropsWithRegistry(instanceIndex, false);
+                final Properties locationProps = getConsumerPropsWithRegistry(locationIndex, false);
+                final Properties notificationProps = getConsumerPropsWithRegistry(notificationIndex, initiallyActiveOnly);
+                final Properties overrideProps = getConsumerPropsWithRegistry(overrideIndex, false);
+                final Properties registrationProps = getConsumerPropsWithRegistry(registrationIndex, false);
 
                 try (
                         EffectiveAlarmConsumer alarmConsumer = new EffectiveAlarmConsumer(alarmProps);
@@ -193,17 +193,20 @@ public class SSE implements ServletContextListener {
                 ) {
                     EventSourceListener<String, EffectiveAlarm> alarmListener;
                     EventSourceListener<String, EffectiveNotification> notificationListener;
+                    EventSourceListener<String, AlarmActivationUnion> activationListener;
 
                     if(initiallyActiveOnly) {
                         alarmListener = new AlarmIAOListener(sink);
                         notificationListener = new NotificationIAOListener(sink);
+                        activationListener = new ActivationIAOListener(sink);
                     } else {
                         alarmListener = new ESListener(sink, "alarm", strKeyConv, ALARM_MIXINS);
                         notificationListener = new ESListener(sink, "notification", strKeyConv, NOTIFICATION_MIXINS);
+                        activationListener = new ESListener(sink, "activation", strKeyConv, ACTIVATION_MIXINS);
                     }
 
                     alarmConsumer.addListener(alarmListener);
-                    activationConsumer.addListener(new ESListener(sink, "activation", strKeyConv, ACTIVATION_MIXINS));
+                    activationConsumer.addListener(activationListener);
                     categoryConsumer.addListener(new ESListener(sink, "category", strKeyConv, null));
                     classConsumer.addListener(new ESListener(sink, "class", strKeyConv, CLASS_MIXINS));
                     instanceConsumer.addListener(new ESListener(sink, "instance", strKeyConv, INSTANCE_MIXINS));
@@ -262,99 +265,93 @@ public class SSE implements ServletContextListener {
         }
     }
 
-    public static boolean isActive(AlarmState state) {
-        return state == AlarmState.Active || state == AlarmState.ActiveLatched || state == AlarmState.ActiveOffDelayed;
+    abstract class ActiveOnlyESListener<K, V> extends ESListener<K, V> {
+
+        ActiveOnlyESListener(SseEventSink sink, String eventName, KeyConverter<K> keyConverter, List<Mixin> mixins) {
+            super(sink, eventName, keyConverter, mixins);
+        }
+
+        public boolean isActiveState(AlarmState state) {
+            return state == AlarmState.Active || state == AlarmState.ActiveLatched || state == AlarmState.ActiveOffDelayed;
+        }
+
+        public boolean isActiveUnion(Object union) {
+            return union instanceof EPICSActivation || union instanceof NoteActivation || union instanceof Activation;
+        }
+
+        public abstract boolean isActive(V value);
+
+        @Override
+        public void highWaterOffset(LinkedHashMap<K, EventSourceRecord<K, V>> records) {
+            List<EventSourceRecord<K, V>> activeRecords = new ArrayList<>();
+            for(EventSourceRecord<K, V> record: records.values()) {
+                if(isActive(record.getValue())) {
+                    activeRecords.add(record);
+                }
+            }
+            if(!activeRecords.isEmpty()) {
+                sendRecords(sink, eventName, activeRecords, keyConverter, mixins);
+            }
+            sink.send(sse.newEvent(eventName + "-highwatermark", ""));
+        }
+
+        @Override
+        public void batch(List<EventSourceRecord<K, V>> records, boolean highWaterReached) {
+            if(highWaterReached) {
+                sendRecords(sink, eventName, records, keyConverter, mixins);
+            }
+        }
     }
 
-    public static boolean isActiveUnion(Object union) {
-        return union instanceof EPICSActivation || union instanceof NoteActivation || union instanceof Activation;
-    }
-
-    class AlarmIAOListener extends ESListener<String, EffectiveAlarm> {
+    class AlarmIAOListener extends ActiveOnlyESListener<String, EffectiveAlarm> {
 
         AlarmIAOListener(SseEventSink sink) {
             super(sink, "alarm", strKeyConv, ALARM_MIXINS);
         }
 
         @Override
-        public void batch(List<EventSourceRecord<String, EffectiveAlarm>> records, boolean highWaterReached) {
-            if(highWaterReached) {
-                sendRecords(sink, eventName, records, keyConverter, mixins);
-            } else {
-                List<EventSourceRecord<String, EffectiveAlarm>> activeRecords = new ArrayList<>();
-                for(EventSourceRecord<String, EffectiveAlarm> record: records) {
-                    if(isActive(record.getValue().getNotification().getState())) {
-                        activeRecords.add(record);
-                    }
-                }
-                if(!activeRecords.isEmpty()) {
-                    sendRecords(sink, eventName, activeRecords, keyConverter, mixins);
-                }
-            }
+        public boolean isActive(EffectiveAlarm value) {
+            return isActiveState(value.getNotification().getState());
         }
     }
 
-    class NotificationIAOListener extends ESListener<String, EffectiveNotification> {
+    class NotificationIAOListener extends ActiveOnlyESListener<String, EffectiveNotification> {
 
         NotificationIAOListener(SseEventSink sink) {
             super(sink, "notification", strKeyConv, NOTIFICATION_MIXINS);
         }
 
         @Override
-        public void batch(List<EventSourceRecord<String, EffectiveNotification>> records, boolean highWaterReached) {
-            if(highWaterReached) {
-                sendRecords(sink, eventName, records, keyConverter, mixins);
-            } else {
-                List<EventSourceRecord<String, EffectiveNotification>> activeRecords = new ArrayList<>();
-                for(EventSourceRecord<String, EffectiveNotification> record: records) {
-                    if(isActive(record.getValue().getState())) {
-                        activeRecords.add(record);
-                    }
-                }
-                if(!activeRecords.isEmpty()) {
-                    sendRecords(sink, eventName, activeRecords, keyConverter, mixins);
-                }
-            }
+        public boolean isActive(EffectiveNotification value) {
+            return isActiveState(value.getState());
         }
     }
 
-    class ActivationIAOListener extends ESListener<String, AlarmActivationUnion> {
+    class ActivationIAOListener extends ActiveOnlyESListener<String, AlarmActivationUnion> {
 
         ActivationIAOListener(SseEventSink sink) {
             super(sink, "activation", strKeyConv, ACTIVATION_MIXINS);
         }
 
         @Override
-        public void batch(List<EventSourceRecord<String, AlarmActivationUnion>> records, boolean highWaterReached) {
-            if(highWaterReached) {
-                sendRecords(sink, eventName, records, keyConverter, mixins);
-            } else {
-                List<EventSourceRecord<String, AlarmActivationUnion>> activeRecords = new ArrayList<>();
-                for(EventSourceRecord<String, AlarmActivationUnion> record: records) {
-                    if(isActiveUnion(record.getValue().getUnion())) {
-                        activeRecords.add(record);
-                    }
-                }
-                if(!activeRecords.isEmpty()) {
-                    sendRecords(sink, eventName, activeRecords, keyConverter, mixins);
-                }
-            }
+        public boolean isActive(AlarmActivationUnion value) {
+            return isActiveUnion(value.getUnion());
         }
     }
 
-    private Properties getConsumerProps(long resumeOffset) {
+    private Properties getConsumerProps(long resumeOffset, boolean compactedCache) {
         final Properties props = new Properties();
 
         props.put(EventSourceConfig.GROUP_ID_CONFIG, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
         props.put(EventSourceConfig.BOOTSTRAP_SERVERS_CONFIG, JaxRSApp.BOOTSTRAP_SERVERS);
         props.put(EventSourceConfig.RESUME_OFFSET_CONFIG, resumeOffset);
-        props.put(EventSourceConfig.COMPACTED_CACHE_CONFIG, false);
+        props.put(EventSourceConfig.COMPACTED_CACHE_CONFIG, compactedCache);
 
         return props;
     }
 
-    private Properties getConsumerPropsWithRegistry(long resumeOffset) {
-        final Properties props = getConsumerProps(resumeOffset);
+    private Properties getConsumerPropsWithRegistry(long resumeOffset, boolean compactedCache) {
+        final Properties props = getConsumerProps(resumeOffset, compactedCache);
 
         props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, JaxRSApp.SCHEMA_REGISTRY);
 
