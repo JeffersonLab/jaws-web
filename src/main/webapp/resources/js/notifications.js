@@ -62,7 +62,7 @@ let toAlarm = function(key, value) {
         value.registration.offdelay,
         value.registration.class,
         value.registration.device,
-        value.registration.location,
+        value.registration.location ? value.registration.location.join(',') : undefined,
         value.registration.maskedby,
         value.registration.screencommand,
         value.registration.source ? value.registration.source.pv : undefined,

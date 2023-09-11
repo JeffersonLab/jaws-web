@@ -54,6 +54,7 @@
                 <th>stat</th>
                 <th>sevr</th>
                 <th>epicspv</th>
+                <th>location</th>
             </tr>
         </thead>
         <tbody>
