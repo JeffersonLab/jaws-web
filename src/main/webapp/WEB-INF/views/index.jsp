@@ -53,6 +53,7 @@
                 <th>error</th>
                 <th>stat</th>
                 <th>sevr</th>
+                <th>epicspv</th>
             </tr>
         </thead>
         <tbody>
