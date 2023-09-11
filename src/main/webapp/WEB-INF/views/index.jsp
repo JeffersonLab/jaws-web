@@ -48,6 +48,7 @@
             <tr>
                 <th>name</th>
                 <th>priority</th>
+                <th>state</th>
             </tr>
         </thead>
         <tbody>

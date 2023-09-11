@@ -76,37 +76,12 @@ let table = document.getElementById("alarm-table"),
     thList = table.querySelectorAll("thead th"),
     columnStrList = [...thList.values()].map(th => th.textContent);
 
-function removeDuplicates(data) {
-
-    let results = [];
-
-    for(const record of data) {
-        let nameList = tbody.querySelectorAll("tr td:first-child");
-
-        let duplicate = false;
-
-        for(var i = 0; i < nameList.length; i++) {
-            let name = nameList[i].textContent;
-
-            if(name === record.name) {
-                duplicate = true;
-                break;
-            }
-        }
-
-        if(!duplicate) {
-            results.push(record);
-        }
-    }
-
-    return results;
-}
-
 function addAlarms(data) {
     console.log('addAlarms', data);
 
+    let keys = data.map(item => item.name);
 
-    data = removeDuplicates(data);
+    removeAlarms(keys);
 
     for(const record of data) {
         let tr = document.createElement("tr");
@@ -124,10 +99,10 @@ function addAlarms(data) {
     }
 }
 
-function removeAlarms(data) {
-    console.log('removeAlarms', data);
+function removeAlarms(keys) {
+    console.log('removeAlarms', keys);
 
-    for(const record of data) {
+    for(const record of keys) {
 
         let nameList = tbody.querySelectorAll("tr td:first-child");
 
