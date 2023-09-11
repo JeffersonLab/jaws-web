@@ -3,7 +3,8 @@ const contextPath = '/' + urlObject.pathname.split('/')[1];
 
 class EffectiveAlarm {
     constructor(name, priority, category, rationale, action, contact, filterable, latchable,
-                ondelay, offdelay, alarmclass, device, location, maskedby, screencommand, epicspv, state) {
+                ondelay, offdelay, alarmclass, device, location, maskedby, screencommand, epicspv, state,
+                disabled, ondelayed, offdelayed, filtered, oneshot, reason, comments, latched, masked, type, error, note, sevr, stat) {
         this.name = name;
 
         this.priority = priority;
@@ -24,6 +25,20 @@ class EffectiveAlarm {
         this.epicspv = epicspv;
 
         this.state = state;
+        this.disabled = disabled;
+        this.ondelayed = ondelayed;
+        this.offdelayed = offdelayed;
+        this.filtered = filtered;
+        this.oneshot = oneshot;
+        this.reason = reason;
+        this.comments = comments;
+        this.latched = latched;
+        this.masked = masked;
+        this.type = type;
+        this.error = error;
+        this.note = note;
+        this.sevr = sevr;
+        this.stat = stat;
     }
 }
 
@@ -61,10 +76,11 @@ let toAlarm = function(key, value) {
         value.notification.overrides.shelved ? value.notification.overrides.shelved.comments : undefined,
         value.notification.overrides.latched ? true : false,
         value.notification.overrides.masked ? true : false,
-        value.notification.activation.error,
-        value.notification.activation.note,
-        value.notification.activation.sevr,
-        value.notification.activation.stat
+        value.notification.activation.union.type,
+        value.notification.activation.union.error,
+        value.notification.activation.union.note,
+        value.notification.activation.union.sevr,
+        value.notification.activation.union.stat
     );
 }
 

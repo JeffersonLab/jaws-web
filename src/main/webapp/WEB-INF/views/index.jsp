@@ -49,6 +49,10 @@
                 <th>name</th>
                 <th>priority</th>
                 <th>state</th>
+                <th>type</th>
+                <th>error</th>
+                <th>stat</th>
+                <th>sevr</th>
             </tr>
         </thead>
         <tbody>
