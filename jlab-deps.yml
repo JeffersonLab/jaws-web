@@ -13,6 +13,9 @@ services:
     extends:
       file: deps.yml
       service: jaws
+      environment:
+        - ALARM_INSTANCES=https://raw.githubusercontent.com/JeffersonLab/alarms/main/instances
+        - ALARM_INSTANCES_URL_CSV=aperture,bcm,beamdump,bels,blm,box,bpm,camac,crates,cryo,dempow,gun,harp,helicity,ioc,ion,laser,lcw,misc,mo,odh,radcon,rf,rfsep,trim,vacuum
 
   effective:
     extends:
