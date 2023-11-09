@@ -5,18 +5,66 @@ body, html {
 header {
     padding-left: 30px;
     width: 100%;
-    background-color: #FC466B;
     position: fixed;
+    background:
+            radial-gradient(black 15%, transparent 16%) 0 0,
+            radial-gradient(black 15%, transparent 16%) 8px 8px,
+            radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px,
+            radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
+    background-color:#282828;
+    background-size:16px 16px;
 }
 
 .primary-nav {
+    padding-top: 1em;
     height: 100%;
     position: fixed;
     left: 0;
     width: 250px;
     transform: translateX(-250px);
     transition: transform 250ms ease-in-out;
-    background: linear-gradient(180deg, #FC466B 0%, #3F5EFB 100%);
+
+    background-color: hsla(0,0%,90%,1);
+    background-image: linear-gradient(-45deg, hsla(0,0%,0%,0), hsla(0,0%,0%,.05) );
+}
+
+.primary-nav ol {
+    list-style: none;
+    margin: 1em 2em 0 0;
+    padding: 0;
+}
+
+.metal-button,
+.primary-nav li {
+    margin: 1em;
+    padding: 1em;
+
+    background-image: -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0)   6%, hsla(0,0%,100%, .1) 7.5%),
+    -webkit-repeating-linear-gradient(left, hsla(0,0%,  0%,0) 0%, hsla(0,0%,  0%,0)   4%, hsla(0,0%,  0%,.03) 4.5%),
+    -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 1.2%, hsla(0,0%,100%,.15) 2.2%),
+
+    linear-gradient(180deg, hsl(0,0%,78%)  0%,
+            hsl(0,0%,90%) 47%,
+            hsl(0,0%,78%) 53%,
+            hsl(0,0%,70%)100%);
+
+
+    border-radius: 0.5em;
+
+    font: bold 1em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+    color: hsla(0,0%,20%,1);
+    text-shadow: hsla(0,0%,40%,.5) 0 -1px 0, hsla(0,0%,100%,.6) 0 2px 1px;
+
+    background-color: hsl(0,0%,90%);
+    box-shadow: inset hsla(0,0%,15%,  1) 0  0px 0px 4px, /* border */
+    inset hsla(0,0%,15%, .8) 0 -1px 5px 4px, /* soft SD */
+    inset hsla(0,0%,0%, .25) 0 -1px 0px 7px, /* bottom SD */
+    inset hsla(0,0%,100%,.7) 0  2px 1px 7px, /* top HL */
+
+    hsla(0,0%, 0%,.15) 0 -5px 6px 4px, /* outer SD */
+    hsla(0,0%,100%,.5) 0  5px 6px 4px; /* outer HL */
+
+    transition: color .2s;
 }
 
 input[type="checkbox"]:checked ~ .primary-nav {

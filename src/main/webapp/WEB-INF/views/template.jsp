@@ -1,3 +1,4 @@
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,22 +11,16 @@
     </head>
     <body>
         <header>
-            <input type="checkbox" id="open-primary-nav">
-            <label for="open-primary-nav" class="primary-nav-toggle">
-                <div class="spinner diagonal part-1"></div>
-                <div class="spinner horizontal"></div>
-                <div class="spinner diagonal part-2"></div>
-            </label>
-            <nav class="primary-nav" aria-label="primary">
+            <t:slidemenu>
                 <ol>
-                    <li>Primary 1</li>
-                    <li>Primary 2</li>
+                    <li>Dashboard</li>
+                    <li>Inventory</li>
+                    <li>Help</li>
                 </ol>
-            </nav>
+            </t:slidemenu>
             <nav aria-label="breadcrumb">
                 <ol>
-                    <li>Crumb 1</li>
-                    <li>Crumb 2</li>
+                    <li>Dashboard</li>
                 </ol>
             </nav>
             <nav aria-label="secondary">
@@ -35,5 +30,19 @@
                 </ol>
             </nav>
         </header>
+        <script>
+            let dialog = document.querySelector("dialog");
+            dialog.addEventListener("click", e => {
+                const dialogDimensions = dialog.getBoundingClientRect()
+                if (
+                    e.clientX < dialogDimensions.left ||
+                    e.clientX > dialogDimensions.right ||
+                    e.clientY < dialogDimensions.top ||
+                    e.clientY > dialogDimensions.bottom
+                ) {
+                    dialog.close()
+                }
+            });
+        </script>
     </body>
 </html>
