@@ -200,20 +200,20 @@ public class SSE implements ServletContextListener {
                         notificationListener = new NotificationIAOListener(sink);
                         activationListener = new ActivationIAOListener(sink);
                     } else {
-                        alarmListener = new ESListener(sink, "alarm", strKeyConv, ALARM_MIXINS);
-                        notificationListener = new ESListener(sink, "notification", strKeyConv, NOTIFICATION_MIXINS);
-                        activationListener = new ESListener(sink, "activation", strKeyConv, ACTIVATION_MIXINS);
+                        alarmListener = new ESListener<>(sink, "alarm", strKeyConv, ALARM_MIXINS);
+                        notificationListener = new ESListener<>(sink, "notification", strKeyConv, NOTIFICATION_MIXINS);
+                        activationListener = new ESListener<>(sink, "activation", strKeyConv, ACTIVATION_MIXINS);
                     }
 
                     alarmConsumer.addListener(alarmListener);
                     activationConsumer.addListener(activationListener);
-                    categoryConsumer.addListener(new ESListener(sink, "category", strKeyConv, null));
-                    classConsumer.addListener(new ESListener(sink, "class", strKeyConv, CLASS_MIXINS));
-                    instanceConsumer.addListener(new ESListener(sink, "instance", strKeyConv, INSTANCE_MIXINS));
-                    locationConsumer.addListener(new ESListener(sink, "location", strKeyConv, LOCATION_MIXINS));
+                    categoryConsumer.addListener(new ESListener<>(sink, "category", strKeyConv, null));
+                    classConsumer.addListener(new ESListener<>(sink, "class", strKeyConv, CLASS_MIXINS));
+                    instanceConsumer.addListener(new ESListener<>(sink, "instance", strKeyConv, INSTANCE_MIXINS));
+                    locationConsumer.addListener(new ESListener<>(sink, "location", strKeyConv, LOCATION_MIXINS));
                     notificationConsumer.addListener(notificationListener);
-                    overrideConsumer.addListener(new ESListener(sink, "override", new OverrideKeyConverter(), OVERRIDE_MIXINS));
-                    registrationConsumer.addListener(new ESListener(sink, "registration", strKeyConv, REGISTRATION_MIXINS));
+                    overrideConsumer.addListener(new ESListener<>(sink, "override", new OverrideKeyConverter(), OVERRIDE_MIXINS));
+                    registrationConsumer.addListener(new ESListener<>(sink, "registration", strKeyConv, REGISTRATION_MIXINS));
 
                     if (alarm) alarmConsumer.start();
                     if (activation) activationConsumer.start();
