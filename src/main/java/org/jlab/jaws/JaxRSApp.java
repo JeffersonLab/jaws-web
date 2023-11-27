@@ -11,6 +11,10 @@ public class JaxRSApp extends Application {
     static {
         System.err.println("Using BOOTSTRAP_SERVERS = " + BOOTSTRAP_SERVERS);
         System.err.println("Using SCHEMA_REGISTRY = " + SCHEMA_REGISTRY);
+
+        if(BOOTSTRAP_SERVERS == null || SCHEMA_REGISTRY == null) {
+            throw new ExceptionInInitializerError("BOOTSTRAP_SERVERS and SCHEMA_REGISTRY env must not be null");
+        }
     }
 }
 
