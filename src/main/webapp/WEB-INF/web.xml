@@ -7,8 +7,24 @@
     <display-name>jaws-admin-gui</display-name>
     <welcome-file-list><welcome-file>active</welcome-file></welcome-file-list>
     <context-param>
+        <param-name>appName</param-name>
+        <param-value>JLab Alarm Warning System (JAWS)</param-value>
+    </context-param>
+    <context-param>
+        <param-name>appShortName</param-name>
+        <param-value>JAWS</param-value>
+    </context-param>
+    <context-param>
+        <param-name>appSpecificEnvPrefix</param-name>
+        <param-value>JAWS</param-value>
+    </context-param>
+    <context-param>
         <param-name>releaseNumber</param-name>
         <param-value>@VERSION@</param-value>
+    </context-param>
+    <context-param>
+        <param-name>releaseDate</param-name>
+        <param-value>@RELEASE_DATE@</param-value>
     </context-param>
     <mime-mapping>
         <extension>mjs</extension>

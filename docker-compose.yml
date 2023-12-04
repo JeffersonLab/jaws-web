@@ -55,7 +55,8 @@ services:
       - KEYCLOAK_REALM=test-realm
       - KEYCLOAK_RESOURCE=jaws
       - KEYCLOAK_SECRET=yHi6W2raPmLvPXoxqMA7VWbLAA2WN0eB
-      - KEYCLOAK_SERVER_URL=http://keycloak:8080
+      - KEYCLOAK_FRONTEND_SERVER_URL=http://localhost:8081
+      - KEYCLOAK_BACKEND_SERVER_URL=http://keycloak:8080
       - KEYCLOAK_WAR=jaws.war
 #    volumes:
 #      - ./server.p12:/opt/jboss/wildfly/standalone/configuration/server.p12
