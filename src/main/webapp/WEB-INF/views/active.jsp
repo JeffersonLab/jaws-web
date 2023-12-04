@@ -12,7 +12,8 @@
     </jsp:attribute>        
     <jsp:body>
         <section>
-            <h2 id="page-header-title"><c:out value="${title}"/></h2>
+            <h2 id="page-header-title"><c:out value="${title}"/><span id="alarm-count">0</span></h2>
+            <div id="liveness-heartbeat">Liveness Heartbeat: <span style="color: red;">None</span></div>
             <img draggable="false" alt="machine" width="1100" height="600" src="${pageContext.request.contextPath}/resources/img/accelerator.png"/>
         </section>
     </jsp:body>         
