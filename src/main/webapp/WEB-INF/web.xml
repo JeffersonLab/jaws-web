@@ -5,7 +5,7 @@
                         https://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
     <display-name>jaws-admin-gui</display-name>
-    <welcome-file-list><welcome-file>index</welcome-file></welcome-file-list>
+    <welcome-file-list><welcome-file>active</welcome-file></welcome-file-list>
     <context-param>
         <param-name>releaseNumber</param-name>
         <param-value>@VERSION@</param-value>

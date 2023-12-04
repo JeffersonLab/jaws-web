@@ -22,6 +22,11 @@ services:
       file: deps.yml
       service: effective
 
+  oracle:
+    extends:
+      file: deps.yml
+      service: oracle
+
   keycloak:
     extends:
       file: deps.yml

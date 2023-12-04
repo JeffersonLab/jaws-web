@@ -19,6 +19,11 @@ services:
       file: deps.yml
       service: effective
 
+  oracle:
+    extends:
+      file: docker-compose.yml
+      service: oracle
+
   keycloak:
     extends:
       file: deps.yml

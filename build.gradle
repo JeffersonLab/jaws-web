@@ -37,6 +37,8 @@ configurations {
 }
 
 dependencies {
+    implementation 'org.jlab:smoothness-weblib:4.3.0'
+
     // Smoothness setup should install these into Wildfly as global module
     providedCompile 'org.tuckey:urlrewritefilter:4.0.4'
 
