@@ -22,6 +22,9 @@
                         <li${'/active' eq currentPath ? ' class="current-primary"' : ''}>
                             <a href="${pageContext.request.contextPath}/active">Active</a>
                         </li>
+                        <li${'/suppressed' eq currentPath ? ' class="current-primary"' : ''}>
+                            <a href="${pageContext.request.contextPath}/suppressed">Suppressed</a>
+                        </li>
                         <li${fn:startsWith(currentPath, '/inventory') ? ' class="current-primary"' : ''}>
                             <a href="${pageContext.request.contextPath}/inventory/alarms">Inventory</a>
                         </li>
