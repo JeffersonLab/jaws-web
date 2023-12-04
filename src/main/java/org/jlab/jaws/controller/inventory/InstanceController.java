@@ -11,8 +11,8 @@ import java.io.IOException;
  *
  * @author ryans
  */
-@WebServlet(name = "AlarmController", urlPatterns = {"/inventory/alarms"})
-public class AlarmController extends HttpServlet {
+@WebServlet(name = "InstanceController", urlPatterns = {"/inventory/instances"})
+public class InstanceController extends HttpServlet {
     
     /**
      * Handles the HTTP
@@ -28,6 +28,6 @@ public class AlarmController extends HttpServlet {
             throws ServletException, IOException {
 
         
-        request.getRequestDispatcher("/WEB-INF/views/inventory/alarms.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/inventory/instances.jsp").forward(request, response);
     }
 }

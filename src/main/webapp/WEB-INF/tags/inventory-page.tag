@@ -12,7 +12,7 @@
     </jsp:attribute>
     <jsp:attribute name="secondaryNavigation">
         <ul>
-            <li${'/inventory/alarms' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/alarms">Alarms</a></li>
+            <li${'/inventory/instances' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/instances">Instances</a></li>
             <li${'/inventory/classes' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/classes">Classes</a></li>
             <li${'/inventory/locations' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/locations">Locations</a></li>
             <li${'/inventory/categories' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/categories">Categories</a></li>
