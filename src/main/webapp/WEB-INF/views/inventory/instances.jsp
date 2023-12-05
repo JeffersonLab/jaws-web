@@ -39,7 +39,7 @@
                                             <tr data-id="${instance.instanceId}">
                                                 <td><c:out value="${instance.name}"/></td>
                                                 <td><c:out value="${instance.alarmClass.name}"/></td>
-                                                <td></td>
+                                                <td><c:out value="${instance.locationNameCsv}"/></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>

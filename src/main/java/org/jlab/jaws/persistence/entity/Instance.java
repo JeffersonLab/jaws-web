@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -25,6 +26,9 @@ public class Instance implements Serializable {
     @JoinColumn(name = "CLASS_ID", referencedColumnName = "CLASS_ID", nullable = false)
     @ManyToOne(optional = false)
     private AlarmClass alarmClass;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "INSTANCE_LOCATION", joinColumns = @JoinColumn(name = "INSTANCE_ID"), inverseJoinColumns = @JoinColumn(name = "LOCATION_ID"))
+    private List<Location> locationList;
 
     public BigInteger getInstanceId() {
         return instanceId;
@@ -48,6 +52,28 @@ public class Instance implements Serializable {
 
     public void setAlarmClass(AlarmClass alarmClass) {
         this.alarmClass = alarmClass;
+    }
+
+    public List<Location> getLocationList() {
+        return locationList;
+    }
+
+    public void setLocationList(List<Location> locationList) {
+        this.locationList = locationList;
+    }
+
+    public String getLocationNameCsv() {
+        String csv = "";
+
+        if(locationList != null && !locationList.isEmpty()) {
+            csv = locationList.get(0).getName();
+
+            for(int i = 1; i < locationList.size(); i++) {
+                csv = ", " + locationList.get(i).getName();
+            }
+        }
+
+        return csv;
     }
 
     @Override
