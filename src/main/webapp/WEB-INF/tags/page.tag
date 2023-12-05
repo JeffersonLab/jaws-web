@@ -28,6 +28,9 @@
                         <li${fn:startsWith(currentPath, '/inventory') ? ' class="current-primary"' : ''}>
                             <a href="${pageContext.request.contextPath}/inventory/instances">Inventory</a>
                         </li>
+                        <li${'/archive' eq currentPath ? ' class="current-primary"' : ''}>
+                            <a href="${pageContext.request.contextPath}/archive">Archive</a>
+                        </li>
                         <li${'/help' eq currentPath ? ' class="current-primary"' : ''}>
                             <a href="${pageContext.request.contextPath}/help">Help</a>
                         </li>
