@@ -53,8 +53,8 @@ public class Location implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Location)) return false;
-        Location category = (Location) o;
-        return Objects.equals(name, category.name);
+        Location entity = (Location) o;
+        return Objects.equals(name, entity.name);
     }
 
     @Override

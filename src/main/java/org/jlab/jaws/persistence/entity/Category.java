@@ -43,8 +43,8 @@ public class Category implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Category)) return false;
-        Category category = (Category) o;
-        return Objects.equals(name, category.name);
+        Category entity = (Category) o;
+        return Objects.equals(name, entity.name);
     }
 
     @Override

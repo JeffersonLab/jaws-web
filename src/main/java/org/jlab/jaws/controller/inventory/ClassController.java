@@ -1,11 +1,16 @@
 package org.jlab.jaws.controller.inventory;
 
+import org.jlab.jaws.business.session.ClassFacade;
+import org.jlab.jaws.persistence.entity.AlarmClass;
+
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  *
@@ -13,7 +18,10 @@ import java.io.IOException;
  */
 @WebServlet(name = "ClassController", urlPatterns = {"/inventory/classes"})
 public class ClassController extends HttpServlet {
-    
+
+    @EJB
+    ClassFacade classFacade;
+
     /**
      * Handles the HTTP
      * <code>GET</code> method.
@@ -27,7 +35,10 @@ public class ClassController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        
+        List<AlarmClass> classList = classFacade.filterList(0, Integer.MAX_VALUE);
+
+        request.setAttribute("classList", classList);
+
         request.getRequestDispatcher("/WEB-INF/views/inventory/classes.jsp").forward(request, response);
     }
 }

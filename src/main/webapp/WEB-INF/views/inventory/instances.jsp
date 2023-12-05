@@ -38,8 +38,8 @@
                                         <c:forEach items="${instanceList}" var="instance">
                                             <tr data-id="${instance.instanceId}">
                                                 <td><c:out value="${instance.name}"/></td>
-                                                <td><c:out value="${instance.alarmclass}"/></td>
-                                                <td><c:out value="${instance.location}"/></td>
+                                                <td><c:out value="${instance.alarmClass.name}"/></td>
+                                                <td></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>
