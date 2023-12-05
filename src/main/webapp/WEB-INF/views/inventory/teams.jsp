@@ -3,16 +3,15 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-<c:set var="title" value="Alarm Classes"/>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%> 
+<c:set var="title" value="Alarm Teams"/>
 <t:inventory-page title="${title}">
     <jsp:attribute name="stylesheets">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/classes.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
     </jsp:attribute>        
     <jsp:body>
-        <section>
+        <section>                              
             <h2 id="page-header-title"><c:out value="${title}"/></h2>
             <div class="message-box"></div>
             <div id="chart-wrap" class="chart-wrap-backdrop">
@@ -25,25 +24,19 @@
                     <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Category</th>
-                        <th>Priority</th>
-                        <th>Team</th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="inner-table-cell" colspan="5">
+                        <td class="inner-table-cell" colspan="2">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table'} editable-row-table">
                                         <tbody>
-                                        <c:forEach items="${classList}" var="class">
-                                            <tr data-id="${class.classId}">
-                                                <td><c:out value="${class.name}"/></td>
-                                                <td><c:out value="${class.category.name}"/></td>
-                                                <td><c:out value="${class.priority.name}"/></td>
-                                                <td><c:out value="${class.team.name}"/></td>
+                                        <c:forEach items="${teamList}" var="team">
+                                            <tr data-id="${team.teamId}">
+                                                <td><c:out value="${team.name}"/></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>

@@ -15,6 +15,8 @@
             <li${'/inventory/instances' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/instances">Instances</a></li>
             <li${'/inventory/classes' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/classes">Classes</a></li>
             <li${'/inventory/locations' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/locations">Locations</a></li>
+            <li${'/inventory/priorities' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/priorities">Priorities</a></li>
+            <li${'/inventory/teams' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/teams">Teams</a></li>
             <li${'/inventory/categories' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/categories">Categories</a></li>
         </ul>
     </jsp:attribute>

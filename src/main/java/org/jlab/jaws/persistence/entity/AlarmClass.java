@@ -28,6 +28,12 @@ public class AlarmClass implements Serializable {
     @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORY_ID", nullable = false)
     @ManyToOne(optional = false)
     private Category category;
+    @JoinColumn(name = "TEAM_ID", referencedColumnName = "TEAM_ID", nullable = false)
+    @ManyToOne(optional = false)
+    private Team team;
+    @JoinColumn(name = "PRIORITY_ID", referencedColumnName = "PRIORITY_ID", nullable = false)
+    @ManyToOne(optional = false)
+    private Priority priority;
 
     public BigInteger getClassId() {
         return classId;
@@ -51,6 +57,22 @@ public class AlarmClass implements Serializable {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 
     @Override
