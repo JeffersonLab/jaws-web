@@ -1,0 +1,19 @@
+.outer-table thead th:first-child {
+    width: 35px;
+}
+.inner-table tbody td:first-child {
+    width: 39px;
+}
+.outer-table thead th:nth-child(3) {
+    width: 135px;
+}
+.inner-table tbody td:nth-child(3) {
+    width: 135px;
+    max-width: 135px;
+    word-wrap: break-word;
+}
+.inner-table tbody td:nth-child(2) {
+    width: 500px;
+    max-width: 500px;
+    word-wrap: break-word;
+}

@@ -2,10 +2,12 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%> 
 <c:set var="title" value="Alarm Instances"/>
 <t:inventory-page title="${title}">
     <jsp:attribute name="stylesheets">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/instances.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
     </jsp:attribute>        
