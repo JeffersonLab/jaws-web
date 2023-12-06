@@ -40,6 +40,10 @@
                     <dd><c:out value="${entity.priority.name}"/></dd>
                     <dt>Team:</dt>
                     <dd><c:out value="${entity.team.name}"/></dd>
+                    <dt>On Delay (seconds):</dt>
+                    <dd><c:out value="${entity.onDelaySeconds eq null ? 'None' : entity.onDelaySeconds}"/></dd>
+                    <dt>Off Delay (seconds):</dt>
+                    <dd><c:out value="${entity.offDelaySeconds eq null ? 'None' : entity.offDelaySeconds}"/></dd>
                 </dl>
             </div>
         </section>

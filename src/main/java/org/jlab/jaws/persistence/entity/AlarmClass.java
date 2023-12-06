@@ -34,6 +34,10 @@ public class AlarmClass implements Serializable {
     @JoinColumn(name = "PRIORITY_ID", referencedColumnName = "PRIORITY_ID", nullable = false)
     @ManyToOne(optional = false)
     private Priority priority;
+    @Column(name = "ON_DELAY_SECONDS", nullable = true, precision = 22, scale = 0)
+    private BigInteger onDelaySeconds;
+    @Column(name = "OFF_DELAY_SECONDS", nullable = true, precision = 22, scale = 0)
+    private BigInteger offDelaySeconds;
 
     public BigInteger getClassId() {
         return classId;
@@ -73,6 +77,22 @@ public class AlarmClass implements Serializable {
 
     public void setPriority(Priority priority) {
         this.priority = priority;
+    }
+
+    public BigInteger getOnDelaySeconds() {
+        return onDelaySeconds;
+    }
+
+    public void setOnDelaySeconds(BigInteger onDelaySeconds) {
+        this.onDelaySeconds = onDelaySeconds;
+    }
+
+    public BigInteger getOffDelaySeconds() {
+        return offDelaySeconds;
+    }
+
+    public void setOffDelaySeconds(BigInteger offDelaySeconds) {
+        this.offDelaySeconds = offDelaySeconds;
     }
 
     @Override
