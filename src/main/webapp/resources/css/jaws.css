@@ -35,3 +35,7 @@ dd ul {
 .page-dialog .dialog-only-link {
     display: inline-block;
 }
+.dialog-content h3 {
+    color: #aaa;
+    border-bottom: 1px solid black;
+}

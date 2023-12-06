@@ -34,12 +34,11 @@
                     </c:if>
                 </div>
                 <dl>
-                    <dt>Category:</dt>
-                    <dd><c:out value="${entity.category.name}"/></dd>
-                    <dt>Team:</dt>
-                    <dd><c:out value="${entity.team.name}"/></dd>
-                    <dt>Priority:</dt>
-                    <dd><c:out value="${entity.priority.name}"/></dd>
+                    <dt>Taxonomy:</dt>
+                    <dd>
+                        <c:out value="${entity.team.name}"/> &gt;
+                        <c:out value="${entity.category.name}"/>
+                    </dd>
                     <dt>Corrective Action:</dt>
                     <dd><c:out value="${entity.correctiveAction}"/></dd>
                     <dt>Rationale:</dt>

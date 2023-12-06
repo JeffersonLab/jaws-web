@@ -33,12 +33,24 @@
                         <a href="${url}">Modify</a>
                     </c:if>
                 </div>
+                <h3>Quick Response Info</h3>
                 <dl>
-                    <dt>Class:</dt>
+                    <dt>Priority</dt>
+                    <dd><c:out value="${instance.alarmClass.priority.name}"/></dd>
+                    <dt>Corrective Action</dt>
+                    <dd><c:out value="${instance.alarmClass.correctiveAction}"/></dd>
+                </dl>
+                <h3>Instance Details</h3>
+                <dl>
+                    <dt>Taxonomy:</dt>
                     <c:url var="url" value="/inventory/classes/detail">
                         <c:param name="classId" value="${instance.alarmClass.classId}"/>
                     </c:url>
-                    <dd><a href="${url}"><c:out value="${instance.alarmClass.name}"/></a></dd>
+                    <dd>
+                        <c:out value="${instance.alarmClass.team.name}"/> &gt;
+                        <c:out value="${instance.alarmClass.category.name}"/> &gt;
+                        <a href="${url}"><c:out value="${instance.alarmClass.name}"/></a>
+                    </dd>
                     <dt>Location:</dt>
                     <dd><c:out value="${instance.locationNameCsv}"/></dd>
                     <dt>Device:</dt>
