@@ -1,0 +1,6 @@
+.outer-table thead th:first-child {
+    width: 105px;
+}
+.inner-table tbody td:first-child {
+    width: 101px;
+}

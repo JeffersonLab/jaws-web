@@ -7,6 +7,7 @@
 <c:set var="title" value="Alarm Components"/>
 <t:inventory-page title="${title}">
     <jsp:attribute name="stylesheets">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/components.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
     </jsp:attribute>        

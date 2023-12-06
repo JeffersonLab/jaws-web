@@ -38,8 +38,8 @@
                                         <c:forEach items="${alarmList}" var="alarm">
                                             <tr data-id="${alarm.alarmId}">
                                                 <td>
-                                                    <a title="Instance Information" class="dialog-ready"
-                                                       data-dialog-title="Instance Information: ${fn:escapeXml(alarm.name)}"
+                                                    <a title="Alarm Information" class="dialog-ready"
+                                                       data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
                                                        href="${pageContext.request.contextPath}/inventory/alarms/detail?alarmId=${alarm.alarmId}"><c:out
                                                             value="${alarm.name}"/></a>
                                                 </td>
