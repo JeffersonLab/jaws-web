@@ -11,3 +11,27 @@
 #liveness-heartbeat {
     float: right;
 }
+/* Definition Lists */
+dt {
+    display: block;
+    font-weight: bold;
+}
+
+dd {
+    display: block;
+    margin: 1em;
+}
+
+dd ul {
+    margin: 0;
+    padding: 0 1em;
+}
+.dialog-links {
+    float: right;
+}
+.dialog-only-link {
+    display: none;
+}
+.page-dialog .dialog-only-link {
+    display: inline-block;
+}

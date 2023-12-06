@@ -40,7 +40,12 @@
                                         <tbody>
                                         <c:forEach items="${classList}" var="class">
                                             <tr data-id="${class.classId}">
-                                                <td><c:out value="${class.name}"/></td>
+                                                <td>
+                                                    <a title="Class Information" class="dialog-ready"
+                                                       data-dialog-title="Class Information: ${fn:escapeXml(class.name)}"
+                                                       href="${pageContext.request.contextPath}/inventory/classes/detail?classId=${class.classId}"><c:out
+                                                        value="${class.name}"/></a>
+                                                </td>
                                                 <td><c:out value="${class.category.name}"/></td>
                                                 <td><c:out value="${class.priority.name}"/></td>
                                                 <td><c:out value="${class.team.name}"/></td>

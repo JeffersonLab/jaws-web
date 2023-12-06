@@ -70,4 +70,9 @@ public class ClassFacade extends AbstractFacade<AlarmClass> {
         TypedQuery<Long> q = getEntityManager().createQuery(cq);
         return q.getSingleResult();
     }
+
+    @PermitAll
+    public AlarmClass findByName(String name) {
+        return null;
+    }
 }
