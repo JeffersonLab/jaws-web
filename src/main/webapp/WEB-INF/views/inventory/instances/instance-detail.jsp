@@ -7,7 +7,7 @@
 <c:set var="title" value="Alarm Instance"/>
 <t:inventory-page title="${title}">
     <jsp:attribute name="stylesheets">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/class.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/alarm.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
     </jsp:attribute>        
@@ -36,20 +36,20 @@
                 <h3>Quick Response Info</h3>
                 <dl>
                     <dt>Priority</dt>
-                    <dd><c:out value="${instance.alarmClass.priority.name}"/></dd>
+                    <dd><c:out value="${instance.action.priority.name}"/></dd>
                     <dt>Corrective Action</dt>
-                    <dd><c:out value="${instance.alarmClass.correctiveAction}"/></dd>
+                    <dd><c:out value="${instance.action.correctiveAction}"/></dd>
                 </dl>
                 <h3>Instance Details</h3>
                 <dl>
                     <dt>Taxonomy:</dt>
-                    <c:url var="url" value="/inventory/classes/detail">
-                        <c:param name="classId" value="${instance.alarmClass.classId}"/>
+                    <c:url var="url" value="/inventory/actions/detail">
+                        <c:param name="actionId" value="${instance.action.actionId}"/>
                     </c:url>
                     <dd>
-                        <c:out value="${instance.alarmClass.team.name}"/> &gt;
-                        <c:out value="${instance.alarmClass.category.name}"/> &gt;
-                        <a href="${url}"><c:out value="${instance.alarmClass.name}"/></a>
+                        <c:out value="${instance.action.team.name}"/> &gt;
+                        <c:out value="${instance.action.category.name}"/> &gt;
+                        <a href="${url}"><c:out value="${instance.action.name}"/></a>
                     </dd>
                     <dt>Location:</dt>
                     <dd><c:out value="${instance.locationNameCsv}"/></dd>

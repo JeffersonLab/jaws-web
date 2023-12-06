@@ -4,10 +4,10 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-<c:set var="title" value="Alarm Classes"/>
+<c:set var="title" value="Alarm Actions"/>
 <t:inventory-page title="${title}">
     <jsp:attribute name="stylesheets">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/classes.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/actions.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
     </jsp:attribute>        
@@ -38,17 +38,17 @@
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table'} editable-row-table">
                                         <tbody>
-                                        <c:forEach items="${classList}" var="class">
-                                            <tr data-id="${class.classId}">
+                                        <c:forEach items="${actionList}" var="action">
+                                            <tr data-id="${action.actionId}">
                                                 <td>
-                                                    <a title="Class Information" class="dialog-ready"
-                                                       data-dialog-title="Class Information: ${fn:escapeXml(class.name)}"
-                                                       href="${pageContext.request.contextPath}/inventory/classes/detail?classId=${class.classId}"><c:out
-                                                        value="${class.name}"/></a>
+                                                    <a title="Action Information" class="dialog-ready"
+                                                       data-dialog-title="Action Information: ${fn:escapeXml(action.name)}"
+                                                       href="${pageContext.request.contextPath}/inventory/actions/detail?actionId=${action.actionId}"><c:out
+                                                        value="${action.name}"/></a>
                                                 </td>
-                                                <td><c:out value="${class.category.name}"/></td>
-                                                <td><c:out value="${class.priority.name}"/></td>
-                                                <td><c:out value="${class.team.name}"/></td>
+                                                <td><c:out value="${action.category.name}"/></td>
+                                                <td><c:out value="${action.priority.name}"/></td>
+                                                <td><c:out value="${action.team.name}"/></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>

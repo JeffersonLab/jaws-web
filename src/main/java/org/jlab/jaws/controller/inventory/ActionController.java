@@ -1,7 +1,7 @@
 package org.jlab.jaws.controller.inventory;
 
-import org.jlab.jaws.business.session.ClassFacade;
-import org.jlab.jaws.persistence.entity.AlarmClass;
+import org.jlab.jaws.business.session.ActionFacade;
+import org.jlab.jaws.persistence.entity.Action;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -16,11 +16,11 @@ import java.util.List;
  *
  * @author ryans
  */
-@WebServlet(name = "ClassController", urlPatterns = {"/inventory/classes"})
-public class ClassController extends HttpServlet {
+@WebServlet(name = "ActionController", urlPatterns = {"/inventory/actions"})
+public class ActionController extends HttpServlet {
 
     @EJB
-    ClassFacade classFacade;
+    ActionFacade actionFacade;
 
     /**
      * Handles the HTTP
@@ -35,10 +35,10 @@ public class ClassController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        List<AlarmClass> classList = classFacade.filterList(0, Integer.MAX_VALUE);
+        List<Action> actionList = actionFacade.filterList(0, Integer.MAX_VALUE);
 
-        request.setAttribute("classList", classList);
+        request.setAttribute("actionList", actionList);
 
-        request.getRequestDispatcher("/WEB-INF/views/inventory/classes.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/inventory/actions.jsp").forward(request, response);
     }
 }

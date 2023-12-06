@@ -1,7 +1,6 @@
 package org.jlab.jaws.business.session;
 
-import org.jlab.jaws.persistence.entity.AlarmClass;
-import org.jlab.jaws.persistence.entity.Category;
+import org.jlab.jaws.persistence.entity.Action;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
@@ -18,8 +17,8 @@ import java.util.logging.Logger;
  * @author ryans
  */
 @Stateless
-public class ClassFacade extends AbstractFacade<AlarmClass> {
-    private static final Logger logger = Logger.getLogger(ClassFacade.class.getName());
+public class ActionFacade extends AbstractFacade<Action> {
+    private static final Logger logger = Logger.getLogger(ActionFacade.class.getName());
 
     @PersistenceContext(unitName = "webappPU")
     private EntityManager em;
@@ -29,15 +28,15 @@ public class ClassFacade extends AbstractFacade<AlarmClass> {
         return em;
     }
 
-    public ClassFacade() {
-        super(AlarmClass.class);
+    public ActionFacade() {
+        super(Action.class);
     }
 
     @PermitAll
-    public List<AlarmClass> filterList(int offset, int max) {
+    public List<Action> filterList(int offset, int max) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<AlarmClass> cq = cb.createQuery(AlarmClass.class);
-        Root<AlarmClass> root = cq.from(AlarmClass.class);
+        CriteriaQuery<Action> cq = cb.createQuery(Action.class);
+        Root<Action> root = cq.from(Action.class);
         cq.select(root);
         
         List<Predicate> filters = new ArrayList<>();
@@ -58,7 +57,7 @@ public class ClassFacade extends AbstractFacade<AlarmClass> {
     public long countList() {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<AlarmClass> root = cq.from(AlarmClass.class);
+        Root<Action> root = cq.from(Action.class);
         
         List<Predicate> filters = new ArrayList<>();
         
@@ -72,7 +71,7 @@ public class ClassFacade extends AbstractFacade<AlarmClass> {
     }
 
     @PermitAll
-    public AlarmClass findByName(String name) {
+    public Action findByName(String name) {
         return null;
     }
 }

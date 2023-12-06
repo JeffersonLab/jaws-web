@@ -14,12 +14,12 @@
     <jsp:attribute name="secondaryNavigation">
         <h2 id="left-column-header">Inventory</h2>
         <ul>
-            <li${fn:startsWith(currentPath, '/inventory/instances') ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/instances">Instances</a></li>
-            <li${fn:startsWith(currentPath, '/inventory/classes') ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/classes">Classes</a></li>
+            <li${fn:startsWith(currentPath, '/inventory/instances') ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/instances">Alarms</a></li>
+            <li${fn:startsWith(currentPath, '/inventory/actions') ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/actions">Actions</a></li>
             <li${'/inventory/locations' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/locations">Locations</a></li>
             <li${'/inventory/priorities' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/priorities">Priorities</a></li>
             <li${'/inventory/teams' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/teams">Teams</a></li>
-            <li${'/inventory/categories' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/categories">Categories</a></li>
+            <li${'/inventory/categories' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/categories">Components</a></li>
         </ul>
     </jsp:attribute>
     <jsp:body>

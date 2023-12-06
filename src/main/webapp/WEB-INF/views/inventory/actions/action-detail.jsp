@@ -4,7 +4,7 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-<c:set var="title" value="Alarm Class"/>
+<c:set var="title" value="Alarm Action"/>
 <t:inventory-page title="${title}">
     <jsp:attribute name="stylesheets">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/class.css"/>
@@ -15,7 +15,7 @@
         <div class="banner-breadbox">
             <ul>
                 <li>
-                    <span>Classes</span>
+                    <span>Actions</span>
                 </li>
                 <li>
                     <h2 id="page-header-title"><c:out value="${entity.name}"/></h2>
@@ -25,10 +25,10 @@
         <section>
             <div class="dialog-content">
                 <div class="dialog-links">
-                    <a class="dialog-only-link" href="${pageContext.request.contextPath}/inventory/classes/detail?classId=${entity.classId}">Link</a>
+                    <a class="dialog-only-link" href="${pageContext.request.contextPath}/inventory/actions/detail?actionId=${entity.actionId}">Link</a>
                     <c:if test="${editable}">
-                        <c:url var="url" value="/inventory/classes">
-                            <c:param name="className" value="${entity.name}"/>
+                        <c:url var="url" value="/inventory/actions">
+                            <c:param name="actionName" value="${entity.name}"/>
                         </c:url>
                         <a href="${url}">Modify</a>
                     </c:if>

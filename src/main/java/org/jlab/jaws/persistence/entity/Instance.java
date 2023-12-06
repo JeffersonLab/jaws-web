@@ -23,9 +23,9 @@ public class Instance implements Serializable {
     @Size(max = 64)
     @Column(length = 64)
     private String name;
-    @JoinColumn(name = "CLASS_ID", referencedColumnName = "CLASS_ID", nullable = false)
+    @JoinColumn(name = "ACTION_ID", referencedColumnName = "ACTION_ID", nullable = false)
     @ManyToOne(optional = false)
-    private AlarmClass alarmClass;
+    private Action action;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "INSTANCE_LOCATION", joinColumns = @JoinColumn(name = "INSTANCE_ID"), inverseJoinColumns = @JoinColumn(name = "LOCATION_ID"))
     private List<Location> locationList;
@@ -58,12 +58,12 @@ public class Instance implements Serializable {
         this.name = name;
     }
 
-    public AlarmClass getAlarmClass() {
-        return alarmClass;
+    public Action getAction() {
+        return action;
     }
 
-    public void setAlarmClass(AlarmClass alarmClass) {
-        this.alarmClass = alarmClass;
+    public void setAction(Action action) {
+        this.action = action;
     }
 
     public List<Location> getLocationList() {

@@ -39,3 +39,8 @@ dd ul {
     color: #aaa;
     border-bottom: 1px solid black;
 }
+.banner-breadbox li span {
+    position: relative;
+    display: inline-block;
+    z-index: 2;
+}

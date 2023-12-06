@@ -9,21 +9,18 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
 
-/**
- * Note: class is a reserved word in Java, so we use "AlarmClass" instead.
- */
 @Entity
-@Table(name = "CLASS", schema = "JAWS_OWNER")
-public class AlarmClass implements Serializable {
+@Table(name = "ACTION", schema = "JAWS_OWNER")
+public class Action implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @SequenceGenerator(name = "ClassId", sequenceName = "CLASS_ID", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ClassId")
+    @SequenceGenerator(name = "ActionId", sequenceName = "ACTION_ID", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ActionId")
     @Basic(optional = false)
     @NotNull
-    @Column(name = "CLASS_ID", nullable = false, precision = 22, scale = 0)
-    private BigInteger classId;
+    @Column(name = "ACTION_ID", nullable = false, precision = 22, scale = 0)
+    private BigInteger actionId;
     @Size(max = 64)
     @Column(length = 64)
     private String name;
@@ -53,12 +50,12 @@ public class AlarmClass implements Serializable {
     @Column(name = "OFF_DELAY_SECONDS", nullable = true, precision = 22, scale = 0)
     private BigInteger offDelaySeconds;
 
-    public BigInteger getClassId() {
-        return classId;
+    public BigInteger getActionId() {
+        return actionId;
     }
 
-    public void setClassId(BigInteger classId) {
-        this.classId = classId;
+    public void setActionId(BigInteger actionId) {
+        this.actionId = actionId;
     }
 
     public String getName() {
@@ -144,8 +141,8 @@ public class AlarmClass implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AlarmClass)) return false;
-        AlarmClass entity = (AlarmClass) o;
+        if (!(o instanceof Action)) return false;
+        Action entity = (Action) o;
         return Objects.equals(name, entity.name);
     }
 

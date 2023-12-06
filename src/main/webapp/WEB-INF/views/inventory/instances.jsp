@@ -23,7 +23,7 @@
                     <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Class</th>
+                        <th>Action</th>
                         <th>Location</th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
@@ -43,7 +43,7 @@
                                                        href="${pageContext.request.contextPath}/inventory/instances/detail?instanceId=${instance.instanceId}"><c:out
                                                             value="${instance.name}"/></a>
                                                 </td>
-                                                <td><c:out value="${instance.alarmClass.name}"/></td>
+                                                <td><c:out value="${instance.action.name}"/></td>
                                                 <td><c:out value="${instance.locationNameCsv}"/></td>
                                             </tr>
                                         </c:forEach>

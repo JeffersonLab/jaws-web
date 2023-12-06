@@ -1,7 +1,7 @@
-package org.jlab.jaws.controller.inventory.classes;
+package org.jlab.jaws.controller.inventory.actions;
 
-import org.jlab.jaws.business.session.ClassFacade;
-import org.jlab.jaws.persistence.entity.AlarmClass;
+import org.jlab.jaws.business.session.ActionFacade;
+import org.jlab.jaws.persistence.entity.Action;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 
 import javax.ejb.EJB;
@@ -18,11 +18,11 @@ import java.math.BigInteger;
  *
  * @author ryans
  */
-@WebServlet(name = "ClassDetailController", urlPatterns = {"/inventory/classes/detail"})
-public class ClassDetailController extends HttpServlet {
+@WebServlet(name = "ActionDetailController", urlPatterns = {"/inventory/actions/detail"})
+public class ActionDetailController extends HttpServlet {
 
     @EJB
-    ClassFacade classFacade;
+    ActionFacade actionFacade;
 
     /**
      * Handles the HTTP
@@ -37,15 +37,15 @@ public class ClassDetailController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        AlarmClass entity = null;
+        Action entity = null;
 
         BigInteger classId = ParamConverter.convertBigInteger(request, "classId");
         String name = request.getParameter("name");
 
         if(classId != null) {
-            entity = classFacade.find(classId);
+            entity = actionFacade.find(classId);
         } else if(name != null && !name.isBlank()) {
-            entity = classFacade.findByName(name);
+            entity = actionFacade.findByName(name);
         }
 
         boolean editable = false;
@@ -53,6 +53,6 @@ public class ClassDetailController extends HttpServlet {
         request.setAttribute("entity", entity);
         request.setAttribute("editable", editable);
 
-        request.getRequestDispatcher("/WEB-INF/views/inventory/classes/class-detail.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/inventory/actions/action-detail.jsp").forward(request, response);
     }
 }
