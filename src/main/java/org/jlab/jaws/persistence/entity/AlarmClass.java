@@ -1,5 +1,7 @@
 package org.jlab.jaws.persistence.entity;
 
+import org.jlab.smoothness.persistence.util.YnStringToBoolean;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -34,6 +36,12 @@ public class AlarmClass implements Serializable {
     @JoinColumn(name = "PRIORITY_ID", referencedColumnName = "PRIORITY_ID", nullable = false)
     @ManyToOne(optional = false)
     private Priority priority;
+    @Column(name = "FILTERABLE", nullable = false, length = 1)
+    @Convert(converter= YnStringToBoolean.class)
+    private boolean filterable;
+    @Column(name = "LATCHABLE", nullable = false, length = 1)
+    @Convert(converter= YnStringToBoolean.class)
+    private boolean latchable;
     @Column(name = "ON_DELAY_SECONDS", nullable = true, precision = 22, scale = 0)
     private BigInteger onDelaySeconds;
     @Column(name = "OFF_DELAY_SECONDS", nullable = true, precision = 22, scale = 0)
@@ -77,6 +85,22 @@ public class AlarmClass implements Serializable {
 
     public void setPriority(Priority priority) {
         this.priority = priority;
+    }
+
+    public boolean isFilterable() {
+        return filterable;
+    }
+
+    public void setFilterable(boolean filterable) {
+        this.filterable = filterable;
+    }
+
+    public boolean isLatchable() {
+        return latchable;
+    }
+
+    public void setLatchable(boolean latchable) {
+        this.latchable = latchable;
     }
 
     public BigInteger getOnDelaySeconds() {

@@ -40,6 +40,10 @@
                     <dd><c:out value="${entity.priority.name}"/></dd>
                     <dt>Team:</dt>
                     <dd><c:out value="${entity.team.name}"/></dd>
+                    <dt>Filterable:</dt>
+                    <dd><c:out value="${entity.filterable ? 'Yes' : 'No'}"/></dd>
+                    <dt>Latchable:</dt>
+                    <dd><c:out value="${entity.latchable ? 'Yes' : 'No'}"/></dd>
                     <dt>On Delay (seconds):</dt>
                     <dd><c:out value="${entity.onDelaySeconds eq null ? 'None' : entity.onDelaySeconds}"/></dd>
                     <dt>Off Delay (seconds):</dt>
