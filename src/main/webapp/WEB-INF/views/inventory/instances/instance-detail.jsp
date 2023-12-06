@@ -35,7 +35,10 @@
                 </div>
                 <dl>
                     <dt>Class:</dt>
-                    <dd><c:out value="${instance.alarmClass.name}"/></dd>
+                    <c:url var="url" value="/inventory/classes/detail">
+                        <c:param name="classId" value="${instance.alarmClass.classId}"/>
+                    </c:url>
+                    <dd><a href="${url}"><c:out value="${instance.alarmClass.name}"/></a></dd>
                     <dt>Location:</dt>
                     <dd><c:out value="${instance.locationNameCsv}"/></dd>
                     <dt>Device:</dt>
@@ -44,6 +47,8 @@
                     <dd><c:out value="${instance.screenCommand eq null ? 'None' : instance.screenCommand}"/></dd>
                     <dt>Masked By:</dt>
                     <dd><c:out value="${instance.maskedBy eq null ? 'None' : instance.maskedBy}"/></dd>
+                    <dt>Source:</dt>
+                    <dd><c:out value="${instance.epicsSource eq null ? 'None' : 'EPICS PV: '.concat(instance.epicsSource.pv)}"/></dd>
                 </dl>
             </div>
         </section>

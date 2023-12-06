@@ -38,6 +38,9 @@ public class Instance implements Serializable {
     @Size(max = 64)
     @Column(name = "MASKED_BY", length = 64, nullable = true)
     private String maskedBy;
+    @JoinColumn(name = "INSTANCE_ID", referencedColumnName = "INSTANCE_ID", nullable = true, insertable = false, updatable = false)
+    @ManyToOne(optional = true)
+    private InstanceSourceEpics epicsSource;
 
     public BigInteger getInstanceId() {
         return instanceId;
@@ -93,6 +96,14 @@ public class Instance implements Serializable {
 
     public void setMaskedBy(String maskedBy) {
         this.maskedBy = maskedBy;
+    }
+
+    public InstanceSourceEpics getEpicsSource() {
+        return epicsSource;
+    }
+
+    public void setEpicsSource(InstanceSourceEpics epicsSource) {
+        this.epicsSource = epicsSource;
     }
 
     public String getLocationNameCsv() {
