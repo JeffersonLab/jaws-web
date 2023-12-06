@@ -36,10 +36,14 @@
                 <dl>
                     <dt>Category:</dt>
                     <dd><c:out value="${entity.category.name}"/></dd>
-                    <dt>Priority:</dt>
-                    <dd><c:out value="${entity.priority.name}"/></dd>
                     <dt>Team:</dt>
                     <dd><c:out value="${entity.team.name}"/></dd>
+                    <dt>Priority:</dt>
+                    <dd><c:out value="${entity.priority.name}"/></dd>
+                    <dt>Corrective Action:</dt>
+                    <dd><c:out value="${entity.correctiveAction}"/></dd>
+                    <dt>Rationale:</dt>
+                    <dd><c:out value="${entity.rationale}"/></dd>
                     <dt>Filterable:</dt>
                     <dd><c:out value="${entity.filterable ? 'Yes' : 'No'}"/></dd>
                     <dt>Latchable:</dt>

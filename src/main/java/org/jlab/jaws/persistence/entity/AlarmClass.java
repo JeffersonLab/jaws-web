@@ -36,6 +36,12 @@ public class AlarmClass implements Serializable {
     @JoinColumn(name = "PRIORITY_ID", referencedColumnName = "PRIORITY_ID", nullable = false)
     @ManyToOne(optional = false)
     private Priority priority;
+    @Column(name = "CORRECTIVE_ACTION")
+    @Lob
+    private String correctiveAction;
+    @Column(name = "RATIONALE")
+    @Lob
+    private String rationale;
     @Column(name = "FILTERABLE", nullable = false, length = 1)
     @Convert(converter= YnStringToBoolean.class)
     private boolean filterable;
@@ -85,6 +91,22 @@ public class AlarmClass implements Serializable {
 
     public void setPriority(Priority priority) {
         this.priority = priority;
+    }
+
+    public String getCorrectiveAction() {
+        return correctiveAction;
+    }
+
+    public void setCorrectiveAction(String correctiveAction) {
+        this.correctiveAction = correctiveAction;
+    }
+
+    public String getRationale() {
+        return rationale;
+    }
+
+    public void setRationale(String rationale) {
+        this.rationale = rationale;
     }
 
     public boolean isFilterable() {
