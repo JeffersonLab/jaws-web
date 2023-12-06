@@ -69,4 +69,8 @@ public class InstanceFacade extends AbstractFacade<Instance> {
         TypedQuery<Long> q = getEntityManager().createQuery(cq);
         return q.getSingleResult();
     }
+
+    public Instance findByName(String name) {
+        return null;
+    }
 }

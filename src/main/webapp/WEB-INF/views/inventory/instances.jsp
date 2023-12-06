@@ -37,7 +37,12 @@
                                         <tbody>
                                         <c:forEach items="${instanceList}" var="instance">
                                             <tr data-id="${instance.instanceId}">
-                                                <td><c:out value="${instance.name}"/></td>
+                                                <td>
+                                                    <a title="Instance Information" class="dialog-ready"
+                                                       data-dialog-title="Instance Information: ${fn:escapeXml(instance.name)}"
+                                                       href="${pageContext.request.contextPath}/inventory/instances/detail?instanceId=${instance.instanceId}"><c:out
+                                                            value="${instance.name}"/></a>
+                                                </td>
                                                 <td><c:out value="${instance.alarmClass.name}"/></td>
                                                 <td><c:out value="${instance.locationNameCsv}"/></td>
                                             </tr>

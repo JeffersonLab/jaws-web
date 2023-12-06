@@ -14,7 +14,7 @@
     <jsp:attribute name="secondaryNavigation">
         <h2 id="left-column-header">Inventory</h2>
         <ul>
-            <li${'/inventory/instances' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/instances">Instances</a></li>
+            <li${fn:startsWith(currentPath, '/inventory/instances') ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/instances">Instances</a></li>
             <li${fn:startsWith(currentPath, '/inventory/classes') ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/classes">Classes</a></li>
             <li${'/inventory/locations' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/locations">Locations</a></li>
             <li${'/inventory/priorities' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/priorities">Priorities</a></li>

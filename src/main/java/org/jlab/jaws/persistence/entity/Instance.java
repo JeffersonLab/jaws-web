@@ -29,6 +29,15 @@ public class Instance implements Serializable {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "INSTANCE_LOCATION", joinColumns = @JoinColumn(name = "INSTANCE_ID"), inverseJoinColumns = @JoinColumn(name = "LOCATION_ID"))
     private List<Location> locationList;
+    @Size(max = 64)
+    @Column(name = "DEVICE", length = 64, nullable = true)
+    private String device;
+    @Size(max = 512)
+    @Column(name = "SCREEN_COMMAND", length = 512, nullable = true)
+    private String screenCommand;
+    @Size(max = 64)
+    @Column(name = "MASKED_BY", length = 64, nullable = true)
+    private String maskedBy;
 
     public BigInteger getInstanceId() {
         return instanceId;
@@ -60,6 +69,30 @@ public class Instance implements Serializable {
 
     public void setLocationList(List<Location> locationList) {
         this.locationList = locationList;
+    }
+
+    public String getDevice() {
+        return device;
+    }
+
+    public void setDevice(String device) {
+        this.device = device;
+    }
+
+    public String getScreenCommand() {
+        return screenCommand;
+    }
+
+    public void setScreenCommand(String screenCommand) {
+        this.screenCommand = screenCommand;
+    }
+
+    public String getMaskedBy() {
+        return maskedBy;
+    }
+
+    public void setMaskedBy(String maskedBy) {
+        this.maskedBy = maskedBy;
     }
 
     public String getLocationNameCsv() {
