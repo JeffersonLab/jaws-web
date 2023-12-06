@@ -25,9 +25,8 @@
                     <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Category</th>
+                        <th>Component</th>
                         <th>Priority</th>
-                        <th>Team</th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
@@ -46,9 +45,8 @@
                                                        href="${pageContext.request.contextPath}/inventory/actions/detail?actionId=${action.actionId}"><c:out
                                                         value="${action.name}"/></a>
                                                 </td>
-                                                <td><c:out value="${action.category.name}"/></td>
+                                                <td><c:out value="${action.component.name}"/></td>
                                                 <td><c:out value="${action.priority.name}"/></td>
-                                                <td><c:out value="${action.team.name}"/></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>

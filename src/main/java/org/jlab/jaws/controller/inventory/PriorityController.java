@@ -2,7 +2,6 @@ package org.jlab.jaws.controller.inventory;
 
 import org.jlab.jaws.business.session.AbstractFacade;
 import org.jlab.jaws.business.session.PriorityFacade;
-import org.jlab.jaws.persistence.entity.Category;
 import org.jlab.jaws.persistence.entity.Priority;
 
 import javax.ejb.EJB;

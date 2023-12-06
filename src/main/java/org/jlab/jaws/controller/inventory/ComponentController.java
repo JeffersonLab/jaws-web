@@ -1,8 +1,8 @@
 package org.jlab.jaws.controller.inventory;
 
 import org.jlab.jaws.business.session.AbstractFacade;
-import org.jlab.jaws.business.session.CategoryFacade;
-import org.jlab.jaws.persistence.entity.Category;
+import org.jlab.jaws.business.session.ComponentFacade;
+import org.jlab.jaws.persistence.entity.Component;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -17,11 +17,11 @@ import java.util.List;
  *
  * @author ryans
  */
-@WebServlet(name = "CategoryController", urlPatterns = {"/inventory/categories"})
-public class CategoryController extends HttpServlet {
+@WebServlet(name = "ComponentController", urlPatterns = {"/inventory/components"})
+public class ComponentController extends HttpServlet {
 
     @EJB
-    CategoryFacade categoryFacade;
+    ComponentFacade componentFacade;
 
     /**
      * Handles the HTTP
@@ -36,10 +36,10 @@ public class CategoryController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        List<Category> categoryList = categoryFacade.findAll(new AbstractFacade.OrderDirective("name"));
+        List<Component> componentList = componentFacade.findAll(new AbstractFacade.OrderDirective("name"));
 
-        request.setAttribute("categoryList", categoryList);
+        request.setAttribute("componentList", componentList);
 
-        request.getRequestDispatcher("/WEB-INF/views/inventory/categories.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/inventory/components.jsp").forward(request, response);
     }
 }

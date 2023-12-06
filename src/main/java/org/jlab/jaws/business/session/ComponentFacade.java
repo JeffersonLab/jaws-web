@@ -1,6 +1,6 @@
 package org.jlab.jaws.business.session;
 
-import org.jlab.jaws.persistence.entity.Category;
+import org.jlab.jaws.persistence.entity.Component;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
@@ -17,8 +17,8 @@ import java.util.logging.Logger;
  * @author ryans
  */
 @Stateless
-public class CategoryFacade extends AbstractFacade<Category> {
-    private static final Logger logger = Logger.getLogger(CategoryFacade.class.getName());
+public class ComponentFacade extends AbstractFacade<Component> {
+    private static final Logger logger = Logger.getLogger(ComponentFacade.class.getName());
     
     @PersistenceContext(unitName = "webappPU")
     private EntityManager em;
@@ -28,15 +28,15 @@ public class CategoryFacade extends AbstractFacade<Category> {
         return em;
     }
 
-    public CategoryFacade() {
-        super(Category.class);
+    public ComponentFacade() {
+        super(Component.class);
     }
 
     @PermitAll
-    public List<Category> filterList(int offset, int max) {
+    public List<Component> filterList(int offset, int max) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<Category> cq = cb.createQuery(Category.class);
-        Root<Category> root = cq.from(Category.class);
+        CriteriaQuery<Component> cq = cb.createQuery(Component.class);
+        Root<Component> root = cq.from(Component.class);
         cq.select(root);
         
         List<Predicate> filters = new ArrayList<>();
@@ -57,7 +57,7 @@ public class CategoryFacade extends AbstractFacade<Category> {
     public long countList() {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<Category> root = cq.from(Category.class);
+        Root<Component> root = cq.from(Component.class);
         
         List<Predicate> filters = new ArrayList<>();
         

@@ -24,12 +24,9 @@ public class Action implements Serializable {
     @Size(max = 64)
     @Column(length = 64)
     private String name;
-    @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORY_ID", nullable = false)
+    @JoinColumn(name = "COMPONENT_ID", referencedColumnName = "COMPONENT_ID", nullable = false)
     @ManyToOne(optional = false)
-    private Category category;
-    @JoinColumn(name = "TEAM_ID", referencedColumnName = "TEAM_ID", nullable = false)
-    @ManyToOne(optional = false)
-    private Team team;
+    private Component component;
     @JoinColumn(name = "PRIORITY_ID", referencedColumnName = "PRIORITY_ID", nullable = false)
     @ManyToOne(optional = false)
     private Priority priority;
@@ -66,20 +63,12 @@ public class Action implements Serializable {
         this.name = name;
     }
 
-    public Category getCategory() {
-        return category;
+    public Component getComponent() {
+        return component;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setComponent(Component component) {
+        this.component = component;
     }
 
     public Priority getPriority() {

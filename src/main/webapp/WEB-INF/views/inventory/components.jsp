@@ -4,7 +4,7 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%> 
-<c:set var="title" value="Alarm Categories"/>
+<c:set var="title" value="Alarm Components"/>
 <t:inventory-page title="${title}">
     <jsp:attribute name="stylesheets">
     </jsp:attribute>
@@ -24,19 +24,21 @@
                     <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Team</th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="inner-table-cell" colspan="2">
+                        <td class="inner-table-cell" colspan="3">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table'} editable-row-table">
                                         <tbody>
-                                        <c:forEach items="${categoryList}" var="category">
-                                            <tr data-id="${category.categoryId}">
-                                                <td><c:out value="${category.name}"/></td>
+                                        <c:forEach items="${componentList}" var="component">
+                                            <tr data-id="${component.componentId}">
+                                                <td><c:out value="${component.name}"/></td>
+                                                <td><c:out value="${component.team.name}"/></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>

@@ -8,8 +8,8 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 @Entity
-@Table(name = "CATEGORY", schema = "JAWS_OWNER")
-public class Category implements Serializable {
+@Table(name = "COMPONENT", schema = "JAWS_OWNER")
+public class Component implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -17,18 +17,29 @@ public class Category implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CategoryId")
     @Basic(optional = false)
     @NotNull
-    @Column(name = "CATEGORY_ID", nullable = false, precision = 22, scale = 0)
-    private BigInteger categoryId;
+    @Column(name = "COMPONENT_ID", nullable = false, precision = 22, scale = 0)
+    private BigInteger componentId;
+    @JoinColumn(name = "TEAM_ID", referencedColumnName = "TEAM_ID", nullable = false)
+    @ManyToOne(optional = false)
+    private Team team;
     @Size(max = 64)
     @Column(length = 64)
     private String name;
 
-    public BigInteger getCategoryId() {
-        return categoryId;
+    public BigInteger getComponentId() {
+        return componentId;
     }
 
-    public void setCategoryId(BigInteger categoryId) {
-        this.categoryId = categoryId;
+    public void setComponentId(BigInteger componentId) {
+        this.componentId = componentId;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     public String getName() {
@@ -42,8 +53,8 @@ public class Category implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Category)) return false;
-        Category entity = (Category) o;
+        if (!(o instanceof Component)) return false;
+        Component entity = (Component) o;
         return Objects.equals(name, entity.name);
     }
 

@@ -36,8 +36,8 @@
                 <dl>
                     <dt>Taxonomy:</dt>
                     <dd>
-                        <c:out value="${action.team.name}"/> &gt;
-                        <c:out value="${action.category.name}"/>
+                        <c:out value="${action.component.team.name}"/> &gt;
+                        <c:out value="${action.component.name}"/>
                     </dd>
                     <dt>Corrective Action:</dt>
                     <dd><c:out value="${action.correctiveAction}"/></dd>

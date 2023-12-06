@@ -1,6 +1,6 @@
 package org.jlab.jaws.business.session;
 
-import org.jlab.jaws.persistence.entity.Category;
+import org.jlab.jaws.persistence.entity.Component;
 import org.jlab.jaws.persistence.entity.Location;
 
 import javax.annotation.security.PermitAll;
@@ -34,10 +34,10 @@ public class LocationFacade extends AbstractFacade<Location> {
     }
 
     @PermitAll
-    public List<Category> filterList(int offset, int max) {
+    public List<Component> filterList(int offset, int max) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<Category> cq = cb.createQuery(Category.class);
-        Root<Category> root = cq.from(Category.class);
+        CriteriaQuery<Component> cq = cb.createQuery(Component.class);
+        Root<Component> root = cq.from(Component.class);
         cq.select(root);
         
         List<Predicate> filters = new ArrayList<>();
@@ -58,7 +58,7 @@ public class LocationFacade extends AbstractFacade<Location> {
     public long countList() {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<Category> root = cq.from(Category.class);
+        Root<Component> root = cq.from(Component.class);
         
         List<Predicate> filters = new ArrayList<>();
         
