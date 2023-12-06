@@ -37,20 +37,20 @@ public class ActionDetailController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Action entity = null;
+        Action action = null;
 
-        BigInteger classId = ParamConverter.convertBigInteger(request, "classId");
+        BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
         String name = request.getParameter("name");
 
-        if(classId != null) {
-            entity = actionFacade.find(classId);
+        if(actionId != null) {
+            action = actionFacade.find(actionId);
         } else if(name != null && !name.isBlank()) {
-            entity = actionFacade.findByName(name);
+            action = actionFacade.findByName(name);
         }
 
         boolean editable = false;
 
-        request.setAttribute("entity", entity);
+        request.setAttribute("action", action);
         request.setAttribute("editable", editable);
 
         request.getRequestDispatcher("/WEB-INF/views/inventory/actions/action-detail.jsp").forward(request, response);

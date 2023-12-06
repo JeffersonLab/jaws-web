@@ -9,17 +9,17 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "INSTANCE", schema = "JAWS_OWNER")
-public class Instance implements Serializable {
+@Table(name = "ALARM", schema = "JAWS_OWNER")
+public class Alarm implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @SequenceGenerator(name = "InstanceId", sequenceName = "INSTANCE_ID", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "InstanceId")
+    @SequenceGenerator(name = "AlarmId", sequenceName = "ALARM_ID", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AlarmId")
     @Basic(optional = false)
     @NotNull
-    @Column(name = "INSTANCE_ID", nullable = false, precision = 22, scale = 0)
-    private BigInteger instanceId;
+    @Column(name = "ALARM_ID", nullable = false, precision = 22, scale = 0)
+    private BigInteger alarmId;
     @Size(max = 64)
     @Column(length = 64)
     private String name;
@@ -27,7 +27,7 @@ public class Instance implements Serializable {
     @ManyToOne(optional = false)
     private Action action;
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "INSTANCE_LOCATION", joinColumns = @JoinColumn(name = "INSTANCE_ID"), inverseJoinColumns = @JoinColumn(name = "LOCATION_ID"))
+    @JoinTable(name = "ALARM_LOCATION", joinColumns = @JoinColumn(name = "ALARM_ID"), inverseJoinColumns = @JoinColumn(name = "LOCATION_ID"))
     private List<Location> locationList;
     @Size(max = 64)
     @Column(name = "DEVICE", length = 64, nullable = true)
@@ -38,16 +38,16 @@ public class Instance implements Serializable {
     @Size(max = 64)
     @Column(name = "MASKED_BY", length = 64, nullable = true)
     private String maskedBy;
-    @JoinColumn(name = "INSTANCE_ID", referencedColumnName = "INSTANCE_ID", nullable = true, insertable = false, updatable = false)
+    @JoinColumn(name = "ALARM_ID", referencedColumnName = "ALARM_ID", nullable = true, insertable = false, updatable = false)
     @ManyToOne(optional = true)
-    private InstanceSourceEpics epicsSource;
+    private AlarmSourceEpics epicsSource;
 
-    public BigInteger getInstanceId() {
-        return instanceId;
+    public BigInteger getAlarmId() {
+        return alarmId;
     }
 
-    public void setInstanceId(BigInteger instanceId) {
-        this.instanceId = instanceId;
+    public void setAlarmId(BigInteger alarmId) {
+        this.alarmId = alarmId;
     }
 
     public String getName() {
@@ -98,11 +98,11 @@ public class Instance implements Serializable {
         this.maskedBy = maskedBy;
     }
 
-    public InstanceSourceEpics getEpicsSource() {
+    public AlarmSourceEpics getEpicsSource() {
         return epicsSource;
     }
 
-    public void setEpicsSource(InstanceSourceEpics epicsSource) {
+    public void setEpicsSource(AlarmSourceEpics epicsSource) {
         this.epicsSource = epicsSource;
     }
 
@@ -123,8 +123,8 @@ public class Instance implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Instance)) return false;
-        Instance entity = (Instance) o;
+        if (!(o instanceof Alarm)) return false;
+        Alarm entity = (Alarm) o;
         return Objects.equals(name, entity.name);
     }
 

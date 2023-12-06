@@ -1,7 +1,7 @@
 package org.jlab.jaws.controller.inventory.instances;
 
-import org.jlab.jaws.business.session.InstanceFacade;
-import org.jlab.jaws.persistence.entity.Instance;
+import org.jlab.jaws.business.session.AlarmFacade;
+import org.jlab.jaws.persistence.entity.Alarm;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 
 import javax.ejb.EJB;
@@ -18,11 +18,11 @@ import java.math.BigInteger;
  *
  * @author ryans
  */
-@WebServlet(name = "InstanceDetailController", urlPatterns = {"/inventory/instances/detail"})
-public class InstanceDetailController extends HttpServlet {
+@WebServlet(name = "AlarmDetailController", urlPatterns = {"/inventory/alarms/detail"})
+public class AlarmDetailController extends HttpServlet {
 
     @EJB
-    InstanceFacade instanceFacade;
+    AlarmFacade alarmFacade;
 
     /**
      * Handles the HTTP
@@ -37,22 +37,22 @@ public class InstanceDetailController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Instance instance = null;
+        Alarm alarm = null;
 
-        BigInteger instanceId = ParamConverter.convertBigInteger(request, "instanceId");
+        BigInteger alarmId = ParamConverter.convertBigInteger(request, "alarmId");
         String name = request.getParameter("name");
 
-        if(instanceId != null) {
-            instance = instanceFacade.find(instanceId);
+        if(alarmId != null) {
+            alarm = alarmFacade.find(alarmId);
         } else if(name != null && !name.isBlank()) {
-            instance = instanceFacade.findByName(name);
+            alarm = alarmFacade.findByName(name);
         }
 
         boolean editable = false;
 
-        request.setAttribute("instance", instance);
+        request.setAttribute("alarm", alarm);
         request.setAttribute("editable", editable);
 
-        request.getRequestDispatcher("/WEB-INF/views/inventory/instances/instance-detail.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/inventory/alarms/alarm-detail.jsp").forward(request, response);
     }
 }

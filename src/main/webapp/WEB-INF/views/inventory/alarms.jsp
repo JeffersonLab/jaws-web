@@ -4,10 +4,10 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%> 
-<c:set var="title" value="Alarm Instances"/>
+<c:set var="title" value="Alarms"/>
 <t:inventory-page title="${title}">
     <jsp:attribute name="stylesheets">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/instances.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/alarms.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
     </jsp:attribute>        
@@ -35,16 +35,16 @@
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table stripped-table uniselect-table editable-row-table">
                                         <tbody>
-                                        <c:forEach items="${instanceList}" var="instance">
-                                            <tr data-id="${instance.instanceId}">
+                                        <c:forEach items="${alarmList}" var="alarm">
+                                            <tr data-id="${alarm.alarmId}">
                                                 <td>
                                                     <a title="Instance Information" class="dialog-ready"
-                                                       data-dialog-title="Instance Information: ${fn:escapeXml(instance.name)}"
-                                                       href="${pageContext.request.contextPath}/inventory/instances/detail?instanceId=${instance.instanceId}"><c:out
-                                                            value="${instance.name}"/></a>
+                                                       data-dialog-title="Instance Information: ${fn:escapeXml(alarm.name)}"
+                                                       href="${pageContext.request.contextPath}/inventory/alarms/detail?alarmId=${alarm.alarmId}"><c:out
+                                                            value="${alarm.name}"/></a>
                                                 </td>
-                                                <td><c:out value="${instance.action.name}"/></td>
-                                                <td><c:out value="${instance.locationNameCsv}"/></td>
+                                                <td><c:out value="${alarm.action.name}"/></td>
+                                                <td><c:out value="${alarm.locationNameCsv}"/></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>

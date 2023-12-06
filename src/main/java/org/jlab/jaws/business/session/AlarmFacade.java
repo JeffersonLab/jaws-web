@@ -1,6 +1,6 @@
 package org.jlab.jaws.business.session;
 
-import org.jlab.jaws.persistence.entity.Instance;
+import org.jlab.jaws.persistence.entity.Alarm;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
@@ -17,8 +17,8 @@ import java.util.logging.Logger;
  * @author ryans
  */
 @Stateless
-public class InstanceFacade extends AbstractFacade<Instance> {
-    private static final Logger logger = Logger.getLogger(InstanceFacade.class.getName());
+public class AlarmFacade extends AbstractFacade<Alarm> {
+    private static final Logger logger = Logger.getLogger(AlarmFacade.class.getName());
 
     @PersistenceContext(unitName = "webappPU")
     private EntityManager em;
@@ -28,15 +28,15 @@ public class InstanceFacade extends AbstractFacade<Instance> {
         return em;
     }
 
-    public InstanceFacade() {
-        super(Instance.class);
+    public AlarmFacade() {
+        super(Alarm.class);
     }
 
     @PermitAll
-    public List<Instance> filterList(int offset, int max) {
+    public List<Alarm> filterList(int offset, int max) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<Instance> cq = cb.createQuery(Instance.class);
-        Root<Instance> root = cq.from(Instance.class);
+        CriteriaQuery<Alarm> cq = cb.createQuery(Alarm.class);
+        Root<Alarm> root = cq.from(Alarm.class);
         cq.select(root);
         
         List<Predicate> filters = new ArrayList<>();
@@ -57,7 +57,7 @@ public class InstanceFacade extends AbstractFacade<Instance> {
     public long countList() {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<Instance> root = cq.from(Instance.class);
+        Root<Alarm> root = cq.from(Alarm.class);
         
         List<Predicate> filters = new ArrayList<>();
         
@@ -70,7 +70,7 @@ public class InstanceFacade extends AbstractFacade<Instance> {
         return q.getSingleResult();
     }
 
-    public Instance findByName(String name) {
+    public Alarm findByName(String name) {
         return null;
     }
 }
