@@ -1,4 +1,4 @@
-package org.jlab.jaws.controller.inventory.instances;
+package org.jlab.jaws.controller.inventory.alarms;
 
 import org.jlab.jaws.business.session.AlarmFacade;
 import org.jlab.jaws.persistence.entity.Alarm;

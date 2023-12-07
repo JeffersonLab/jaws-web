@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -69,5 +70,20 @@ public class LocationFacade extends AbstractFacade<Location> {
         cq.select(cb.count(root));
         TypedQuery<Long> q = getEntityManager().createQuery(cq);
         return q.getSingleResult();
+    }
+
+    @PermitAll
+    public Location findBranch(BigInteger locationId) {
+        // We query all locations such that the EntityManager already resolved hierarchical parent/child relationships.
+        TypedQuery<Location> q = em.createQuery(
+                "select l from Location l left join fetch l.childList", Location.class);
+
+        // Ignore ResultSet - EntityManger is now primed.
+        q.getResultList();
+
+        // Search should hit primed EntityManager cache.
+        Location branchRoot = find(locationId);
+
+        return branchRoot;
     }
 }

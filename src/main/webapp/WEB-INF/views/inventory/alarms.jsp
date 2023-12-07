@@ -37,9 +37,9 @@
                                     <div class="li-value">
                                         <select id="location-select" name="locationId" multiple="multiple">
                                             <option value="">&nbsp;</option>
-                                            <c:forEach items="${locationList}" var="location">
-                                                <option value="${location.locationId}"${param.locationId eq location.locationId ? ' selected="selected"' : ''}>
-                                                    <c:out value="${location.name}"/></option>
+                                            <c:forEach items="${locationRoot.children}" var="child">
+                                                <t:hierarchical-select-option node="${child}" level="0"
+                                                                              parameterName="locationId"/>
                                             </c:forEach>
                                         </select>
                                     </div>

@@ -64,7 +64,7 @@ public class AlarmController extends HttpServlet {
         List<Alarm> alarmList = alarmFacade.filterList(locationIdArray, priorityId, teamId, alarmName, actionName, componentName, offset, maxPerPage);
         List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
         List<Priority> priorityList = priorityFacade.findAll(new AbstractFacade.OrderDirective("priorityId"));
-        List<Location> locationList = locationFacade.findAll(new AbstractFacade.OrderDirective("locationId"));
+        Location locationRoot = locationFacade.findBranch(Location.TREE_ROOT);
 
         List<Location> selectedLocationList = new ArrayList<>();
 
@@ -101,7 +101,7 @@ public class AlarmController extends HttpServlet {
         request.setAttribute("selectionMessage", selectionMessage);
         request.setAttribute("teamList", teamList);
         request.setAttribute("priorityList", priorityList);
-        request.setAttribute("locationList", locationList);
+        request.setAttribute("locationRoot", locationRoot);
         request.setAttribute("paginator", paginator);
 
         request.getRequestDispatcher("/WEB-INF/views/inventory/alarms.jsp").forward(request, response);
