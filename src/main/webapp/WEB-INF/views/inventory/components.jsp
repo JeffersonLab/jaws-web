@@ -76,7 +76,7 @@
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table'} editable-row-table">
                                         <tbody>
                                         <c:forEach items="${componentList}" var="component">
-                                            <tr data-id="${component.componentId}">
+                                            <tr data-id="${component.componentId}" data-team-id="${component.team.teamId}">
                                                 <td><c:out value="${component.name}"/></td>
                                                 <td><c:out value="${component.team.name}"/></td>
                                             </tr>

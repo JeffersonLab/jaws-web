@@ -1,8 +1,12 @@
 package org.jlab.jaws.business.session;
 
 import org.jlab.jaws.persistence.entity.Component;
+import org.jlab.jaws.persistence.entity.Team;
+import org.jlab.smoothness.business.exception.UserFriendlyException;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -23,6 +27,9 @@ public class ComponentFacade extends AbstractFacade<Component> {
     
     @PersistenceContext(unitName = "webappPU")
     private EntityManager em;
+
+    @EJB
+    TeamFacade teamFacade;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -83,5 +90,57 @@ public class ComponentFacade extends AbstractFacade<Component> {
         cq.select(cb.count(root));
         TypedQuery<Long> q = getEntityManager().createQuery(cq);
         return q.getSingleResult();
+    }
+
+    @RolesAllowed("jaws-admin")
+    public void addComponent(String name, BigInteger teamId) throws UserFriendlyException {
+        if(name == null || name.isBlank()) {
+            throw new UserFriendlyException("Name is required");
+        }
+
+        if(teamId == null) {
+            throw new UserFriendlyException("Team is required");
+        }
+
+        Team team = teamFacade.find(teamId);
+
+        if(team == null) {
+            throw new UserFriendlyException("Team not found with ID: " + teamId);
+        }
+
+        Component component = new Component();
+
+        component.setName(name);
+        component.setTeam(team);
+
+        create(component);
+    }
+
+    @RolesAllowed("jaws-admin")
+    public void editComponent(BigInteger componentId, String name, BigInteger teamId) throws UserFriendlyException {
+        if(componentId == null) {
+            throw new UserFriendlyException("componentId is required");
+        }
+
+        Component component = find(componentId);
+
+        if(component == null) {
+            throw new UserFriendlyException("Component not found with ID: " + componentId);
+        }
+
+        if(name == null || name.isBlank()) {
+            throw new UserFriendlyException("Name is required");
+        }
+
+        if(teamId == null) {
+            throw new UserFriendlyException("Team is required");
+        }
+
+        Team team = teamFacade.find(teamId);
+
+        component.setName(name);
+        component.setTeam(team);
+
+        edit(component);
     }
 }
