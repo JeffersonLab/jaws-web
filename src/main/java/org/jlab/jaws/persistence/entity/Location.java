@@ -34,6 +34,12 @@ public class Location implements Serializable, Node {
     @OneToMany(mappedBy = "parent")
     @OrderBy("weight ASC, name ASC")
     private List<Location> childList;
+    @JoinTable(name = "ALARM_LOCATION", joinColumns = {
+            @JoinColumn(name = "LOCATION_ID", referencedColumnName = "LOCATION_ID", nullable = false)}, inverseJoinColumns = {
+            @JoinColumn(name = "ALARM_ID", referencedColumnName = "ALARM_ID", nullable = false)})
+    @ManyToMany
+    private List<Alarm> alarmList;
+
     public BigInteger getLocationId() {
         return locationId;
     }
@@ -81,6 +87,14 @@ public class Location implements Serializable, Node {
 
     public void setChildList(List<Location> childList) {
         this.childList = childList;
+    }
+
+    public List<Alarm> getAlarmList() {
+        return alarmList;
+    }
+
+    public void setAlarmList(List<Alarm> alarmList) {
+        this.alarmList = alarmList;
     }
 
     @Override

@@ -11,7 +11,9 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -85,5 +87,24 @@ public class LocationFacade extends AbstractFacade<Location> {
         Location branchRoot = find(locationId);
 
         return branchRoot;
+    }
+
+    @PermitAll
+    public Set<Location> findBranchAsSet(BigInteger locationId) {
+        Location branchRoot = findBranch(locationId);
+
+        Set<Location> locationSet = new HashSet<>();
+
+        addToSet(branchRoot, locationSet);
+
+        return locationSet;
+    }
+
+    private void addToSet(Location location, Set<Location> locationSet) {
+        locationSet.add(location);
+
+        for(Location child: location.getChildList()) {
+            addToSet(child, locationSet);
+        }
     }
 }

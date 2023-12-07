@@ -1,18 +1,20 @@
 package org.jlab.jaws.business.session;
 
+import org.checkerframework.checker.units.qual.A;
 import org.jlab.jaws.persistence.entity.Action;
 import org.jlab.jaws.persistence.entity.Alarm;
 import org.jlab.jaws.persistence.entity.Component;
+import org.jlab.jaws.persistence.entity.Location;
 
 import javax.annotation.security.PermitAll;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -22,6 +24,9 @@ import java.util.logging.Logger;
 @Stateless
 public class AlarmFacade extends AbstractFacade<Alarm> {
     private static final Logger logger = Logger.getLogger(AlarmFacade.class.getName());
+
+    @EJB
+    LocationFacade locationFacade;
 
     @PersistenceContext(unitName = "webappPU")
     private EntityManager em;
@@ -35,7 +40,7 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
         super(Alarm.class);
     }
 
-    private List<Predicate> getFilters(CriteriaBuilder cb, Root<Alarm> root, BigInteger[] locationIdArray,
+    private List<Predicate> getFilters(CriteriaBuilder cb, CriteriaQuery<? extends Object> cq, Root<Alarm> root, BigInteger[] locationIdArray,
                                        BigInteger priorityId, BigInteger teamId, String alarmName, String actionName,
                                        String componentName) {
         List<Predicate> filters = new ArrayList<>();
@@ -44,7 +49,29 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
         Join<Action, Component> componentJoin = actionJoin.join("component");
 
         if(locationIdArray != null && locationIdArray.length > 0) {
+            // Parent locations imply children locations
+            Set<Location> materializedLocations = new HashSet<>();
+            for(BigInteger locationId: locationIdArray) {
+                if(locationId != null) {
+                    Set<Location> subset = locationFacade.findBranchAsSet(locationId);
+                    materializedLocations.addAll(subset);
+                }
+            }
 
+            List<BigInteger> locationIdList = new ArrayList<>();
+
+            for(Location l: materializedLocations) {
+                locationIdList.add(l.getLocationId());
+            }
+
+            if(!locationIdList.isEmpty()) {
+                Subquery<BigInteger> subquery = cq.subquery(BigInteger.class);
+                Root<Location> subqueryRoot = subquery.from(Location.class);
+                Join<Location, Alarm> alarmJoin = subqueryRoot.join("alarmList");
+                subquery.select(alarmJoin.get("alarmId"));
+                subquery.where(subqueryRoot.get("locationId").in(locationIdList));
+                filters.add(cb.in(root.get("alarmId")).value(subquery));
+            }
         }
 
         if (alarmName != null && !alarmName.isEmpty()) {
@@ -78,7 +105,7 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
         Root<Alarm> root = cq.from(Alarm.class);
         cq.select(root);
 
-        List<Predicate> filters = getFilters(cb, root, locationIdArray, priorityId, teamId, alarmName, actionName,
+        List<Predicate> filters = getFilters(cb, cq, root, locationIdArray, priorityId, teamId, alarmName, actionName,
                 componentName);
 
         if (!filters.isEmpty()) {
@@ -100,7 +127,7 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<Alarm> root = cq.from(Alarm.class);
 
-        List<Predicate> filters = getFilters(cb, root, locationIdArray, priorityId, teamId, alarmName, actionName,
+        List<Predicate> filters = getFilters(cb, cq, root, locationIdArray, priorityId, teamId, alarmName, actionName,
                 componentName);
         
         if (!filters.isEmpty()) {
