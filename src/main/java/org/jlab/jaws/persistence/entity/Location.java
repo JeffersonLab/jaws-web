@@ -1,6 +1,6 @@
 package org.jlab.jaws.persistence.entity;
 
-import org.jlab.jaws.model.Node;
+import org.jlab.jaws.persistence.model.Node;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

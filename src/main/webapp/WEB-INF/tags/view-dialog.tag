@@ -2,7 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@attribute name="id" required="true" type="java.lang.String"%>
 <%@attribute name="title" required="true" type="java.lang.String"%>
-<%@attribute name="model" required="true" type="org.jlab.jaws.model.EntityModel"%>
+<%@attribute name="model" required="true" type="org.jlab.jaws.persistence.model.EntityModel"%>
 <div class="dialog" id="${id}-view-dialog" title="${title}">
     <dl>
         <c:forEach items="${model.valueFields}" var="field">

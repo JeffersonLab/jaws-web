@@ -3,7 +3,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@attribute name="id" required="true" type="java.lang.String"%>
 <%@attribute name="title" required="true" type="java.lang.String"%>
-<%@attribute name="model" required="true" type="org.jlab.jaws.model.EntityModel"%>
+<%@attribute name="model" required="true" type="org.jlab.jaws.persistence.model.EntityModel"%>
 <%@attribute name="editable" required="false" type="java.lang.Boolean"%>
 <div class="panel" id="${id}-panel">
     <div class="toolbar">
