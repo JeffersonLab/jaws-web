@@ -1,8 +1,8 @@
 var jlab = jlab || {};
 jlab.editableRowTable = jlab.editableRowTable || {};
 jlab.editableRowTable.entity = 'Action';
-jlab.editableRowTable.dialog.width = 400;
-jlab.editableRowTable.dialog.height = 300;
+jlab.editableRowTable.dialog.width = 500;
+jlab.editableRowTable.dialog.height = 400;
 jlab.addRow = function() {
     var name = $("#row-name").val(),
         teamId = $("#row-team").val(),

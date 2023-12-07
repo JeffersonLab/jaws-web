@@ -10,7 +10,7 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/actions.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
-        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/components.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/actions.js"></script>
     </jsp:attribute>        
     <jsp:body>
         <section>
@@ -166,6 +166,38 @@
                                         <c:out value="${priority.name}"/></option>
                                 </c:forEach>
                             </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-filterable">Filterable</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="checkbox" id="row-filterable"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-latchable">Latchable</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="checkbox" id="row-latchable"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-ondelay">On Delay (seconds)</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="row-ondelay"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-offdelay">Off Delay (seconds)</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="row-offdelay"/>
                         </div>
                     </li>
                 </ul>
