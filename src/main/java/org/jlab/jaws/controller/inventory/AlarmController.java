@@ -1,7 +1,15 @@
 package org.jlab.jaws.controller.inventory;
 
+import org.jlab.jaws.business.session.AbstractFacade;
 import org.jlab.jaws.business.session.AlarmFacade;
+import org.jlab.jaws.business.session.PriorityFacade;
+import org.jlab.jaws.business.session.TeamFacade;
 import org.jlab.jaws.persistence.entity.Alarm;
+import org.jlab.jaws.persistence.entity.Priority;
+import org.jlab.jaws.persistence.entity.Team;
+import org.jlab.smoothness.presentation.util.Paginator;
+import org.jlab.smoothness.presentation.util.ParamConverter;
+import org.jlab.smoothness.presentation.util.ParamUtil;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -10,6 +18,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,6 +32,12 @@ public class AlarmController extends HttpServlet {
 
     @EJB
     AlarmFacade alarmFacade;
+
+    @EJB
+    TeamFacade teamFacade;
+
+    @EJB
+    PriorityFacade priorityFacade;
 
     /**
      * Handles the HTTP
@@ -34,10 +51,86 @@ public class AlarmController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Alarm> alarmList = alarmFacade.filterList(0, Integer.MAX_VALUE);
+        String actionName = request.getParameter("actionName");
+        BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
+        String componentName = request.getParameter("componentName");
+        BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
+        int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
+        int maxPerPage = 100;
+
+        List<Alarm> alarmList = alarmFacade.filterList(priorityId, teamId, actionName, componentName, offset, maxPerPage);
+        List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
+        List<Priority> priorityList = priorityFacade.findAll(new AbstractFacade.OrderDirective("priorityId"));
+
+        Priority selectedPriority = null;
+
+        if(priorityId != null) {
+            selectedPriority = priorityFacade.find(priorityId);
+        }
+
+        Team selectedTeam = null;
+
+        if(teamId != null) {
+            selectedTeam = teamFacade.find(teamId);
+        }
+
+        long totalRecords = alarmFacade.countList(priorityId, teamId, actionName, componentName);
+
+        Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
+
+        String selectionMessage = createSelectionMessage(paginator, selectedPriority, selectedTeam, actionName, componentName);
 
         request.setAttribute("alarmList", alarmList);
+        request.setAttribute("selectionMessage", selectionMessage);
+        request.setAttribute("teamList", teamList);
+        request.setAttribute("priorityList", priorityList);
+        request.setAttribute("paginator", paginator);
 
         request.getRequestDispatcher("/WEB-INF/views/inventory/alarms.jsp").forward(request, response);
+    }
+
+    private String createSelectionMessage(Paginator paginator, Priority priority, Team team, String actionName, String componentName) {
+        DecimalFormat formatter = new DecimalFormat("###,###");
+
+        String selectionMessage = "All Alarms ";
+
+        List<String> filters = new ArrayList<>();
+
+        if(priority != null) {
+            filters.add("Priority \"" + priority.getName() + "\"");
+        }
+
+        if(team != null) {
+            filters.add("Team \"" + team.getName() + "\"");
+        }
+
+        if(actionName != null && !actionName.isBlank()) {
+            filters.add("Action Name \"" + actionName + "\"");
+        }
+
+        if(componentName != null && !componentName.isBlank()) {
+            filters.add("Component Name \"" + componentName + "\"");
+        }
+
+        if (!filters.isEmpty()) {
+            selectionMessage = filters.get(0);
+
+            for (int i = 1; i < filters.size(); i++) {
+                String filter = filters.get(i);
+                selectionMessage += " and " + filter;
+            }
+        }
+
+        if (paginator.getTotalRecords() < paginator.getMaxPerPage() && paginator.getOffset() == 0) {
+            selectionMessage = selectionMessage + " {" + formatter.format(
+                    paginator.getTotalRecords()) + "}";
+        } else {
+            selectionMessage = selectionMessage + " {"
+                    + formatter.format(paginator.getStartNumber())
+                    + " - " + formatter.format(paginator.getEndNumber())
+                    + " of " + formatter.format(paginator.getTotalRecords()) + "}";
+        }
+
+        return selectionMessage;
     }
 }
