@@ -5,7 +5,12 @@ jlab.editableRowTable.dialog.width = 500;
 jlab.editableRowTable.dialog.height = 400;
 jlab.addRow = function() {
     var name = $("#row-name").val(),
-        teamId = $("#row-team").val(),
+        componentId = $("#row-component").val(),
+        priorityId = $("#row-priority").val(),
+        filterable = $("#row-filterable").is(":checked") ? 'Y' : 'N',
+        latchable = $("#row-latchable").is(":checked") ? 'Y' : 'N',
+        onDelaySeconds = $("#row-ondelay").val(),
+        offDelaySeconds = $("#row-offdelay").val(),
         reloading = false;
 
     $(".dialog-submit-button")
@@ -20,7 +25,12 @@ jlab.addRow = function() {
         type: "POST",
         data: {
             name: name,
-            teamId: teamId
+            componentId: componentId,
+            priorityId: priorityId,
+            filterable: filterable,
+            latchable: latchable,
+            onDelaySeconds: onDelaySeconds,
+            offDelaySeconds: offDelaySeconds
         },
         dataType: "json"
     });

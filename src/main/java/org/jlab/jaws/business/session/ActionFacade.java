@@ -2,8 +2,12 @@ package org.jlab.jaws.business.session;
 
 import org.jlab.jaws.persistence.entity.Action;
 import org.jlab.jaws.persistence.entity.Component;
+import org.jlab.jaws.persistence.entity.Priority;
+import org.jlab.smoothness.business.exception.UserFriendlyException;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,6 +25,12 @@ import java.util.logging.Logger;
 @Stateless
 public class ActionFacade extends AbstractFacade<Action> {
     private static final Logger logger = Logger.getLogger(ActionFacade.class.getName());
+
+    @EJB
+    ComponentFacade componentFacade;
+
+    @EJB
+    PriorityFacade priorityFacade;
 
     @PersistenceContext(unitName = "webappPU")
     private EntityManager em;
@@ -103,5 +113,54 @@ public class ActionFacade extends AbstractFacade<Action> {
     @PermitAll
     public Action findByName(String name) {
         return null;
+    }
+
+    @RolesAllowed("jaws-admin")
+    public void addAction(String name, BigInteger componentId, BigInteger priorityId, Boolean filterable,
+                          Boolean latchable, BigInteger onDelaySeconds, BigInteger offDelaySeconds)
+            throws UserFriendlyException {
+        if(name == null || name.isBlank()) {
+            throw new UserFriendlyException("Name is required");
+        }
+
+        if(componentId == null) {
+            throw new UserFriendlyException("Component is required");
+        }
+
+        Component component = componentFacade.find(componentId);
+
+        if(component == null) {
+            throw new UserFriendlyException("Component not found with ID: " + componentId);
+        }
+
+        if(priorityId == null) {
+            throw new UserFriendlyException("Priority is required");
+        }
+
+        Priority priority = priorityFacade.find(priorityId);
+
+        if(priority == null) {
+            throw new UserFriendlyException("Priority not found with ID: " + priorityId);
+        }
+
+        if(filterable == null) {
+            throw new UserFriendlyException("Filterable is required");
+        }
+
+        if(latchable == null) {
+            throw new UserFriendlyException("Latchable is required");
+        }
+
+        Action action = new Action();
+
+        action.setName(name);
+        action.setComponent(component);
+        action.setPriority(priority);
+        action.setFilterable(filterable);
+        action.setLatchable(latchable);
+        action.setOnDelaySeconds(onDelaySeconds);
+        action.setOffDelaySeconds(offDelaySeconds);
+
+        create(action);
     }
 }
