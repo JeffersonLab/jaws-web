@@ -4,7 +4,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%> 
-<c:set var="title" value="Alarm Archive"/>
+<c:set var="title" value="Alarm Activity Archive"/>
 <t:page title="${title}">  
     <jsp:attribute name="stylesheets">
     </jsp:attribute>
