@@ -12,13 +12,22 @@
     <jsp:attribute name="scripts">
         <script>
             $(document).on("click", ".default-clear-panel", function () {
-                $("#location-select").val('');
+                $("#location-select").val(null).trigger('change');
                 $("#priority-select").val('');
                 $("#team-select").val('');
                 $("#alarm-name").val('');
                 $("#action-name").val('');
                 $("#component-name").val('');
                 return false;
+            });
+            function formatLocation(location) {
+                return location.text.trim();
+            }
+            $(function () {
+                $("#location-select").select2({
+                    width: 390,
+                    templateSelection: formatLocation
+                });
             });
         </script>
     </jsp:attribute>        
@@ -36,7 +45,6 @@
                                     </div>
                                     <div class="li-value">
                                         <select id="location-select" name="locationId" multiple="multiple">
-                                            <option value="">&nbsp;</option>
                                             <c:forEach items="${locationRoot.children}" var="child">
                                                 <t:hierarchical-select-option node="${child}" level="0"
                                                                               parameterName="locationId"/>
