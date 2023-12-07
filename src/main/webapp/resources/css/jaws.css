@@ -44,3 +44,7 @@ dd ul {
     display: inline-block;
     z-index: 2;
 }
+
+#editable-row-table-control-panel button {
+    vertical-align: top;
+}

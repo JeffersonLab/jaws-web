@@ -119,7 +119,7 @@ public class ComponentFacade extends AbstractFacade<Component> {
     @RolesAllowed("jaws-admin")
     public void editComponent(BigInteger componentId, String name, BigInteger teamId) throws UserFriendlyException {
         if(componentId == null) {
-            throw new UserFriendlyException("componentId is required");
+            throw new UserFriendlyException("Component ID is required");
         }
 
         Component component = find(componentId);
@@ -142,5 +142,20 @@ public class ComponentFacade extends AbstractFacade<Component> {
         component.setTeam(team);
 
         edit(component);
+    }
+
+    @RolesAllowed("jaws-admin")
+    public void removeComponent(BigInteger componentId) throws UserFriendlyException {
+        if(componentId == null) {
+            throw new UserFriendlyException("Component ID is required");
+        }
+
+        Component component = find(componentId);
+
+        if(component == null) {
+            throw new UserFriendlyException("Component not found with ID: " + componentId);
+        }
+
+        remove(component);
     }
 }
