@@ -12,7 +12,9 @@
     <jsp:attribute name="scripts">
         <script>
             $(document).on("click", ".default-clear-panel", function () {
+                $("#priority-select").val('');
                 $("#team-select").val('');
+                $("#action-name").val('');
                 $("#component-name").val('');
                 return false;
             });
@@ -26,6 +28,20 @@
                         <fieldset>
                             <legend>Filter</legend>
                             <ul class="key-value-list">
+                                <li>
+                                    <div class="li-key">
+                                        <label for="priority-select">Priority</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="priority-select" name="priorityId">
+                                            <option value="">&nbsp;</option>
+                                            <c:forEach items="${priorityList}" var="priority">
+                                                <option value="${priority.priorityId}"${param.priorityId eq priority.priorityId ? ' selected="selected"' : ''}>
+                                                    <c:out value="${priority.name}"/></option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </li>
                                 <li>
                                     <div class="li-key">
                                         <label for="team-select">Team</label>
@@ -42,12 +58,23 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
+                                        <label for="action-name">Action Name</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <input id="action-name"
+                                               name="actionName" value="${fn:escapeXml(param.actionName)}"
+                                               placeholder="action name"/>
+                                        <div>(use % as wildcard)</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
                                         <label for="component-name">Component Name</label>
                                     </div>
                                     <div class="li-value">
                                         <input id="component-name"
                                                name="componentName" value="${fn:escapeXml(param.componentName)}"
-                                               placeholder="name"/>
+                                               placeholder="component name"/>
                                         <div>(use % as wildcard)</div>
                                     </div>
                                 </li>

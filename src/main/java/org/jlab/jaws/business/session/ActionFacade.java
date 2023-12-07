@@ -34,8 +34,16 @@ public class ActionFacade extends AbstractFacade<Action> {
         super(Action.class);
     }
 
-    private List<Predicate> getFilters(CriteriaBuilder cb, Root<Action> root, String componentName, BigInteger teamId) {
+    private List<Predicate> getFilters(CriteriaBuilder cb, Root<Action> root, BigInteger priorityId, BigInteger teamId, String actionName, String componentName) {
         List<Predicate> filters = new ArrayList<>();
+
+        if (priorityId != null) {
+            filters.add(cb.equal(root.get("priority"), priorityId));
+        }
+
+        if (actionName != null && !actionName.isEmpty()) {
+            filters.add(cb.like(cb.lower(root.get("name")), actionName.toLowerCase()));
+        }
 
         Join<Action, Component> componentJoin = null;
 
@@ -55,13 +63,13 @@ public class ActionFacade extends AbstractFacade<Action> {
     }
 
     @PermitAll
-    public List<Action> filterList(String componentName, BigInteger teamId, int offset, int max) {
+    public List<Action> filterList(BigInteger priorityId, BigInteger teamId, String actionName, String componentName, int offset, int max) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Action> cq = cb.createQuery(Action.class);
         Root<Action> root = cq.from(Action.class);
         cq.select(root);
 
-        List<Predicate> filters = getFilters(cb, root, componentName, teamId);
+        List<Predicate> filters = getFilters(cb, root, priorityId, teamId, actionName, componentName);
 
         if (!filters.isEmpty()) {
             cq.where(cb.and(filters.toArray(new Predicate[]{})));
@@ -76,12 +84,12 @@ public class ActionFacade extends AbstractFacade<Action> {
     }
 
     @PermitAll
-    public long countList(String componentName, BigInteger teamId) {
+    public long countList(BigInteger priorityId, BigInteger teamId, String actionName, String componentName) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<Action> root = cq.from(Action.class);
 
-        List<Predicate> filters = getFilters(cb, root, componentName, teamId);
+        List<Predicate> filters = getFilters(cb, root, priorityId, teamId, actionName, componentName);
         
         if (!filters.isEmpty()) {
             cq.where(cb.and(filters.toArray(new Predicate[]{})));
