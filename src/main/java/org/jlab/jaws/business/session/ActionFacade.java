@@ -1,6 +1,7 @@
 package org.jlab.jaws.business.session;
 
 import org.jlab.jaws.persistence.entity.Action;
+import org.jlab.jaws.persistence.entity.Component;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
@@ -8,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -32,14 +34,34 @@ public class ActionFacade extends AbstractFacade<Action> {
         super(Action.class);
     }
 
+    private List<Predicate> getFilters(CriteriaBuilder cb, Root<Action> root, String componentName, BigInteger teamId) {
+        List<Predicate> filters = new ArrayList<>();
+
+        Join<Action, Component> componentJoin = null;
+
+        if(componentName != null && !componentName.isEmpty() || teamId != null) {
+           componentJoin = root.join("component");
+        }
+
+        if (componentName != null && !componentName.isEmpty()) {
+            filters.add(cb.like(cb.lower(componentJoin.get("name")), componentName.toLowerCase()));
+        }
+
+        if (teamId != null) {
+            filters.add(cb.equal(componentJoin.get("team"), teamId));
+        }
+
+        return filters;
+    }
+
     @PermitAll
-    public List<Action> filterList(int offset, int max) {
+    public List<Action> filterList(String componentName, BigInteger teamId, int offset, int max) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Action> cq = cb.createQuery(Action.class);
         Root<Action> root = cq.from(Action.class);
         cq.select(root);
-        
-        List<Predicate> filters = new ArrayList<>();
+
+        List<Predicate> filters = getFilters(cb, root, componentName, teamId);
 
         if (!filters.isEmpty()) {
             cq.where(cb.and(filters.toArray(new Predicate[]{})));
@@ -54,12 +76,12 @@ public class ActionFacade extends AbstractFacade<Action> {
     }
 
     @PermitAll
-    public long countList() {
+    public long countList(String componentName, BigInteger teamId) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<Action> root = cq.from(Action.class);
-        
-        List<Predicate> filters = new ArrayList<>();
+
+        List<Predicate> filters = getFilters(cb, root, componentName, teamId);
         
         if (!filters.isEmpty()) {
             cq.where(cb.and(filters.toArray(new Predicate[]{})));

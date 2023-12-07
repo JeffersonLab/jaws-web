@@ -10,11 +10,56 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/actions.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
+        <script>
+            $(document).on("click", ".default-clear-panel", function () {
+                $("#team-select").val('');
+                $("#component-name").val('');
+                return false;
+            });
+        </script>
     </jsp:attribute>        
     <jsp:body>
         <section>
+            <s:filter-flyout-widget clearButton="true">
+                <form id="filter-form" method="get" action="actions">
+                    <div id="filter-form-panel">
+                        <fieldset>
+                            <legend>Filter</legend>
+                            <ul class="key-value-list">
+                                <li>
+                                    <div class="li-key">
+                                        <label for="team-select">Team</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="team-select" name="teamId">
+                                            <option value="">&nbsp;</option>
+                                            <c:forEach items="${teamList}" var="team">
+                                                <option value="${team.teamId}"${param.teamId eq team.teamId ? ' selected="selected"' : ''}>
+                                                    <c:out value="${team.name}"/></option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
+                                        <label for="component-name">Component Name</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <input id="component-name"
+                                               name="componentName" value="${fn:escapeXml(param.componentName)}"
+                                               placeholder="name"/>
+                                        <div>(use % as wildcard)</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </fieldset>
+                    </div>
+                    <input type="hidden" id="offset-input" name="offset" value="0"/>
+                    <input id="filter-form-submit-button" type="submit" value="Apply"/>
+                </form>
+            </s:filter-flyout-widget>
             <h2 id="page-header-title"><c:out value="${title}"/></h2>
-            <div class="message-box"></div>
+            <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="chart-wrap" class="chart-wrap-backdrop">
                 <c:set var="readonly" value="${!pageContext.request.isUserInRole('jaws-admin')}"/>
                 <c:if test="${not readonly}">
@@ -57,6 +102,12 @@
                     </tr>
                     </tbody>
                 </table>
+                <button id="previous-button" type="button" data-offset="${paginator.previousOffset}"
+                        value="Previous"${paginator.previous ? '' : ' disabled="disabled"'}>Previous
+                </button>
+                <button id="next-button" type="button" data-offset="${paginator.nextOffset}"
+                        value="Next"${paginator.next ? '' : ' disabled="disabled"'}>Next
+                </button>
             </div>
         </section>
         <s:editable-row-table-dialog>
