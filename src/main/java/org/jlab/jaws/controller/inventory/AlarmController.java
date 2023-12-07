@@ -1,10 +1,8 @@
 package org.jlab.jaws.controller.inventory;
 
-import org.jlab.jaws.business.session.AbstractFacade;
-import org.jlab.jaws.business.session.AlarmFacade;
-import org.jlab.jaws.business.session.PriorityFacade;
-import org.jlab.jaws.business.session.TeamFacade;
+import org.jlab.jaws.business.session.*;
 import org.jlab.jaws.persistence.entity.Alarm;
+import org.jlab.jaws.persistence.entity.Location;
 import org.jlab.jaws.persistence.entity.Priority;
 import org.jlab.jaws.persistence.entity.Team;
 import org.jlab.smoothness.presentation.util.Paginator;
@@ -39,6 +37,9 @@ public class AlarmController extends HttpServlet {
     @EJB
     PriorityFacade priorityFacade;
 
+    @EJB
+    LocationFacade locationFacade;
+
     /**
      * Handles the HTTP
      * <code>GET</code> method.
@@ -51,6 +52,8 @@ public class AlarmController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String alarmName = request.getParameter("alarmName");
+        BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
         String actionName = request.getParameter("actionName");
         BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
         String componentName = request.getParameter("componentName");
@@ -58,9 +61,23 @@ public class AlarmController extends HttpServlet {
         int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
         int maxPerPage = 100;
 
-        List<Alarm> alarmList = alarmFacade.filterList(priorityId, teamId, actionName, componentName, offset, maxPerPage);
+        List<Alarm> alarmList = alarmFacade.filterList(locationIdArray, priorityId, teamId, alarmName, actionName, componentName, offset, maxPerPage);
         List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
         List<Priority> priorityList = priorityFacade.findAll(new AbstractFacade.OrderDirective("priorityId"));
+        List<Location> locationList = locationFacade.findAll(new AbstractFacade.OrderDirective("locationId"));
+
+        List<Location> selectedLocationList = new ArrayList<>();
+
+        if(locationIdArray != null && locationIdArray.length > 0) {
+            for(BigInteger id: locationIdArray) {
+                if(id == null) {  // TODO: the convertBigIntegerArray method should be excluding empty/null
+                    continue;
+                }
+
+                Location l = locationFacade.find(id);
+                selectedLocationList.add(l);
+            }
+        }
 
         Priority selectedPriority = null;
 
@@ -74,27 +91,39 @@ public class AlarmController extends HttpServlet {
             selectedTeam = teamFacade.find(teamId);
         }
 
-        long totalRecords = alarmFacade.countList(priorityId, teamId, actionName, componentName);
+        long totalRecords = alarmFacade.countList(locationIdArray, priorityId, teamId, alarmName, actionName, componentName);
 
         Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
-        String selectionMessage = createSelectionMessage(paginator, selectedPriority, selectedTeam, actionName, componentName);
+        String selectionMessage = createSelectionMessage(paginator, selectedLocationList, selectedPriority, selectedTeam, alarmName, actionName, componentName);
 
         request.setAttribute("alarmList", alarmList);
         request.setAttribute("selectionMessage", selectionMessage);
         request.setAttribute("teamList", teamList);
         request.setAttribute("priorityList", priorityList);
+        request.setAttribute("locationList", locationList);
         request.setAttribute("paginator", paginator);
 
         request.getRequestDispatcher("/WEB-INF/views/inventory/alarms.jsp").forward(request, response);
     }
 
-    private String createSelectionMessage(Paginator paginator, Priority priority, Team team, String actionName, String componentName) {
+    private String createSelectionMessage(Paginator paginator, List<Location> locationList, Priority priority, Team team, String alarmName, String actionName, String componentName) {
         DecimalFormat formatter = new DecimalFormat("###,###");
 
         String selectionMessage = "All Alarms ";
 
         List<String> filters = new ArrayList<>();
+
+        if(locationList != null && !locationList.isEmpty()) {
+            String sublist = "\"" + locationList.get(0).getName() + "\"";
+
+            for(int i = 1; i < locationList.size(); i++) {
+                Location l = locationList.get(i);
+                sublist = sublist + ", \"" + l.getName() + "\"";
+            }
+
+            filters.add("Location " + sublist);
+        }
 
         if(priority != null) {
             filters.add("Priority \"" + priority.getName() + "\"");
@@ -102,6 +131,10 @@ public class AlarmController extends HttpServlet {
 
         if(team != null) {
             filters.add("Team \"" + team.getName() + "\"");
+        }
+
+        if(alarmName != null && !alarmName.isBlank()) {
+            filters.add("Alarm Name \"" + alarmName + "\"");
         }
 
         if(actionName != null && !actionName.isBlank()) {

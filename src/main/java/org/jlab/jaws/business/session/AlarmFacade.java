@@ -35,11 +35,21 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
         super(Alarm.class);
     }
 
-    private List<Predicate> getFilters(CriteriaBuilder cb, Root<Alarm> root, BigInteger priorityId, BigInteger teamId, String actionName, String componentName) {
+    private List<Predicate> getFilters(CriteriaBuilder cb, Root<Alarm> root, BigInteger[] locationIdArray,
+                                       BigInteger priorityId, BigInteger teamId, String alarmName, String actionName,
+                                       String componentName) {
         List<Predicate> filters = new ArrayList<>();
 
         Join<Alarm, Action> actionJoin = root.join("action");
         Join<Action, Component> componentJoin = actionJoin.join("component");
+
+        if(locationIdArray != null && locationIdArray.length > 0) {
+
+        }
+
+        if (alarmName != null && !alarmName.isEmpty()) {
+            filters.add(cb.like(cb.lower(root.get("name")), alarmName.toLowerCase()));
+        }
 
         if (priorityId != null) {
             filters.add(cb.equal(actionJoin.get("priority"), priorityId));
@@ -61,13 +71,15 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
     }
 
     @PermitAll
-    public List<Alarm> filterList(BigInteger priorityId, BigInteger teamId, String actionName, String componentName, int offset, int max) {
+    public List<Alarm> filterList(BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId,
+                                  String alarmName, String actionName, String componentName, int offset, int max) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Alarm> cq = cb.createQuery(Alarm.class);
         Root<Alarm> root = cq.from(Alarm.class);
         cq.select(root);
 
-        List<Predicate> filters = getFilters(cb, root, priorityId, teamId, actionName, componentName);
+        List<Predicate> filters = getFilters(cb, root, locationIdArray, priorityId, teamId, alarmName, actionName,
+                componentName);
 
         if (!filters.isEmpty()) {
             cq.where(cb.and(filters.toArray(new Predicate[]{})));
@@ -82,12 +94,14 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
     }
 
     @PermitAll
-    public long countList(BigInteger priorityId, BigInteger teamId, String actionName, String componentName) {
+    public long countList(BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, String alarmName,
+                          String actionName, String componentName) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<Alarm> root = cq.from(Alarm.class);
 
-        List<Predicate> filters = getFilters(cb, root, priorityId, teamId, actionName, componentName);
+        List<Predicate> filters = getFilters(cb, root, locationIdArray, priorityId, teamId, alarmName, actionName,
+                componentName);
         
         if (!filters.isEmpty()) {
             cq.where(cb.and(filters.toArray(new Predicate[]{})));

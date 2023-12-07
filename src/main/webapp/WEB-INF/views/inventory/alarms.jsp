@@ -12,8 +12,10 @@
     <jsp:attribute name="scripts">
         <script>
             $(document).on("click", ".default-clear-panel", function () {
+                $("#location-select").val('');
                 $("#priority-select").val('');
                 $("#team-select").val('');
+                $("#alarm-name").val('');
                 $("#action-name").val('');
                 $("#component-name").val('');
                 return false;
@@ -28,6 +30,20 @@
                         <fieldset>
                             <legend>Filter</legend>
                             <ul class="key-value-list">
+                                <li>
+                                    <div class="li-key">
+                                        <label for="location-select">Location</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="location-select" name="locationId" multiple="multiple">
+                                            <option value="">&nbsp;</option>
+                                            <c:forEach items="${locationList}" var="location">
+                                                <option value="${location.locationId}"${param.locationId eq location.locationId ? ' selected="selected"' : ''}>
+                                                    <c:out value="${location.name}"/></option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </li>
                                 <li>
                                     <div class="li-key">
                                         <label for="priority-select">Priority</label>
@@ -54,6 +70,17 @@
                                                     <c:out value="${team.name}"/></option>
                                             </c:forEach>
                                         </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
+                                        <label for="alarm-name">Alarm Name</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <input id="alarm-name"
+                                               name="alarmName" value="${fn:escapeXml(param.alarmName)}"
+                                               placeholder="alarm name"/>
+                                        <div>(use % as wildcard)</div>
                                     </div>
                                 </li>
                                 <li>
