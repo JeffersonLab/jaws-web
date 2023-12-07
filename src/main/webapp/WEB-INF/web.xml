@@ -26,10 +26,26 @@
         <param-name>releaseDate</param-name>
         <param-value>@RELEASE_DATE@</param-value>
     </context-param>
+    <session-config>
+        <session-timeout>480</session-timeout>
+        <cookie-config>
+            <http-only>true</http-only>
+            <secure>true</secure>
+        </cookie-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
     <mime-mapping>
         <extension>mjs</extension>
         <mime-type>text/javascript</mime-type>
     </mime-mapping>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/error</location>
+    </error-page>
     <filter>
         <filter-name>urlrewritefilter</filter-name>
         <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>

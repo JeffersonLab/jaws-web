@@ -10,13 +10,7 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/components.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
-        <script>
-            $(document).on("click", ".default-clear-panel", function () {
-                $("#team-select").val('');
-                $("#component-name").val('');
-                return false;
-            });
-        </script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/component.js"></script>
     </jsp:attribute>        
     <jsp:body>
         <section>
@@ -108,26 +102,24 @@
                 <ul class="key-value-list">
                     <li>
                         <div class="li-key">
-                            <label for="row-code">Code</label>
+                            <label for="row-name">Name</label>
                         </div>
                         <div class="li-value">
-                            <input type="text" maxlength="2" pattern="[A-Z0-9]{2}" title="Sector code is a pair of uppercase letters or numbers" required="required" id="row-code"/>
+                            <input type="text" required="required" id="row-name"/>
                         </div>
                     </li>
                     <li>
                         <div class="li-key">
-                            <label for="row-description">Description</label>
+                            <label for="row-team">Team</label>
                         </div>
                         <div class="li-value">
-                            <input type="text" maxlength="256" title="Explanation of code" required="required" id="row-description"/>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="row-grouping">Grouping</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="text" maxlength="16" title="Grouping Label" id="row-grouping"/>
+                            <select id="row-team" required="required">
+                                <option value="">&nbsp;</option>
+                                <c:forEach items="${teamList}" var="team">
+                                    <option value="${team.teamId}">
+                                        <c:out value="${team.name}"/></option>
+                                </c:forEach>
+                            </select>
                         </div>
                     </li>
                 </ul>
