@@ -1,6 +1,6 @@
 var jlab = jlab || {};
 jlab.editableRowTable = jlab.editableRowTable || {};
-jlab.editableRowTable.entity = 'Component';
+jlab.editableRowTable.entity = 'Action';
 jlab.editableRowTable.dialog.width = 400;
 jlab.editableRowTable.dialog.height = 300;
 jlab.addRow = function() {
@@ -16,7 +16,7 @@ jlab.addRow = function() {
     $(".ui-dialog-titlebar button").attr("disabled", "disabled");
 
     var request = jQuery.ajax({
-        url: "/jaws/ajax/add-component",
+        url: "/jaws/ajax/add-action",
         type: "POST",
         data: {
             name: name,
@@ -35,7 +35,7 @@ jlab.addRow = function() {
     });
 
     request.fail(function(xhr, textStatus) {
-        window.console && console.log('Unable to add component; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
+        window.console && console.log('Unable to add action; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
         alert('Unable to Save: Server unavailable or unresponsive');
     });
 
@@ -61,7 +61,7 @@ jlab.editRow = function() {
     $(".ui-dialog-titlebar button").attr("disabled", "disabled");
 
     var request = jQuery.ajax({
-        url: "/jaws/ajax/edit-component",
+        url: "/jaws/ajax/edit-action",
         type: "POST",
         data: {
             id: id,
@@ -81,7 +81,7 @@ jlab.editRow = function() {
     });
 
     request.fail(function(xhr, textStatus) {
-        window.console && console.log('Unable to edit component; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
+        window.console && console.log('Unable to edit action; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
         alert('Unable to Save: Server unavailable or unresponsive');
     });
 
@@ -104,7 +104,7 @@ jlab.removeRow = function() {
         .empty().append('<div class="button-indicator"></div>');
 
     var request = jQuery.ajax({
-        url: "/jaws/ajax/remove-component",
+        url: "/jaws/ajax/remove-action",
         type: "POST",
         data: {
             id: id
@@ -122,7 +122,7 @@ jlab.removeRow = function() {
     });
 
     request.fail(function(xhr, textStatus) {
-        window.console && console.log('Unable to remove component; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
+        window.console && console.log('Unable to remove action; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
         alert('Unable to Remove Server unavailable or unresponsive');
     });
 
@@ -132,11 +132,6 @@ jlab.removeRow = function() {
         }
     });
 };
-$(document).on("click", ".default-clear-panel", function () {
-    $("#team-select").val('');
-    $("#component-name").val('');
-    return false;
-});
 $(document).on("dialogclose", "#table-row-dialog", function() {
     $("#row-form")[0].reset();
 });
@@ -156,4 +151,11 @@ $(document).on("click", "#remove-row-button", function() {
     if (confirm('Are you sure you want to remove ' + name + '?')) {
         jlab.removeRow();
     }
+});
+$(document).on("click", ".default-clear-panel", function () {
+    $("#priority-select").val('');
+    $("#team-select").val('');
+    $("#action-name").val('');
+    $("#component-name").val('');
+    return false;
 });

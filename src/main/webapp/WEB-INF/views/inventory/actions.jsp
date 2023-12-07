@@ -10,15 +10,7 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/actions.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
-        <script>
-            $(document).on("click", ".default-clear-panel", function () {
-                $("#priority-select").val('');
-                $("#team-select").val('');
-                $("#action-name").val('');
-                $("#component-name").val('');
-                return false;
-            });
-        </script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/components.js"></script>
     </jsp:attribute>        
     <jsp:body>
         <section>
@@ -142,26 +134,38 @@
                 <ul class="key-value-list">
                     <li>
                         <div class="li-key">
-                            <label for="row-code">Code</label>
+                            <label for="row-name">Name</label>
                         </div>
                         <div class="li-value">
-                            <input type="text" maxlength="2" pattern="[A-Z0-9]{2}" title="Sector code is a pair of uppercase letters or numbers" required="required" id="row-code"/>
+                            <input type="text" required="required" id="row-name"/>
                         </div>
                     </li>
                     <li>
                         <div class="li-key">
-                            <label for="row-description">Description</label>
+                            <label for="row-component">Component</label>
                         </div>
                         <div class="li-value">
-                            <input type="text" maxlength="256" title="Explanation of code" required="required" id="row-description"/>
+                            <select id="row-component" required="required">
+                                <option value="">&nbsp;</option>
+                                <c:forEach items="${componentList}" var="component">
+                                    <option value="${component.componentId}">
+                                        <c:out value="${component.name}"/></option>
+                                </c:forEach>
+                            </select>
                         </div>
                     </li>
                     <li>
                         <div class="li-key">
-                            <label for="row-grouping">Grouping</label>
+                            <label for="row-priority">Priority</label>
                         </div>
                         <div class="li-value">
-                            <input type="text" maxlength="16" title="Grouping Label" id="row-grouping"/>
+                            <select id="row-priority" required="required">
+                                <option value="">&nbsp;</option>
+                                <c:forEach items="${priorityList}" var="priority">
+                                    <option value="${priority.priorityId}">
+                                        <c:out value="${priority.name}"/></option>
+                                </c:forEach>
+                            </select>
                         </div>
                     </li>
                 </ul>
