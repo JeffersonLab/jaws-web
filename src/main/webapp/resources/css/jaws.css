@@ -1,16 +1,6 @@
 #page-header-logo {
     background: url("../img/logo-32.png") 0 0;
 }
-#alarm-count {
-    background-color: green;
-    color: white;
-    vertical-align: super;
-    border-radius: 24px;
-    padding: 2px 4px;
-}
-#liveness-heartbeat {
-    float: right;
-}
 /* Definition Lists */
 dt {
     display: block;

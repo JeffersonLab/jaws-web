@@ -7,8 +7,10 @@
 <c:set var="title" value="Active Alarms"/>
 <t:page title="${title}">  
     <jsp:attribute name="stylesheets">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/active.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
+        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/active.js"></script>
     </jsp:attribute>        
     <jsp:body>
         <section>
@@ -16,5 +18,24 @@
             <div id="liveness-heartbeat">Liveness Heartbeat: <span style="color: red;">None</span></div>
             <img draggable="false" alt="machine" width="1100" height="600" src="${pageContext.request.contextPath}/resources/img/accelerator.png"/>
         </section>
+        <div class="dialog">
+            <table id="alarm-table">
+                <thead>
+                <tr>
+                    <th>name</th>
+                    <th>priority</th>
+                    <th>state</th>
+                    <th>type</th>
+                    <th>error</th>
+                    <th>stat</th>
+                    <th>sevr</th>
+                    <th>epicspv</th>
+                    <th>location</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </jsp:body>         
 </t:page>
