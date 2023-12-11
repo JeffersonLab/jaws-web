@@ -17,9 +17,11 @@
             <h2 id="page-header-title"><c:out value="${title}"/><span id="alarm-count">0</span></h2>
             <div id="liveness-heartbeat">Liveness Heartbeat: <span style="color: red;">None</span></div>
             <img draggable="false" alt="machine" width="1100" height="600" src="${pageContext.request.contextPath}/resources/img/accelerator.png"/>
+            <button type="button" id="show-all">Show All</button>
         </section>
-        <div class="dialog">
-            <table id="alarm-table">
+        <div id="all-dialog" class="dialog" title="Active Alarms">
+            <p>Showing 0 - 10</p>
+            <table id="alarm-table" class="data-table">
                 <thead>
                 <tr>
                     <th>name</th>

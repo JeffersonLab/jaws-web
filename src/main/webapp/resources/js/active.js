@@ -141,9 +141,9 @@ function addAlarms(data) {
         activeByName.set(record.name, record);
     }
 
-    removeFromTable(keys);
+    //removeFromTable(keys);
 
-    addToTable(data);
+    //addToTable(data);
 }
 
 function removeAlarms(keys) {
@@ -152,7 +152,7 @@ function removeAlarms(keys) {
         activeByName.delete(name);
     }
 
-    removeFromTable(keys);
+    //removeFromTable(keys);
 }
 
 evtSource.addEventListener('alarm', (e) => {
@@ -194,4 +194,26 @@ evtSource.addEventListener('alarm', (e) => {
     } else {
         alarmCountSpan.classList.remove("alarming");
     }
+});
+$(function() {
+    $("#all-dialog").dialog({
+        autoOpen: false,
+        width: 800,
+        height: 600
+    });
+});
+
+let tempSort = {},
+    offset = 0,
+    max = 10;
+$(document).on("click", "#show-all", function() {
+    $("#all-dialog").dialog('open');
+
+    tbody.innerHTML = '';
+
+    tempSort = Array.from(activeByName.values()).sort();
+
+    let subset = tempSort.slice(offset, max);
+
+    addToTable(subset);
 });
