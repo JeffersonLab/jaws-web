@@ -192,4 +192,19 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
 
         create(alarm);
     }
+
+    @RolesAllowed("jaws-admin")
+    public void removeAlarm(BigInteger alarmId) throws UserFriendlyException {
+        if(alarmId == null) {
+            throw new UserFriendlyException("Alarm ID is required");
+        }
+
+        Alarm alarm = find(alarmId);
+
+        if(alarm == null) {
+            throw new UserFriendlyException("Alarm not found with ID: " + alarmId);
+        }
+
+        remove(alarm);
+    }
 }

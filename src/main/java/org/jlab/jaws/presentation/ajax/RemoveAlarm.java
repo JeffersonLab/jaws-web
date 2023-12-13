@@ -23,10 +23,10 @@ import java.util.logging.Logger;
  *
  * @author ryans
  */
-@WebServlet(name = "AddAlarm", urlPatterns = {"/ajax/add-alarm"})
-public class AddAlarm extends HttpServlet {
+@WebServlet(name = "RemoveAlarm", urlPatterns = {"/ajax/remove-alarm"})
+public class RemoveAlarm extends HttpServlet {
 
-    private static final Logger logger = Logger.getLogger(AddAlarm.class.getName());
+    private static final Logger logger = Logger.getLogger(RemoveAlarm.class.getName());
 
     @EJB
     AlarmFacade alarmFacade;
@@ -35,29 +35,23 @@ public class AddAlarm extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String name = request.getParameter("name");
-        BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
-        BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId[]");
-        String device = request.getParameter("device");
-        String screenCommand = request.getParameter("screenCommand");
-        String maskedBy = request.getParameter("maskedBy");
-        String pv = request.getParameter("pv");
-
+        BigInteger id = ParamConverter.convertBigInteger(request, "id");
+        
         String stat = "ok";
         String error = null;
         
         try {
-            alarmFacade.addAlarm(name, actionId, locationIdArray, device, screenCommand, maskedBy, pv);
+            alarmFacade.removeAlarm(id);
         } catch(UserFriendlyException e) {
             stat = "fail";
-            error = "Unable to add Alarm: " + e.getMessage();
+            error = "Unable to remove Alarm: " + e.getMessage();
         } catch (EJBAccessException e) {
             stat = "fail";
-            error = "Unable to add Alarm: Not authenticated / authorized (do you need to re-login?)";
+            error = "Unable to remove Alarm: Not authenticated / authorized (do you need to re-login?)";
         } catch(RuntimeException e) {
             stat = "fail";
-            error = "Unable to add Alarm";
-            logger.log(Level.SEVERE, "Unable to add Alarm", e);
+            error = "Unable to remove Alarm";
+            logger.log(Level.SEVERE, "Unable to remove Alarm", e);
         }
         
         response.setContentType("application/json");

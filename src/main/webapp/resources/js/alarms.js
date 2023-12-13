@@ -6,12 +6,15 @@ jlab.editableRowTable.dialog.height = 400;
 jlab.addRow = function() {
     var name = $("#row-name").val(),
         actionId = $("#row-action").val(),
-        locationId = $("#row-location").val(),
+        locationData = $("#row-location").select2('data');
         device = $("#row-device").val(),
         screenCommand = $("#row-screen-command").val(),
         maskedBy = $("#row-masked-by").val(),
         pv = $("#row-pv").val(),
         reloading = false;
+
+    let locationId = locationData.map(a => a.id);
+    console.log(locationId);
 
     $(".dialog-submit-button")
         .height($(".dialog-submit-button").height())
@@ -26,7 +29,7 @@ jlab.addRow = function() {
         data: {
             name: name,
             actionId: actionId,
-            locationId: locationId,
+            locationId: locationId, /*renamed 'locationId[]' by jQuery*/
             device: device,
             screenCommand: screenCommand,
             maskedBy: maskedBy,
@@ -91,7 +94,7 @@ jlab.editRow = function() {
     });
 
     request.fail(function(xhr, textStatus) {
-        window.console && console.log('Unable to edit action; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
+        window.console && console.log('Unable to edit alarm; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
         alert('Unable to Save: Server unavailable or unresponsive');
     });
 
@@ -132,7 +135,7 @@ jlab.removeRow = function() {
     });
 
     request.fail(function(xhr, textStatus) {
-        window.console && console.log('Unable to remove action; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
+        window.console && console.log('Unable to remove alarm; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
         alert('Unable to Remove Server unavailable or unresponsive');
     });
 
@@ -157,7 +160,7 @@ $(document).on("table-row-edit", function() {
     jlab.editRow();
 });
 $(document).on("click", "#remove-row-button", function() {
-    var name = $(".editable-row-table tr.selected-row td:first-child").text();
+    var name = $(".editable-row-table tr.selected-row td:first-child").text().trim();
     if (confirm('Are you sure you want to remove ' + name + '?')) {
         jlab.removeRow();
     }
