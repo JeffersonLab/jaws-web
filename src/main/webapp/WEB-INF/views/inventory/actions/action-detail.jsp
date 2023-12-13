@@ -26,11 +26,12 @@
             <div class="dialog-content">
                 <div class="dialog-links">
                     <a class="dialog-only-link" href="${pageContext.request.contextPath}/inventory/actions/detail?actionId=${action.actionId}">Link</a>
+                    <c:set var="editable" value="${pageContext.request.isUserInRole('jaws-admin')}"/>
                     <c:if test="${editable}">
                         <c:url var="url" value="/inventory/actions">
                             <c:param name="actionName" value="${action.name}"/>
                         </c:url>
-                        <a href="${url}">Modify</a>
+                        <span class="dialog-only-link">|</span> <a href="${url}">Modify</a>
                     </c:if>
                 </div>
                 <dl>
