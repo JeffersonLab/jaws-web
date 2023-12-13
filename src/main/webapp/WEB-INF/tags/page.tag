@@ -31,6 +31,9 @@
                         <li${'/archive' eq currentPath ? ' class="current-primary"' : ''}>
                             <a href="${pageContext.request.contextPath}/archive">Archive</a>
                         </li>
+                        <li${fn:startsWith(currentPath, '/setup') ? ' class="current-primary"' : ''}>
+                            <a href="${pageContext.request.contextPath}/setup/coordinates">Setup</a>
+                        </li>
                         <li${'/help' eq currentPath ? ' class="current-primary"' : ''}>
                             <a href="${pageContext.request.contextPath}/help">Help</a>
                         </li>

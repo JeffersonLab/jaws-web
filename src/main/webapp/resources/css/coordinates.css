@@ -1,0 +1,18 @@
+.outer-table thead th:first-child {
+    width: 205px;
+}
+.inner-table tbody td:first-child {
+    width: 201px;
+}
+.outer-table thead th:nth-child(2) {
+    width: 135px;
+}
+.inner-table tbody td:nth-child(2) {
+    width: 135px;
+}
+.outer-table thead th:nth-child(3) {
+    width: 135px;
+}
+.inner-table tbody td:nth-child(3) {
+    width: 135px;
+}
