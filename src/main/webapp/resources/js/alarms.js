@@ -5,12 +5,12 @@ jlab.editableRowTable.dialog.width = 550;
 jlab.editableRowTable.dialog.height = 400;
 jlab.addRow = function() {
     var name = $("#row-name").val(),
-        componentId = $("#row-component").val(),
-        priorityId = $("#row-priority").val(),
-        filterable = $("#row-filterable").is(":checked") ? 'Y' : 'N',
-        latchable = $("#row-latchable").is(":checked") ? 'Y' : 'N',
-        onDelaySeconds = $("#row-ondelay").val(),
-        offDelaySeconds = $("#row-offdelay").val(),
+        actionId = $("#row-action").val(),
+        locationId = $("#row-location").val(),
+        device = $("#row-device").val(),
+        screenCommand = $("#row-screen-command").val(),
+        maskedBy = $("#row-masked-by").val(),
+        pv = $("#row-pv").val(),
         reloading = false;
 
     $(".dialog-submit-button")
@@ -25,12 +25,12 @@ jlab.addRow = function() {
         type: "POST",
         data: {
             name: name,
-            componentId: componentId,
-            priorityId: priorityId,
-            filterable: filterable,
-            latchable: latchable,
-            onDelaySeconds: onDelaySeconds,
-            offDelaySeconds: offDelaySeconds
+            actionId: actionId,
+            locationId: locationId,
+            device: device,
+            screenCommand: screenCommand,
+            maskedBy: maskedBy,
+            pv: pv
         },
         dataType: "json"
     });
@@ -45,7 +45,7 @@ jlab.addRow = function() {
     });
 
     request.fail(function(xhr, textStatus) {
-        window.console && console.log('Unable to add action; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
+        window.console && console.log('Unable to add alarm; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
         alert('Unable to Save: Server unavailable or unresponsive');
     });
 

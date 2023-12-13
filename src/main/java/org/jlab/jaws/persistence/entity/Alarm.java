@@ -38,9 +38,9 @@ public class Alarm implements Serializable {
     @Size(max = 64)
     @Column(name = "MASKED_BY", length = 64, nullable = true)
     private String maskedBy;
-    @JoinColumn(name = "ALARM_ID", referencedColumnName = "ALARM_ID", nullable = true, insertable = false, updatable = false)
-    @ManyToOne(optional = true)
-    private AlarmSourceEpics epicsSource;
+    @Size(max = 64)
+    @Column(length = 64, nullable = true)
+    private String pv;
 
     public BigInteger getAlarmId() {
         return alarmId;
@@ -98,12 +98,12 @@ public class Alarm implements Serializable {
         this.maskedBy = maskedBy;
     }
 
-    public AlarmSourceEpics getEpicsSource() {
-        return epicsSource;
+    public String getPv() {
+        return pv;
     }
 
-    public void setEpicsSource(AlarmSourceEpics epicsSource) {
-        this.epicsSource = epicsSource;
+    public void setPv(String pv) {
+        this.pv = pv;
     }
 
     public String getLocationNameCsv() {

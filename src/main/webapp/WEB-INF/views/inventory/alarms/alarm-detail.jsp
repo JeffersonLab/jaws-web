@@ -61,7 +61,7 @@
                     <dt>Masked By:</dt>
                     <dd><c:out value="${alarm.maskedBy eq null ? 'None' : alarm.maskedBy}"/></dd>
                     <dt>Source:</dt>
-                    <dd><c:out value="${alarm.epicsSource eq null ? 'None' : 'EPICS PV: '.concat(alarm.epicsSource.pv)}"/></dd>
+                    <dd><c:out value="${alarm.pv eq null ? 'None' : 'EPICS PV: '.concat(alarm.pv)}"/></dd>
                 </dl>
             </div>
         </section>

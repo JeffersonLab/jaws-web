@@ -5,8 +5,10 @@ import org.jlab.jaws.persistence.entity.Action;
 import org.jlab.jaws.persistence.entity.Alarm;
 import org.jlab.jaws.persistence.entity.Component;
 import org.jlab.jaws.persistence.entity.Location;
+import org.jlab.smoothness.business.exception.UserFriendlyException;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -27,6 +29,9 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
 
     @EJB
     LocationFacade locationFacade;
+
+    @EJB
+    ActionFacade actionFacade;
 
     @PersistenceContext(unitName = "webappPU")
     private EntityManager em;
@@ -141,5 +146,50 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
 
     public Alarm findByName(String name) {
         return null;
+    }
+
+    @RolesAllowed("jaws-admin")
+    public void addAlarm(String name, BigInteger actionId, BigInteger[] locationIdArray, String device, String screenCommand, String maskedBy, String pv) throws UserFriendlyException {
+        if(name == null || name.isBlank()) {
+            throw new UserFriendlyException("Name is required");
+        }
+
+        if(actionId == null) {
+            throw new UserFriendlyException("Action is required");
+        }
+
+        Action action = actionFacade.find(actionId);
+
+        if(action == null) {
+            throw new UserFriendlyException("Action not found with ID: " + actionId);
+        }
+
+        List<Location> locationList = new ArrayList<>();
+
+        if(locationIdArray != null && locationIdArray.length > 0) {
+            for(BigInteger id: locationIdArray) {
+                if(id == null) {  // TODO: the convertBigIntegerArray method should be excluding empty/null
+                    continue;
+                }
+
+                Location l = locationFacade.find(id);
+
+                if(l != null) {
+                    locationList.add(l);
+                }
+            }
+        }
+
+        Alarm alarm = new Alarm();
+
+        alarm.setName(name);
+        alarm.setAction(action);
+        alarm.setLocationList(locationList);
+        alarm.setDevice(device);
+        alarm.setScreenCommand(screenCommand);
+        alarm.setMaskedBy(maskedBy);
+        alarm.setPv(pv);
+
+        create(alarm);
     }
 }

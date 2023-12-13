@@ -213,6 +213,14 @@
                             <input type="text" id="row-masked-by"/>
                         </div>
                     </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-pv">EPICS PV</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="row-pv"/>
+                        </div>
+                    </li>
                 </ul>
             </form>
         </s:editable-row-table-dialog>
