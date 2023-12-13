@@ -1,10 +1,7 @@
 package org.jlab.jaws.presentation.controller.inventory;
 
 import org.jlab.jaws.business.session.*;
-import org.jlab.jaws.persistence.entity.Alarm;
-import org.jlab.jaws.persistence.entity.Location;
-import org.jlab.jaws.persistence.entity.Priority;
-import org.jlab.jaws.persistence.entity.Team;
+import org.jlab.jaws.persistence.entity.*;
 import org.jlab.smoothness.presentation.util.Paginator;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 import org.jlab.smoothness.presentation.util.ParamUtil;
@@ -40,6 +37,9 @@ public class AlarmController extends HttpServlet {
     @EJB
     LocationFacade locationFacade;
 
+    @EJB
+    ActionFacade actionFacade;
+
     /**
      * Handles the HTTP
      * <code>GET</code> method.
@@ -64,6 +64,7 @@ public class AlarmController extends HttpServlet {
         List<Alarm> alarmList = alarmFacade.filterList(locationIdArray, priorityId, teamId, alarmName, actionName, componentName, offset, maxPerPage);
         List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
         List<Priority> priorityList = priorityFacade.findAll(new AbstractFacade.OrderDirective("priorityId"));
+        List<Action> actionList = actionFacade.findAll(new AbstractFacade.OrderDirective("name"));
         Location locationRoot = locationFacade.findBranch(Location.TREE_ROOT);
 
         List<Location> selectedLocationList = new ArrayList<>();
@@ -97,6 +98,7 @@ public class AlarmController extends HttpServlet {
 
         String selectionMessage = createSelectionMessage(paginator, selectedLocationList, selectedPriority, selectedTeam, alarmName, actionName, componentName);
 
+        request.setAttribute("actionList", actionList);
         request.setAttribute("alarmList", alarmList);
         request.setAttribute("selectionMessage", selectionMessage);
         request.setAttribute("teamList", teamList);

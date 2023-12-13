@@ -10,26 +10,7 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/alarms.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
-        <script>
-            $(document).on("click", ".default-clear-panel", function () {
-                $("#location-select").val(null).trigger('change');
-                $("#priority-select").val('');
-                $("#team-select").val('');
-                $("#alarm-name").val('');
-                $("#action-name").val('');
-                $("#component-name").val('');
-                return false;
-            });
-            function formatLocation(location) {
-                return location.text.trim();
-            }
-            $(function () {
-                $("#location-select").select2({
-                    width: 390,
-                    templateSelection: formatLocation
-                });
-            });
-        </script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/alarms.js"></script>
     </jsp:attribute>        
     <jsp:body>
         <section>
@@ -175,26 +156,61 @@
                 <ul class="key-value-list">
                     <li>
                         <div class="li-key">
-                            <label for="row-code">Code</label>
+                            <label for="row-name">Name</label>
                         </div>
                         <div class="li-value">
-                            <input type="text" maxlength="2" pattern="[A-Z0-9]{2}" title="Sector code is a pair of uppercase letters or numbers" required="required" id="row-code"/>
+                            <input type="text" required="required" id="row-name"/>
                         </div>
                     </li>
                     <li>
                         <div class="li-key">
-                            <label for="row-description">Description</label>
+                            <label for="row-action">Action</label>
                         </div>
                         <div class="li-value">
-                            <input type="text" maxlength="256" title="Explanation of code" required="required" id="row-description"/>
+                            <select id="row-action" required="required">
+                                <option value="">&nbsp;</option>
+                                <c:forEach items="${actionList}" var="action">
+                                    <option value="${action.actionId}">
+                                        <c:out value="${action.name}"/></option>
+                                </c:forEach>
+                            </select>
                         </div>
                     </li>
                     <li>
                         <div class="li-key">
-                            <label for="row-grouping">Grouping</label>
+                            <label for="row-location">Location</label>
                         </div>
                         <div class="li-value">
-                            <input type="text" maxlength="16" title="Grouping Label" id="row-grouping"/>
+                            <select id="row-location" multiple="multiple">
+                                <c:forEach items="${locationRoot.children}" var="child">
+                                    <t:hierarchical-select-option node="${child}" level="0"
+                                                                  parameterName="location"/>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-device">Device</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="row-device"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-screen-command">Screen Command</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="row-screen-command"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-masked-by">Masked By</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="row-masked-by"/>
                         </div>
                     </li>
                 </ul>
