@@ -150,8 +150,13 @@ $(document).on("dialogclose", "#table-row-dialog", function() {
 });
 $(document).on("click", "#open-edit-row-dialog-button", function() {
     var $selectedRow = $(".editable-row-table tr.selected-row");
-    $("#row-name").val($selectedRow.find("td:first-child").text());
-    $("#row-team").val($selectedRow.attr("data-team-id"));
+    $("#row-name").val($selectedRow.find("td:first-child a").text());
+    $("#row-action").val($selectedRow.attr("data-action-id"));
+    $("#row-location").val($selectedRow.attr("data-location"));
+    $("#row-device").val($selectedRow.attr("data-device"));
+    $("#row-screen-command").val($selectedRow.attr("data-screen-command"));
+    $("#row-masked-by").val($selectedRow.attr("data-masked-by"));
+    $("#row-pv").val($selectedRow.attr("data-pv"));
 });
 $(document).on("table-row-add", function() {
     jlab.addRow();
