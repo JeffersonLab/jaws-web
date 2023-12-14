@@ -13,6 +13,14 @@
     </jsp:attribute>        
     <jsp:body>
         <section>
+            <div id="report-page-actions">
+                <div id="export-widget">
+                    <button id="export-menu-button">Export</button>
+                    <ul id="export-menu">
+                        <li id="json-menu-item">Kafka JSON</li>
+                    </ul>
+                </div>
+            </div>
             <h2 id="page-header-title"><c:out value="${title}"/></h2>
             <div class="message-box"></div>
             <div id="chart-wrap" class="chart-wrap-backdrop">
@@ -82,5 +90,8 @@
                 </ul>
             </form>
         </s:editable-row-table-dialog>
+        <form id="json-form" method="get" action="${pageContext.request.contextPath}/export/locations">
+            <button type="submit" style="display: none;">JSON</button>
+        </form>
     </jsp:body>         
 </t:inventory-page>
