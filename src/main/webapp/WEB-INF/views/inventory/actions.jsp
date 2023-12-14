@@ -102,7 +102,7 @@
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table'} editable-row-table">
                                         <tbody>
                                         <c:forEach items="${actionList}" var="action">
-                                            <tr data-id="${action.actionId}">
+                                            <tr data-id="${action.actionId}" data-component-id="${action.component.componentId}" data-priority-id="${action.priority.priorityId}" data-corrective-action="${fn:escapeXml(action.correctiveAction)}" data-rationale="${fn:escapeXml(action.rationale)}"  data-filterable="${action.filterable}" data-latchable="${action.latchable}" data-ondelay="${action.onDelaySeconds}" data-offdelay="${action.offDelaySeconds}">
                                                 <td>
                                                     <a title="Action Information" class="dialog-ready"
                                                        data-dialog-title="Action Information: ${fn:escapeXml(action.name)}"

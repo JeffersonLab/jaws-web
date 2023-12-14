@@ -63,8 +63,15 @@ jlab.addRow = function () {
 };
 jlab.editRow = function () {
     var name = $("#row-name").val(),
-        teamId = $("#row-team").val(),
-        id = $(".editable-row-table tr.selected-row").attr("data-id"),
+        componentId = $("#row-component").val(),
+        priorityId = $("#row-priority").val(),
+        correctiveAction = $("#corrective-action-textarea").val(),
+        rationale = $("#rationale-textarea").val(),
+        filterable = $("#row-filterable").is(":checked") ? 'Y' : 'N',
+        latchable = $("#row-latchable").is(":checked") ? 'Y' : 'N',
+        onDelaySeconds = $("#row-ondelay").val(),
+        offDelaySeconds = $("#row-offdelay").val(),
+        actionId = $(".editable-row-table tr.selected-row").attr("data-id"),
         reloading = false;
 
     $(".dialog-submit-button")
@@ -78,9 +85,16 @@ jlab.editRow = function () {
         url: "/jaws/ajax/edit-action",
         type: "POST",
         data: {
-            id: id,
+            actionId: actionId,
             name: name,
-            teamId: teamId
+            componentId: componentId,
+            priorityId: priorityId,
+            correctiveAction: correctiveAction,
+            rationale: rationale,
+            filterable: filterable,
+            latchable: latchable,
+            onDelaySeconds: onDelaySeconds,
+            offDelaySeconds: offDelaySeconds
         },
         dataType: "json"
     });
@@ -146,13 +160,35 @@ jlab.removeRow = function () {
         }
     });
 };
+jlab.initMarkdownSplitPanes = function() {
+    $(".split-pane").each(function (item) {
+        let markdown = $(this).find("textarea").val(),
+            rendered = DOMPurify.sanitize(marked.parse(markdown), jlab.sanitizeConfig);
+
+        $(this).find(".markdown-html").html(rendered);
+    });
+};
 $(document).on("dialogclose", "#table-row-dialog", function () {
     $("#row-form")[0].reset();
+
+    jlab.initMarkdownSplitPanes();
 });
 $(document).on("click", "#open-edit-row-dialog-button", function () {
     var $selectedRow = $(".editable-row-table tr.selected-row");
-    $("#row-name").val($selectedRow.find("td:first-child").text());
-    $("#row-team").val($selectedRow.attr("data-team-id"));
+    $("#row-name").val($selectedRow.find("td:first-child a").text());
+    $("#row-component").val($selectedRow.attr("data-component-id"));
+    $("#row-priority").val($selectedRow.attr("data-priority-id"));
+
+    $("#row-filterable").prop("checked", $selectedRow.attr("data-filterable") === "true");
+    $("#row-latchable").prop("checked", $selectedRow.attr("data-latchable") === "true")
+    $("#row-ondelay").val($selectedRow.attr("data-ondelay"));
+    $("#row-offdelay").val($selectedRow.attr("data-offdelay"));
+
+    $("#corrective-action-textarea").val($selectedRow.attr("data-corrective-action"));
+    $("#rationale-textarea").val($selectedRow.attr("data-rationale"));
+
+    jlab.initMarkdownSplitPanes();
+
 });
 $(document).on("table-row-add", function () {
     jlab.addRow();

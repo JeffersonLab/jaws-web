@@ -178,7 +178,7 @@ public class ActionFacade extends AbstractFacade<Action> {
     @RolesAllowed("jaws-admin")
     public void removeAction(BigInteger actionId) throws UserFriendlyException {
         if(actionId == null) {
-            throw new UserFriendlyException("Alarm ID is required");
+            throw new UserFriendlyException("Action ID is required");
         }
 
         Action action = find(actionId);
@@ -188,5 +188,70 @@ public class ActionFacade extends AbstractFacade<Action> {
         }
 
         remove(action);
+    }
+
+    @RolesAllowed("jaws-admin")
+    public void editAction(BigInteger actionId, String name, BigInteger actionId1, BigInteger componentId, BigInteger priorityId, String correctiveAction, String rationale, Boolean filterable, Boolean latchable, BigInteger onDelaySeconds, BigInteger offDelaySeconds) throws UserFriendlyException {
+        if(actionId == null) {
+            throw new UserFriendlyException("Action ID is required");
+        }
+
+        Action action = find(actionId);
+
+        if(action == null) {
+            throw new UserFriendlyException("Action not found with ID: " + actionId);
+        }
+
+        if(name == null || name.isBlank()) {
+            throw new UserFriendlyException("Name is required");
+        }
+
+        if(componentId == null) {
+            throw new UserFriendlyException("Component is required");
+        }
+
+        Component component = componentFacade.find(componentId);
+
+        if(component == null) {
+            throw new UserFriendlyException("Component not found with ID: " + componentId);
+        }
+
+        if(priorityId == null) {
+            throw new UserFriendlyException("Priority is required");
+        }
+
+        Priority priority = priorityFacade.find(priorityId);
+
+        if(priority == null) {
+            throw new UserFriendlyException("Priority not found with ID: " + priorityId);
+        }
+
+        if(correctiveAction == null || correctiveAction.isBlank()) {
+            throw new UserFriendlyException("Corrective Action is required");
+        }
+
+        if(rationale == null || rationale.isBlank()) {
+            throw new UserFriendlyException("Rationale is required");
+        }
+
+        if(filterable == null) {
+            throw new UserFriendlyException("Filterable is required");
+        }
+
+        if(latchable == null) {
+            throw new UserFriendlyException("Latchable is required");
+        }
+
+        action.setName(name);
+        action.setComponent(component);
+        action.setPriority(priority);
+        action.setCorrectiveAction(correctiveAction);
+        action.setRationale(rationale);
+        action.setFilterable(filterable);
+        action.setLatchable(latchable);
+        action.setOnDelaySeconds(onDelaySeconds);
+        action.setOffDelaySeconds(offDelaySeconds);
+
+        edit(action);
     }
 }
