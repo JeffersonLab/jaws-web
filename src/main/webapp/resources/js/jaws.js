@@ -19,6 +19,7 @@ jlab.openPageInDialog = function (href, title) {
     $("<div class=\"page-dialog\"></div>")
         .load(href + ' .dialog-content', jlab.doneLoading)
         .dialog({
+            modal: true,
             autoOpen: true,
             title: title,
             width: jlab.pageDialog.width,
