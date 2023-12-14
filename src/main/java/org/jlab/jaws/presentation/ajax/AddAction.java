@@ -39,6 +39,8 @@ public class AddAction extends HttpServlet {
         String name = request.getParameter("name");
         BigInteger componentId = ParamConverter.convertBigInteger(request, "componentId");
         BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
+        String correctiveAction = request.getParameter("correctiveAction");
+        String rationale = request.getParameter("rationale");
         Boolean filterable = ParamConverter.convertYNBoolean(request, "filterable");
         Boolean latchable = ParamConverter.convertYNBoolean(request, "latchable");
         BigInteger onDelaySeconds = ParamConverter.convertBigInteger(request, "onDelaySeconds");
@@ -48,7 +50,7 @@ public class AddAction extends HttpServlet {
         String error = null;
         
         try {
-            actionFacade.addAction(name, componentId, priorityId, filterable, latchable, onDelaySeconds, offDelaySeconds);
+            actionFacade.addAction(name, componentId, priorityId, correctiveAction, rationale, filterable, latchable, onDelaySeconds, offDelaySeconds);
         } catch(UserFriendlyException e) {
             stat = "fail";
             error = "Unable to add Action: " + e.getMessage();

@@ -116,7 +116,8 @@ public class ActionFacade extends AbstractFacade<Action> {
     }
 
     @RolesAllowed("jaws-admin")
-    public void addAction(String name, BigInteger componentId, BigInteger priorityId, Boolean filterable,
+    public void addAction(String name, BigInteger componentId, BigInteger priorityId, String correctiveAction,
+                          String rationale, Boolean filterable,
                           Boolean latchable, BigInteger onDelaySeconds, BigInteger offDelaySeconds)
             throws UserFriendlyException {
         if(name == null || name.isBlank()) {
@@ -143,6 +144,14 @@ public class ActionFacade extends AbstractFacade<Action> {
             throw new UserFriendlyException("Priority not found with ID: " + priorityId);
         }
 
+        if(correctiveAction == null || correctiveAction.isBlank()) {
+            throw new UserFriendlyException("Corrective Action is required");
+        }
+
+        if(rationale == null || rationale.isBlank()) {
+            throw new UserFriendlyException("Rationale is required");
+        }
+
         if(filterable == null) {
             throw new UserFriendlyException("Filterable is required");
         }
@@ -156,6 +165,8 @@ public class ActionFacade extends AbstractFacade<Action> {
         action.setName(name);
         action.setComponent(component);
         action.setPriority(priority);
+        action.setCorrectiveAction(correctiveAction);
+        action.setRationale(rationale);
         action.setFilterable(filterable);
         action.setLatchable(latchable);
         action.setOnDelaySeconds(onDelaySeconds);

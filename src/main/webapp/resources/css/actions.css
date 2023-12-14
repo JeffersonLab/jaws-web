@@ -16,3 +16,62 @@
 .inner-table tbody td:nth-child(3) {
     width: 135px;
 }
+.markdown-html h1 {
+    margin: 0;
+    text-shadow: none;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+.markdown-html h2 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 1.25em;
+}
+.markdown-html h3 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 1em;
+}
+.markdown-html table,
+.markdown-html td,
+.markdown-html th {
+    border: 1px solid gray;
+}
+.split-pane {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid silver;
+    overflow: hidden;
+    xtouch-action: none;
+}
+.split-pane textarea {
+    resize: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    padding: 1em;
+    font-family: monospace;
+}
+.left-pane {
+    flex: 0 0 auto;
+    padding: 10px;
+    width: 300px;
+    min-height: 200px;
+    min-width: 150px;
+    white-space: nowrap;
+    background: #838383;
+    color: white;
+}
+.right-pane {
+    flex: 1 1 auto;
+    padding: 10px;
+    width: 100%;
+    min-height: 200px;
+    min-width: 200px;
+    background: #eee;
+}
+.dialog-button-panel {
+    position: static;
+}
