@@ -10,8 +10,6 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/actions.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/actions.js"></script>
     </jsp:attribute>
     <jsp:body>
@@ -194,7 +192,7 @@
                     </div>
                 </div>
 
-                <ul class="key-value-list">
+                <ul class="key-value-list bottom-ul">
                     <li>
                         <div class="li-key">
                             <label for="row-filterable">Filterable</label>

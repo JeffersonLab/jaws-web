@@ -41,9 +41,19 @@
                         <c:out value="${action.component.name}"/>
                     </dd>
                     <dt>Corrective Action:</dt>
-                    <dd><c:out value="${action.correctiveAction}"/></dd>
+                    <dd>
+                        <div class="markdown-widget">
+                            <div class="markdown-text"><c:out value="${action.correctiveAction}"/></div>
+                            <div class="markdown-html"></div>
+                        </div>
+                    </dd>
                     <dt>Rationale:</dt>
-                    <dd><c:out value="${action.rationale}"/></dd>
+                    <dd>
+                        <div class="markdown-widget">
+                            <div class="markdown-text"><c:out value="${action.rationale}"/></div>
+                            <div class="markdown-html"></div>
+                        </div>
+                    </dd>
                     <dt>Filterable:</dt>
                     <dd><c:out value="${action.filterable ? 'Yes' : 'No'}"/></dd>
                     <dt>Latchable:</dt>

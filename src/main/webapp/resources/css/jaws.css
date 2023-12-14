@@ -34,7 +34,34 @@ dd ul {
     display: inline-block;
     z-index: 2;
 }
-
 #editable-row-table-control-panel button {
     vertical-align: top;
+}
+.markdown-html h1 {
+    margin: 0;
+    text-shadow: none;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+.markdown-html h2 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 1.25em;
+}
+.markdown-html h3 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 1em;
+}
+.markdown-html table,
+.markdown-html td,
+.markdown-html th {
+    border: 1px solid gray;
+}
+.markdown-widget {
+    border: 1px solid gray;
+    padding: 1em;
+}
+.markdown-widget .markdown-text {
+    display: none;
 }

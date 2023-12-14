@@ -174,4 +174,19 @@ public class ActionFacade extends AbstractFacade<Action> {
 
         create(action);
     }
+
+    @RolesAllowed("jaws-admin")
+    public void removeAction(BigInteger actionId) throws UserFriendlyException {
+        if(actionId == null) {
+            throw new UserFriendlyException("Alarm ID is required");
+        }
+
+        Action action = find(actionId);
+
+        if(action == null) {
+            throw new UserFriendlyException("Action not found with ID: " + actionId);
+        }
+
+        remove(action);
+    }
 }

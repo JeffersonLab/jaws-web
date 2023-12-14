@@ -161,7 +161,7 @@ $(document).on("table-row-edit", function () {
     jlab.editRow();
 });
 $(document).on("click", "#remove-row-button", function () {
-    var name = $(".editable-row-table tr.selected-row td:first-child").text();
+    var name = $(".editable-row-table tr.selected-row td:first-child").text().trim();
     if (confirm('Are you sure you want to remove ' + name + '?')) {
         jlab.removeRow();
     }
@@ -183,19 +183,16 @@ $(function () {
     $("#table-row-dialog").dialog("option", "minHeight", 600);
 
     /* TODO: run marked.parse in web worker?  https://marked.js.org/using_advanced */
-    let sanitizeConfig = { ALLOWED_TAGS: ['p', '#text', 'h1', 'h2', 'h3', 'em', 'strong', 'ul', 'ol', 'li', 'a', 'table', 'thead', 'tbody', 'tr', 'td', 'th'],
-        KEEP_CONTENT: false };
-
 
     let correctiveTextarea = document.getElementById("corrective-action-textarea"),
         correctiveRenderDiv = document.getElementById('corrective-action-rendered');
     $(document).on("keyup", "#corrective-action-textarea", function() {
-        correctiveRenderDiv.innerHTML = DOMPurify.sanitize(marked.parse(correctiveTextarea.value), sanitizeConfig);
+        correctiveRenderDiv.innerHTML = DOMPurify.sanitize(marked.parse(correctiveTextarea.value), jlab.sanitizeConfig);
     });
 
     let rationaleTextarea = document.getElementById("rationale-textarea"),
         rationaleRenderDiv = document.getElementById('rationale-rendered');
     $(document).on("keyup", "#rationale-textarea", function() {
-        rationaleRenderDiv.innerHTML = DOMPurify.sanitize(marked.parse(rationaleTextarea.value), sanitizeConfig);
+        rationaleRenderDiv.innerHTML = DOMPurify.sanitize(marked.parse(rationaleTextarea.value), jlab.sanitizeConfig);
     });
 });
