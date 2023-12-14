@@ -207,4 +207,54 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
 
         remove(alarm);
     }
+
+    @RolesAllowed("jaws-admin")
+    public void editAlarm(BigInteger alarmId, String name, BigInteger actionId, BigInteger[] locationIdArray,
+                          String device, String screenCommand, String maskedBy, String pv) throws UserFriendlyException {
+        if(alarmId == null) {
+            throw new UserFriendlyException("Alarm ID is required");
+        }
+
+        Alarm alarm = find(alarmId);
+
+        if(alarm == null) {
+            throw new UserFriendlyException("Alarm not found with ID: " + alarmId);
+        }
+
+        if(actionId == null) {
+            throw new UserFriendlyException("Action is required");
+        }
+
+        Action action = actionFacade.find(actionId);
+
+        if(action == null) {
+            throw new UserFriendlyException("Action not found with ID: " + actionId);
+        }
+
+        List<Location> locationList = new ArrayList<>();
+
+        if(locationIdArray != null && locationIdArray.length > 0) {
+            for(BigInteger id: locationIdArray) {
+                if(id == null) {  // TODO: the convertBigIntegerArray method should be excluding empty/null
+                    continue;
+                }
+
+                Location l = locationFacade.find(id);
+
+                if(l != null) {
+                    locationList.add(l);
+                }
+            }
+        }
+
+        alarm.setName(name);
+        alarm.setAction(action);
+        alarm.setLocationList(locationList);
+        alarm.setDevice(device);
+        alarm.setScreenCommand(screenCommand);
+        alarm.setMaskedBy(maskedBy);
+        alarm.setPv(pv);
+
+        edit(alarm);
+    }
 }

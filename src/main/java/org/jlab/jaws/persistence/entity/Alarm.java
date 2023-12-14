@@ -106,6 +106,20 @@ public class Alarm implements Serializable {
         this.pv = pv;
     }
 
+    public String getLocationIdCsv() {
+        String csv = "";
+
+        if(locationList != null && !locationList.isEmpty()) {
+            csv = locationList.get(0).getLocationId().toString();
+
+            for(int i = 1; i < locationList.size(); i++) {
+                csv = csv + ", " + locationList.get(i).getLocationId().toString();
+            }
+        }
+
+        return csv;
+    }
+
     public String getLocationNameCsv() {
         String csv = "";
 

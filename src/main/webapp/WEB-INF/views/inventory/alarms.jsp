@@ -124,7 +124,7 @@
                                     <table class="data-table inner-table stripped-table uniselect-table editable-row-table">
                                         <tbody>
                                         <c:forEach items="${alarmList}" var="alarm">
-                                            <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location="" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}">
+                                            <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}">
                                                 <td>
                                                     <a title="Alarm Information" class="dialog-ready"
                                                        data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"

@@ -14,7 +14,6 @@ jlab.addRow = function() {
         reloading = false;
 
     let locationId = locationData.map(a => a.id);
-    console.log(locationId);
 
     $(".dialog-submit-button")
         .height($(".dialog-submit-button").height())
@@ -62,9 +61,16 @@ jlab.addRow = function() {
 };
 jlab.editRow = function() {
     var name = $("#row-name").val(),
-        teamId = $("#row-team").val(),
-        id = $(".editable-row-table tr.selected-row").attr("data-id"),
+        actionId = $("#row-action").val(),
+        locationData = $("#row-location").select2('data');
+        device = $("#row-device").val(),
+        screenCommand = $("#row-screen-command").val(),
+        maskedBy = $("#row-masked-by").val(),
+        pv = $("#row-pv").val(),
+        alarmId = $(".editable-row-table tr.selected-row").attr("data-id"),
         reloading = false;
+
+    let locationId = locationData.map(a => a.id);
 
     $(".dialog-submit-button")
         .height($(".dialog-submit-button").height())
@@ -77,9 +83,14 @@ jlab.editRow = function() {
         url: "/jaws/ajax/edit-alarm",
         type: "POST",
         data: {
-            id: id,
+            alarmId: alarmId,
             name: name,
-            teamId: teamId
+            actionId: actionId,
+            locationId: locationId, /*renamed 'locationId[]' by jQuery*/
+            device: device,
+            screenCommand: screenCommand,
+            maskedBy: maskedBy,
+            pv: pv
         },
         dataType: "json"
     });
@@ -152,11 +163,15 @@ $(document).on("click", "#open-edit-row-dialog-button", function() {
     var $selectedRow = $(".editable-row-table tr.selected-row");
     $("#row-name").val($selectedRow.find("td:first-child a").text());
     $("#row-action").val($selectedRow.attr("data-action-id"));
-    $("#row-location").val($selectedRow.attr("data-location"));
+
     $("#row-device").val($selectedRow.attr("data-device"));
     $("#row-screen-command").val($selectedRow.attr("data-screen-command"));
     $("#row-masked-by").val($selectedRow.attr("data-masked-by"));
     $("#row-pv").val($selectedRow.attr("data-pv"));
+
+    let locationIdCsv = $selectedRow.attr("data-location-id-csv"),
+        locationIdArray = locationIdCsv.split(/[ ,]+/);
+    $('#row-location').val(locationIdArray).trigger('change');
 });
 $(document).on("table-row-add", function() {
     jlab.addRow();
