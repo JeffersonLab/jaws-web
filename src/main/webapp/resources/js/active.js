@@ -155,6 +155,15 @@ function removeAlarms(keys) {
     //removeFromTable(keys);
 }
 
+const livenessEl = document.getElementById("liveness-ts");
+
+evtSource.addEventListener('ping', (e) =>{
+    let ts = e.data,
+        formatted = new Date(ts);
+
+    livenessEl.innerHTML = formatted.toLocaleString();
+});
+
 evtSource.addEventListener('alarm', (e) => {
 
     let records = JSON.parse(e.data);

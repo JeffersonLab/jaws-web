@@ -227,9 +227,9 @@ public class SSE implements ServletContextListener {
 
                     try {
                         while (!sink.isClosed()) {
-                            sink.send(sse.newEvent("ping", ":"));  // Actively check for connection
+                            sink.send(sse.newEvent("ping", Instant.now().toString()));  // Actively check for connection
                             // Looping waiting for client disconnect
-                            Thread.sleep(5000);
+                            Thread.sleep(1000);
                         }
                     } catch (InterruptedException e) {
                         System.err.println("SSE Thread interrupted, shutting down");
