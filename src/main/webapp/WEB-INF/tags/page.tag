@@ -18,6 +18,7 @@
         <jsp:invoke fragment="scripts"/>
     </jsp:attribute>
     <jsp:attribute name="footnote">
+        <a href="debug">Debug</a>
     </jsp:attribute>
     <jsp:attribute name="primaryNavigation">
                     <ul>

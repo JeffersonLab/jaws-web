@@ -11,7 +11,7 @@
     </jsp:attribute>
     <jsp:attribute name="scripts">
         <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/active.js"></script>
-    </jsp:attribute>        
+    </jsp:attribute>
     <jsp:body>
         <section>
             <h2 id="page-header-title"><c:out value="${title}"/><span id="alarm-count">0</span></h2>
@@ -20,7 +20,6 @@
             <button type="button" id="show-all">Show All</button>
         </section>
         <div id="all-dialog" class="dialog" title="Active Alarms">
-            <p>Showing 0 - 10</p>
             <table id="alarm-table" class="data-table">
                 <thead>
                 <tr>
@@ -39,5 +38,5 @@
                 </tbody>
             </table>
         </div>
-    </jsp:body>         
+    </jsp:body>
 </t:page>

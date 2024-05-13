@@ -23,7 +23,7 @@ class PanelController {
 
         me.markdownToHTMLEditor = null;
 
-        me.widget = new PanelUI(idPrefix, singularEntityName, pluralEntityName, store, path, jawsTypes[me.idPrefix], me.markdownToHTMLEditor);
+        me.widget = new PanelUI(idPrefix, singularEntityName, pluralEntityName, store, me.path, jawsTypes[me.idPrefix], me.markdownToHTMLEditor);
 
         me.highwaterEventName = batchEventName + "-highwatermark";
         me.highwaterReached = false;

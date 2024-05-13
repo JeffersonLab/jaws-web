@@ -130,9 +130,7 @@ class PanelUI extends EventTarget {
                     html = toUnixTimestampDisplay(value, emptyValue);
                     break;
                 case "MARKDOWN":
-                    me.markdownToHtml.setMarkdown(replaceEmpty(value, ' '));
-
-                    html = me.markdownToHtml.getHTML();
+                    html = toStringDisplay(value, ' ');
                     break;
                 default:
                     console.log('Unknown type: ', type);
