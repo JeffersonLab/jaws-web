@@ -39,7 +39,12 @@
                     <dt>Priority</dt>
                     <dd><c:out value="${alarm.action.priority.name}"/></dd>
                     <dt>Corrective Action</dt>
-                    <dd><c:out value="${alarm.action.correctiveAction}"/></dd>
+                    <dd>
+                        <div class="markdown-widget">
+                            <div class="markdown-text"><c:out value="${alarm.action.correctiveAction}"/></div>
+                            <div class="markdown-html"></div>
+                        </div>
+                    </dd>
                 </dl>
                 <h3>Instance Details</h3>
                 <dl>
