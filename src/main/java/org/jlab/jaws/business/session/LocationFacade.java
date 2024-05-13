@@ -36,14 +36,24 @@ public class LocationFacade extends AbstractFacade<Location> {
         super(Location.class);
     }
 
-    @PermitAll
-    public List<Component> filterList(int offset, int max) {
-        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<Component> cq = cb.createQuery(Component.class);
-        Root<Component> root = cq.from(Component.class);
-        cq.select(root);
-        
+    private List<Predicate> getFilters(CriteriaBuilder cb, Root<Location> root, String name) {
         List<Predicate> filters = new ArrayList<>();
+
+        if (name != null && !name.isEmpty()) {
+            filters.add(cb.like(cb.lower(root.get("name")), name.toLowerCase()));
+        }
+
+        return filters;
+    }
+
+    @PermitAll
+    public List<Location> filterList(String name, int offset, int max) {
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Location> cq = cb.createQuery(Location.class);
+        Root<Location> root = cq.from(Location.class);
+        cq.select(root);
+
+        List<Predicate> filters = getFilters(cb, root, name);
 
         if (!filters.isEmpty()) {
             cq.where(cb.and(filters.toArray(new Predicate[]{})));
@@ -58,12 +68,12 @@ public class LocationFacade extends AbstractFacade<Location> {
     }
 
     @PermitAll
-    public long countList() {
+    public long countList(String name) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<Component> root = cq.from(Component.class);
-        
-        List<Predicate> filters = new ArrayList<>();
+        Root<Location> root = cq.from(Location.class);
+
+        List<Predicate> filters = getFilters(cb, root, name);
         
         if (!filters.isEmpty()) {
             cq.where(cb.and(filters.toArray(new Predicate[]{})));
@@ -106,5 +116,18 @@ public class LocationFacade extends AbstractFacade<Location> {
         for(Location child: location.getChildList()) {
             addToSet(child, locationSet);
         }
+    }
+
+    @PermitAll
+    public Location findByName(String name) {
+        List<Location> list = this.filterList(name, 0, 1);
+
+        Location entity = null;
+
+        if(list != null && !list.isEmpty()) {
+            entity = list.get(0);
+        }
+
+        return entity;
     }
 }

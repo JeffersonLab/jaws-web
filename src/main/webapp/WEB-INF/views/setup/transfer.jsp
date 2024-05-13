@@ -27,6 +27,15 @@
                 </thead>
                 <tbody>
                 <tr>
+                    <form method="post" action="${pageContext.request.contextPath}/ajax/setup/add-alarm-key-value-list">
+                        <td>Alarms</td>
+                        <td>
+                            <textarea id="alarms-textarea" name="actions"></textarea>
+                        </td>
+                        <td><button id="alarms-import-button" type="button">Import</button></td>
+                    </form>
+                </tr>
+                <tr>
                     <form method="post" action="${pageContext.request.contextPath}/ajax/setup/add-action-key-value-list">
                     <td>Actions</td>
                     <td>

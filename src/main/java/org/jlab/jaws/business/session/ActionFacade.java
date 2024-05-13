@@ -115,7 +115,15 @@ public class ActionFacade extends AbstractFacade<Action> {
 
     @PermitAll
     public Action findByName(String name) {
-        return null;
+        List<Action> list = this.filterList(null, null, name, null, 0, 1);
+
+        Action entity = null;
+
+        if(list != null && !list.isEmpty()) {
+            entity = list.get(0);
+        }
+
+        return entity;
     }
 
     @RolesAllowed("jaws-admin")

@@ -1,20 +1,22 @@
 package org.jlab.jaws.business.session;
 
 import org.checkerframework.checker.units.qual.A;
-import org.jlab.jaws.persistence.entity.Action;
-import org.jlab.jaws.persistence.entity.Alarm;
-import org.jlab.jaws.persistence.entity.Component;
-import org.jlab.jaws.persistence.entity.Location;
+import org.jlab.jaws.persistence.entity.*;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.logging.Logger;
@@ -256,5 +258,108 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
         alarm.setPv(pv);
 
         edit(alarm);
+    }
+
+    @RolesAllowed("jaws-admin")
+    public void addKeyValueList(String alarms) throws UserFriendlyException {
+        if (alarms == null || alarms.isBlank()) {
+            throw new UserFriendlyException("alarms must not be empty");
+        }
+
+        List<String> lines = new ArrayList<>();
+
+        alarms.lines().forEach(lines::add);
+
+        for (String line : lines) {
+            if (!line.isBlank()) {
+                parseAlarmLine(line);
+            }
+        }
+    }
+
+    private void parseAlarmLine(String line) throws UserFriendlyException {
+
+        System.out.println("line: " + line);
+
+        String[] tokens = line.split("=");
+
+        if (tokens.length != 2) {
+            throw new UserFriendlyException("Invalid alarm line: " + line);
+        }
+
+        String name = tokens[0];
+        String json = tokens[1];
+
+        System.out.println("token 0: " + tokens[0]);
+        System.out.println("token 1: " + tokens[1]);
+
+        JsonReader reader = Json.createReader(new StringReader(json));
+
+        JsonObject object = reader.readObject();
+
+        String actionName = object.getString("alarmclass");
+
+        List<String> locationNames = new ArrayList<>();
+
+        if(!object.isNull("location")) {
+            JsonArray locationArray = object.getJsonArray("location");
+
+            for(int i = 0; i < locationArray.size(); i++) {
+                String location = locationArray.getString(i);
+                locationNames.add(location);
+            }
+        }
+
+        String device = null;
+
+        if(object.containsKey("device") && !object.isNull("device")) {
+            device = object.getString("device");
+        }
+
+        String screenCommand = null;
+
+        if(!object.isNull("screencommand")) {
+            screenCommand = object.getString("screencommand");
+        }
+
+        String maskedBy = null;
+
+        if(!object.isNull("maskedby")) {
+            maskedBy = object.getString("maskedby");
+        }
+
+        JsonObject source = object.getJsonObject("source");
+        String pv = null;
+
+        if(source.containsKey("org.jlab.jaws.entity.EPICSSource")) {
+            JsonObject epicsSource = source.getJsonObject("org.jlab.jaws.entity.EPICSSource");
+
+            if(!epicsSource.isNull("pv")) {
+                pv = epicsSource.getString("pv");
+            }
+        }
+
+        Action action = actionFacade.findByName(actionName);
+
+        if (action == null) {
+            throw new UserFriendlyException("Action not found: " + actionName);
+        }
+
+        List<Location> locationList = new ArrayList<>();
+        List<BigInteger> locationIdList = new ArrayList<>();
+
+        for(int i = 0; i < locationNames.size(); i++) {
+            Location location = locationFacade.findByName(locationNames.get(i));
+
+            if(location == null) {
+                throw new UserFriendlyException("Location not found: " + locationNames.get(i));
+            }
+
+            locationList.add(location);
+            locationIdList.add(location.getId());
+        }
+
+        addAlarm(name, action.getActionId(), locationIdList.toArray(new BigInteger[0]),
+                 device, screenCommand, maskedBy, pv);
     }
 }
