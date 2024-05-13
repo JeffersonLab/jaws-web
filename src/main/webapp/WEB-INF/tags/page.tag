@@ -18,24 +18,18 @@
         <jsp:invoke fragment="scripts"/>
     </jsp:attribute>
     <jsp:attribute name="footnote">
-        <a href="debug">Debug</a>
+        <a href="${pageContext.request.contextPath}/debug">Debug</a>
     </jsp:attribute>
     <jsp:attribute name="primaryNavigation">
                     <ul>
                         <li${'/active' eq currentPath ? ' class="current-primary"' : ''}>
                             <a href="${pageContext.request.contextPath}/active">Active</a>
                         </li>
-                        <li${'/suppressed' eq currentPath ? ' class="current-primary"' : ''}>
-                            <a href="${pageContext.request.contextPath}/suppressed">Suppressed</a>
-                        </li>
                         <li${fn:startsWith(currentPath, '/inventory') ? ' class="current-primary"' : ''}>
                             <a href="${pageContext.request.contextPath}/inventory/alarms">Inventory</a>
                         </li>
-                        <li${'/archive' eq currentPath ? ' class="current-primary"' : ''}>
-                            <a href="${pageContext.request.contextPath}/archive">Archive</a>
-                        </li>
                         <li${fn:startsWith(currentPath, '/setup') ? ' class="current-primary"' : ''}>
-                            <a href="${pageContext.request.contextPath}/setup/coordinates">Setup</a>
+                            <a href="${pageContext.request.contextPath}/setup/transfer">Setup</a>
                         </li>
                         <li${'/help' eq currentPath ? ' class="current-primary"' : ''}>
                             <a href="${pageContext.request.contextPath}/help">Help</a>
