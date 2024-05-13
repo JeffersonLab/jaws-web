@@ -108,7 +108,7 @@ function addToTable(data) {
         for (const column of columnStrList) {
             let value = map.get(column);
             let td = document.createElement("td");
-            td.innerText = value;
+            td.innerText = value === undefined ? '' : value;
             tr.appendChild(td);
         }
 
@@ -194,6 +194,10 @@ evtSource.addEventListener('alarm', (e) => {
         addAlarms(updateOrAdd);
     }
 
+    updateCount();
+    updateMap();
+});
+function updateCount() {
     let count = activeByName.size;
 
     alarmCountSpan.innerText = jlab.integerWithCommas(count);
@@ -203,7 +207,10 @@ evtSource.addEventListener('alarm', (e) => {
     } else {
         alarmCountSpan.classList.remove("alarming");
     }
-});
+}
+function updateMap() {
+ // TODO: iterate activeByName and use a coordinate to location hashmap to draw on the location map
+}
 $(function() {
     $("#all-dialog").dialog({
         autoOpen: false,
@@ -214,7 +221,7 @@ $(function() {
 
 let tempSort = {},
     offset = 0,
-    max = 10;
+    max = 1000;
 $(document).on("click", "#show-all", function() {
     $("#all-dialog").dialog('open');
 
