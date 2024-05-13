@@ -9,17 +9,20 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 /**
- *
  * @author ryans
  */
 @Stateless
@@ -57,8 +60,8 @@ public class ActionFacade extends AbstractFacade<Action> {
 
         Join<Action, Component> componentJoin = null;
 
-        if(componentName != null && !componentName.isEmpty() || teamId != null) {
-           componentJoin = root.join("component");
+        if (componentName != null && !componentName.isEmpty() || teamId != null) {
+            componentJoin = root.join("component");
         }
 
         if (componentName != null && !componentName.isEmpty()) {
@@ -84,7 +87,7 @@ public class ActionFacade extends AbstractFacade<Action> {
         if (!filters.isEmpty()) {
             cq.where(cb.and(filters.toArray(new Predicate[]{})));
         }
-        
+
         List<Order> orders = new ArrayList<>();
         Path p0 = root.get("name");
         Order o0 = cb.asc(p0);
@@ -100,7 +103,7 @@ public class ActionFacade extends AbstractFacade<Action> {
         Root<Action> root = cq.from(Action.class);
 
         List<Predicate> filters = getFilters(cb, root, priorityId, teamId, actionName, componentName);
-        
+
         if (!filters.isEmpty()) {
             cq.where(cb.and(filters.toArray(new Predicate[]{})));
         }
@@ -120,43 +123,43 @@ public class ActionFacade extends AbstractFacade<Action> {
                           String rationale, Boolean filterable,
                           Boolean latchable, BigInteger onDelaySeconds, BigInteger offDelaySeconds)
             throws UserFriendlyException {
-        if(name == null || name.isBlank()) {
+        if (name == null || name.isBlank()) {
             throw new UserFriendlyException("Name is required");
         }
 
-        if(componentId == null) {
+        if (componentId == null) {
             throw new UserFriendlyException("Component is required");
         }
 
         Component component = componentFacade.find(componentId);
 
-        if(component == null) {
+        if (component == null) {
             throw new UserFriendlyException("Component not found with ID: " + componentId);
         }
 
-        if(priorityId == null) {
+        if (priorityId == null) {
             throw new UserFriendlyException("Priority is required");
         }
 
         Priority priority = priorityFacade.find(priorityId);
 
-        if(priority == null) {
+        if (priority == null) {
             throw new UserFriendlyException("Priority not found with ID: " + priorityId);
         }
 
-        if(correctiveAction == null || correctiveAction.isBlank()) {
+        if (correctiveAction == null || correctiveAction.isBlank()) {
             throw new UserFriendlyException("Corrective Action is required");
         }
 
-        if(rationale == null || rationale.isBlank()) {
+        if (rationale == null || rationale.isBlank()) {
             throw new UserFriendlyException("Rationale is required");
         }
 
-        if(filterable == null) {
+        if (filterable == null) {
             throw new UserFriendlyException("Filterable is required");
         }
 
-        if(latchable == null) {
+        if (latchable == null) {
             throw new UserFriendlyException("Latchable is required");
         }
 
@@ -177,13 +180,13 @@ public class ActionFacade extends AbstractFacade<Action> {
 
     @RolesAllowed("jaws-admin")
     public void removeAction(BigInteger actionId) throws UserFriendlyException {
-        if(actionId == null) {
+        if (actionId == null) {
             throw new UserFriendlyException("Action ID is required");
         }
 
         Action action = find(actionId);
 
-        if(action == null) {
+        if (action == null) {
             throw new UserFriendlyException("Action not found with ID: " + actionId);
         }
 
@@ -192,53 +195,53 @@ public class ActionFacade extends AbstractFacade<Action> {
 
     @RolesAllowed("jaws-admin")
     public void editAction(BigInteger actionId, String name, BigInteger actionId1, BigInteger componentId, BigInteger priorityId, String correctiveAction, String rationale, Boolean filterable, Boolean latchable, BigInteger onDelaySeconds, BigInteger offDelaySeconds) throws UserFriendlyException {
-        if(actionId == null) {
+        if (actionId == null) {
             throw new UserFriendlyException("Action ID is required");
         }
 
         Action action = find(actionId);
 
-        if(action == null) {
+        if (action == null) {
             throw new UserFriendlyException("Action not found with ID: " + actionId);
         }
 
-        if(name == null || name.isBlank()) {
+        if (name == null || name.isBlank()) {
             throw new UserFriendlyException("Name is required");
         }
 
-        if(componentId == null) {
+        if (componentId == null) {
             throw new UserFriendlyException("Component is required");
         }
 
         Component component = componentFacade.find(componentId);
 
-        if(component == null) {
+        if (component == null) {
             throw new UserFriendlyException("Component not found with ID: " + componentId);
         }
 
-        if(priorityId == null) {
+        if (priorityId == null) {
             throw new UserFriendlyException("Priority is required");
         }
 
         Priority priority = priorityFacade.find(priorityId);
 
-        if(priority == null) {
+        if (priority == null) {
             throw new UserFriendlyException("Priority not found with ID: " + priorityId);
         }
 
-        if(correctiveAction == null || correctiveAction.isBlank()) {
+        if (correctiveAction == null || correctiveAction.isBlank()) {
             throw new UserFriendlyException("Corrective Action is required");
         }
 
-        if(rationale == null || rationale.isBlank()) {
+        if (rationale == null || rationale.isBlank()) {
             throw new UserFriendlyException("Rationale is required");
         }
 
-        if(filterable == null) {
+        if (filterable == null) {
             throw new UserFriendlyException("Filterable is required");
         }
 
-        if(latchable == null) {
+        if (latchable == null) {
             throw new UserFriendlyException("Latchable is required");
         }
 
@@ -253,5 +256,96 @@ public class ActionFacade extends AbstractFacade<Action> {
         action.setOffDelaySeconds(offDelaySeconds);
 
         edit(action);
+    }
+
+    @RolesAllowed("jaws-admin")
+    public void addActionKeyValueList(String actions) throws UserFriendlyException {
+        if (actions == null || actions.isBlank()) {
+            throw new UserFriendlyException("actions must not be empty");
+        }
+
+        List<String> lines = new ArrayList<>();
+
+        actions.lines().forEach(lines::add);
+
+        for (String line : lines) {
+            if (!line.isBlank()) {
+                parseActionLine(line);
+            }
+        }
+    }
+
+    private void parseActionLine(String line) throws UserFriendlyException {
+
+        System.out.println("line: " + line);
+
+        String[] tokens = line.split("=");
+
+        if (tokens.length != 2) {
+            throw new UserFriendlyException("Invalid action line: " + line);
+        }
+
+        String name = tokens[0];
+        String json = tokens[1];
+
+        System.out.println("token 0: " + tokens[0]);
+        System.out.println("token 1: " + tokens[1]);
+
+        JsonReader reader = Json.createReader(new StringReader(json));
+
+        JsonObject object = reader.readObject();
+
+        String componentName = object.getString("category");
+        String priorityName = object.getString("priority");
+        String correctiveAction = null;
+
+        if (!object.isNull("correctiveaction")) {
+            correctiveAction = object.getString("correctiveaction");
+        }
+
+        String rationale = null;
+
+        if (!object.isNull("rationale")) {
+            rationale = object.getString("rationale");
+        }
+
+        Boolean filterable = false;
+
+        if (!object.isNull("filterable")) {
+            filterable = object.getBoolean("filterable");
+        }
+
+        Boolean latchable = false;
+
+        if (!object.isNull("latchable")) {
+            latchable = object.getBoolean("latchable");
+        }
+
+        BigInteger onDelaySeconds = null;
+
+        if (!object.isNull("ondelayseconds")) {
+            onDelaySeconds = BigInteger.valueOf(object.getInt("ondelayseconds"));
+        }
+
+        BigInteger offDelaySeconds = null;
+
+        if (!object.isNull("offdelayseconds")) {
+            offDelaySeconds = BigInteger.valueOf(object.getInt("offdelayseconds"));
+        }
+
+        Component component = componentFacade.findByName(componentName);
+        Priority priority = priorityFacade.findByName(priorityName);
+
+        if (component == null) {
+            throw new UserFriendlyException("Component not found: " + componentName);
+        }
+
+        if (priority == null) {
+            throw new UserFriendlyException("Priority not found: " + priorityName);
+        }
+
+        addAction(name, component.getComponentId(), priority.getPriorityId(), correctiveAction,
+                rationale, filterable,
+                latchable, onDelaySeconds, offDelaySeconds);
     }
 }

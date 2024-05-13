@@ -15,6 +15,7 @@
         <h2 id="left-column-header">Setup</h2>
         <ul>
             <li${'/setup/coordinates' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/setup/coordinates">Coordinates</a></li>
+            <li${'/setup/transfer' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/setup/transfer">Transfer</a></li>
         </ul>
     </jsp:attribute>
     <jsp:body>

@@ -158,4 +158,17 @@ public class ComponentFacade extends AbstractFacade<Component> {
 
         remove(component);
     }
+
+    @PermitAll
+    public Component findByName(String name) {
+        List<Component> componentList = this.filterList(name, null, 0, 1);
+
+        Component component = null;
+
+        if(componentList != null && !componentList.isEmpty()) {
+            component = componentList.get(0);
+        }
+
+        return component;
+    }
 }
