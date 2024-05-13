@@ -15,11 +15,6 @@
             <h2 id="page-header-title"><c:out value="${title}"/></h2>
             <div class="message-box"></div>
             <div id="chart-wrap" class="chart-wrap-backdrop">
-                <c:set var="readonly" value="${!pageContext.request.isUserInRole('jaws-admin')}"/>
-                <c:if test="${not readonly}">
-                    <s:editable-row-table-controls excludeAdd="${readonly}" excludeDelete="${readonly}" excludeEdit="${readonly}">
-                    </s:editable-row-table-controls>
-                </c:if>
                 <table class="data-table outer-table">
                     <thead>
                     <tr>

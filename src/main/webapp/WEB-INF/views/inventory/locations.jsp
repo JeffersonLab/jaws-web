@@ -13,22 +13,9 @@
     </jsp:attribute>        
     <jsp:body>
         <section>
-            <div id="report-page-actions">
-                <div id="export-widget">
-                    <button id="export-menu-button">Export</button>
-                    <ul id="export-menu">
-                        <li id="json-menu-item">Kafka JSON</li>
-                    </ul>
-                </div>
-            </div>
             <h2 id="page-header-title"><c:out value="${title}"/></h2>
             <div class="message-box"></div>
             <div id="chart-wrap" class="chart-wrap-backdrop">
-                <c:set var="readonly" value="${!pageContext.request.isUserInRole('jaws-admin')}"/>
-                <c:if test="${not readonly}">
-                    <s:editable-row-table-controls excludeAdd="${readonly}" excludeDelete="${readonly}" excludeEdit="${readonly}">
-                    </s:editable-row-table-controls>
-                </c:if>
                 <table class="data-table outer-table">
                     <thead>
                     <tr>
