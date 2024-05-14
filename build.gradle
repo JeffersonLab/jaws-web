@@ -5,8 +5,8 @@ plugins {
 
 description 'Jefferson Lab Alarm Warning System (JAWS) web admin interface'
 group 'org.jlab'
-version '4.5.0'
-ext.releaseDate = 'Dec 4 2023'
+version new File("${projectDir}/VERSION").text.trim()
+ext.releaseDate = new Date().format('MMM dd yyyy')
 // IndexDB Client-side cache data version
 ext.cacheVersion = '1'
 
