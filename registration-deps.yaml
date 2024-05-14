@@ -1,10 +1,10 @@
 services:
   oracle:
     extends:
-      file: deps.yml
+      file: deps.yaml
       service: oracle
 
   keycloak:
     extends:
-      file: deps.yml
+      file: deps.yaml
       service: keycloak

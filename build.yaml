@@ -1,37 +1,37 @@
 services:
   kafka:
     extends:
-      file: docker-compose.yml
+      file: compose.yaml
       service: kafka
 
   registry:
     extends:
-      file: docker-compose.yml
+      file: compose.yaml
       service: registry
 
   jaws:
     extends:
-      file: docker-compose.yml
+      file: compose.yaml
       service: jaws
 
   effective:
     extends:
-      file: docker-compose.yml
+      file: compose.yaml
       service: effective
 
   oracle:
     extends:
-      file: docker-compose.yml
+      file: compose.yaml
       service: oracle
 
   keycloak:
     extends:
-      file: docker-compose.yml
+      file: compose.yaml
       service: keycloak
 
   admin:
     extends:
-      file: docker-compose.yml
+      file: compose.yaml
       service: admin
     build:
       context: .

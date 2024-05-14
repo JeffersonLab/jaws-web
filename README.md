@@ -41,7 +41,7 @@ http://localhost:8080/jaws
 ## Install
 This application requires a Java 11+ JVM and standard library to run, plus a Java EE 8+ application server (developed with Wildfly).
 
-   1. Install service [dependencies](https://github.com/JeffersonLab/jaws-admin-gui/blob/main/deps.yml)
+   1. Install service [dependencies](https://github.com/JeffersonLab/jaws-admin-gui/blob/main/deps.yaml)
    1. Download [Wildfly 26.1.3](https://www.wildfly.org/downloads/)
    1. [Configure](https://github.com/JeffersonLab/jaws-admin-gui#configure) Wildfly and start it
    1. Download [jaws.war](https://github.com/JeffersonLab/jaws-admin-gui/releases) and deploy it to Wildfly

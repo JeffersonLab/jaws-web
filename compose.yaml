@@ -1,32 +1,32 @@
 services:
   kafka:
     extends:
-      file: deps.yml
+      file: deps.yaml
       service: kafka
 
   registry:
     extends:
-      file: deps.yml
+      file: deps.yaml
       service: registry
 
   jaws:
     extends:
-      file: deps.yml
+      file: deps.yaml
       service: jaws
 
   effective:
     extends:
-      file: deps.yml
+      file: deps.yaml
       service: effective
 
   oracle:
     extends:
-      file: docker-compose.yml
+      file: compose.yaml
       service: oracle
 
   keycloak:
     extends:
-      file: deps.yml
+      file: deps.yaml
       service: keycloak
 
   admin:
