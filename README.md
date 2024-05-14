@@ -75,11 +75,29 @@ gradlew build
 
 **See**: [Docker Development Quick Reference](https://gist.github.com/slominskir/a7da801e8259f5974c978f9c3091d52c#development-quick-reference)
 
+## Develop
+In order to iterate rapidly when making changes it's often useful to run the app directly on the local workstation, perhaps leveraging an IDE.  In this scenario run the service dependencies with:
+```
+docker compose -f deps.yaml up
+# OR if on JLab network use control system config with `jlab-deps.yaml` instead.
+```
+**Note**: The local install of Wildfly should be [configured](https://github.com/JeffersonLab/jaws-admin-gui#configure) to proxy connections to services via localhost and therefore the environment variables should contain:
+```
+KEYCLOAK_BACKEND_SERVER_URL=http://localhost:8081
+FRONTEND_SERVER_URL=https://localhost:8443
+```
+Further, the local DataSource must also leverage localhost port forwarding so the `standalone.xml` connection-url field should be: `jdbc:oracle:thin:@//localhost:1521/xepdb1`.  
+
+The [server](https://github.com/JeffersonLab/wildfly/blob/main/scripts/server-setup.sh) and [app](https://github.com/JeffersonLab/wildfly/blob/main/scripts/app-setup.sh) setup scripts can be used to setup a local instance of Wildfly. 
+
 ## Release
-1. Bump the version number in build.gradle and commit and push to GitHub (using [Semantic Versioning](https://semver.org/)).
-2. Create a new release on the GitHub Releases page corresponding to the same version in the build.gradle.   The release should enumerate changes and link issues.   A war artifact can be attached to the release to facilitate easy install by users.
-3. [Publish to DockerHub](https://github.com/JeffersonLab/jaws-admin-gui/actions/workflows/docker-publish.yml) GitHub Action should run automatically.
-4. Bump and commit quick start [image version](https://github.com/JeffersonLab/jaws-admin-gui/blob/main/docker-compose.override.yml)
+1. Bump the version number in the VERSION file and commit and push to GitHub (using [Semantic Versioning](https://semver.org/)).
+2. The [CD](https://github.com/JeffersonLab/jaws-admin-gui/blob/main/.github/workflows/cd.yml) GitHub Action should run automatically invoking:
+    - The [Create release](https://github.com/JeffersonLab/java-workflows/blob/main/.github/workflows/gh-release.yml) GitHub Action to tag the source and create release notes summarizing any pull requests.   Edit the release notes to add any missing details.  A war file artifact is attached to the release.
+    - The [Publish docker image](https://github.com/JeffersonLab/container-workflows/blob/main/.github/workflows/docker-publish.yml) GitHub Action to create a new demo Docker image, and bump the [compose.override.yaml](https://github.com/JeffersonLab/jaws-admin-gui/blob/main/compose.override.yaml) to use the new image.
+
+## Deploy
+At JLab this app is found at [ace.jlab.org/jaws](https://ace.jlab.org/jaws) and internally at [acctest.acc.jlab.org/jaws](https://acctest.acc.jlab.org/jaws).  However, those servers are proxies for `jaws.acc.jlab.org` and `jawstest.acc.jlab.org` respectively.  This app makes up one service in a set of services defined in a compose file that make up the JAWS system and deployments are managed by [JAWS](https://github.com/JeffersonLab/jaws).
 
 ## See Also
 - [JLab alarm data](https://github.com/JeffersonLab/alarms)
