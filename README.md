@@ -11,7 +11,9 @@ Web Admin interface for [JAWS](https://github.com/JeffersonLab/jaws) to manage a
  - [Install](https://github.com/JeffersonLab/jaws-admin-gui#install)
  - [Configure](https://github.com/JeffersonLab/jaws-admin-gui#configure)
  - [Build](https://github.com/JeffersonLab/jaws-admin-gui#build)
+ - [Develop](https://github.com/JeffersonLab/jaws-admin-gui#develop)
  - [Release](https://github.com/JeffersonLab/jaws-admin-gui#release)
+ - [Deploy](https://github.com/JeffersonLab/jaws-admin-gui#deploy) 
  - [See Also](https://github.com/JeffersonLab/jaws-admin-gui#see-also)
 ---
 
