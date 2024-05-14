@@ -18,8 +18,7 @@ RUN cd /app  \
     && gradle build -x test --no-watch-fs $OPTIONAL_CERT_ARG
 ################## Stage 1
 FROM ${RUN_IMAGE} as runner
-COPY --from=builder /app/docker/app/*.env /
-COPY --from=builder /app/docker-entrypoint.sh /docker-entrypoint.sh
+COPY --from=builder /app/container/app/*.env /
 USER root
 RUN /server-setup.sh /server-setup.env wildfly_start_and_wait \
      && /server-setup.sh /server-setup.env config_provided \
@@ -29,4 +28,3 @@ RUN /server-setup.sh /server-setup.env wildfly_start_and_wait \
      && rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history
 USER jboss
 COPY --from=builder /app/build/libs /opt/jboss/wildfly/standalone/deployments
-ENTRYPOINT ["/docker-entrypoint.sh"]

@@ -103,7 +103,7 @@ services:
       ORACLE_PASSWORD: testing
       TZ: 'America/New_York'
     volumes:
-      - ./docker/oracle/setup:/container-entrypoint-initdb.d
+      - ./container/oracle/initdb.d:/container-entrypoint-initdb.d
 
   keycloak:
     image: quay.io/keycloak/keycloak:20.0.5

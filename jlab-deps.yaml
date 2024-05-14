@@ -55,7 +55,7 @@ services:
       OFFSET_STORAGE_TOPIC: connect-offsets
       STATUS_STORAGE_TOPIC: connect-status
     volumes:
-      - ./docker/epics2kafka/connect-config:/config
+      - ./container/epics2kafka/initdb.d:/config
 
   registrations2epics:
     image: jeffersonlab/jaws-registrations2epics:4.5.0
