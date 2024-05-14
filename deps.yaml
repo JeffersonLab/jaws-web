@@ -106,17 +106,9 @@ services:
       - ./container/oracle/initdb.d:/container-entrypoint-initdb.d
 
   keycloak:
-    image: quay.io/keycloak/keycloak:20.0.5
+    image: jeffersonlab/keycloak:1.1.1
     hostname: keycloak
     container_name: keycloak
-    healthcheck:
-      test: curl http://localhost:8080 -sf -o /dev/null
-      start_period: 30s
-      start_interval: 5s
-      #      interval: 30s      # waiting for https://github.com/docker/compose/issues/10830
-      interval: 5s
-      timeout: 10s
-      retries: 5
     ports:
       - "8082:8080"
       - "9991:9990"
@@ -132,5 +124,4 @@ services:
       KEYCLOAK_SECRET: 'yHi6W2raPmLvPXoxqMA7VWbLAA2WN0eB'
       TZ: 'America/New_York'
     volumes:
-      - ./docker/keycloak:/scripts
-    entrypoint: /scripts/docker-entrypoint.sh
+      - ./container/keycloak/initdb.d:/container-entrypoint-initdb.d
