@@ -23,6 +23,7 @@ USER root
 RUN /server-setup.sh /server-setup.env wildfly_start_and_wait \
      && /server-setup.sh /server-setup.env config_provided \
      && /app-setup.sh /app-setup.env config_keycloak_client_dynamic \
+     && /app-setup.sh /app-setup.env config_oracle_client \
      && /server-setup.sh /server-setup.env wildfly_reload \
      && /server-setup.sh /server-setup.env wildfly_stop \
      && rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history
