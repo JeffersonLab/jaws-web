@@ -21,7 +21,7 @@ services:
 
   oracle:
     extends:
-      file: compose.yaml
+      file: deps.yaml
       service: oracle
 
   keycloak:
