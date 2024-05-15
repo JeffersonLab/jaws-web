@@ -1,6 +1,5 @@
 plugins {
     id 'war'
-    id 'java-library-distribution'
 }
 
 description 'Jefferson Lab Alarm Warning System (JAWS) web admin interface'
@@ -28,9 +27,6 @@ repositories {
     }
 }
 
-distZip.enabled = false
-distTar.enabled = false
-
 configurations {
     jbossModule
     providedCompile.extendsFrom(jbossModule)
@@ -49,16 +45,6 @@ dependencies {
     // A custom JBoss Module
     jbossModule 'org.jlab:jaws-libj:4.6.0',
                 'io.confluent:kafka-avro-serializer:7.4.0'
-}
-
-distributions {
-    main {
-        contents {
-            into('jbossModule') {
-                from configurations.jbossModule
-            }
-        }
-    }
 }
 
 war {
