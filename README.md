@@ -1,5 +1,5 @@
 # jaws-admin-gui [![Java CI with Gradle](https://github.com/JeffersonLab/jaws-admin-gui/actions/workflows/ci.yaml/badge.svg)](https://github.com/JeffersonLab/jaws-admin-gui/actions/workflows/ci.yaml) [![Docker](https://img.shields.io/docker/v/jeffersonlab/jaws-admin-gui?sort=semver&label=DockerHub)](https://hub.docker.com/r/jeffersonlab/jaws-admin-gui)
-Web Admin interface for [JAWS](https://github.com/JeffersonLab/jaws) to manage alarm registrations and view notifications.
+A [Java EE 8](https://en.wikipedia.org/wiki/Jakarta_EE) web application for managing [JAWS](https://github.com/JeffersonLab/jaws) alarm registrations and notifications built with the [Smoothness](https://github.com/JeffersonLab/smoothness) web template.
 
 <p>
 <a href="#"><img src="https://github.com/JeffersonLab/jaws-admin-gui/raw/main/src/main/webapp/resources/img/screenshot1.png"/></a>     
