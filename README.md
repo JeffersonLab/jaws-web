@@ -1,4 +1,4 @@
-# jaws-admin-gui [![Java CI with Gradle](https://github.com/JeffersonLab/jaws-admin-gui/actions/workflows/ci.yml/badge.svg)](https://github.com/JeffersonLab/jaws-admin-gui/actions/workflows/ci.yml) [![Docker](https://img.shields.io/docker/v/jeffersonlab/jaws-admin-gui?sort=semver&label=DockerHub)](https://hub.docker.com/r/jeffersonlab/jaws-admin-gui)
+# jaws-admin-gui [![Java CI with Gradle](https://github.com/JeffersonLab/jaws-admin-gui/actions/workflows/ci.yaml/badge.svg)](https://github.com/JeffersonLab/jaws-admin-gui/actions/workflows/ci.yaml) [![Docker](https://img.shields.io/docker/v/jeffersonlab/jaws-admin-gui?sort=semver&label=DockerHub)](https://hub.docker.com/r/jeffersonlab/jaws-admin-gui)
 Web Admin interface for [JAWS](https://github.com/JeffersonLab/jaws) to manage alarm registrations and view notifications.
 
 <p>
@@ -94,9 +94,9 @@ The [server](https://github.com/JeffersonLab/wildfly/blob/main/scripts/server-se
 
 ## Release
 1. Bump the version number in the VERSION file and commit and push to GitHub (using [Semantic Versioning](https://semver.org/)).
-2. The [CD](https://github.com/JeffersonLab/jaws-admin-gui/blob/main/.github/workflows/cd.yml) GitHub Action should run automatically invoking:
+2. The [CD](https://github.com/JeffersonLab/jaws-admin-gui/blob/main/.github/workflows/cd.yaml) GitHub Action should run automatically invoking:
     - The [Create release](https://github.com/JeffersonLab/java-workflows/blob/main/.github/workflows/gh-release.yml) GitHub Action to tag the source and create release notes summarizing any pull requests.   Edit the release notes to add any missing details.  A war file artifact is attached to the release.
-    - The [Publish docker image](https://github.com/JeffersonLab/container-workflows/blob/main/.github/workflows/docker-publish.yml) GitHub Action to create a new demo Docker image, and bump the [compose.override.yaml](https://github.com/JeffersonLab/jaws-admin-gui/blob/main/compose.override.yaml) to use the new image.
+    - The [Publish docker image](https://github.com/JeffersonLab/container-workflows/blob/main/.github/workflows/docker-publish.yaml) GitHub Action to create a new demo Docker image.
 
 ## Deploy
 At JLab this app is found at [ace.jlab.org/jaws](https://ace.jlab.org/jaws) and internally at [acctest.acc.jlab.org/jaws](https://acctest.acc.jlab.org/jaws).  However, those servers are proxies for `jaws.acc.jlab.org` and `jawstest.acc.jlab.org` respectively.  This app makes up one service in a set of services defined in a compose file that make up the JAWS system and deployments are managed by [JAWS](https://github.com/JeffersonLab/jaws).
