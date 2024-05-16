@@ -287,9 +287,9 @@ public class ActionFacade extends AbstractFacade<Action> {
 
         System.out.println("line: " + line);
 
-        String[] tokens = line.split("=");
+        String[] tokens = line.split("=", 2); // split on FIRST "=" only
 
-        if (tokens.length != 2) {
+        if (tokens.length != 2) { // Make sure there was at least one!
             throw new UserFriendlyException("Invalid action line: " + line);
         }
 
