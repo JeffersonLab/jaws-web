@@ -339,7 +339,7 @@ public class SSE implements ServletContextListener {
         }
     }
 
-    private Properties getConsumerProps(long resumeOffset, boolean compactedCache) {
+    public static Properties getConsumerProps(long resumeOffset, boolean compactedCache) {
         final Properties props = new Properties();
 
         props.put(EventSourceConfig.GROUP_ID_CONFIG, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
@@ -350,7 +350,7 @@ public class SSE implements ServletContextListener {
         return props;
     }
 
-    private Properties getConsumerPropsWithRegistry(long resumeOffset, boolean compactedCache) {
+    public static Properties getConsumerPropsWithRegistry(long resumeOffset, boolean compactedCache) {
         final Properties props = getConsumerProps(resumeOffset, compactedCache);
 
         props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, JaxRSApp.SCHEMA_REGISTRY);

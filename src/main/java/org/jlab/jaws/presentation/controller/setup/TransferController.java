@@ -1,17 +1,11 @@
 package org.jlab.jaws.presentation.controller.setup;
 
-import org.jlab.jaws.business.session.AbstractFacade;
-import org.jlab.jaws.business.session.CoordinateFacade;
-import org.jlab.jaws.persistence.entity.Coordinate;
-
-import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 /**
  *

@@ -1,6 +1,5 @@
 package org.jlab.jaws.business.session;
 
-import org.checkerframework.checker.units.qual.A;
 import org.jlab.jaws.persistence.entity.*;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
@@ -146,8 +145,17 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
         return q.getSingleResult();
     }
 
+    @PermitAll
     public Alarm findByName(String name) {
-        return null;
+        List<Alarm> list = this.filterList(null, null, null, name, null, null, 0, 1);
+
+        Alarm entity = null;
+
+        if(list != null && !list.isEmpty()) {
+            entity = list.get(0);
+        }
+
+        return entity;
     }
 
     @RolesAllowed("jaws-admin")
