@@ -52,7 +52,6 @@ public class KafkaFacade {
         }
     }
 
-    @RunAs("jaws-admin")
     class NotificationListener<K, V> implements EventSourceListener<String, EffectiveNotification> {
         @Override
         public void batch(List<EventSourceRecord<String, EffectiveNotification>> records, boolean highWaterReached) {

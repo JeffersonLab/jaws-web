@@ -43,9 +43,51 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         em.createQuery("delete from Notification").executeUpdate();
     }
 
-    @RolesAllowed("jaws-admin")
+    // Note: Can't restrict to jaws-admin because caller in NotificationFacade RunAs doesn't work
+    @PermitAll
     public void set(Alarm alarm, EffectiveNotification effectiveNotification) {
+        em.createQuery("delete from Notification n where n.alarm = :a").setParameter("a", alarm).executeUpdate();
 
+        Notification notification = new Notification();
+
+        notification.setAlarm(alarm);
+        notification.setState(effectiveNotification.getState());
+        AlarmActivationUnion union = effectiveNotification.getActivation();
+
+        String activationType = "NONE";
+
+        if(union != null) {
+            if(union.getUnion() instanceof EPICSActivation) {
+                activationType = "EPICS";
+                EPICSActivation epics = (EPICSActivation) union.getUnion();
+                notification.setActivationSevr(epics.getSevr().name());
+                notification.setActivationStat(epics.getStat().name());
+            } else if (union.getUnion() instanceof NoteActivation) {
+                activationType = "Note";
+                NoteActivation note = (NoteActivation) union.getUnion();
+                notification.setActivationNote(note.getNote());
+            } else if(union.getUnion() instanceof ChannelErrorActivation) {
+                activationType = "ChannelError";
+                ChannelErrorActivation channel = (ChannelErrorActivation) union.getUnion();
+                notification.setActivationError(channel.getError());
+            }
+        }
+
+        notification.setActivationType(activationType);
+
+        AlarmOverrideSet overrides = effectiveNotification.getOverrides();
+
+        DisabledOverride disabled = overrides.getDisabled();
+        if(disabled != null) {
+
+        }
+
+        FilteredOverride filtered = overrides.getFiltered();
+        if(filtered != null) {
+
+        }
+
+        create(notification);
     }
 
     private List<Predicate> getFilters(CriteriaBuilder cb, CriteriaQuery<? extends Object> cq, Root<Notification> root,
