@@ -53,7 +53,7 @@ public class Notifications extends HttpServlet {
             throws ServletException, IOException {
         AlarmState state = convertState(request, "state");
         OverriddenAlarmType override = convertOverrideKey(request, "override");
-        String activationType = request.getParameter("activationType");
+        String activationType = request.getParameter("type");
         String alarmName = request.getParameter("alarmName");
         BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
         String actionName = request.getParameter("actionName");
@@ -69,6 +69,13 @@ public class Notifications extends HttpServlet {
         List<Priority> priorityList = priorityFacade.findAll(new AbstractFacade.OrderDirective("priorityId"));
         List<Action> actionList = actionFacade.findAll(new AbstractFacade.OrderDirective("name"));
         Location locationRoot = locationFacade.findBranch(Location.TREE_ROOT);
+        List<String> typeList = new ArrayList<>();
+
+        typeList.add("Normal");
+        typeList.add("Active");
+        typeList.add("ChannelError");
+        typeList.add("EPICS");
+        typeList.add("Note");
 
         List<Location> selectedLocationList = new ArrayList<>();
 
@@ -105,6 +112,7 @@ public class Notifications extends HttpServlet {
         request.setAttribute("actionList", actionList);
         request.setAttribute("selectionMessage", selectionMessage);
         request.setAttribute("teamList", teamList);
+        request.setAttribute("typeList", typeList);
         request.setAttribute("stateList", stateList);
         request.setAttribute("priorityList", priorityList);
         request.setAttribute("locationRoot", locationRoot);
@@ -118,7 +126,7 @@ public class Notifications extends HttpServlet {
 
         OverriddenAlarmType type = null;
 
-        if(value != null) {
+        if(value != null && !value.isBlank()) {
             type = OverriddenAlarmType.valueOf(value);
         }
 
@@ -130,7 +138,7 @@ public class Notifications extends HttpServlet {
 
         AlarmState state = null;
 
-        if(value != null) {
+        if(value != null && !value.isBlank()) {
             state = AlarmState.valueOf(value);
         }
 

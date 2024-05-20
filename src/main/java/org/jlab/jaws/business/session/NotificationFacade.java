@@ -54,7 +54,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         notification.setState(effectiveNotification.getState());
         AlarmActivationUnion union = effectiveNotification.getActivation();
 
-        String activationType = "NONE";
+        String activationType = "Normal";
 
         if(union != null) {
             if(union.getUnion() instanceof EPICSActivation) {
@@ -70,6 +70,8 @@ public class NotificationFacade extends AbstractFacade<Notification> {
                 activationType = "ChannelError";
                 ChannelErrorActivation channel = (ChannelErrorActivation) union.getUnion();
                 notification.setActivationError(channel.getError());
+            } else if(union.getUnion() instanceof Activation) {
+                activationType = "Active";
             }
         }
 
@@ -183,9 +185,12 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         }
 
         List<Order> orders = new ArrayList<>();
-        Path p0 = joins.get("alarm").get("name");
+        Path p0 = joins.get("action").get("priority");
         Order o0 = cb.asc(p0);
         orders.add(o0);
+        Path p1 = joins.get("alarm").get("name");
+        Order o1 = cb.asc(p1);
+        orders.add(o1);
         cq.orderBy(orders);
         return getEntityManager().createQuery(cq).setFirstResult(offset).setMaxResults(max).getResultList();
     }

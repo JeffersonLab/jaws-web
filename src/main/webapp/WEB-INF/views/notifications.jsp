@@ -22,6 +22,20 @@
                             <ul class="key-value-list">
                                 <li>
                                     <div class="li-key">
+                                        <label for="type-select">Type</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="type-select" name="type">
+                                            <option value="">&nbsp;</option>
+                                            <c:forEach items="${typeList}" var="type">
+                                                <option value="${type}"${param.type eq type ? ' selected="selected"' : ''}>
+                                                    <c:out value="${type}"/></option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
                                         <label for="state-select">State</label>
                                     </div>
                                     <div class="li-value">
@@ -118,10 +132,16 @@
             <h2 id="page-header-title"><c:out value="${title}"/></h2>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="chart-wrap" class="chart-wrap-backdrop">
-                <c:set var="readonly" value="${!pageContext.request.isUserInRole('jaws-admin')}"/>
+                <c:set var="editable" value="${pageContext.request.isUserInRole('jaws-admin')}"/>
                 <c:if test="${editable}">
                 <s:editable-row-table-controls excludeAdd="${true}" excludeDelete="${true}"
                                                excludeEdit="${true}" multiselect="${true}">
+                    <button type="button" id="acknowledge-button" class="selected-row-action"
+                            disabled="disabled">Acknowledge
+                    </button>
+                    <button type="button" id="open-suppress-button" class="selected-row-action"
+                            disabled="disabled">Suppress
+                    </button>
                 </s:editable-row-table-controls>
                 </c:if>
                 <table class="data-table outer-table stripped-table">
@@ -130,13 +150,14 @@
                         <th>Name</th>
                         <th>State</th>
                         <th>Priority</th>
-                        <th>Location</th>
+                        <th>Type</th>
+                        <th></th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="inner-table-cell" colspan="5">
+                        <td class="inner-table-cell" colspan="6">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table${editable ? ' multiselect-table editable-row-table' : ''}">
@@ -151,7 +172,21 @@
                                                 </td>
                                                 <td><c:out value="${notification.state}"/></td>
                                                 <td><c:out value="${notification.alarm.action.priority.name}"/></td>
-                                                <td><c:out value="${notification.alarm.locationNameCsv}"/></td>
+                                                <td><c:out value="${notification.activationType}"/></td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${'ChannelError' eq notification.activationType}">
+                                                            Error=<c:out value="${notification.activationError}"/>
+                                                        </c:when>
+                                                        <c:when test="${'EPICS' eq notification.activationType}">
+                                                            SEVR=<c:out value="${notification.activationSevr}"/>,
+                                                            STAT=<c:out value="${notification.activationStat}"/>
+                                                        </c:when>
+                                                        <c:when test="${'Note' eq notification.activationType}">
+                                                            Note=<c:out value="${notification.activationNote}"/>
+                                                        </c:when>
+                                                    </c:choose>
+                                                </td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>
