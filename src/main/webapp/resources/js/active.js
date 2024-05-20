@@ -164,6 +164,14 @@ evtSource.addEventListener('ping', (e) =>{
     livenessEl.innerHTML = formatted.toLocaleString();
 });
 
+const loading = document.getElementById('loading');
+
+evtSource.addEventListener('alarm-highwatermark', (e) =>{
+    console.log('Got highwatermark!');
+    loading.style.display = "none";
+    alarmCountSpan.style.display = "inline";
+});
+
 evtSource.addEventListener('alarm', (e) => {
 
     let records = JSON.parse(e.data);

@@ -1,4 +1,4 @@
-#alarm-count {
+.status {
     background-color: green;
     color: white;
     vertical-align: super;
@@ -13,4 +13,15 @@
 }
 #show-all {
     margin-top: 1em;
+}
+#loading {
+    display: inline-block;
+    background-color: white;
+    color: red;
+}
+#loading .button-indicator {
+    display: inline-block;
+}
+#alarm-count {
+    display: none;
 }
