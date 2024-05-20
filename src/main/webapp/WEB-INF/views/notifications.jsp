@@ -142,9 +142,12 @@
                     <button type="button" id="open-suppress-button" class="selected-row-action"
                             disabled="disabled">Suppress
                     </button>
+                    <button type="button" id="open-unsuppress-button" class="selected-row-action"
+                            disabled="disabled">Unsuppress
+                    </button>
                 </s:editable-row-table-controls>
                 </c:if>
-                <table class="data-table outer-table stripped-table">
+                <table id="notification-table" class="data-table outer-table stripped-table">
                     <thead>
                     <tr>
                         <th>Name</th>
@@ -205,5 +208,87 @@
                 </button>
             </div>
         </section>
+        <div id="suppress-dialog" class="dialog" title="Suppress">
+            <form id="suppress-form" action="alarm-list" method="post">
+                <ul class="key-value-list">
+                    <li>
+                        <div class="li-key">
+                            <span>Alarms:</span>
+                        </div>
+                        <div class="li-value">
+                            <ul id="selected-row-list"></ul>
+                            <span id="suppress-dialog-alarm-count"></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <span>Type:</span>
+                        </div>
+                        <div class="li-value">
+                            <span class="radio-pair">
+                                <label for="type-disabled">Disable</label>
+                                <input name="type" id="type-disabled" type="radio"/>
+                            </span>
+                            <span class="radio-pair">
+                                <label for="type-filtered">Filter</label>
+                                <input name="type" id="type-filtered" type="radio"/>
+                            </span>
+                            <span class="radio-pair">
+                                <label for="type-shelved">Shelve</label>
+                                <input name="type" id="type-shelved" type="radio"/>
+                            </span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="suppress-comments">Comments</label>
+                        </div>
+                        <div class="li-value">
+                            <textarea id="suppress-comments" name="comments"></textarea>
+                        </div>
+                    </li>
+                </ul>
+                <fieldset id="shelve-fieldset">
+                    <legend>Shelve</legend>
+                <ul class="key-value-list">
+                    <li>
+                        <div class="li-key">
+                            <label for="oneshot"
+                                   title="Check if this alarm unshelves when active">Oneshot</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="checkbox" id="oneshot"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="reason">Reason</label>
+                        </div>
+                        <div class="li-value">
+                            <select id="reason">
+                                <option>Stale Alarm</option>
+                                <option>Chattering Alarm</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="shelve-expiration"
+                                   title="How long do you want this alarm to be shelved for?">Expiration</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="shelve-expiration" class="date-time-field"
+                                   placeholder="DD-MMM-YYYY hh:mm"/>
+                        </div>
+                    </li>
+                </ul>
+                </fieldset>
+                <div class="dialog-button-panel">
+                    <button type="button" id="suppress-button" class="dialog-submit-button">Save</button>
+                    <button type="button" class="dialog-close-button">Cancel</button>
+                </div>
+            </form>
+        </div>
     </jsp:body>         
 </t:page>

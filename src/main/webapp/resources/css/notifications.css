@@ -26,3 +26,16 @@
 #filter-flyout-panel {
     width: 655px;
 }
+
+#shelve-fieldset {
+    margin-bottom: 2em;
+}
+
+#suppress-comments {
+    width: 450px;
+    height: 125px;
+}
+
+.radio-pair {
+    margin-right: 2em;
+}
