@@ -1,5 +1,6 @@
 var jlab = jlab || {};
 $(document).on("click", ".default-clear-panel", function () {
+    $("#state-select").val('');
     $("#location-select").val(null).trigger('change');
     $("#priority-select").val('');
     $("#team-select").val('');

@@ -22,6 +22,20 @@
                             <ul class="key-value-list">
                                 <li>
                                     <div class="li-key">
+                                        <label for="state-select">State</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="state-select" name="state">
+                                            <option value="">&nbsp;</option>
+                                            <c:forEach items="${stateList}" var="state">
+                                                <option value="${state.name()}"${param.state eq state.name() ? ' selected="selected"' : ''}>
+                                                    <c:out value="${state.name()}"/></option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
                                         <label for="location-select">Location</label>
                                     </div>
                                     <div class="li-value">
@@ -114,28 +128,30 @@
                     <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Action</th>
+                        <th>State</th>
+                        <th>Priority</th>
                         <th>Location</th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="inner-table-cell" colspan="4">
+                        <td class="inner-table-cell" colspan="5">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table${editable ? ' multiselect-table editable-row-table' : ''}">
                                         <tbody>
-                                        <c:forEach items="${alarmList}" var="alarm">
-                                            <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}">
+                                        <c:forEach items="${notificationList}" var="notification">
+                                            <tr data-id="${notification.alarm.alarmId}" data-action-id="${notification.alarm.action.actionId}" data-location-id-csv="${notification.alarm.locationIdCsv}" data-device="${notification.alarm.device}" data-screen-command="${notification.alarm.screenCommand}" data-masked-by="${notification.alarm.maskedBy}" data-pv="${notification.alarm.pv}">
                                                 <td>
                                                     <a title="Alarm Information" class="dialog-ready"
-                                                       data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
-                                                       href="${pageContext.request.contextPath}/inventory/alarms/detail?alarmId=${alarm.alarmId}"><c:out
-                                                            value="${alarm.name}"/></a>
+                                                       data-dialog-title="Alarm Information: ${fn:escapeXml(notification.alarm.name)}"
+                                                       href="${pageContext.request.contextPath}/inventory/alarms/detail?alarmId=${notification.alarm.alarmId}"><c:out
+                                                            value="${notification.alarm.name}"/></a>
                                                 </td>
-                                                <td><c:out value="${alarm.action.name}"/></td>
-                                                <td><c:out value="${alarm.locationNameCsv}"/></td>
+                                                <td><c:out value="${notification.state}"/></td>
+                                                <td><c:out value="${notification.alarm.action.priority.name}"/></td>
+                                                <td><c:out value="${notification.alarm.locationNameCsv}"/></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>

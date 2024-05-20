@@ -139,7 +139,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
                 Join<Location, Alarm> alarmLocationJoin = subqueryRoot.join("alarmList");
                 subquery.select(alarmLocationJoin.get("alarmId"));
                 subquery.where(subqueryRoot.get("locationId").in(locationIdList));
-                filters.add(cb.in(root.get("alarmId")).value(subquery));
+                filters.add(cb.in(alarmJoin.get("alarmId")).value(subquery));
             }
         }
 

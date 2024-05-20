@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -64,6 +65,7 @@ public class Notifications extends HttpServlet {
 
         List<Notification> notificationList = notificationFacade.filterList(state, override, activationType, locationIdArray, priorityId, teamId, alarmName, actionName, componentName, offset, maxPerPage);
         List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
+        List<AlarmState> stateList = Arrays.asList(AlarmState.values());
         List<Priority> priorityList = priorityFacade.findAll(new AbstractFacade.OrderDirective("priorityId"));
         List<Action> actionList = actionFacade.findAll(new AbstractFacade.OrderDirective("name"));
         Location locationRoot = locationFacade.findBranch(Location.TREE_ROOT);
@@ -103,6 +105,7 @@ public class Notifications extends HttpServlet {
         request.setAttribute("actionList", actionList);
         request.setAttribute("selectionMessage", selectionMessage);
         request.setAttribute("teamList", teamList);
+        request.setAttribute("stateList", stateList);
         request.setAttribute("priorityList", priorityList);
         request.setAttribute("locationRoot", locationRoot);
         request.setAttribute("paginator", paginator);
@@ -128,7 +131,7 @@ public class Notifications extends HttpServlet {
         AlarmState state = null;
 
         if(value != null) {
-            AlarmState.valueOf(value);
+            state = AlarmState.valueOf(value);
         }
 
         return state;
