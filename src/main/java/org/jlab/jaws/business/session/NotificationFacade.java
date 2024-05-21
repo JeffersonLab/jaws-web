@@ -54,7 +54,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         notification.setState(effectiveNotification.getState());
         AlarmActivationUnion union = effectiveNotification.getActivation();
 
-        String activationType = "Normal";
+        String activationType = "NotActive";
 
         if(union != null) {
             if(union.getUnion() instanceof EPICSActivation) {
@@ -71,7 +71,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
                 ChannelErrorActivation channel = (ChannelErrorActivation) union.getUnion();
                 notification.setActivationError(channel.getError());
             } else if(union.getUnion() instanceof Activation) {
-                activationType = "Active";
+                activationType = "Simple";
             }
         }
 

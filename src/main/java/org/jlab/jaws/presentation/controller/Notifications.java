@@ -71,8 +71,8 @@ public class Notifications extends HttpServlet {
         Location locationRoot = locationFacade.findBranch(Location.TREE_ROOT);
         List<String> typeList = new ArrayList<>();
 
-        typeList.add("Normal");
-        typeList.add("Active");
+        typeList.add("NotActive");
+        typeList.add("Simple");
         typeList.add("ChannelError");
         typeList.add("EPICS");
         typeList.add("Note");
