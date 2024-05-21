@@ -184,6 +184,11 @@ jlab.openSuppressDialog = function () {
     $("#suppress-dialog-alarm-count").text(count + entityStr);
 
     $("#type-disabled").prop("checked", true).trigger("click");
+    $("#suppress-comments").val('');
+    $("#oneshot").prop("checked", false);
+    $("#shelve-reason")[0].selectedIndex = 0;
+    $("#shelve-expiration").val('').trigger('change');
+    $("#shelve-fieldset").prop('disabled', true);
 
     $("#suppress-dialog").dialog("open");
 };
@@ -222,6 +227,14 @@ jlab.openUnsuppressDialog = function () {
 
     $("#unsuppress-dialog").dialog("open");
 };
+$(document).on("change", "input[name=suppress-type]", function () {
+    $("#shelve-fieldset").prop('disabled', true);
+    if($(this).val() === "ShelvedOverride") {
+        if($(this).is(":checked")) {
+            $("#shelve-fieldset").prop('disabled', false);
+        }
+    }
+});
 $(document).on("click", "#unsuppress-button", function () {
     jlab.unsuppress();
 });

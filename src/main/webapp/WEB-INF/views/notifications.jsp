@@ -227,15 +227,15 @@
                         <div class="li-value">
                             <span class="radio-pair">
                                 <label for="type-disabled">Disable</label>
-                                <input name="type" id="type-disabled" type="radio"/>
+                                <input name="suppress-type" id="type-disabled" type="radio" value="DisabledOverride"/>
                             </span>
                             <span class="radio-pair">
                                 <label for="type-filtered">Filter</label>
-                                <input name="type" id="type-filtered" type="radio"/>
+                                <input name="suppress-type" id="type-filtered" type="radio" value="FilteredOverride"/>
                             </span>
                             <span class="radio-pair">
                                 <label for="type-shelved">Shelve</label>
-                                <input name="type" id="type-shelved" type="radio"/>
+                                <input name="suppress-type" id="type-shelved" type="radio" value="ShelvedOverride"/>
                             </span>
                         </div>
                     </li>
@@ -262,10 +262,10 @@
                     </li>
                     <li>
                         <div class="li-key">
-                            <label for="reason">Reason</label>
+                            <label for="shelve-reason">Reason</label>
                         </div>
                         <div class="li-value">
-                            <select id="reason">
+                            <select id="shelve-reason">
                                 <option>Stale Alarm</option>
                                 <option>Chattering Alarm</option>
                                 <option>Other</option>
