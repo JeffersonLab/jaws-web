@@ -25,3 +25,8 @@
 #alarm-count {
     display: none;
 }
+#list-active-link {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
