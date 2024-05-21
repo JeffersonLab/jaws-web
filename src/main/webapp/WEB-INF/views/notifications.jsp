@@ -280,8 +280,8 @@
                         </div>
                         <div class="li-value">
                             <select id="shelve-reason">
-                                <option>Stale Alarm</option>
-                                <option>Chattering Alarm</option>
+                                <option>Stale_Alarm</option>
+                                <option>Chattering_Fleeting_Alarm</option>
                                 <option>Other</option>
                             </select>
                         </div>

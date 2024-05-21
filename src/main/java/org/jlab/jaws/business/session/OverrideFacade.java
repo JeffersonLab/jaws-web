@@ -8,6 +8,7 @@ import org.jlab.jaws.persistence.entity.AlarmOverride;
 import org.jlab.jaws.persistence.entity.OverridePK;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -35,8 +36,10 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
         super(AlarmOverride.class);
     }
 
-    public void set(Alarm alarm, OverriddenAlarmType type, AlarmOverrideUnion value) {
-        em.createQuery("delete from AlarmOverride o where o.overridePK.alarm = :a and o.overridePK.type = :t").setParameter("a", alarm).setParameter("t", type).executeUpdate();
+    // Note: Can't restrict to jaws-admin because caller in KafkaOverrideFacade RunAs doesn't work
+    @PermitAll
+    public void oracleSet(Alarm alarm, OverriddenAlarmType type, AlarmOverrideUnion value) {
+        em.createQuery("delete from AlarmOverride o where o.overridePK = :a").setParameter("a", new OverridePK(alarm, type)).executeUpdate();
 
         AlarmOverride override = new AlarmOverride();
 
@@ -66,7 +69,7 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
     }
 
     @RolesAllowed("jaws-admin")
-    public void unset(String[] nameArray, OverriddenAlarmType type) throws UserFriendlyException {
+    public void kafkaSet(String[] nameArray, OverriddenAlarmType type, AlarmOverrideUnion value) throws UserFriendlyException {
         if(nameArray == null || nameArray.length == 0) {
             throw new UserFriendlyException("Names selection must not be empty");
         }
@@ -78,7 +81,7 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
         try(OverrideProducer producer = new OverrideProducer(KafkaConfig.getProducerPropsWithRegistry())) {
             for (String name : nameArray) {
                 AlarmOverrideKey key = new AlarmOverrideKey(name, type);
-                producer.send(key, null);
+                producer.send(key, value);
             }
         }
     }

@@ -41,17 +41,17 @@ public class UnsetOverride extends HttpServlet {
         String error = null;
         
         try {
-            overrideFacade.unset(nameArray, type);
+            overrideFacade.kafkaSet(nameArray, type, null);
         } catch(UserFriendlyException e) {
             stat = "fail";
-            error = "Unable to unsuppress Alarms: " + e.getMessage();
+            error = "Unable to unset overrides: " + e.getMessage();
         } catch (EJBAccessException e) {
             stat = "fail";
-            error = "Unable to unsuppress Alarms: Not authenticated / authorized (do you need to re-login?)";
+            error = "Unable to unset overrides: Not authenticated / authorized (do you need to re-login?)";
         } catch(RuntimeException e) {
             stat = "fail";
-            error = "Unable to unsuppress Alarms";
-            logger.log(Level.SEVERE, "Unable to unsuppress Alarms", e);
+            error = "Unable to unset overrides";
+            logger.log(Level.SEVERE, "Unable to unset overrides", e);
         }
         
         response.setContentType("application/json");
@@ -68,7 +68,7 @@ public class UnsetOverride extends HttpServlet {
         }
     }
 
-    private OverriddenAlarmType convertOverrideType(HttpServletRequest request, String name) {
+    public static OverriddenAlarmType convertOverrideType(HttpServletRequest request, String name) {
         String value = request.getParameter(name);
 
         OverriddenAlarmType type = null;

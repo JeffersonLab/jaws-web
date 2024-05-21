@@ -97,58 +97,60 @@ jlab.unsuppress = function() {
     });
 };
 jlab.suppress = function () {
-    if (jlab.isRequest()) {
-        window.console && console.log("Ajax already in progress");
-        return;
-    }
+    var reloading = false,
+        nameArray = [],
+        idArray = [],
+        type = $('input[name="suppress-type"]:checked').val();
 
-    jlab.requestStart();
+    var comments = $("#suppress-comments").val(),
+        oneshot = $("#oneshot").is(":checked"),
+        expiration = $("#shelve-expiration").val(),
+        reason = $("#shelve-reason").val();
 
-    $(".dialog-submit-button")
-        .height($(".dialog-submit-button").height())
-        .width($(".dialog-submit-button").width())
+    $("#notification-table .inner-table .selected-row").each(function () {
+        var alarmName = $(this).closest("tr").find(":nth-child(1) a").text(),
+            alarmId = $(this).closest("tr").attr("data-id");
+
+        nameArray.push(alarmName);
+        idArray.push(alarmId);
+    });
+
+    $("#suppress-button")
+        .height($("#suppress-button").height())
+        .width($("#suppress-button").width())
         .empty().append('<div class="button-indicator"></div>');
-    $(".dialog-close-button").attr("disabled", "disabled");
-    $(".ui-dialog-titlebar button").attr("disabled", "disabled");
-
-    var componentIdArray = $.parseJSON($("#selected-row-list").attr('data-id-json')),
-        maskedReason = $("#mask-component-masked-reason").val(),
-        doReload = false,
-        expirationDate = $("#mask-expiration").val();
 
     var request = jQuery.ajax({
-        url: jlab.contextPath + "/ajax/edit-component-exception",
+        url: "/jaws/ajax/set-override",
         type: "POST",
         data: {
-            'componentId[]': componentIdArray,
-            exceptionReason: maskedReason,
-            'expiration-date': expirationDate
+            'name[]': nameArray,
+            type: type,
+            comments: comments,
+            oneshot: oneshot,
+            expiration: expiration,
+            reason: reason
         },
-        dataType: "html"
+        dataType: "json"
     });
 
-    request.done(function (data) {
-        if ($(".status", data).html() !== "Success") {
-            alert('Unable to edit component exception: ' + $(".reason", data).html());
+    request.done(function(json) {
+        if (json.stat === 'ok') {
+            reloading = true;
+            window.location.reload();
         } else {
-            doReload = true;
+            alert(json.error);
         }
-
     });
 
-    request.fail(function (xhr, textStatus) {
-        window.console && console.log('Unable to edit component exception: Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
-        alert('Unable to edit component exception; server did not handle request');
+    request.fail(function(xhr, textStatus) {
+        window.console && console.log('Unable to suppress alarms; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
+        alert('Unable to suppress: Server unavailable or unresponsive');
     });
 
-    request.always(function () {
-        jlab.requestEnd();
-        if (doReload) {
-            document.location.reload(true);
-        } else {
-            $(".dialog-submit-button").empty().text("Save");
-            $(".dialog-close-button").removeAttr("disabled");
-            $(".ui-dialog-titlebar button").removeAttr("disabled");
+    request.always(function() {
+        if (!reloading) {
+            $("#suppress-button").empty().text("Save");
         }
     });
 };
@@ -235,6 +237,9 @@ $(document).on("change", "input[name=suppress-type]", function () {
             $("#shelve-fieldset").prop('disabled', false);
         }
     }
+});
+$(document).on("click", "#suppress-button", function () {
+    jlab.suppress();
 });
 $(document).on("click", "#unsuppress-button", function () {
     jlab.unsuppress();

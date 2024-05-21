@@ -1,11 +1,9 @@
 package org.jlab.jaws.business.session;
 
 import org.jlab.jaws.business.util.KafkaConfig;
-import org.jlab.jaws.clients.EffectiveNotificationConsumer;
 import org.jlab.jaws.clients.OverrideConsumer;
 import org.jlab.jaws.entity.AlarmOverrideKey;
 import org.jlab.jaws.entity.AlarmOverrideUnion;
-import org.jlab.jaws.entity.EffectiveNotification;
 import org.jlab.jaws.entity.OverriddenAlarmType;
 import org.jlab.jaws.persistence.entity.Alarm;
 import org.jlab.kafka.eventsource.EventSourceListener;
@@ -62,7 +60,7 @@ public class KafkaOverrideFacade {
                 OverriddenAlarmType type = record.getKey().getType();
 
                 if(alarm != null) {
-                    overrideFacade.set(alarm, type, record.getValue());
+                    overrideFacade.oracleSet(alarm, type, record.getValue());
                 } else {
                     LOG.warning("Override of unknown alarm: " + record.getKey());
                 }

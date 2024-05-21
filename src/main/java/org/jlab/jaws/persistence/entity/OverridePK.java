@@ -19,6 +19,13 @@ public class OverridePK implements Serializable {
     @NotNull
     private OverriddenAlarmType type;
 
+    public OverridePK() {}
+
+    public OverridePK(Alarm alarm, OverriddenAlarmType type) {
+        this.alarm = alarm;
+        this.type = type;
+    }
+
     public Alarm getAlarm() {
         return alarm;
     }
