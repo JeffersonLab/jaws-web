@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -132,6 +133,19 @@ public class Alarm implements Serializable {
         }
 
         return csv;
+    }
+
+    public List<String> getLocationNameList() {
+        List<String> list = new ArrayList<>();
+
+        if(locationList != null && !locationList.isEmpty()) {
+            for(int i = 0; i < locationList.size(); i++) {
+                String name = locationList.get(0).getName();
+                list.add(name);
+            }
+        }
+
+        return list;
     }
 
     @Override

@@ -4,7 +4,6 @@ import org.jlab.jaws.business.util.KafkaConfig;
 import org.jlab.jaws.clients.EffectiveNotificationConsumer;
 import org.jlab.jaws.entity.EffectiveNotification;
 import org.jlab.jaws.persistence.entity.Alarm;
-import org.jlab.jaws.presentation.ws.SSE;
 import org.jlab.kafka.eventsource.EventSourceListener;
 import org.jlab.kafka.eventsource.EventSourceRecord;
 
@@ -25,8 +24,8 @@ import java.util.logging.Logger;
 @Singleton
 @Startup
 @RunAs("jaws-admin")
-public class KafkaFacade {
-    private static final Logger LOG = Logger.getLogger(KafkaFacade.class.getName());
+public class KafkaNotificationFacade {
+    private static final Logger LOG = Logger.getLogger(KafkaNotificationFacade.class.getName());
 
     private EffectiveNotificationConsumer notificationConsumer = null;
 
