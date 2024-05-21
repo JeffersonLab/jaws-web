@@ -209,7 +209,7 @@
             </div>
         </section>
         <div id="suppress-dialog" class="dialog" title="Suppress">
-            <form id="suppress-form" action="alarm-list" method="post">
+            <form id="suppress-form">
                 <ul class="key-value-list">
                     <li>
                         <div class="li-key">
@@ -286,6 +286,44 @@
                 </fieldset>
                 <div class="dialog-button-panel">
                     <button type="button" id="suppress-button" class="dialog-submit-button">Save</button>
+                    <button type="button" class="dialog-close-button">Cancel</button>
+                </div>
+            </form>
+        </div>
+        <div id="unsuppress-dialog" class="dialog" title="Unsuppress">
+            <form id="unsuppress-form">
+                <ul class="key-value-list">
+                    <li>
+                        <div class="li-key">
+                            <span>Alarms:</span>
+                        </div>
+                        <div class="li-value">
+                            <ul id="unsuppress-selected-row-list"></ul>
+                            <span id="unsuppress-dialog-alarm-count"></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <span>Type:</span>
+                        </div>
+                        <div class="li-value">
+                            <span class="radio-pair">
+                                <label for="type-reenable">Reenable</label>
+                                <input name="unsuppress-type" id="type-reenable" type="radio" value="DisabledOverride"/>
+                            </span>
+                            <span class="radio-pair">
+                                <label for="type-unfilter">Unfilter</label>
+                                <input name="unsuppress-type" id="type-unfilter" type="radio" value="FilterOverride"/>
+                            </span>
+                            <span class="radio-pair">
+                                <label for="type-unshelve">Unshelve</label>
+                                <input name="unsuppress-type" id="type-unshelve" type="radio" value="ShelvedOverride"/>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+                <div class="dialog-button-panel">
+                    <button type="button" id="unsuppress-button" class="dialog-submit-button">Save</button>
                     <button type="button" class="dialog-close-button">Cancel</button>
                 </div>
             </form>

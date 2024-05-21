@@ -46,6 +46,55 @@ jlab.acknowledge = function() {
         }
     });
 };
+jlab.unsuppress = function() {
+    var reloading = false,
+        nameArray = [],
+        idArray = [],
+        type = $('input[name="unsuppress-type"]:checked').val();
+
+    $("#notification-table .inner-table .selected-row").each(function () {
+        var alarmName = $(this).closest("tr").find(":nth-child(1) a").text(),
+            alarmId = $(this).closest("tr").attr("data-id");
+
+        nameArray.push(alarmName);
+        idArray.push(alarmId);
+    });
+
+    $("#unsuppress-button")
+        .height($("#unsuppress-button").height())
+        .width($("#unsuppress-button").width())
+        .empty().append('<div class="button-indicator"></div>');
+
+    var request = jQuery.ajax({
+        url: "/jaws/ajax/unsuppress",
+        type: "POST",
+        data: {
+            'name[]': nameArray,
+            type: type
+        },
+        dataType: "json"
+    });
+
+    request.done(function(json) {
+        if (json.stat === 'ok') {
+            reloading = true;
+            window.location.reload();
+        } else {
+            alert(json.error);
+        }
+    });
+
+    request.fail(function(xhr, textStatus) {
+        window.console && console.log('Unable to unsuppress alarms; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
+        alert('Unable to unsuppress: Server unavailable or unresponsive');
+    });
+
+    request.always(function() {
+        if (!reloading) {
+            $("#unsuppress-button").empty().text("Save");
+        }
+    });
+};
 jlab.suppress = function () {
     if (jlab.isRequest()) {
         window.console && console.log("Ajax already in progress");
@@ -134,13 +183,56 @@ jlab.openSuppressDialog = function () {
     var entityStr = (count === 1) ? ' Alarm' : ' Alarms';
     $("#suppress-dialog-alarm-count").text(count + entityStr);
 
+    $("#type-disabled").prop("checked", true).trigger("click");
+
     $("#suppress-dialog").dialog("open");
 };
+jlab.openUnsuppressDialog = function () {
+    var nameArray = [],
+        idArray = [];
+
+    if ($("#notification-table .inner-table .selected-row").length < 1) {
+        window.console && console.log('No rows selected');
+        return;
+    }
+
+    $("#notification-table .inner-table .selected-row").each(function () {
+        var alarmName = $(this).closest("tr").find(":nth-child(1) a").text(),
+            alarmId = $(this).closest("tr").attr("data-id");
+
+        nameArray.push(alarmName);
+        idArray.push(alarmId);
+    });
+
+    var $selectedList = $("#unsuppress-selected-row-list");
+
+    $selectedList.attr("data-id-json", JSON.stringify(idArray));
+
+    $selectedList.empty();
+
+    for (var i = 0; i < nameArray.length; i++) {
+        $selectedList.append('<li>' + nameArray[i] + '</li>');
+    }
+
+    var count = $("#selected-count").text() * 1;
+    var entityStr = (count === 1) ? ' Alarm' : ' Alarms';
+    $("#unsuppress-dialog-alarm-count").text(count + entityStr);
+
+    $("#type-reenable").prop("checked", true);
+
+    $("#unsuppress-dialog").dialog("open");
+};
+$(document).on("click", "#unsuppress-button", function () {
+    jlab.unsuppress();
+});
 $(document).on("click", "#acknowledge-button", function () {
     jlab.acknowledge();
 });
 $(document).on("click", "#open-suppress-button", function () {
     jlab.openSuppressDialog();
+});
+$(document).on("click", "#open-unsuppress-button", function () {
+    jlab.openUnsuppressDialog();
 });
 $(document).on("click", ".default-clear-panel", function () {
     $("#type-select").val('');
