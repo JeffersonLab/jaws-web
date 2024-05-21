@@ -1,4 +1,51 @@
 var jlab = jlab || {};
+jlab.acknowledge = function() {
+    var reloading = false,
+        nameArray = [],
+        idArray = [];
+
+    $("#notification-table .inner-table .selected-row").each(function () {
+        var alarmName = $(this).closest("tr").find(":nth-child(1) a").text(),
+            alarmId = $(this).closest("tr").attr("data-id");
+
+        nameArray.push(alarmName);
+        idArray.push(alarmId);
+    });
+
+    $("#acknowledge-button")
+        .height($("#acknowledge-button").height())
+        .width($("#acknowledge-button").width())
+        .empty().append('<div class="button-indicator"></div>');
+
+    var request = jQuery.ajax({
+        url: "/jaws/ajax/acknowledge",
+        type: "POST",
+        data: {
+            'name[]': nameArray
+        },
+        dataType: "json"
+    });
+
+    request.done(function(json) {
+        if (json.stat === 'ok') {
+            reloading = true;
+            window.location.reload();
+        } else {
+            alert(json.error);
+        }
+    });
+
+    request.fail(function(xhr, textStatus) {
+        window.console && console.log('Unable to acknowledge alarms; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
+        alert('Unable to acknowledge: Server unavailable or unresponsive');
+    });
+
+    request.always(function() {
+        if (!reloading) {
+            $("#acknowledge-button").empty().text("Acknowledge");
+        }
+    });
+};
 jlab.suppress = function () {
     if (jlab.isRequest()) {
         window.console && console.log("Ajax already in progress");
@@ -89,6 +136,9 @@ jlab.openSuppressDialog = function () {
 
     $("#suppress-dialog").dialog("open");
 };
+$(document).on("click", "#acknowledge-button", function () {
+    jlab.acknowledge();
+});
 $(document).on("click", "#open-suppress-button", function () {
     jlab.openSuppressDialog();
 });

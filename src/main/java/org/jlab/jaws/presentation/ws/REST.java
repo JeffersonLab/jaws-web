@@ -4,6 +4,7 @@ package org.jlab.jaws.presentation.ws;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
+import org.jlab.jaws.business.util.KafkaConfig;
 import org.jlab.jaws.clients.ClassProducer;
 import org.jlab.jaws.clients.InstanceProducer;
 import org.jlab.jaws.entity.*;
@@ -16,22 +17,6 @@ import java.util.Properties;
 
 @Path("/rest")
 public class REST {
-
-    private Properties getProducerProps() {
-        final Properties props = new Properties();
-
-        props.put("bootstrap.servers", JaxRSApp.BOOTSTRAP_SERVERS);
-
-        return props;
-    }
-
-    private Properties getProducerPropsWithRegistry() {
-        final Properties props = getProducerProps();
-
-        props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, JaxRSApp.SCHEMA_REGISTRY);
-
-        return props;
-    }
 
     @GET
     @Path("priorities")
@@ -50,7 +35,7 @@ public class REST {
 
         String key = name;
 
-        Properties props = getProducerPropsWithRegistry();
+        Properties props = KafkaConfig.getProducerPropsWithRegistry();
 
         try(InstanceProducer p = new InstanceProducer(props)) {
             p.send(key, null);
@@ -89,7 +74,7 @@ public class REST {
         value.setMaskedby(maskedby);
         value.setScreencommand(screencommand);
 
-        Properties props = getProducerPropsWithRegistry();
+        Properties props = KafkaConfig.getProducerPropsWithRegistry();
 
         try(InstanceProducer p = new InstanceProducer(props)) {
             p.send(key, value);
@@ -105,7 +90,7 @@ public class REST {
 
         String key = name;
 
-        Properties props = getProducerPropsWithRegistry();
+        Properties props = KafkaConfig.getProducerPropsWithRegistry();
 
         try(ClassProducer p = new ClassProducer(props)) {
             p.send(key, null);
@@ -149,7 +134,7 @@ public class REST {
         value.setOndelayseconds(ondelayseconds);
         value.setOffdelayseconds(offdelayseconds);
 
-        Properties props = getProducerPropsWithRegistry();
+        Properties props = KafkaConfig.getProducerPropsWithRegistry();
 
         try(ClassProducer producer = new ClassProducer(props)) {
             producer.send(key, value);

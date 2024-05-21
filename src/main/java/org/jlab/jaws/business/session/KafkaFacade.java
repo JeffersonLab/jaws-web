@@ -1,5 +1,6 @@
 package org.jlab.jaws.business.session;
 
+import org.jlab.jaws.business.util.KafkaConfig;
 import org.jlab.jaws.clients.EffectiveNotificationConsumer;
 import org.jlab.jaws.entity.EffectiveNotification;
 import org.jlab.jaws.persistence.entity.Alarm;
@@ -38,7 +39,7 @@ public class KafkaFacade {
     private void init() {
         notificationFacade.clearCache();
 
-        final Properties notificationProps = SSE.getConsumerPropsWithRegistry(-1, false);
+        final Properties notificationProps = KafkaConfig.getConsumerPropsWithRegistry(-1, false);
         notificationConsumer = new EffectiveNotificationConsumer(notificationProps);
         EventSourceListener<String, EffectiveNotification> notificationListener = new NotificationListener<>();
         notificationConsumer.addListener(notificationListener);

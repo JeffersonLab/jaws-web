@@ -2,6 +2,7 @@ package org.jlab.jaws.presentation.ws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
+import org.jlab.jaws.business.util.KafkaConfig;
 import org.jlab.jaws.clients.*;
 import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.json.*;
@@ -170,15 +171,15 @@ public class SSE implements ServletContextListener {
 
             @Override
             public void run() {
-                final Properties alarmProps = getConsumerPropsWithRegistry(alarmIndex, initiallyActiveOnly);
-                final Properties activationProps = getConsumerPropsWithRegistry(activationIndex, initiallyActiveOnly);
-                final Properties categoryProps = getConsumerProps(categoryIndex, false);
-                final Properties classProps = getConsumerPropsWithRegistry(classIndex, false);
-                final Properties instanceProps = getConsumerPropsWithRegistry(instanceIndex, false);
-                final Properties locationProps = getConsumerPropsWithRegistry(locationIndex, false);
-                final Properties notificationProps = getConsumerPropsWithRegistry(notificationIndex, initiallyActiveOnly);
-                final Properties overrideProps = getConsumerPropsWithRegistry(overrideIndex, false);
-                final Properties registrationProps = getConsumerPropsWithRegistry(registrationIndex, false);
+                final Properties alarmProps = KafkaConfig.getConsumerPropsWithRegistry(alarmIndex, initiallyActiveOnly);
+                final Properties activationProps = KafkaConfig.getConsumerPropsWithRegistry(activationIndex, initiallyActiveOnly);
+                final Properties categoryProps = KafkaConfig.getConsumerProps(categoryIndex, false);
+                final Properties classProps = KafkaConfig.getConsumerPropsWithRegistry(classIndex, false);
+                final Properties instanceProps = KafkaConfig.getConsumerPropsWithRegistry(instanceIndex, false);
+                final Properties locationProps = KafkaConfig.getConsumerPropsWithRegistry(locationIndex, false);
+                final Properties notificationProps = KafkaConfig.getConsumerPropsWithRegistry(notificationIndex, initiallyActiveOnly);
+                final Properties overrideProps = KafkaConfig.getConsumerPropsWithRegistry(overrideIndex, false);
+                final Properties registrationProps = KafkaConfig.getConsumerPropsWithRegistry(registrationIndex, false);
 
                 try (
                         EffectiveAlarmConsumer alarmConsumer = new EffectiveAlarmConsumer(alarmProps);
@@ -337,25 +338,6 @@ public class SSE implements ServletContextListener {
         public boolean isActive(AlarmActivationUnion value) {
             return isActiveUnion(value.getUnion());
         }
-    }
-
-    public static Properties getConsumerProps(long resumeOffset, boolean compactedCache) {
-        final Properties props = new Properties();
-
-        props.put(EventSourceConfig.GROUP_ID_CONFIG, "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
-        props.put(EventSourceConfig.BOOTSTRAP_SERVERS_CONFIG, JaxRSApp.BOOTSTRAP_SERVERS);
-        props.put(EventSourceConfig.RESUME_OFFSET_CONFIG, resumeOffset);
-        props.put(EventSourceConfig.COMPACTED_CACHE_CONFIG, compactedCache);
-
-        return props;
-    }
-
-    public static Properties getConsumerPropsWithRegistry(long resumeOffset, boolean compactedCache) {
-        final Properties props = getConsumerProps(resumeOffset, compactedCache);
-
-        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, JaxRSApp.SCHEMA_REGISTRY);
-
-        return props;
     }
 
     class Mixin {

@@ -1,5 +1,6 @@
 package org.jlab.jaws.business.session;
 
+import org.jlab.jaws.clients.OverrideProducer;
 import org.jlab.jaws.persistence.entity.*;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
@@ -369,5 +370,18 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
 
         addAlarm(name, action.getActionId(), locationIdList.toArray(new BigInteger[0]),
                  device, screenCommand, maskedBy, pv);
+    }
+
+    @RolesAllowed("jaws-admin")
+    public void acknowledge(String[] nameArray) throws UserFriendlyException {
+        if(nameArray == null || nameArray.length == 0) {
+            throw new UserFriendlyException("Names selection must not be empty");
+        }
+
+        OverrideProducer producer;
+
+        for(String name : nameArray) {
+            System.out.println("name: " + name);
+        }
     }
 }
