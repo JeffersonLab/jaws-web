@@ -14,21 +14,37 @@ public class OverridePK implements Serializable {
     @ManyToOne(optional = false)
     private Alarm alarm;
     @Size(max = 32)
-    @Column(name = "OVERRIDE", length = 32, nullable = false)
+    @Column(name = "TYPE", length = 32, nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private OverriddenAlarmType override;
+    private OverriddenAlarmType type;
+
+    public Alarm getAlarm() {
+        return alarm;
+    }
+
+    public void setAlarm(Alarm alarm) {
+        this.alarm = alarm;
+    }
+
+    public OverriddenAlarmType getType() {
+        return type;
+    }
+
+    public void setType(OverriddenAlarmType type) {
+        this.type = type;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof OverridePK)) return false;
         OverridePK that = (OverridePK) o;
-        return Objects.equals(alarm, that.alarm) && override == that.override;
+        return Objects.equals(alarm, that.alarm) && type == that.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(alarm, override);
+        return Objects.hash(alarm, type);
     }
 }

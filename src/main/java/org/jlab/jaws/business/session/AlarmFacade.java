@@ -374,18 +374,4 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
         addAlarm(name, action.getActionId(), locationIdList.toArray(new BigInteger[0]),
                  device, screenCommand, maskedBy, pv);
     }
-
-    @RolesAllowed("jaws-admin")
-    public void acknowledge(String[] nameArray) throws UserFriendlyException {
-        if(nameArray == null || nameArray.length == 0) {
-            throw new UserFriendlyException("Names selection must not be empty");
-        }
-
-        try(OverrideProducer producer = new OverrideProducer(KafkaConfig.getProducerPropsWithRegistry())) {
-            for (String name : nameArray) {
-                AlarmOverrideKey key = new AlarmOverrideKey(name, OverriddenAlarmType.Latched);
-                producer.send(key, null);
-            }
-        }
-    }
 }

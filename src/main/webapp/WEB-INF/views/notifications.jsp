@@ -241,15 +241,15 @@
                         <div class="li-value">
                             <span class="radio-pair">
                                 <label for="type-disabled">Disable</label>
-                                <input name="suppress-type" id="type-disabled" type="radio" value="DisabledOverride"/>
+                                <input name="suppress-type" id="type-disabled" type="radio" value="Disabled"/>
                             </span>
                             <span class="radio-pair">
                                 <label for="type-filtered">Filter</label>
-                                <input name="suppress-type" id="type-filtered" type="radio" value="FilteredOverride"/>
+                                <input name="suppress-type" id="type-filtered" type="radio" value="Filtered"/>
                             </span>
                             <span class="radio-pair">
                                 <label for="type-shelved">Shelve</label>
-                                <input name="suppress-type" id="type-shelved" type="radio" value="ShelvedOverride"/>
+                                <input name="suppress-type" id="type-shelved" type="radio" value="Shelved"/>
                             </span>
                         </div>
                     </li>
@@ -323,15 +323,15 @@
                         <div class="li-value">
                             <span class="radio-pair">
                                 <label for="type-reenable">Reenable</label>
-                                <input name="unsuppress-type" id="type-reenable" type="radio" value="DisabledOverride"/>
+                                <input name="unsuppress-type" id="type-reenable" type="radio" value="Disabled"/>
                             </span>
                             <span class="radio-pair">
                                 <label for="type-unfilter">Unfilter</label>
-                                <input name="unsuppress-type" id="type-unfilter" type="radio" value="FilterOverride"/>
+                                <input name="unsuppress-type" id="type-unfilter" type="radio" value="Filtered"/>
                             </span>
                             <span class="radio-pair">
                                 <label for="type-unshelve">Unshelve</label>
-                                <input name="unsuppress-type" id="type-unshelve" type="radio" value="ShelvedOverride"/>
+                                <input name="unsuppress-type" id="type-unshelve" type="radio" value="Shelved"/>
                             </span>
                         </div>
                     </li>

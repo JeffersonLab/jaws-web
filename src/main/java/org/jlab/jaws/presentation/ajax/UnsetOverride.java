@@ -1,6 +1,7 @@
 package org.jlab.jaws.presentation.ajax;
 
-import org.jlab.jaws.business.session.AlarmFacade;
+import org.jlab.jaws.business.session.OverrideFacade;
+import org.jlab.jaws.entity.OverriddenAlarmType;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
 import javax.ejb.EJB;
@@ -21,26 +22,26 @@ import java.util.logging.Logger;
  *
  * @author ryans
  */
-@WebServlet(name = "Unsuppress", urlPatterns = {"/ajax/unsuppress"})
-public class Unsuppress extends HttpServlet {
+@WebServlet(name = "UnsetOverride", urlPatterns = {"/ajax/unset-override"})
+public class UnsetOverride extends HttpServlet {
 
-    private static final Logger logger = Logger.getLogger(Unsuppress.class.getName());
+    private static final Logger logger = Logger.getLogger(UnsetOverride.class.getName());
 
     @EJB
-    AlarmFacade alarmFacade;
+    OverrideFacade overrideFacade;
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String[] nameArray = request.getParameterValues("name[]");
-        String type = request.getParameter("type");
-        
+        OverriddenAlarmType type = convertOverrideType(request, "type");
+
         String stat = "ok";
         String error = null;
         
         try {
-            alarmFacade.acknowledge(nameArray);
+            overrideFacade.unset(nameArray, type);
         } catch(UserFriendlyException e) {
             stat = "fail";
             error = "Unable to unsuppress Alarms: " + e.getMessage();
@@ -65,6 +66,18 @@ public class Unsuppress extends HttpServlet {
             }
             gen.writeEnd();
         }
+    }
+
+    private OverriddenAlarmType convertOverrideType(HttpServletRequest request, String name) {
+        String value = request.getParameter(name);
+
+        OverriddenAlarmType type = null;
+
+        if(value != null && !value.isBlank()) {
+            type = OverriddenAlarmType.valueOf(value);
+        }
+
+        return type;
     }
 
 }

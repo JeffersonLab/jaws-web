@@ -18,9 +18,10 @@ jlab.acknowledge = function() {
         .empty().append('<div class="button-indicator"></div>');
 
     var request = jQuery.ajax({
-        url: "/jaws/ajax/acknowledge",
+        url: "/jaws/ajax/unset-override",
         type: "POST",
         data: {
+            type: 'Latched',
             'name[]': nameArray
         },
         dataType: "json"
@@ -66,7 +67,7 @@ jlab.unsuppress = function() {
         .empty().append('<div class="button-indicator"></div>');
 
     var request = jQuery.ajax({
-        url: "/jaws/ajax/unsuppress",
+        url: "/jaws/ajax/unset-override",
         type: "POST",
         data: {
             'name[]': nameArray,
@@ -229,7 +230,7 @@ jlab.openUnsuppressDialog = function () {
 };
 $(document).on("change", "input[name=suppress-type]", function () {
     $("#shelve-fieldset").prop('disabled', true);
-    if($(this).val() === "ShelvedOverride") {
+    if($(this).val() === "Shelved") {
         if($(this).is(":checked")) {
             $("#shelve-fieldset").prop('disabled', false);
         }
