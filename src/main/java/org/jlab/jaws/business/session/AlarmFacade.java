@@ -1,6 +1,9 @@
 package org.jlab.jaws.business.session;
 
+import org.jlab.jaws.business.util.KafkaConfig;
 import org.jlab.jaws.clients.OverrideProducer;
+import org.jlab.jaws.entity.AlarmOverrideKey;
+import org.jlab.jaws.entity.OverriddenAlarmType;
 import org.jlab.jaws.persistence.entity.*;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
@@ -378,10 +381,11 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
             throw new UserFriendlyException("Names selection must not be empty");
         }
 
-        OverrideProducer producer;
-
-        for(String name : nameArray) {
-            System.out.println("name: " + name);
+        try(OverrideProducer producer = new OverrideProducer(KafkaConfig.getProducerPropsWithRegistry())) {
+            for (String name : nameArray) {
+                AlarmOverrideKey key = new AlarmOverrideKey(name, OverriddenAlarmType.Latched);
+                producer.send(key, null);
+            }
         }
     }
 }
