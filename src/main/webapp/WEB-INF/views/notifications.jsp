@@ -22,20 +22,6 @@
                             <ul class="key-value-list">
                                 <li>
                                     <div class="li-key">
-                                        <label for="type-select">Type</label>
-                                    </div>
-                                    <div class="li-value">
-                                        <select id="type-select" name="type">
-                                            <option value="">&nbsp;</option>
-                                            <c:forEach items="${typeList}" var="type">
-                                                <option value="${type}"${param.type eq type ? ' selected="selected"' : ''}>
-                                                    <c:out value="${type}"/></option>
-                                            </c:forEach>
-                                        </select>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="li-key">
                                         <label for="state-select">State</label>
                                     </div>
                                     <div class="li-value">
@@ -44,6 +30,34 @@
                                             <c:forEach items="${stateList}" var="state">
                                                 <option value="${state.name()}"${param.state eq state.name() ? ' selected="selected"' : ''}>
                                                     <c:out value="${state.name()}"/></option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
+                                        <label for="override-select">Override</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="override-select" name="override">
+                                            <option value="">&nbsp;</option>
+                                            <c:forEach items="${overrideList}" var="override">
+                                                <option value="${override.name()}"${param.override eq override.name() ? ' selected="selected"' : ''}>
+                                                    <c:out value="${override.getLabel()}"/></option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
+                                        <label for="type-select">Type</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="type-select" name="type">
+                                            <option value="">&nbsp;</option>
+                                            <c:forEach items="${typeList}" var="type">
+                                                <option value="${type}"${param.type eq type ? ' selected="selected"' : ''}>
+                                                    <c:out value="${type}"/></option>
                                             </c:forEach>
                                         </select>
                                     </div>

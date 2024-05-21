@@ -4,6 +4,8 @@ import org.jlab.jaws.business.session.*;
 import org.jlab.jaws.entity.AlarmState;
 import org.jlab.jaws.entity.OverriddenAlarmType;
 import org.jlab.jaws.persistence.entity.*;
+import org.jlab.jaws.persistence.model.BinaryState;
+import org.jlab.jaws.persistence.model.OverriddenState;
 import org.jlab.smoothness.presentation.util.Paginator;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 import org.jlab.smoothness.presentation.util.ParamUtil;
@@ -51,8 +53,8 @@ public class Notifications extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        AlarmState state = convertState(request, "state");
-        OverriddenAlarmType override = convertOverrideKey(request, "override");
+        BinaryState state = convertState(request, "state");
+        AlarmState override = convertOverrideKey(request, "override");
         String activationType = request.getParameter("type");
         String alarmName = request.getParameter("alarmName");
         BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
@@ -65,7 +67,8 @@ public class Notifications extends HttpServlet {
 
         List<Notification> notificationList = notificationFacade.filterList(state, override, activationType, locationIdArray, priorityId, teamId, alarmName, actionName, componentName, offset, maxPerPage);
         List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
-        List<AlarmState> stateList = Arrays.asList(AlarmState.values());
+        List<OverriddenState> overrideList = Arrays.asList(OverriddenState.values());
+        List<BinaryState> stateList = Arrays.asList(BinaryState.values());
         List<Priority> priorityList = priorityFacade.findAll(new AbstractFacade.OrderDirective("priorityId"));
         List<Action> actionList = actionFacade.findAll(new AbstractFacade.OrderDirective("name"));
         Location locationRoot = locationFacade.findBranch(Location.TREE_ROOT);
@@ -112,8 +115,9 @@ public class Notifications extends HttpServlet {
         request.setAttribute("actionList", actionList);
         request.setAttribute("selectionMessage", selectionMessage);
         request.setAttribute("teamList", teamList);
-        request.setAttribute("typeList", typeList);
         request.setAttribute("stateList", stateList);
+        request.setAttribute("overrideList", overrideList);
+        request.setAttribute("typeList", typeList);
         request.setAttribute("priorityList", priorityList);
         request.setAttribute("locationRoot", locationRoot);
         request.setAttribute("paginator", paginator);
@@ -121,31 +125,32 @@ public class Notifications extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/views/notifications.jsp").forward(request, response);
     }
 
-    private OverriddenAlarmType convertOverrideKey(HttpServletRequest request, String name) {
+    private AlarmState convertOverrideKey(HttpServletRequest request, String name) {
         String value = request.getParameter(name);
 
-        OverriddenAlarmType type = null;
+        AlarmState type = null;
 
         if(value != null && !value.isBlank()) {
-            type = OverriddenAlarmType.valueOf(value);
+            OverriddenState intermediate = OverriddenState.valueOf(value);
+            type = intermediate.getAlarmState();
         }
 
         return type;
     }
 
-    private AlarmState convertState(HttpServletRequest request, String name) {
+    private BinaryState convertState(HttpServletRequest request, String name) {
         String value = request.getParameter(name);
 
-        AlarmState state = null;
+        BinaryState state = null;
 
         if(value != null && !value.isBlank()) {
-            state = AlarmState.valueOf(value);
+            state = BinaryState.valueOf(value);
         }
 
         return state;
     }
 
-    private String createSelectionMessage(Paginator paginator, AlarmState state, OverriddenAlarmType override, String activationType, List<Location> locationList, Priority priority, Team team, String alarmName, String actionName, String componentName) {
+    private String createSelectionMessage(Paginator paginator, BinaryState state, AlarmState override, String activationType, List<Location> locationList, Priority priority, Team team, String alarmName, String actionName, String componentName) {
         DecimalFormat formatter = new DecimalFormat("###,###");
 
         String selectionMessage = "All Notifications ";

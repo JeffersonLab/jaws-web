@@ -1,7 +1,9 @@
 package org.jlab.jaws.business.session;
 
+import org.checkerframework.checker.units.qual.A;
 import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.entity.*;
+import org.jlab.jaws.persistence.model.BinaryState;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -93,7 +95,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     }
 
     private List<Predicate> getFilters(CriteriaBuilder cb, CriteriaQuery<? extends Object> cq, Root<Notification> root,
-                                       AlarmState state, OverriddenAlarmType override, String activationType,
+                                       BinaryState state, AlarmState override, String activationType,
                                        BigInteger[] locationIdArray,
                                        BigInteger priorityId, BigInteger teamId, String alarmName, String actionName,
                                        String componentName, Map<String, Join> joins) {
@@ -108,11 +110,18 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         joins.put("component", componentJoin);
 
         if (state != null) {
-            filters.add(cb.equal(root.get("state"), state));
+            List<AlarmState> list;
+            if(state.equals(BinaryState.Active)) {
+                list = BinaryState.getActiveList();
+            } else {
+                list = BinaryState.getNormalList();
+            }
+
+            filters.add(root.get("state").in(list));
         }
 
         if (override != null) {
-            // TOODO: in override table query
+            filters.add(cb.equal(root.get("state"), override));
         }
 
         if (activationType != null && !activationType.isEmpty()) {
@@ -169,7 +178,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     }
 
     @PermitAll
-    public List<Notification> filterList(AlarmState state, OverriddenAlarmType override, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, String alarmName, String actionName, String componentName, int offset, int max) {
+    public List<Notification> filterList(BinaryState state, AlarmState override, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, String alarmName, String actionName, String componentName, int offset, int max) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Notification> cq = cb.createQuery(Notification.class);
         Root<Notification> root = cq.from(Notification.class);
@@ -196,7 +205,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     }
 
     @PermitAll
-    public long countList(AlarmState state, OverriddenAlarmType override, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, String alarmName, String actionName, String componentName) {
+    public long countList(BinaryState state, AlarmState override, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, String alarmName, String actionName, String componentName) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<Notification> root = cq.from(Notification.class);

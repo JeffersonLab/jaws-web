@@ -248,8 +248,9 @@ $(document).on("click", "#open-unsuppress-button", function () {
     jlab.openUnsuppressDialog();
 });
 $(document).on("click", ".default-clear-panel", function () {
-    $("#type-select").val('');
     $("#state-select").val('');
+    $("#override-select").val('');
+    $("#type-select").val('');
     $("#location-select").val(null).trigger('change');
     $("#priority-select").val('');
     $("#team-select").val('');
