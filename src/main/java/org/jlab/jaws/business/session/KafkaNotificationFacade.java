@@ -59,7 +59,7 @@ public class KafkaNotificationFacade {
                 Alarm alarm = alarmFacade.findByName(record.getKey());
 
                 if(alarm != null) {
-                    notificationFacade.set(alarm, record.getValue());
+                    notificationFacade.oracleSet(alarm, record.getValue());
                 } else {
                     LOG.warning("Notification of unknown alarm: " + record.getKey());
                 }

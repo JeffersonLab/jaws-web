@@ -1,6 +1,5 @@
 package org.jlab.jaws.business.session;
 
-import org.checkerframework.checker.units.qual.A;
 import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.entity.*;
 import org.jlab.jaws.persistence.model.BinaryState;
@@ -47,7 +46,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
 
     // Note: Can't restrict to jaws-admin because caller in NotificationFacade RunAs doesn't work
     @PermitAll
-    public void set(Alarm alarm, EffectiveNotification effectiveNotification) {
+    public void oracleSet(Alarm alarm, EffectiveNotification effectiveNotification) {
         em.createQuery("delete from Notification n where n.alarm = :a").setParameter("a", alarm).executeUpdate();
 
         Notification notification = new Notification();
