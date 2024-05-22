@@ -1,3 +1,6 @@
+div#page {
+    max-width: 1260px;
+}
 #page-header-logo {
     background: url("../img/logo-32.png") 0 0;
 }

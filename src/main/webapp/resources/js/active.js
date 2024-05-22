@@ -97,7 +97,8 @@ let table = document.getElementById("alarm-table"),
     tbody = table.querySelector("tbody"),
     thList = table.querySelectorAll("thead th"),
     columnStrList = [...thList.values()].map(th => th.textContent),
-    alarmCountSpan = document.getElementById("alarm-count");
+    alarmCountSpan = document.getElementById("alarm-count"),
+    diagramContainer = document.getElementById("diagram-container");
 
 function addToTable(data) {
     for(const record of data) {
@@ -139,6 +140,8 @@ function addAlarms(data) {
 
     for(const record of data) {
         activeByName.set(record.name, record);
+
+        addToDiagram(record);
     }
 
     //removeFromTable(keys);
@@ -150,6 +153,8 @@ function removeAlarms(keys) {
 
     for(const name of keys) {
         activeByName.delete(name);
+
+        removeFromDiagram(name);
     }
 
     //removeFromTable(keys);
@@ -167,7 +172,6 @@ evtSource.addEventListener('ping', (e) =>{
 const loading = document.getElementById('loading');
 
 evtSource.addEventListener('alarm-highwatermark', (e) =>{
-    console.log('Got highwatermark!');
     loading.style.display = "none";
     alarmCountSpan.style.display = "inline";
 });
@@ -203,7 +207,6 @@ evtSource.addEventListener('alarm', (e) => {
     }
 
     updateCount();
-    updateMap();
 });
 function updateCount() {
     let count = activeByName.size;
@@ -216,8 +219,31 @@ function updateCount() {
         alarmCountSpan.classList.remove("alarming");
     }
 }
-function updateMap() {
- // TODO: iterate activeByName and use a coordinate to location hashmap to draw on the location map
+function addToDiagram(alarm) {
+    const element = document.createElement("span"),
+          id = "alarm-" + alarm.name.replaceAll(' ', ''),
+          locationCsv = alarm.location;
+
+    element.setAttribute("id", id);
+
+    let locationArray = locationCsv.split(",");
+
+    for(let l of locationArray) {
+        const locElement = document.createElement("span");
+        let locationClass = 'location-' + l.replaceAll(' ', '');
+        locElement.classList.add(locationClass);
+        element.append(locElement);
+    }
+
+    diagramContainer.appendChild(element);
+}
+function removeFromDiagram(name) {
+    let id = "alarm-" + name.replaceAll(' ', ''),
+        element = document.getElementById(id);
+
+    if(element) {
+        element.remove();
+    }
 }
 $(function() {
     $("#all-dialog").dialog({

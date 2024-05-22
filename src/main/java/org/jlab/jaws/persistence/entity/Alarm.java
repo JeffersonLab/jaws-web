@@ -140,7 +140,7 @@ public class Alarm implements Serializable {
 
         if(locationList != null && !locationList.isEmpty()) {
             for(int i = 0; i < locationList.size(); i++) {
-                String name = locationList.get(0).getName();
+                String name = locationList.get(i).getName();
                 list.add(name);
             }
         }

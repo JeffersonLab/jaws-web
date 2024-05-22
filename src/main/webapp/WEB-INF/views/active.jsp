@@ -16,7 +16,9 @@
         <section>
             <h2 id="page-header-title"><c:out value="${title}"/><span class="status" id="alarm-count">0</span><span class="status" id="loading"><span class="button-indicator"></span> Loading...</span></h2>
             <div id="liveness-heartbeat">Liveness Heartbeat: <span id="liveness-ts">None</span></div>
-            <img draggable="false" alt="machine" width="1100" height="600" src="${pageContext.request.contextPath}/resources/img/accelerator.png"/>
+            <div id="diagram-container">
+                <img draggable="false" alt="machine" src="${pageContext.request.contextPath}/resources/img/accelerator.png"/>
+            </div>
             <a id="list-active-link" href="${pageContext.request.contextPath}/notifications?state=Active">List Active</a>
         </section>
         <div id="all-dialog" class="dialog" title="Active Alarms">

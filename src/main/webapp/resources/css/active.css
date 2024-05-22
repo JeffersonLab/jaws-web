@@ -30,3 +30,82 @@
     width: 100%;
     text-align: center;
 }
+
+div#page {
+    min-width: 1260px;
+}
+#diagram-container {
+    margin: 0 auto;
+    position: relative;
+    padding: 55px 5px 35px 5px;
+    height: 614px;
+    width: 1200px;
+}
+#diagram-container > span > span {
+    display: block;
+    position: absolute;
+    z-index: 1;
+}
+.location-NorthLinac {
+    left: 234px;
+    top: 82px;
+    height: 197px;
+    width: 883px;
+    background: url("https://ace.jlab.org/workmap/resources/img/pss/NL_red_line.png") no-repeat scroll 0 0 transparent;
+}
+.location-SouthLinac {
+    left: 234px;
+    top: 278px;
+    height: 197px;
+    width: 883px;
+    background: url("https://ace.jlab.org/workmap/resources/img/pss/SL_red_line.png") no-repeat scroll 0 0 transparent;
+}
+.location-Injector {
+    left: 184px;
+    top: 82px;
+    height: 7px;
+    width: 118px;
+    background: url("https://ace.jlab.org/workmap/resources/img/pss/Inj_red_line.png") no-repeat scroll 0 0 transparent;
+}
+.location-BSY {
+    left: 95px;
+    top: 384px;
+    height: 182px;
+    width: 187px;
+    background: url("https://ace.jlab.org/workmap/resources/img/pss/BSY_red_line.png") no-repeat scroll 0 0 transparent;
+}
+.location-HallA {
+    left: 22px;
+    top: 271px;
+    height: 136px;
+    width: 136px;
+    background: url("https://ace.jlab.org/workmap/resources/img/pss/HallA_red_line.png") no-repeat scroll 0 0 transparent;
+}
+.location-HallB {
+    left: 9px;
+    top: 428px;
+    height: 87px;
+    width: 87px;
+    background: url("https://ace.jlab.org/workmap/resources/img/pss/HallB_red_line.png") no-repeat scroll 0 0 transparent;
+}
+.location-HallC {
+    left: 11px;
+    top: 536px;
+    height: 129px;
+    width: 130px;
+    background: url("https://ace.jlab.org/workmap/resources/img/pss/HallC_red_line.png") no-repeat scroll 0 0 transparent;
+}
+.location-HallD {
+    left: 1088px;
+    top: 58px;
+    height: 57px;
+    width: 113px;
+    background: url("https://ace.jlab.org/workmap/resources/img/pss/HallD_red_line.png") no-repeat scroll 0 0 transparent;
+}
+.location-LERF {
+    left: 800px;
+    top: 290px;
+    height: 37px;
+    width: 103px;
+    background: url("https://ace.jlab.org/workmap/resources/img/pss/LERF_red_line.png") no-repeat scroll 0 0 transparent;
+}
