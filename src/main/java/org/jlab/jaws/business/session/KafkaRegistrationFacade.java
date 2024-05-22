@@ -2,8 +2,6 @@ package org.jlab.jaws.business.session;
 
 import org.jlab.jaws.business.util.KafkaConfig;
 import org.jlab.jaws.clients.CategoryProducer;
-import org.jlab.jaws.clients.ClassProducer;
-import org.jlab.jaws.clients.InstanceProducer;
 import org.jlab.jaws.clients.LocationProducer;
 import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.entity.Action;
@@ -83,41 +81,7 @@ public class KafkaRegistrationFacade {
     private void populateActions() {
         List<Action> actionList = actionFacade.findAll(new AbstractFacade.OrderDirective("name"));
 
-        if(actionList != null) {
-            try(ClassProducer producer = new ClassProducer(KafkaConfig.getProducerPropsWithRegistry())) {
-                for (Action action : actionList) {
-                    String key = action.getName();
-
-                    AlarmClass value = new AlarmClass();
-
-                    value.setRationale(action.getRationale());
-
-                    String priorityName = action.getPriority().getName();
-                    AlarmPriority ap = AlarmPriority.valueOf(priorityName);
-                    value.setPriority(ap);
-
-                    value.setCategory(action.getComponent().getName());
-                    value.setCorrectiveaction(action.getCorrectiveAction());
-                    value.setPointofcontactusername(action.getComponent().getTeam().getName());
-                    value.setFilterable(action.isFilterable());
-                    value.setLatchable(action.isLatchable());
-
-                    Long onDelaySeconds = null;
-                    if(action.getOnDelaySeconds() != null) {
-                        onDelaySeconds = action.getOnDelaySeconds().longValue();
-                    }
-                    value.setOndelayseconds(onDelaySeconds);
-
-                    Long offDelaySeconds = null;
-                    if(action.getOffDelaySeconds() != null) {
-                        offDelaySeconds = action.getOffDelaySeconds().longValue();
-                    }
-                    value.setOffdelayseconds(offDelaySeconds);
-
-                    producer.send(key, value);
-                }
-            }
-        }
+        actionFacade.kafkaSet(actionList);
     }
 
     private void populateAlarms() {
