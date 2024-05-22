@@ -1,9 +1,9 @@
 package org.jlab.jaws.business.session;
 
 import org.jlab.jaws.business.util.KafkaConfig;
+import org.jlab.jaws.clients.InstanceProducer;
 import org.jlab.jaws.clients.OverrideProducer;
-import org.jlab.jaws.entity.AlarmOverrideKey;
-import org.jlab.jaws.entity.OverriddenAlarmType;
+import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.entity.*;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
@@ -205,6 +205,47 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
         alarm.setPv(pv);
 
         create(alarm);
+
+        this.kafkaSet(Arrays.asList(alarm));
+    }
+
+    @RolesAllowed("jaws-admin")
+    public void kafkaSet(List<Alarm> alarmList) {
+        if(alarmList != null) {
+            try (InstanceProducer producer = new InstanceProducer(KafkaConfig.getProducerPropsWithRegistry())) {
+                for (Alarm alarm : alarmList) {
+                    String key = alarm.getName();
+
+                    AlarmInstance value = new AlarmInstance();
+
+                    value.setAlarmclass(alarm.getAction().getName());
+
+                    Object source = new Source();
+
+                    if(alarm.getPv() != null) {
+                        source = new EPICSSource(alarm.getPv());
+                    }
+
+                    value.setSource(source);
+                    value.setLocation(alarm.getLocationNameList());
+                    value.setMaskedby(alarm.getMaskedBy());
+                    value.setScreencommand(alarm.getScreenCommand());
+
+                    producer.send(key, value);
+                }
+            }
+        }
+    }
+
+    @RolesAllowed("jaws-admin")
+    public void kafkaUnset(List<String> list) {
+        if(list != null) {
+            try (InstanceProducer producer = new InstanceProducer(KafkaConfig.getProducerPropsWithRegistry())) {
+                for (String name : list) {
+                    producer.send(name, null);
+                }
+            }
+        }
     }
 
     @RolesAllowed("jaws-admin")
@@ -220,6 +261,8 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
         }
 
         remove(alarm);
+
+        kafkaUnset(Arrays.asList(alarm.getName()));
     }
 
     @RolesAllowed("jaws-admin")
@@ -270,6 +313,8 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
         alarm.setPv(pv);
 
         edit(alarm);
+
+        kafkaSet(Arrays.asList(alarm));
     }
 
     @RolesAllowed("jaws-admin")

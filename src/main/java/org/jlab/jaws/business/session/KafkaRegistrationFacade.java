@@ -123,29 +123,6 @@ public class KafkaRegistrationFacade {
     private void populateAlarms() {
         List<Alarm> alarmList = alarmFacade.findAll(new AbstractFacade.OrderDirective("name"));
 
-        if(alarmList != null) {
-            try (InstanceProducer producer = new InstanceProducer(KafkaConfig.getProducerPropsWithRegistry())) {
-                for (Alarm alarm : alarmList) {
-                    String key = alarm.getName();
-
-                    AlarmInstance value = new AlarmInstance();
-
-                    value.setAlarmclass(alarm.getAction().getName());
-
-                    Object source = new Source();
-
-                    if(alarm.getPv() != null) {
-                        source = new EPICSSource(alarm.getPv());
-                    }
-
-                    value.setSource(source);
-                    value.setLocation(alarm.getLocationNameList());
-                    value.setMaskedby(alarm.getMaskedBy());
-                    value.setScreencommand(alarm.getScreenCommand());
-
-                    producer.send(key, value);
-                }
-            }
-        }
+        alarmFacade.kafkaSet(alarmList);
     }
 }
