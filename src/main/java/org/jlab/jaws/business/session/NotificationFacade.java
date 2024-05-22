@@ -193,12 +193,15 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         }
 
         List<Order> orders = new ArrayList<>();
-        Path p0 = joins.get("action").get("priority");
+        Path p0 = root.get("state");
         Order o0 = cb.asc(p0);
         orders.add(o0);
-        Path p1 = joins.get("alarm").get("name");
+        Path p1 = joins.get("action").get("priority");
         Order o1 = cb.asc(p1);
         orders.add(o1);
+        Path p2 = joins.get("alarm").get("name");
+        Order o2 = cb.asc(p2);
+        orders.add(o2);
         cq.orderBy(orders);
         return getEntityManager().createQuery(cq).setFirstResult(offset).setMaxResults(max).getResultList();
     }
