@@ -46,6 +46,11 @@ div#page {
     position: absolute;
     z-index: 1;
 }
+.location-Linac1,
+.location-Linac3,
+.location-Linac5,
+.location-Linac7,
+.location-Linac9,
 .location-NorthLinac {
     left: 234px;
     top: 82px;
@@ -53,6 +58,10 @@ div#page {
     width: 883px;
     background: url("https://ace.jlab.org/workmap/resources/img/pss/NL_red_line.png") no-repeat scroll 0 0 transparent;
 }
+.location-Linac2,
+.location-Linac4,
+.location-Linac6,
+.location-Linac8,
 .location-SouthLinac {
     left: 234px;
     top: 278px;
@@ -60,6 +69,11 @@ div#page {
     width: 883px;
     background: url("https://ace.jlab.org/workmap/resources/img/pss/SL_red_line.png") no-repeat scroll 0 0 transparent;
 }
+.location-1D,
+.location-2D,
+.location-3D,
+.location-4D,
+.location-5D,
 .location-Injector {
     left: 184px;
     top: 82px;
@@ -67,6 +81,12 @@ div#page {
     width: 118px;
     background: url("https://ace.jlab.org/workmap/resources/img/pss/Inj_red_line.png") no-repeat scroll 0 0 transparent;
 }
+.location-BSYDump,
+.location-BSY2,
+.location-BSY4,
+.location-BSY6,
+.location-BSY8,
+.location-BSYA,
 .location-BSY {
     left: 95px;
     top: 384px;
