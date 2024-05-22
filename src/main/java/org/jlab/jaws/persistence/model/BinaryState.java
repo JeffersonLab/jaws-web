@@ -32,4 +32,12 @@ public enum BinaryState {
 
         return list;
     }
+
+    public static BinaryState fromAlarmState(AlarmState state) {
+        if(getActiveList().contains(state)) {
+            return BinaryState.Active;
+        } else {
+            return BinaryState.Normal;
+        }
+    }
 }

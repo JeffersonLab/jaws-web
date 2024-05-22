@@ -1,6 +1,8 @@
 package org.jlab.jaws.persistence.entity;
 
 import org.jlab.jaws.entity.AlarmState;
+import org.jlab.jaws.entity.OverriddenAlarmType;
+import org.jlab.jaws.persistence.model.BinaryState;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,7 +24,11 @@ public class Notification implements Serializable {
     @Column(name = "STATE", nullable = false, length = 32)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private AlarmState state;
+    private BinaryState state;
+    @Basic(optional = true)
+    @Column(name = "ACTIVE_OVERRIDE", nullable = true, length = 32)
+    @Enumerated(EnumType.STRING)
+    private OverriddenAlarmType override;
     @Size(max = 64)
     @NotNull
     @Column(name = "ACTIVATION_TYPE", length = 64, nullable = false)
@@ -49,12 +55,20 @@ public class Notification implements Serializable {
     }
 
 
-    public AlarmState getState() {
+    public BinaryState getState() {
         return state;
     }
 
-    public void setState(AlarmState state) {
+    public void setState(BinaryState state) {
         this.state = state;
+    }
+
+    public OverriddenAlarmType getActiveOverride() {
+        return override;
+    }
+
+    public void setActiveOverride(OverriddenAlarmType override) {
+        this.override = override;
     }
 
     public String getActivationType() {

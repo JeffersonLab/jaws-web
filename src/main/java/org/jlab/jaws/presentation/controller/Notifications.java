@@ -54,7 +54,7 @@ public class Notifications extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         BinaryState state = convertState(request, "state");
-        AlarmState override = convertOverrideKey(request, "override");
+        OverriddenAlarmType override = convertOverrideKey(request, "override");
         String activationType = request.getParameter("type");
         String alarmName = request.getParameter("alarmName");
         BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
@@ -125,14 +125,14 @@ public class Notifications extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/views/notifications.jsp").forward(request, response);
     }
 
-    private AlarmState convertOverrideKey(HttpServletRequest request, String name) {
+    private OverriddenAlarmType convertOverrideKey(HttpServletRequest request, String name) {
         String value = request.getParameter(name);
 
-        AlarmState type = null;
+        OverriddenAlarmType type = null;
 
         if(value != null && !value.isBlank()) {
             OverriddenState intermediate = OverriddenState.valueOf(value);
-            type = intermediate.getAlarmState();
+            type = intermediate.getOverrideType();
         }
 
         return type;
@@ -150,7 +150,7 @@ public class Notifications extends HttpServlet {
         return state;
     }
 
-    private String createSelectionMessage(Paginator paginator, BinaryState state, AlarmState override, String activationType, List<Location> locationList, Priority priority, Team team, String alarmName, String actionName, String componentName) {
+    private String createSelectionMessage(Paginator paginator, BinaryState state, OverriddenAlarmType override, String activationType, List<Location> locationList, Priority priority, Team team, String alarmName, String actionName, String componentName) {
         DecimalFormat formatter = new DecimalFormat("###,###");
 
         String selectionMessage = "All Notifications ";

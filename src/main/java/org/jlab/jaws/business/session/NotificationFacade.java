@@ -52,7 +52,15 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         Notification notification = new Notification();
 
         notification.setAlarm(alarm);
-        notification.setState(effectiveNotification.getState());
+
+        BinaryState state = BinaryState.fromAlarmState(effectiveNotification.getState());
+
+        notification.setState(state);
+
+        OverriddenAlarmType override = overrideFromAlarmState(effectiveNotification.getState());
+
+        notification.setActiveOverride(override);
+
         AlarmActivationUnion union = effectiveNotification.getActivation();
 
         String activationType = "NotActive";
@@ -78,23 +86,42 @@ public class NotificationFacade extends AbstractFacade<Notification> {
 
         notification.setActivationType(activationType);
 
-        AlarmOverrideSet overrides = effectiveNotification.getOverrides();
-
-        DisabledOverride disabled = overrides.getDisabled();
-        if(disabled != null) {
-
-        }
-
-        FilteredOverride filtered = overrides.getFiltered();
-        if(filtered != null) {
-
-        }
-
         create(notification);
     }
 
+    private OverriddenAlarmType overrideFromAlarmState(AlarmState state) {
+        OverriddenAlarmType override = null;
+
+        switch(state) {
+            case NormalDisabled:
+                override = OverriddenAlarmType.Disabled;
+                break;
+            case NormalFiltered:
+                override = OverriddenAlarmType.Filtered;
+                break;
+            case NormalMasked:
+                override = OverriddenAlarmType.Masked;
+                break;
+            case NormalOnDelayed:
+                override = OverriddenAlarmType.OnDelayed;
+                break;
+            case ActiveOffDelayed:
+                override = OverriddenAlarmType.OffDelayed;
+                break;
+            case NormalContinuousShelved:
+            case NormalOneShotShelved:
+                override = OverriddenAlarmType.Shelved;
+                break;
+            case ActiveLatched:
+                override = OverriddenAlarmType.Latched;
+                break;
+        }
+
+        return override;
+    }
+
     private List<Predicate> getFilters(CriteriaBuilder cb, CriteriaQuery<? extends Object> cq, Root<Notification> root,
-                                       BinaryState state, AlarmState override, String activationType,
+                                       BinaryState state, OverriddenAlarmType override, String activationType,
                                        BigInteger[] locationIdArray,
                                        BigInteger priorityId, BigInteger teamId, String alarmName, String actionName,
                                        String componentName, Map<String, Join> joins) {
@@ -109,18 +136,11 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         joins.put("component", componentJoin);
 
         if (state != null) {
-            List<AlarmState> list;
-            if(state.equals(BinaryState.Active)) {
-                list = BinaryState.getActiveList();
-            } else {
-                list = BinaryState.getNormalList();
-            }
-
-            filters.add(root.get("state").in(list));
+            filters.add(cb.equal(root.get("state"), state));
         }
 
         if (override != null) {
-            filters.add(cb.equal(root.get("state"), override));
+            filters.add(cb.equal(root.get("override"), override));
         }
 
         if (activationType != null && !activationType.isEmpty()) {
@@ -177,7 +197,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     }
 
     @PermitAll
-    public List<Notification> filterList(BinaryState state, AlarmState override, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, String alarmName, String actionName, String componentName, int offset, int max) {
+    public List<Notification> filterList(BinaryState state, OverriddenAlarmType override, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, String alarmName, String actionName, String componentName, int offset, int max) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Notification> cq = cb.createQuery(Notification.class);
         Root<Notification> root = cq.from(Notification.class);
@@ -207,7 +227,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     }
 
     @PermitAll
-    public long countList(BinaryState state, AlarmState override, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, String alarmName, String actionName, String componentName) {
+    public long countList(BinaryState state, OverriddenAlarmType override, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, String alarmName, String actionName, String componentName) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<Notification> root = cq.from(Notification.class);

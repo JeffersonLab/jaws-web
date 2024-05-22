@@ -187,7 +187,12 @@
                                                        href="${pageContext.request.contextPath}/inventory/alarms/detail?alarmId=${notification.alarm.alarmId}"><c:out
                                                             value="${notification.alarm.name}"/></a>
                                                 </td>
-                                                <td><c:out value="${notification.state}"/></td>
+                                                <td>
+                                                    <c:out value="${notification.state}"/>
+                                                    <c:if test="${notification.activeOverride ne null}">
+                                                        (<c:out value="${notification.activeOverride}"/>)
+                                                    </c:if>
+                                                </td>
                                                 <td><c:out value="${notification.alarm.action.priority.name}"/></td>
                                                 <td><c:out value="${notification.activationType}"/></td>
                                                 <td>

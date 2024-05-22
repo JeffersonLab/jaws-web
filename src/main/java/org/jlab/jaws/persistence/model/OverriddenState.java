@@ -1,28 +1,28 @@
 package org.jlab.jaws.persistence.model;
 
 import org.jlab.jaws.entity.AlarmState;
+import org.jlab.jaws.entity.OverriddenAlarmType;
 
 public enum OverriddenState {
-    NormalDisabled("Disabled (Normal)", AlarmState.NormalDisabled),
-    NormalFiltered("Filtered (Normal)", AlarmState.NormalFiltered),
-    NormalMasked("Masked (Normal)", AlarmState.NormalMasked),
-    NormalOnDelayed("On-Delayed (Normal)", AlarmState.NormalOnDelayed),
-    NormalOneShotShelved("Oneshot Shelved (Normal)", AlarmState.NormalOneShotShelved),
-    NormalContinuousShelved("Continuous Shelved (Normal)", AlarmState.NormalContinuousShelved),
-    ActiveOffDelayed("Off-Delayed (Active)", AlarmState.ActiveOffDelayed),
-    ActiveLatched("Latched (Active)", AlarmState.ActiveLatched);
+    Disabled("Disabled (Normal)", OverriddenAlarmType.Disabled),
+    Filtered("Filtered (Normal)", OverriddenAlarmType.Filtered),
+    Masked("Masked (Normal)", OverriddenAlarmType.Masked),
+    OnDelayed("On-Delayed (Normal)", OverriddenAlarmType.OnDelayed),
+    OffDelayed("Off-Delayed (Active)", OverriddenAlarmType.OffDelayed),
+    Shelved("Oneshot Shelved (Normal)", OverriddenAlarmType.Shelved),
+    Latched("Latched (Active)", OverriddenAlarmType.Latched);
 
     private String label;
-    private AlarmState state;
+    private OverriddenAlarmType type;
 
-    OverriddenState(String label, AlarmState state) {
+    OverriddenState(String label, OverriddenAlarmType type) {
         this.label = label;
-        this.state = state;
+        this.type = type;
     }
 
     public String getLabel() {return label;}
 
-    public AlarmState getAlarmState() {
-        return state;
+    public OverriddenAlarmType getOverrideType() {
+        return type;
     }
 }
