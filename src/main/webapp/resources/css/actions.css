@@ -1,8 +1,8 @@
 .outer-table thead th:first-child {
-    width: 105px;
+    width: 165px;
 }
 .inner-table tbody td:first-child {
-    width: 101px;
+    width: 161px;
 }
 .outer-table thead th:nth-child(2) {
     width: 135px;
