@@ -31,9 +31,11 @@
                         <li${fn:startsWith(currentPath, '/inventory') ? ' class="current-primary"' : ''}>
                             <a href="${pageContext.request.contextPath}/inventory/alarms">Inventory</a>
                         </li>
+                        <c:if test="${pageContext.request.isUserInRole('jaws-admin')}">
                         <li${fn:startsWith(currentPath, '/setup') ? ' class="current-primary"' : ''}>
                             <a href="${pageContext.request.contextPath}/setup/transfer">Setup</a>
                         </li>
+                        </c:if>
                         <li${'/help' eq currentPath ? ' class="current-primary"' : ''}>
                             <a href="${pageContext.request.contextPath}/help">Help</a>
                         </li>
