@@ -1,5 +1,7 @@
 package org.jlab.jaws.business.session;
 
+import org.jlab.jaws.business.util.KafkaConfig;
+import org.jlab.jaws.clients.CategoryProducer;
 import org.jlab.jaws.persistence.entity.Component;
 import org.jlab.jaws.persistence.entity.Team;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
@@ -14,6 +16,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -114,6 +117,8 @@ public class ComponentFacade extends AbstractFacade<Component> {
         component.setTeam(team);
 
         create(component);
+
+        kafkaSet(Arrays.asList(component));
     }
 
     @RolesAllowed("jaws-admin")
@@ -142,6 +147,8 @@ public class ComponentFacade extends AbstractFacade<Component> {
         component.setTeam(team);
 
         edit(component);
+
+        kafkaSet(Arrays.asList(component));
     }
 
     @RolesAllowed("jaws-admin")
@@ -157,6 +164,8 @@ public class ComponentFacade extends AbstractFacade<Component> {
         }
 
         remove(component);
+
+        kafkaUnset(Arrays.asList(component.getName()));
     }
 
     @PermitAll
@@ -170,5 +179,31 @@ public class ComponentFacade extends AbstractFacade<Component> {
         }
 
         return component;
+    }
+
+    @RolesAllowed("jaws-admin")
+    public void kafkaSet(List<Component> componentList) {
+        if(componentList != null) {
+            try (CategoryProducer producer = new CategoryProducer(KafkaConfig.getProducerPropsWithRegistry())) {
+                for (Component component : componentList) {
+                    String key = component.getName();
+
+                    String value = "";
+
+                    producer.send(key, value);
+                }
+            }
+        }
+    }
+
+    @RolesAllowed("jaws-admin")
+    public void kafkaUnset(List<String> list) {
+        if(list != null) {
+            try (CategoryProducer producer = new CategoryProducer(KafkaConfig.getProducerPropsWithRegistry())) {
+                for (String name : list) {
+                    producer.send(name, null);
+                }
+            }
+        }
     }
 }

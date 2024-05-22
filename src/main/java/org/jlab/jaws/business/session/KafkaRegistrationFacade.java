@@ -65,17 +65,7 @@ public class KafkaRegistrationFacade {
     private void populateComponents() {
         List<Component> componentList = componentFacade.findAll(new AbstractFacade.OrderDirective("name"));
 
-        if(componentList != null) {
-            try (CategoryProducer producer = new CategoryProducer(KafkaConfig.getProducerPropsWithRegistry())) {
-                for (Component component : componentList) {
-                    String key = component.getName();
-
-                    String value = "";
-
-                    producer.send(key, value);
-                }
-            }
-        }
+        componentFacade.kafkaSet(componentList);
     }
 
     private void populateActions() {
