@@ -36,10 +36,14 @@ public class KafkaOverrideFacade {
     AlarmFacade alarmFacade;
     @EJB
     OverrideFacade overrideFacade;
+    @EJB
+    ServerStatus status;
 
     @PostConstruct
     private void init() {
         populateSelectOverrides();
+
+        status.setOverridesSent();
 
         overrideFacade.clearCache();
 
