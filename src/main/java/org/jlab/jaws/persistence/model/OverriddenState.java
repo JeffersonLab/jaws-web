@@ -9,7 +9,7 @@ public enum OverriddenState {
     Masked("Masked (Normal)", OverriddenAlarmType.Masked),
     OnDelayed("On-Delayed (Normal)", OverriddenAlarmType.OnDelayed),
     OffDelayed("Off-Delayed (Active)", OverriddenAlarmType.OffDelayed),
-    Shelved("Oneshot Shelved (Normal)", OverriddenAlarmType.Shelved),
+    Shelved("Shelved (Normal)", OverriddenAlarmType.Shelved),
     Latched("Latched (Active)", OverriddenAlarmType.Latched);
 
     private String label;
