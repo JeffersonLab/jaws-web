@@ -46,7 +46,34 @@
                         </div>
                     </dd>
                 </dl>
-                <h3>Instance Details</h3>
+                <h3>Notification Details</h3>
+                <dl>
+                    <dt>State:</dt>
+                    <dd><c:out value="${alarm.notification.state}"/></dd>
+                    <dt>Active Override:</dt>
+                    <dd><c:out value="${alarm.notification.activeOverride eq null ? 'None' : alarm.notification.activeOverride}"/></dd>
+                    <dt>Activation Type:</dt>
+                    <dd><c:out value="${alarm.notification.activationType}"/></dd>
+                    <dt>Activation Extra:</dt>
+                    <dd>
+                        <c:choose>
+                            <c:when test="${'ChannelError' eq notification.activationType}">
+                                Error=<c:out value="${notification.activationError}"/>
+                            </c:when>
+                            <c:when test="${'EPICS' eq notification.activationType}">
+                                SEVR=<c:out value="${notification.activationSevr}"/>,
+                                STAT=<c:out value="${notification.activationStat}"/>
+                            </c:when>
+                            <c:when test="${'Note' eq notification.activationType}">
+                                Note=<c:out value="${notification.activationNote}"/>
+                            </c:when>
+                            <c:otherwise>
+                                None
+                            </c:otherwise>
+                        </c:choose>
+                    </dd>
+                </dl>
+                <h3>Registration Details</h3>
                 <dl>
                     <dt>Taxonomy:</dt>
                     <c:url var="url" value="/inventory/actions/detail">

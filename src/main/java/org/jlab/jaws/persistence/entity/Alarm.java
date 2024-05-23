@@ -42,6 +42,8 @@ public class Alarm implements Serializable {
     @Size(max = 64)
     @Column(length = 64, nullable = true)
     private String pv;
+    @Transient // The following doesn't work in Hibernate 5.3: @OneToOne(mappedBy = "alarm")
+    private Notification notification;
 
     public BigInteger getAlarmId() {
         return alarmId;
@@ -105,6 +107,14 @@ public class Alarm implements Serializable {
 
     public void setPv(String pv) {
         this.pv = pv;
+    }
+
+    public Notification getNotification() {
+        return notification;
+    }
+
+    public void setNotification(Notification notification) {
+        this.notification = notification;
     }
 
     public String getLocationIdCsv() {

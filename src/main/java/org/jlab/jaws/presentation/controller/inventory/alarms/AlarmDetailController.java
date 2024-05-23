@@ -1,7 +1,9 @@
 package org.jlab.jaws.presentation.controller.inventory.alarms;
 
 import org.jlab.jaws.business.session.AlarmFacade;
+import org.jlab.jaws.business.session.NotificationFacade;
 import org.jlab.jaws.persistence.entity.Alarm;
+import org.jlab.jaws.persistence.entity.Notification;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 
 import javax.ejb.EJB;
@@ -23,6 +25,8 @@ public class AlarmDetailController extends HttpServlet {
 
     @EJB
     AlarmFacade alarmFacade;
+    @EJB
+    NotificationFacade notificationFacade;
 
     /**
      * Handles the HTTP
@@ -46,6 +50,18 @@ public class AlarmDetailController extends HttpServlet {
             alarm = alarmFacade.find(alarmId);
         } else if(name != null && !name.isBlank()) {
             alarm = alarmFacade.findByName(name);
+        }
+
+        // We couldn't get @OneToOne to work in Hibernate 5.3 so we manually add.  This has nice benefit of only
+        // loading for detail page and avoiding loading on list page, but it loads here as extra query instead of join
+        // so not great.
+        //
+        // We did try adding @PrimaryKeyJoinColumn to Alarm and @MapsId with separate Id field to Notification with no
+        // luck.  Oh well, this works.
+        if(alarm != null) {
+            Notification notification = notificationFacade.find(alarm.getAlarmId());
+
+            alarm.setNotification(notification);
         }
 
         boolean editable = false;

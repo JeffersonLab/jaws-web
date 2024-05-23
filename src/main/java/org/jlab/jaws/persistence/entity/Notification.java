@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Objects;
 
 @Entity
@@ -18,7 +19,7 @@ public class Notification implements Serializable {
     @Id
     @NotNull
     @JoinColumn(name = "ALARM_ID", referencedColumnName = "ALARM_ID", nullable = false)
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     private Alarm alarm;
     @Basic(optional = false)
     @Column(name = "STATE", nullable = false, length = 32)
