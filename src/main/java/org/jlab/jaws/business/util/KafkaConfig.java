@@ -2,7 +2,6 @@ package org.jlab.jaws.business.util;
 
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
-import org.jlab.jaws.presentation.ws.JaxRSApp;
 import org.jlab.kafka.eventsource.EventSourceConfig;
 
 import java.time.Instant;

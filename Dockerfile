@@ -19,6 +19,7 @@ RUN cd /app  \
 ################## Stage 1
 FROM ${RUN_IMAGE} as runner
 COPY --from=builder /app/container/app/*.env /
+COPY --from=builder /app/container/app/container-healthcheck.sh /container-healthcheck.sh
 USER root
 RUN /server-setup.sh /server-setup.env wildfly_start_and_wait \
      && /server-setup.sh /server-setup.env config_provided \

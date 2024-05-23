@@ -35,6 +35,8 @@ public class KafkaRegistrationFacade {
     ActionFacade actionFacade;
     @EJB
     AlarmFacade alarmFacade;
+    @EJB
+    ServerStatus status;
 
     @PostConstruct
     private void init() {
@@ -42,6 +44,7 @@ public class KafkaRegistrationFacade {
         populateComponents();
         populateActions();
         populateAlarms();
+        status.setRegistrationsSent();
     }
 
     private void populateLocations() {
