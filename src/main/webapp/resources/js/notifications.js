@@ -255,6 +255,7 @@ $(document).on("click", "#open-unsuppress-button", function () {
 });
 $(document).on("click", ".default-clear-panel", function () {
     $("#state-select").val('');
+    $("#overridden-select").val('');
     $("#override-select").val('');
     $("#type-select").val('');
     $("#location-select").val(null).trigger('change');

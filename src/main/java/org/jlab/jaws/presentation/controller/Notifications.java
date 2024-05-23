@@ -54,6 +54,7 @@ public class Notifications extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         BinaryState state = convertState(request, "state");
+        Boolean overridden = ParamConverter.convertYNBoolean(request, "overridden");
         OverriddenAlarmType override = convertOverrideKey(request, "override");
         String activationType = request.getParameter("type");
         String alarmName = request.getParameter("alarmName");
@@ -65,7 +66,7 @@ public class Notifications extends HttpServlet {
         int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
         int maxPerPage = 100;
 
-        List<Notification> notificationList = notificationFacade.filterList(state, override, activationType, locationIdArray, priorityId, teamId, alarmName, actionName, componentName, offset, maxPerPage);
+        List<Notification> notificationList = notificationFacade.filterList(state, overridden, override, activationType, locationIdArray, priorityId, teamId, alarmName, actionName, componentName, offset, maxPerPage);
         List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
         List<OverriddenState> overrideList = Arrays.asList(OverriddenState.values());
         List<BinaryState> stateList = Arrays.asList(BinaryState.values());
@@ -105,11 +106,11 @@ public class Notifications extends HttpServlet {
             selectedTeam = teamFacade.find(teamId);
         }
 
-        long totalRecords = notificationFacade.countList(state, override, activationType, locationIdArray, priorityId, teamId, alarmName, actionName, componentName);
+        long totalRecords = notificationFacade.countList(state, overridden, override, activationType, locationIdArray, priorityId, teamId, alarmName, actionName, componentName);
 
         Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
-        String selectionMessage = createSelectionMessage(paginator, state, override, activationType, selectedLocationList, selectedPriority, selectedTeam, alarmName, actionName, componentName);
+        String selectionMessage = createSelectionMessage(paginator, state, overridden, override, activationType, selectedLocationList, selectedPriority, selectedTeam, alarmName, actionName, componentName);
 
         request.setAttribute("notificationList", notificationList);
         request.setAttribute("actionList", actionList);
@@ -150,7 +151,7 @@ public class Notifications extends HttpServlet {
         return state;
     }
 
-    private String createSelectionMessage(Paginator paginator, BinaryState state, OverriddenAlarmType override, String activationType, List<Location> locationList, Priority priority, Team team, String alarmName, String actionName, String componentName) {
+    private String createSelectionMessage(Paginator paginator, BinaryState state, Boolean overridden, OverriddenAlarmType override, String activationType, List<Location> locationList, Priority priority, Team team, String alarmName, String actionName, String componentName) {
         DecimalFormat formatter = new DecimalFormat("###,###");
 
         String selectionMessage = "All Notifications ";
@@ -159,6 +160,10 @@ public class Notifications extends HttpServlet {
 
         if(state != null) {
             filters.add("State \"" + state + "\"");
+        }
+
+        if(overridden != null) {
+            filters.add("Overridden \"" + (overridden ? "Yes" : "No") + "\"");
         }
 
         if(override != null) {

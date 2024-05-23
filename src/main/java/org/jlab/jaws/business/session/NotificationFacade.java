@@ -121,7 +121,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     }
 
     private List<Predicate> getFilters(CriteriaBuilder cb, CriteriaQuery<? extends Object> cq, Root<Notification> root,
-                                       BinaryState state, OverriddenAlarmType override, String activationType,
+                                       BinaryState state, Boolean overridden, OverriddenAlarmType override, String activationType,
                                        BigInteger[] locationIdArray,
                                        BigInteger priorityId, BigInteger teamId, String alarmName, String actionName,
                                        String componentName, Map<String, Join> joins) {
@@ -137,6 +137,14 @@ public class NotificationFacade extends AbstractFacade<Notification> {
 
         if (state != null) {
             filters.add(cb.equal(root.get("state"), state));
+        }
+
+        if(overridden != null) {
+            if(overridden) {
+                filters.add(cb.isNotNull(root.get("override")));
+            } else {
+                filters.add(cb.isNull(root.get("override")));
+            }
         }
 
         if (override != null) {
@@ -197,7 +205,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     }
 
     @PermitAll
-    public List<Notification> filterList(BinaryState state, OverriddenAlarmType override, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, String alarmName, String actionName, String componentName, int offset, int max) {
+    public List<Notification> filterList(BinaryState state, Boolean overridden, OverriddenAlarmType override, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, String alarmName, String actionName, String componentName, int offset, int max) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Notification> cq = cb.createQuery(Notification.class);
         Root<Notification> root = cq.from(Notification.class);
@@ -205,7 +213,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
 
         Map<String, Join> joins = new HashMap<>();
 
-        List<Predicate> filters = getFilters(cb, cq, root, state, override, activationType, locationIdArray, priorityId, teamId, alarmName, actionName,
+        List<Predicate> filters = getFilters(cb, cq, root, state, overridden, override, activationType, locationIdArray, priorityId, teamId, alarmName, actionName,
                 componentName, joins);
 
         if (!filters.isEmpty()) {
@@ -227,14 +235,14 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     }
 
     @PermitAll
-    public long countList(BinaryState state, OverriddenAlarmType override, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, String alarmName, String actionName, String componentName) {
+    public long countList(BinaryState state, Boolean overridden, OverriddenAlarmType override, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, String alarmName, String actionName, String componentName) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<Notification> root = cq.from(Notification.class);
 
         Map<String, Join> joins = new HashMap<>();
 
-        List<Predicate> filters = getFilters(cb, cq, root, state, override, activationType, locationIdArray, priorityId, teamId, alarmName, actionName,
+        List<Predicate> filters = getFilters(cb, cq, root, state, overridden, override, activationType, locationIdArray, priorityId, teamId, alarmName, actionName,
                 componentName, joins);
 
         if (!filters.isEmpty()) {

@@ -36,6 +36,18 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
+                                        <label for="type-select">Overridden</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="overridden-select" name="overridden">
+                                            <option value="">&nbsp;</option>
+                                            <option value="Y"${param.overridden eq 'Y' ? ' selected="selected"' : ''}>Yes</option>
+                                            <option value="N"${param.overridden eq 'N' ? ' selected="selected"' : ''}>No</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
                                         <label for="override-select">Override</label>
                                     </div>
                                     <div class="li-value">
