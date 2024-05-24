@@ -1,16 +1,17 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <c:set var="title" value="Alarm"/>
 <t:inventory-page title="${title}">
     <jsp:attribute name="stylesheets">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/alarm.css"/>
+        <link rel="stylesheet" type="text/css"
+              href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/alarm.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
-    </jsp:attribute>        
+    </jsp:attribute>
     <jsp:body>
         <div class="banner-breadbox">
             <ul>
@@ -25,7 +26,8 @@
         <section>
             <div class="dialog-content">
                 <div class="dialog-links">
-                    <a class="dialog-only-link" href="${pageContext.request.contextPath}/inventory/alarms/detail?alarmId=${alarm.alarmId}">Link</a>
+                    <a class="dialog-only-link"
+                       href="${pageContext.request.contextPath}/inventory/alarms/detail?alarmId=${alarm.alarmId}">Link</a>
                     <c:set var="editable" value="${pageContext.request.isUserInRole('jaws-admin')}"/>
                     <c:if test="${editable}">
                         <c:url var="url" value="/inventory/alarms">
@@ -51,7 +53,10 @@
                     <dt>State:</dt>
                     <dd><c:out value="${alarm.notification.state}"/></dd>
                     <dt>Active Override:</dt>
-                    <dd><c:out value="${alarm.notification.activeOverride eq null ? 'None' : alarm.notification.activeOverride}"/></dd>
+                    <dd>
+                        <c:out
+                            value="${alarm.notification.activeOverride eq null ? 'None' : alarm.notification.activeOverride}"/>
+                    </dd>
                     <dt>Activation Type:</dt>
                     <dd><c:out value="${alarm.notification.activationType}"/></dd>
                     <dt>Activation Extra:</dt>
@@ -81,17 +86,19 @@
                                         <li>
                                             <c:out value="${override.overridePK.type}"/>
                                             <ul>
-                                            <c:choose>
-                                                <c:when test="${'Disabled' eq override.overridePK.type || 'Filtered' eq override.overridePK.type}">
-                                                    <li>Comments: <c:out value="${override.comments}"/></li>
-                                                </c:when>
-                                                <c:when test="${'Shelved' eq override.overridePK.type}">
-                                                    <li>Comments: <c:out value="${override.comments}"/></li>
-                                                    <li>Oneshot: <c:out value="${override.oneshot ? 'Yes' : 'No'}"/></li>
-                                                    <li>Reason: <c:out value="${override.shelvedReason}"/></li>
-                                                    <li>Expiration: <fmt:formatDate value="${override.expiration}" pattern="dd-MMM-yyyy HH:mm:ss"/></li>
-                                                </c:when>
-                                            </c:choose>
+                                                <c:choose>
+                                                    <c:when test="${'Disabled' eq override.overridePK.type || 'Filtered' eq override.overridePK.type}">
+                                                        <li>Comments: <c:out value="${override.comments}"/></li>
+                                                    </c:when>
+                                                    <c:when test="${'Shelved' eq override.overridePK.type}">
+                                                        <li>Comments: <c:out value="${override.comments}"/></li>
+                                                        <li>Oneshot: <c:out
+                                                                value="${override.oneshot ? 'Yes' : 'No'}"/></li>
+                                                        <li>Reason: <c:out value="${override.shelvedReason}"/></li>
+                                                        <li>Expiration: <fmt:formatDate value="${override.expiration}"
+                                                                                        pattern="dd-MMM-yyyy HH:mm:ss"/></li>
+                                                    </c:when>
+                                                </c:choose>
                                             </ul>
                                         </li>
                                     </c:forEach>
@@ -125,7 +132,27 @@
                     <dt>Source:</dt>
                     <dd><c:out value="${alarm.pv eq null ? 'None' : 'EPICS PV: '.concat(alarm.pv)}"/></dd>
                 </dl>
+                <hr/>
+                <dl>
+                    <dt>Rationale:</dt>
+                    <dd>
+                        <div class="markdown-widget">
+                            <div class="markdown-text"><c:out value="${alarm.action.rationale}"/></div>
+                            <div class="markdown-html"></div>
+                        </div>
+                    </dd>
+                    <dt>Filterable:</dt>
+                    <dd><c:out value="${alarm.action.filterable ? 'Yes' : 'No'}"/></dd>
+                    <dt>Latchable:</dt>
+                    <dd><c:out value="${alarm.action.latchable ? 'Yes' : 'No'}"/></dd>
+                    <dt>On Delay (seconds):</dt>
+                    <dd><c:out
+                            value="${alarm.action.onDelaySeconds eq null ? 'None' : alarm.action.onDelaySeconds}"/></dd>
+                    <dt>Off Delay (seconds):</dt>
+                    <dd><c:out
+                            value="${alarm.action.offDelaySeconds eq null ? 'None' : alarm.action.offDelaySeconds}"/></dd>
+                </dl>
             </div>
         </section>
-    </jsp:body>         
+    </jsp:body>
 </t:inventory-page>
