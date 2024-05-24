@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class OverridePK implements Serializable {
+public class OverridePK implements Serializable, Comparable<OverridePK> {
     @NotNull
     @JoinColumn(name = "ALARM_ID", referencedColumnName = "ALARM_ID", nullable = false)
     @ManyToOne(optional = false)
@@ -53,5 +53,16 @@ public class OverridePK implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(alarm, type);
+    }
+
+    @Override
+    public int compareTo(OverridePK o) {
+        int val = this.alarm.getName().compareTo(o.alarm.getName());
+
+        if (val == 0) { // Same name
+            val = this.type.compareTo(o.type);
+        }
+
+        return val;
     }
 }

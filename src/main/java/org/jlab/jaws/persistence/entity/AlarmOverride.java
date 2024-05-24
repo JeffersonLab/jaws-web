@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "OVERRIDE", schema = "JAWS_OWNER")
-public class AlarmOverride implements Serializable {
+public class AlarmOverride implements Serializable, Comparable<AlarmOverride> {
     private static final long serialVersionUID = 1L;
 
     @EmbeddedId
@@ -77,5 +77,10 @@ public class AlarmOverride implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(overridePK);
+    }
+
+    @Override
+    public int compareTo(AlarmOverride o) {
+        return this.overridePK.compareTo(o.overridePK);
     }
 }

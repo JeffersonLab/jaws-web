@@ -211,4 +211,15 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
         TypedQuery<Long> q = getEntityManager().createQuery(cq);
         return q.getSingleResult();
     }
+
+    @PermitAll
+    public List<AlarmOverride> findByAlarmId(BigInteger alarmId) {
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<AlarmOverride> cq = cb.createQuery(AlarmOverride.class);
+        Root<AlarmOverride> root = cq.from(AlarmOverride.class);
+        cq.select(root);
+        cq.where(cb.equal(root.get("overridePK").get("alarm").get("alarmId"), alarmId));
+        TypedQuery<AlarmOverride> q = getEntityManager().createQuery(cq);
+        return q.getResultList();
+    }
 }

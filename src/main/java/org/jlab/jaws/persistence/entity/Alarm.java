@@ -44,6 +44,8 @@ public class Alarm implements Serializable {
     private String pv;
     @Transient // The following doesn't work in Hibernate 5.3: @OneToOne(mappedBy = "alarm")
     private Notification notification;
+    @Transient
+    private List<AlarmOverride> overrideList;
 
     public BigInteger getAlarmId() {
         return alarmId;
@@ -117,13 +119,21 @@ public class Alarm implements Serializable {
         this.notification = notification;
     }
 
+    public List<AlarmOverride> getOverrideList() {
+        return overrideList;
+    }
+
+    public void setOverrideList(List<AlarmOverride> overrideList) {
+        this.overrideList = overrideList;
+    }
+
     public String getLocationIdCsv() {
         String csv = "";
 
-        if(locationList != null && !locationList.isEmpty()) {
+        if (locationList != null && !locationList.isEmpty()) {
             csv = locationList.get(0).getLocationId().toString();
 
-            for(int i = 1; i < locationList.size(); i++) {
+            for (int i = 1; i < locationList.size(); i++) {
                 csv = csv + ", " + locationList.get(i).getLocationId().toString();
             }
         }
@@ -134,10 +144,10 @@ public class Alarm implements Serializable {
     public String getLocationNameCsv() {
         String csv = "";
 
-        if(locationList != null && !locationList.isEmpty()) {
+        if (locationList != null && !locationList.isEmpty()) {
             csv = locationList.get(0).getName();
 
-            for(int i = 1; i < locationList.size(); i++) {
+            for (int i = 1; i < locationList.size(); i++) {
                 csv = csv + ", " + locationList.get(i).getName();
             }
         }
@@ -148,8 +158,8 @@ public class Alarm implements Serializable {
     public List<String> getLocationNameList() {
         List<String> list = new ArrayList<>();
 
-        if(locationList != null && !locationList.isEmpty()) {
-            for(int i = 0; i < locationList.size(); i++) {
+        if (locationList != null && !locationList.isEmpty()) {
+            for (int i = 0; i < locationList.size(); i++) {
                 String name = locationList.get(i).getName();
                 list.add(name);
             }

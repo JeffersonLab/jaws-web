@@ -2,7 +2,9 @@ package org.jlab.jaws.presentation.controller.inventory.alarms;
 
 import org.jlab.jaws.business.session.AlarmFacade;
 import org.jlab.jaws.business.session.NotificationFacade;
+import org.jlab.jaws.business.session.OverrideFacade;
 import org.jlab.jaws.persistence.entity.Alarm;
+import org.jlab.jaws.persistence.entity.AlarmOverride;
 import org.jlab.jaws.persistence.entity.Notification;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 
@@ -14,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -27,6 +31,8 @@ public class AlarmDetailController extends HttpServlet {
     AlarmFacade alarmFacade;
     @EJB
     NotificationFacade notificationFacade;
+    @EJB
+    OverrideFacade overrideFacade;
 
     /**
      * Handles the HTTP
@@ -52,16 +58,20 @@ public class AlarmDetailController extends HttpServlet {
             alarm = alarmFacade.findByName(name);
         }
 
-        // We couldn't get @OneToOne to work in Hibernate 5.3 so we manually add.  This has nice benefit of only
-        // loading for detail page and avoiding loading on list page, but it loads here as extra query instead of join
-        // so not great.
-        //
-        // We did try adding @PrimaryKeyJoinColumn to Alarm and @MapsId with separate Id field to Notification with no
-        // luck.  Oh well, this works.
         if(alarm != null) {
+            // We couldn't get @OneToOne to work in Hibernate 5.3 so we manually add.  This has nice benefit of only
+            // loading for detail page and avoiding loading on list page, but it loads here as extra query instead of join
+            // so not great.
+            //
+            // We did try adding @PrimaryKeyJoinColumn to Alarm and @MapsId with separate Id field to Notification with no
+            // luck.  Oh well, this works.
             Notification notification = notificationFacade.find(alarm.getAlarmId());
-
             alarm.setNotification(notification);
+
+            // OverrideList makes sense as a separate query attached a-la-carte to a transient field.
+            List<AlarmOverride> overrideList = overrideFacade.findByAlarmId(alarm.getAlarmId());
+            Collections.sort(overrideList);
+            alarm.setOverrideList(overrideList);
         }
 
         boolean editable = false;

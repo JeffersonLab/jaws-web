@@ -72,6 +72,36 @@
                             </c:otherwise>
                         </c:choose>
                     </dd>
+                    <dt>Overrides</dt>
+                    <dd>
+                        <c:choose>
+                            <c:when test="${not empty alarm.overrideList}">
+                                <ul>
+                                    <c:forEach items="${alarm.overrideList}" var="override">
+                                        <li>
+                                            <c:out value="${override.overridePK.type}"/>
+                                            <ul>
+                                            <c:choose>
+                                                <c:when test="${'Disabled' eq override.overridePK.type || 'Filtered' eq override.overridePK.type}">
+                                                    <li>Comments: <c:out value="${override.comments}"/></li>
+                                                </c:when>
+                                                <c:when test="${'Shelved' eq override.overridePK.type}">
+                                                    <li>Comments: <c:out value="${override.comments}"/></li>
+                                                    <li>Oneshot: <c:out value="${override.oneshot ? 'Yes' : 'No'}"/></li>
+                                                    <li>Reason: <c:out value="${override.shelvedReason}"/></li>
+                                                    <li>Expiration: <fmt:formatDate value="${override.expiration}" pattern="dd-MMM-yyyy HH:mm:ss"/></li>
+                                                </c:when>
+                                            </c:choose>
+                                            </ul>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </c:when>
+                            <c:otherwise>
+                                None
+                            </c:otherwise>
+                        </c:choose>
+                    </dd>
                 </dl>
                 <h3>Registration Details</h3>
                 <dl>
