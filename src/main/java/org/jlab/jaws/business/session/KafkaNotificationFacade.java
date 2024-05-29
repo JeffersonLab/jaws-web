@@ -13,6 +13,7 @@ import javax.annotation.security.RunAs;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -59,7 +60,9 @@ public class KafkaNotificationFacade {
                 Alarm alarm = alarmFacade.findByName(record.getKey());
 
                 if(alarm != null) {
-                    notificationFacade.oracleSet(alarm, record.getValue());
+                    long timestamp = record.getTimestamp();
+                    Date since = new Date(timestamp);
+                    notificationFacade.oracleSet(alarm, record.getValue(), since);
                 } else {
                     LOG.warning("Notification of unknown alarm: " + record.getKey());
                 }

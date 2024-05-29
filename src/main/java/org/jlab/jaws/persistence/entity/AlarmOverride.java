@@ -22,6 +22,7 @@ public class AlarmOverride implements Serializable, Comparable<AlarmOverride> {
     @Convert(converter= YnStringToBoolean.class)
     private boolean oneshot;
     @Column(name = "EXPIRATION", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date expiration;
     @Column(name = "SHELVED_REASON", nullable = true)
     private String shelvedReason;

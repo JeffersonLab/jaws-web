@@ -46,7 +46,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
 
     // Note: Can't restrict to jaws-admin because caller in NotificationFacade RunAs doesn't work
     @PermitAll
-    public void oracleSet(Alarm alarm, EffectiveNotification effectiveNotification) {
+    public void oracleSet(Alarm alarm, EffectiveNotification effectiveNotification, Date since) {
         em.createQuery("delete from Notification n where n.alarm = :a").setParameter("a", alarm).executeUpdate();
 
         Notification notification = new Notification();
@@ -56,6 +56,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         BinaryState state = BinaryState.fromAlarmState(effectiveNotification.getState());
 
         notification.setState(state);
+        notification.setSince(since);
 
         OverriddenAlarmType override = overrideFromAlarmState(effectiveNotification.getState());
 

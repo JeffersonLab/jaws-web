@@ -52,6 +52,10 @@
                 <dl>
                     <dt>State:</dt>
                     <dd><c:out value="${alarm.notification.state}"/></dd>
+                    <dt>Since:</dt>
+                    <dd>
+                        <fmt:formatDate value="${alarm.notification.since}" pattern="dd-MMM-yyyy HH:mm:ss"/>
+                    </dd>
                     <dt>Active Override:</dt>
                     <dd>
                         <c:out

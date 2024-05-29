@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.math.BigInteger;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -26,6 +26,10 @@ public class Notification implements Serializable {
     @Enumerated(EnumType.STRING)
     @NotNull
     private BinaryState state;
+    @Column(name = "SINCE", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
+    private Date since;
     @Basic(optional = true)
     @Column(name = "ACTIVE_OVERRIDE", nullable = true, length = 32)
     @Enumerated(EnumType.STRING)
@@ -62,6 +66,14 @@ public class Notification implements Serializable {
 
     public void setState(BinaryState state) {
         this.state = state;
+    }
+
+    public Date getSince() {
+        return since;
+    }
+
+    public void setSince(Date since) {
+        this.since = since;
     }
 
     public OverriddenAlarmType getActiveOverride() {
