@@ -62,15 +62,15 @@
                     <dt>Activation Extra:</dt>
                     <dd>
                         <c:choose>
-                            <c:when test="${'ChannelError' eq notification.activationType}">
-                                Error=<c:out value="${notification.activationError}"/>
+                            <c:when test="${'ChannelError' eq alarm.notification.activationType}">
+                                Error=<c:out value="${alarm.notification.activationError}"/>
                             </c:when>
-                            <c:when test="${'EPICS' eq notification.activationType}">
-                                SEVR=<c:out value="${notification.activationSevr}"/>,
-                                STAT=<c:out value="${notification.activationStat}"/>
+                            <c:when test="${'EPICS' eq alarm.notification.activationType}">
+                                SEVR=<c:out value="${alarm.notification.activationSevr}"/>,
+                                STAT=<c:out value="${alarm.notification.activationStat}"/>
                             </c:when>
-                            <c:when test="${'Note' eq notification.activationType}">
-                                Note=<c:out value="${notification.activationNote}"/>
+                            <c:when test="${'Note' eq alarm.notification.activationType}">
+                                Note=<c:out value="${alarm.notification.activationNote}"/>
                             </c:when>
                             <c:otherwise>
                                 None
