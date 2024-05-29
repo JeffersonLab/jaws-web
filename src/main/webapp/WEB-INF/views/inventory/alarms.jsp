@@ -105,8 +105,10 @@
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="chart-wrap" class="chart-wrap-backdrop">
                 <c:set var="readonly" value="${!pageContext.request.isUserInRole('jaws-admin')}"/>
-                <s:editable-row-table-controls excludeAdd="${readonly}" excludeDelete="${readonly}" excludeEdit="${readonly}">
-                </s:editable-row-table-controls>
+                <c:if test="${not readonly}">
+                    <s:editable-row-table-controls>
+                    </s:editable-row-table-controls>
+                </c:if>
                 <table class="data-table outer-table">
                     <thead>
                     <tr>
@@ -121,7 +123,7 @@
                         <td class="inner-table-cell" colspan="4">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
-                                    <table class="data-table inner-table stripped-table uniselect-table editable-row-table">
+                                    <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table'} editable-row-table">
                                         <tbody>
                                         <c:forEach items="${alarmList}" var="alarm">
                                             <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}">
