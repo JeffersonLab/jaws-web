@@ -1,8 +1,10 @@
 package org.jlab.jaws.business.session;
 
+import org.jlab.jaws.business.util.OracleUtil;
 import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.entity.*;
 import org.jlab.jaws.persistence.model.BinaryState;
+import org.jlab.kafka.eventsource.EventSourceRecord;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -13,7 +15,12 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.math.BigInteger;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -88,6 +95,117 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         notification.setActivationType(activationType);
 
         create(notification);
+    }
+
+    // Note: Can't restrict to jaws-admin because caller in NotificationFacade RunAs doesn't work
+    @PermitAll
+    public void oracleMerge(List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
+        String sql = "MERGE INTO JAWS_OWNER.NOTIFICATION existing\n" +
+                "                USING\n" +
+                "                    (SELECT ?  AS name,\n" +
+                "                ? AS state,\n" +
+                "                ? AS since,\n" +
+                "                ? AS active_override,\n" +
+                "                ? AS activation_type,\n" +
+                "                ? AS activation_note,\n" +
+                "                ? AS activation_sevr,\n" +
+                "                ? AS activation_stat,\n" +
+                "                ? AS activation_error\n" +
+                "                    FROM DUAL) a\n" +
+                "                 ON (a.name = existing.name)\n" +
+                "                WHEN MATCHED THEN UPDATE\n" +
+                "                SET\n" +
+                "                existing.state = a.state,\n" +
+                "                existing.since = a.since,\n" +
+                "                    existing.active_override = a.active_override,\n" +
+                "                    existing.activation_type = a.activation_type,\n" +
+                "                    existing.activation_note = a.activation_note,\n" +
+                "                    existing.activation_sevr = a.activation_sevr,\n" +
+                "                    existing.activation_stat = a.activation_stat,\n" +
+                "                    existing.activation_error = a.activation_error\n" +
+                "                WHEN NOT MATCHED THEN INSERT\n" +
+                "                    (existing.name, existing.state, existing.since, existing.active_override,\n" +
+                "                        existing.activation_type, existing.activation_note, existing.activation_sevr,\n" +
+                "                        existing.activation_stat, existing.activation_error)\n" +
+                "                    VALUES (a.name, a.state, a.since, a.active_override, a.activation_type,\n" +
+                "                        a.activation_note, a.activation_sevr, a.activation_stat, a.activation_error);";
+
+        Connection con = null;
+        PreparedStatement stmt = null;
+
+        try {
+            con = OracleUtil.getConnection();
+            stmt = con.prepareStatement(sql);
+
+            for(EventSourceRecord<String, EffectiveNotification> record : records) {
+
+                BinaryState state = BinaryState.fromAlarmState(record.getValue().getState());
+                OverriddenAlarmType override = overrideFromAlarmState(record.getValue().getState());
+                AlarmActivationUnion union = record.getValue().getActivation();
+
+                String activationType = "NotActive";
+                String note = null;
+                String sevr = null;
+                String stat = null;
+                String error = null;
+
+                if(union != null) {
+                    if(union.getUnion() instanceof EPICSActivation) {
+                        activationType = "EPICS";
+                        EPICSActivation epics = (EPICSActivation) union.getUnion();
+                        sevr = epics.getSevr().name();
+                        stat = epics.getStat().name();
+                    } else if (union.getUnion() instanceof NoteActivation) {
+                        activationType = "Note";
+                        NoteActivation noteObj = (NoteActivation) union.getUnion();
+                        note = noteObj.getNote();
+                    } else if(union.getUnion() instanceof ChannelErrorActivation) {
+                        activationType = "ChannelError";
+                        ChannelErrorActivation channel = (ChannelErrorActivation) union.getUnion();
+                        error = channel.getError();
+                    } else if(union.getUnion() instanceof Activation) {
+                        activationType = "Simple";
+                    }
+                }
+
+                stmt.setString(1, record.getKey());
+                stmt.setString(2, state.name());
+                stmt.setDate(3, new java.sql.Date(record.getTimestamp()));
+                if(override == null) {
+                    stmt.setNull(4, Types.VARCHAR);
+                } else {
+                    stmt.setString(4, override.name());
+                }
+                stmt.setString(5, activationType);
+                if(note == null) {
+                    stmt.setNull(6, Types.VARCHAR);
+                } else {
+                    stmt.setString(6, note);
+                }
+                if(sevr == null) {
+                    stmt.setNull(7, Types.VARCHAR);
+                } else {
+                    stmt.setString(7, sevr);
+                }
+                if(stat == null) {
+                    stmt.setNull(8, Types.VARCHAR);
+                } else {
+                    stmt.setString(8, stat);
+                }
+                if(error == null) {
+                    stmt.setNull(9, Types.VARCHAR);
+                } else {
+                    stmt.setString(9, error);
+                }
+
+                stmt.addBatch();
+            }
+
+            stmt.executeBatch();
+        } finally {
+            OracleUtil.close(stmt, con);
+        }
+
     }
 
     private OverriddenAlarmType overrideFromAlarmState(AlarmState state) {
