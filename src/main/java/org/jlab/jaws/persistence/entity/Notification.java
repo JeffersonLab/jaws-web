@@ -1,6 +1,5 @@
 package org.jlab.jaws.persistence.entity;
 
-import org.jlab.jaws.entity.AlarmState;
 import org.jlab.jaws.entity.OverriddenAlarmType;
 import org.jlab.jaws.persistence.model.BinaryState;
 
@@ -18,8 +17,11 @@ public class Notification implements Serializable {
 
     @Id
     @NotNull
-    @JoinColumn(name = "ALARM_ID", referencedColumnName = "ALARM_ID", nullable = false)
-    @OneToOne(optional = false)
+    @Size(max = 64)
+    @Column(length = 64)
+    private String name;
+    @JoinColumn(name = "NAME", referencedColumnName = "NAME", updatable = false, insertable = false)
+    @ManyToOne // This should be OneToOne, but doesn't work given name is an alternate key in Alarm
     private Alarm alarm;
     @Basic(optional = false)
     @Column(name = "STATE", nullable = false, length = 32)
@@ -51,6 +53,14 @@ public class Notification implements Serializable {
     @Column(name = "ACTIVATION_ERROR", length = 128, nullable = true)
     private String activationError;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Alarm getAlarm() {
         return alarm;
     }
@@ -58,7 +68,6 @@ public class Notification implements Serializable {
     public void setAlarm(Alarm alarm) {
         this.alarm = alarm;
     }
-
 
     public BinaryState getState() {
         return state;
@@ -129,11 +138,11 @@ public class Notification implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Notification)) return false;
         Notification entity = (Notification) o;
-        return Objects.equals(alarm, entity.alarm);
+        return Objects.equals(name, entity.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(alarm);
+        return Objects.hash(name);
     }
 }

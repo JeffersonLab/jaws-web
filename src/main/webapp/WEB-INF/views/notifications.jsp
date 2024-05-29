@@ -197,7 +197,7 @@
                                                     <a title="Alarm Information" class="dialog-ready"
                                                        data-dialog-title="Alarm Information: ${fn:escapeXml(notification.alarm.name)}"
                                                        href="${pageContext.request.contextPath}/inventory/alarms/detail?alarmId=${notification.alarm.alarmId}"><c:out
-                                                            value="${notification.alarm.name}"/></a>
+                                                            value="${notification.name}"/></a>
                                                 </td>
                                                 <td>
                                                     <c:out value="${notification.state}"/>

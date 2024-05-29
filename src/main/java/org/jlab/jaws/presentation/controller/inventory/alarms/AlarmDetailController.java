@@ -65,7 +65,7 @@ public class AlarmDetailController extends HttpServlet {
             //
             // We did try adding @PrimaryKeyJoinColumn to Alarm and @MapsId with separate Id field to Notification with no
             // luck.  Oh well, this works.
-            Notification notification = notificationFacade.find(alarm.getAlarmId());
+            Notification notification = notificationFacade.find(alarm.getName());
             alarm.setNotification(notification);
 
             // OverrideList makes sense as a separate query attached a-la-carte to a transient field.

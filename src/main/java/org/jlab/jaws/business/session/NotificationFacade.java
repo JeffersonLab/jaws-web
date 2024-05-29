@@ -53,12 +53,12 @@ public class NotificationFacade extends AbstractFacade<Notification> {
 
     // Note: Can't restrict to jaws-admin because caller in NotificationFacade RunAs doesn't work
     @PermitAll
-    public void oracleSet(Alarm alarm, EffectiveNotification effectiveNotification, Date since) {
-        em.createQuery("delete from Notification n where n.alarm = :a").setParameter("a", alarm).executeUpdate();
+    public void oracleSet(String name, EffectiveNotification effectiveNotification, Date since) {
+        em.createQuery("delete from Notification n where n.name = :a").setParameter("a", name).executeUpdate();
 
         Notification notification = new Notification();
 
-        notification.setAlarm(alarm);
+        notification.setName(name);
 
         BinaryState state = BinaryState.fromAlarmState(effectiveNotification.getState());
 
@@ -246,9 +246,9 @@ public class NotificationFacade extends AbstractFacade<Notification> {
                                        String componentName, Map<String, Join> joins) {
         List<Predicate> filters = new ArrayList<>();
 
-        Join<Notification, Alarm> alarmJoin = root.join("alarm");
-        Join<Alarm, Action> actionJoin = alarmJoin.join("action");
-        Join<Action, Component> componentJoin = actionJoin.join("component");
+        Join<Notification, Alarm> alarmJoin = root.join("alarm", JoinType.LEFT);
+        Join<Alarm, Action> actionJoin = alarmJoin.join("action", JoinType.LEFT);
+        Join<Action, Component> componentJoin = actionJoin.join("component", JoinType.LEFT);
 
         joins.put("alarm", alarmJoin);
         joins.put("action", actionJoin);
@@ -346,7 +346,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         Path p1 = joins.get("action").get("priority");
         Order o1 = cb.asc(p1);
         orders.add(o1);
-        Path p2 = joins.get("alarm").get("name");
+        Path p2 = root.get("name");
         Order o2 = cb.asc(p2);
         orders.add(o2);
         cq.orderBy(orders);

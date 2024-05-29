@@ -57,15 +57,10 @@ public class KafkaNotificationFacade {
         @Override
         public void batch(List<EventSourceRecord<String, EffectiveNotification>> records, boolean highWaterReached) {
             for (EventSourceRecord<String, EffectiveNotification> record : records) {
-                Alarm alarm = alarmFacade.findByName(record.getKey());
-
-                if(alarm != null) {
-                    long timestamp = record.getTimestamp();
-                    Date since = new Date(timestamp);
-                    notificationFacade.oracleSet(alarm, record.getValue(), since);
-                } else {
-                    LOG.warning("Notification of unknown alarm: " + record.getKey());
-                }
+                String name = record.getKey();
+                long timestamp = record.getTimestamp();
+                Date since = new Date(timestamp);
+                notificationFacade.oracleSet(name, record.getValue(), since);
             }
         }
     }
