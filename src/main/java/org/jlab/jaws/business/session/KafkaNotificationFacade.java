@@ -3,7 +3,6 @@ package org.jlab.jaws.business.session;
 import org.jlab.jaws.business.util.KafkaConfig;
 import org.jlab.jaws.clients.EffectiveNotificationConsumer;
 import org.jlab.jaws.entity.EffectiveNotification;
-import org.jlab.jaws.persistence.entity.Alarm;
 import org.jlab.kafka.eventsource.EventSourceListener;
 import org.jlab.kafka.eventsource.EventSourceRecord;
 
@@ -14,7 +13,6 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;

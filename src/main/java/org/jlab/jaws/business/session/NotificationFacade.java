@@ -20,7 +20,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
