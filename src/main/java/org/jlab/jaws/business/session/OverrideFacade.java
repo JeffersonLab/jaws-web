@@ -1,10 +1,12 @@
 package org.jlab.jaws.business.session;
 
 import org.jlab.jaws.business.util.KafkaConfig;
+import org.jlab.jaws.business.util.OracleUtil;
 import org.jlab.jaws.clients.OverrideProducer;
 import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.entity.*;
 import org.jlab.jaws.persistence.model.BinaryState;
+import org.jlab.kafka.eventsource.EventSourceRecord;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
 import javax.annotation.security.PermitAll;
@@ -16,6 +18,10 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.math.BigInteger;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -69,9 +75,9 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
                 override.setExpiration(new Date(shelvedOverride.getExpiration()));
                 override.setShelvedReason(shelvedOverride.getReason().name());
             }
-        }
 
-        create(override);
+            create(override);
+        }
     }
 
     @RolesAllowed("jaws-admin")
@@ -221,5 +227,98 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
         cq.where(cb.equal(root.get("overridePK").get("name"), name));
         TypedQuery<AlarmOverride> q = getEntityManager().createQuery(cq);
         return q.getResultList();
+    }
+
+    // Note: Can't restrict to jaws-admin because caller in NotificationFacade RunAs doesn't work
+    @PermitAll
+    public void oracleMerge(List<EventSourceRecord<AlarmOverrideKey, AlarmOverrideUnion>> records) throws SQLException {
+        String sql = "MERGE INTO JAWS_OWNER.OVERRIDE existing " +
+                "                USING " +
+                "                    (SELECT ?  AS name, " +
+                "                ? AS type, " +
+                "                ? AS comments, " +
+                "                ? AS oneshot, " +
+                "                ? AS expiration, " +
+                "                ? AS shelved_reason " +
+                "                    FROM DUAL) a " +
+                "                 ON (a.name = existing.name and a.type = existing.type) " +
+                "                WHEN MATCHED THEN " +
+                "                    UPDATE SET " +
+                "                    existing.comments = a.comments, " +
+                "                    existing.oneshot = a.oneshot, " +
+                "                    existing.expiration = a.expiration, " +
+                "                    existing.shelved_reason = a.shelved_reason " +
+                "                    DELETE WHERE ? = 'Y' " +
+                "                WHEN NOT MATCHED THEN " +
+                "                    INSERT " +
+                "                    (existing.name, existing.type, existing.comments, existing.oneshot, " +
+                "                        existing.expiration, existing.shelved_reason) " +
+                "                    VALUES (a.name, a.type, a.comments, a.oneshot, a.expiration, " +
+                "                        a.shelved_reason) ";
+
+        Connection con = null;
+        PreparedStatement stmt = null;
+
+        try {
+            con = OracleUtil.getConnection();
+            stmt = con.prepareStatement(sql);
+
+            for(EventSourceRecord<AlarmOverrideKey, AlarmOverrideUnion> record : records) {
+
+                String name = record.getKey().getName();
+                OverriddenAlarmType type = record.getKey().getType();
+                AlarmOverrideUnion value = record.getValue();
+
+                String comments = null;
+                boolean oneshot = false;
+                Long expiration = null;
+                String shelvedReason = null;
+                String deleteTombstone = "N";
+
+                if(value != null) {
+                    if (value.getUnion() instanceof DisabledOverride) {
+                        DisabledOverride disabledOverride = (DisabledOverride) value.getUnion();
+                        comments = disabledOverride.getComments();
+                    } else if(value.getUnion() instanceof FilteredOverride) {
+                        FilteredOverride filteredOverride = (FilteredOverride) value.getUnion();
+                        comments = filteredOverride.getFiltername();
+                    } else if(value.getUnion() instanceof ShelvedOverride) {
+                        ShelvedOverride shelvedOverride = (ShelvedOverride) value.getUnion();
+                        comments = shelvedOverride.getComments();
+                        oneshot = shelvedOverride.getOneshot();
+                        expiration = shelvedOverride.getExpiration();
+                        shelvedReason = shelvedOverride.getReason().name();
+                    }
+                } else {
+                    deleteTombstone = "Y";
+                }
+
+                stmt.setString(1, name);
+                stmt.setString(2, type.name());
+                if(comments == null) {
+                    stmt.setNull(3, Types.VARCHAR);
+                } else {
+                    stmt.setString(3, comments);
+                }
+                stmt.setString(4, oneshot ? "Y" : "N");
+                if(expiration == null) {
+                    stmt.setNull(5, Types.VARCHAR);
+                } else {
+                    stmt.setDate(5, new java.sql.Date(expiration));
+                }
+                if(shelvedReason == null) {
+                    stmt.setNull(6, Types.VARCHAR);
+                } else {
+                    stmt.setString(6, shelvedReason);
+                }
+                stmt.setString(7, deleteTombstone);
+
+                stmt.addBatch();
+            }
+
+            stmt.executeBatch();
+        } finally {
+            OracleUtil.close(stmt, con);
+        }
     }
 }

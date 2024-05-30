@@ -15,9 +15,11 @@ import javax.annotation.security.RunAs;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -118,9 +120,10 @@ public class KafkaOverrideFacade {
     class OverrideListener<K, V> implements EventSourceListener<AlarmOverrideKey, AlarmOverrideUnion> {
         @Override
         public void batch(List<EventSourceRecord<AlarmOverrideKey, AlarmOverrideUnion>> records, boolean highWaterReached) {
-            for (EventSourceRecord<AlarmOverrideKey, AlarmOverrideUnion> record : records) {
-                OverriddenAlarmType type = record.getKey().getType();
-                overrideFacade.oracleSet(record.getKey().getName(), type, record.getValue());
+            try {
+                overrideFacade.oracleMerge(records);
+            } catch (SQLException e) {
+                LOG.log(Level.SEVERE, "Unable to merge Kafka notifications into Oracle", e);
             }
         }
     }
