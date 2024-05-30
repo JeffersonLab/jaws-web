@@ -44,13 +44,13 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
 
     // Note: Can't restrict to jaws-admin because caller in KafkaOverrideFacade RunAs doesn't work
     @PermitAll
-    public void oracleSet(Alarm alarm, OverriddenAlarmType type, AlarmOverrideUnion value) {
-        em.createQuery("delete from AlarmOverride o where o.overridePK = :a").setParameter("a", new OverridePK(alarm, type)).executeUpdate();
+    public void oracleSet(String name, OverriddenAlarmType type, AlarmOverrideUnion value) {
+        em.createQuery("delete from AlarmOverride o where o.overridePK = :a").setParameter("a", new OverridePK(name, type)).executeUpdate();
 
         AlarmOverride override = new AlarmOverride();
 
         OverridePK pk = new OverridePK();
-        pk.setAlarm(alarm);
+        pk.setName(name);
         pk.setType(type);
 
         override.setOverridePK(pk);
@@ -104,9 +104,9 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
                                        String componentName, Map<String, Join> joins) {
         List<Predicate> filters = new ArrayList<>();
 
-        Join<AlarmOverride, Alarm> alarmJoin = root.join("overridePK").join("alarm");
-        Join<Alarm, Action> actionJoin = alarmJoin.join("action");
-        Join<Action, Component> componentJoin = actionJoin.join("component");
+        Join<AlarmOverride, Alarm> alarmJoin = root.join("alarm", JoinType.LEFT);
+        Join<Alarm, Action> actionJoin = alarmJoin.join("action", JoinType.LEFT);
+        Join<Action, Component> componentJoin = actionJoin.join("component", JoinType.LEFT);
 
         joins.put("alarm", alarmJoin);
         joins.put("action", actionJoin);
@@ -185,7 +185,7 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
         Path p0 = joins.get("action").get("priority");
         Order o0 = cb.asc(p0);
         orders.add(o0);
-        Path p1 = joins.get("alarm").get("name");
+        Path p1 = root.get("overridePK").get("name");
         Order o1 = cb.asc(p1);
         orders.add(o1);
         cq.orderBy(orders);
@@ -213,12 +213,12 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
     }
 
     @PermitAll
-    public List<AlarmOverride> findByAlarmId(BigInteger alarmId) {
+    public List<AlarmOverride> findByAlarmName(String name) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<AlarmOverride> cq = cb.createQuery(AlarmOverride.class);
         Root<AlarmOverride> root = cq.from(AlarmOverride.class);
         cq.select(root);
-        cq.where(cb.equal(root.get("overridePK").get("alarm").get("alarmId"), alarmId));
+        cq.where(cb.equal(root.get("overridePK").get("name"), name));
         TypedQuery<AlarmOverride> q = getEntityManager().createQuery(cq);
         return q.getResultList();
     }

@@ -69,7 +69,7 @@ public class AlarmDetailController extends HttpServlet {
             alarm.setNotification(notification);
 
             // OverrideList makes sense as a separate query attached a-la-carte to a transient field.
-            List<AlarmOverride> overrideList = overrideFacade.findByAlarmId(alarm.getAlarmId());
+            List<AlarmOverride> overrideList = overrideFacade.findByAlarmName(alarm.getName());
             Collections.sort(overrideList);
             alarm.setOverrideList(overrideList);
         }

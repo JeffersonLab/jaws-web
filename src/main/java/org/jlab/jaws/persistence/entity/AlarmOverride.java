@@ -26,6 +26,9 @@ public class AlarmOverride implements Serializable, Comparable<AlarmOverride> {
     private Date expiration;
     @Column(name = "SHELVED_REASON", nullable = true)
     private String shelvedReason;
+    @JoinColumn(name = "NAME", referencedColumnName = "NAME", updatable = false, insertable = false)
+    @ManyToOne // This should be OneToOne, but doesn't work given name is an alternate key in Alarm
+    private Alarm alarm;
 
     public OverridePK getOverridePK() {
         return overridePK;
@@ -33,6 +36,14 @@ public class AlarmOverride implements Serializable, Comparable<AlarmOverride> {
 
     public void setOverridePK(OverridePK overridePK) {
         this.overridePK = overridePK;
+    }
+
+    public Alarm getAlarm() {
+        return alarm;
+    }
+
+    public void setAlarm(Alarm alarm) {
+        this.alarm = alarm;
     }
 
     public String getComments() {

@@ -67,7 +67,7 @@ public class KafkaOverrideFacade {
             try (OverrideProducer producer = new OverrideProducer(KafkaConfig.getProducerPropsWithRegistry())) {
                 for (AlarmOverride override : list) {
 
-                    String name = override.getOverridePK().getAlarm().getName();
+                    String name = override.getOverridePK().getName();
                     OverriddenAlarmType type = override.getOverridePK().getType();
 
                     AlarmOverrideKey key = new AlarmOverrideKey(name, type);
@@ -119,14 +119,8 @@ public class KafkaOverrideFacade {
         @Override
         public void batch(List<EventSourceRecord<AlarmOverrideKey, AlarmOverrideUnion>> records, boolean highWaterReached) {
             for (EventSourceRecord<AlarmOverrideKey, AlarmOverrideUnion> record : records) {
-                Alarm alarm = alarmFacade.findByName(record.getKey().getName());
                 OverriddenAlarmType type = record.getKey().getType();
-
-                if(alarm != null) {
-                    overrideFacade.oracleSet(alarm, type, record.getValue());
-                } else {
-                    LOG.warning("Override of unknown alarm: " + record.getKey());
-                }
+                overrideFacade.oracleSet(record.getKey().getName(), type, record.getValue());
             }
         }
     }

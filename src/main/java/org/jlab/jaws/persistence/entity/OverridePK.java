@@ -10,9 +10,9 @@ import java.util.Objects;
 
 public class OverridePK implements Serializable, Comparable<OverridePK> {
     @NotNull
-    @JoinColumn(name = "ALARM_ID", referencedColumnName = "ALARM_ID", nullable = false)
-    @ManyToOne(optional = false)
-    private Alarm alarm;
+    @Size(max = 64)
+    @Column(name = "NAME", length = 64, nullable = false)
+    private String name;
     @Size(max = 32)
     @Column(name = "TYPE", length = 32, nullable = false)
     @Enumerated(EnumType.STRING)
@@ -21,17 +21,17 @@ public class OverridePK implements Serializable, Comparable<OverridePK> {
 
     public OverridePK() {}
 
-    public OverridePK(Alarm alarm, OverriddenAlarmType type) {
-        this.alarm = alarm;
+    public OverridePK(String name, OverriddenAlarmType type) {
+        this.name = name;
         this.type = type;
     }
 
-    public Alarm getAlarm() {
-        return alarm;
+    public String getName() {
+        return name;
     }
 
-    public void setAlarm(Alarm alarm) {
-        this.alarm = alarm;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public OverriddenAlarmType getType() {
@@ -47,17 +47,17 @@ public class OverridePK implements Serializable, Comparable<OverridePK> {
         if (this == o) return true;
         if (!(o instanceof OverridePK)) return false;
         OverridePK that = (OverridePK) o;
-        return Objects.equals(alarm, that.alarm) && type == that.type;
+        return Objects.equals(name, that.name) && type == that.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(alarm, type);
+        return Objects.hash(name, type);
     }
 
     @Override
     public int compareTo(OverridePK o) {
-        int val = this.alarm.getName().compareTo(o.alarm.getName());
+        int val = this.name.compareTo(o.getName());
 
         if (val == 0) { // Same name
             val = this.type.compareTo(o.type);
