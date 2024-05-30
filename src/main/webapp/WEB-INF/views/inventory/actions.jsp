@@ -104,9 +104,12 @@
                                         <c:forEach items="${actionList}" var="action">
                                             <tr data-id="${action.actionId}" data-component-id="${action.component.componentId}" data-priority-id="${action.priority.priorityId}" data-corrective-action="${fn:escapeXml(action.correctiveAction)}" data-rationale="${fn:escapeXml(action.rationale)}"  data-filterable="${action.filterable}" data-latchable="${action.latchable}" data-ondelay="${action.onDelaySeconds}" data-offdelay="${action.offDelaySeconds}">
                                                 <td>
+                                                    <c:url value="/inventory/action-detail" var="url">
+                                                        <c:param name="name" value="${action.name}"/>
+                                                    </c:url>
                                                     <a title="Action Information" class="dialog-ready"
                                                        data-dialog-title="Action Information: ${fn:escapeXml(action.name)}"
-                                                       href="${pageContext.request.contextPath}/inventory/actions/detail?actionId=${action.actionId}"><c:out
+                                                       href="${url}"><c:out
                                                         value="${action.name}"/></a>
                                                 </td>
                                                 <td><c:out value="${action.component.name}"/></td>

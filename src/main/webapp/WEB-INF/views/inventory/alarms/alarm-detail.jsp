@@ -122,8 +122,7 @@
                         <h3>Registration Details</h3>
                         <dl>
                             <dt>Taxonomy:</dt>
-                            <c:url var="url" value="/inventory/actions/detail">
-                                <c:param name="actionId" value="${alarm.action.actionId}"/>
+                            <c:url var="url" value="/inventory/actions/${jaws:urlEncode(alarm.action.name)}">
                             </c:url>
                             <dd>
                                 <c:out value="${alarm.action.component.team.name}"/> &gt;

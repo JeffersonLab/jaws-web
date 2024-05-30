@@ -18,7 +18,7 @@ import java.math.BigInteger;
  *
  * @author ryans
  */
-@WebServlet(name = "ActionDetailController", urlPatterns = {"/inventory/actions/detail"})
+@WebServlet(name = "ActionDetailController", urlPatterns = {"/inventory/action-detail"})
 public class ActionDetailController extends HttpServlet {
 
     @EJB

@@ -18,4 +18,8 @@
         <from>^/inventory/alarms/(.*)$</from>
         <to>/inventory/alarm-detail?name=$1</to>
     </rule>
+    <rule>
+        <from>^/inventory/actions/(.*)$</from>
+        <to>/inventory/action-detail?name=$1</to>
+    </rule>
 </urlrewrite>
