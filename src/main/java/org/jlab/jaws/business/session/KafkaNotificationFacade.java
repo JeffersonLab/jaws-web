@@ -13,9 +13,11 @@ import javax.annotation.security.RunAs;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -56,11 +58,10 @@ public class KafkaNotificationFacade {
     class NotificationListener<K, V> implements EventSourceListener<String, EffectiveNotification> {
         @Override
         public void batch(List<EventSourceRecord<String, EffectiveNotification>> records, boolean highWaterReached) {
-            for (EventSourceRecord<String, EffectiveNotification> record : records) {
-                String name = record.getKey();
-                long timestamp = record.getTimestamp();
-                Date since = new Date(timestamp);
-                notificationFacade.oracleSet(name, record.getValue(), since);
+            try {
+                notificationFacade.oracleMerge(records);
+            } catch (SQLException e) {
+                LOG.log(Level.SEVERE, "Unable to merge Kafka notifications into Oracle", e);
             }
         }
     }

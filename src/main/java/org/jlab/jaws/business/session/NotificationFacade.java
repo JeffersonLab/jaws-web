@@ -100,35 +100,35 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     // Note: Can't restrict to jaws-admin because caller in NotificationFacade RunAs doesn't work
     @PermitAll
     public void oracleMerge(List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
-        String sql = "MERGE INTO JAWS_OWNER.NOTIFICATION existing\n" +
-                "                USING\n" +
-                "                    (SELECT ?  AS name,\n" +
-                "                ? AS state,\n" +
-                "                ? AS since,\n" +
-                "                ? AS active_override,\n" +
-                "                ? AS activation_type,\n" +
-                "                ? AS activation_note,\n" +
-                "                ? AS activation_sevr,\n" +
-                "                ? AS activation_stat,\n" +
-                "                ? AS activation_error\n" +
-                "                    FROM DUAL) a\n" +
-                "                 ON (a.name = existing.name)\n" +
-                "                WHEN MATCHED THEN UPDATE\n" +
-                "                SET\n" +
-                "                existing.state = a.state,\n" +
-                "                existing.since = a.since,\n" +
-                "                    existing.active_override = a.active_override,\n" +
-                "                    existing.activation_type = a.activation_type,\n" +
-                "                    existing.activation_note = a.activation_note,\n" +
-                "                    existing.activation_sevr = a.activation_sevr,\n" +
-                "                    existing.activation_stat = a.activation_stat,\n" +
-                "                    existing.activation_error = a.activation_error\n" +
-                "                WHEN NOT MATCHED THEN INSERT\n" +
-                "                    (existing.name, existing.state, existing.since, existing.active_override,\n" +
-                "                        existing.activation_type, existing.activation_note, existing.activation_sevr,\n" +
-                "                        existing.activation_stat, existing.activation_error)\n" +
-                "                    VALUES (a.name, a.state, a.since, a.active_override, a.activation_type,\n" +
-                "                        a.activation_note, a.activation_sevr, a.activation_stat, a.activation_error);";
+        String sql = "MERGE INTO JAWS_OWNER.NOTIFICATION existing " +
+                "                USING " +
+                "                    (SELECT ?  AS name, " +
+                "                ? AS state, " +
+                "                ? AS since, " +
+                "                ? AS active_override, " +
+                "                ? AS activation_type, " +
+                "                ? AS activation_note, " +
+                "                ? AS activation_sevr, " +
+                "                ? AS activation_stat, " +
+                "                ? AS activation_error " +
+                "                    FROM DUAL) a " +
+                "                 ON (a.name = existing.name) " +
+                "                WHEN MATCHED THEN UPDATE " +
+                "                SET " +
+                "                existing.state = a.state, " +
+                "                existing.since = a.since, " +
+                "                    existing.active_override = a.active_override, " +
+                "                    existing.activation_type = a.activation_type, " +
+                "                    existing.activation_note = a.activation_note, " +
+                "                    existing.activation_sevr = a.activation_sevr, " +
+                "                    existing.activation_stat = a.activation_stat, " +
+                "                    existing.activation_error = a.activation_error " +
+                "                WHEN NOT MATCHED THEN INSERT " +
+                "                    (existing.name, existing.state, existing.since, existing.active_override, " +
+                "                        existing.activation_type, existing.activation_note, existing.activation_sevr, " +
+                "                        existing.activation_stat, existing.activation_error) " +
+                "                    VALUES (a.name, a.state, a.since, a.active_override, a.activation_type, " +
+                "                        a.activation_note, a.activation_sevr, a.activation_stat, a.activation_error) ";
 
         Connection con = null;
         PreparedStatement stmt = null;
