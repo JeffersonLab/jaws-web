@@ -261,6 +261,7 @@ $(document).on("click", ".default-clear-panel", function () {
     $("#location-select").val(null).trigger('change');
     $("#priority-select").val('');
     $("#team-select").val('');
+    $("#registered-select").val('');
     $("#alarm-name").val('');
     $("#action-name").val('');
     $("#component-name").val('');
