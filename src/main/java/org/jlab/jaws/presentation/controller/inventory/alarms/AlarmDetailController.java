@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author ryans
  */
-@WebServlet(name = "AlarmDetailController", urlPatterns = {"/inventory/alarms/detail"})
+@WebServlet(name = "AlarmDetailController", urlPatterns = {"/inventory/alarm-detail"})
 public class AlarmDetailController extends HttpServlet {
 
     @EJB

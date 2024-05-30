@@ -128,9 +128,12 @@
                                         <c:forEach items="${alarmList}" var="alarm">
                                             <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}">
                                                 <td>
+                                                    <c:url value="/inventory/alarm-detail" var="url">
+                                                        <c:param name="name" value="${alarm.name}"/>
+                                                    </c:url>
                                                     <a title="Alarm Information" class="dialog-ready"
                                                        data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
-                                                       href="${pageContext.request.contextPath}/inventory/alarms/detail?alarmId=${alarm.alarmId}"><c:out
+                                                       href="${url}"><c:out
                                                             value="${alarm.name}"/></a>
                                                 </td>
                                                 <td><c:out value="${alarm.action.name}"/></td>

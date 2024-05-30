@@ -194,9 +194,12 @@
                                         <c:forEach items="${notificationList}" var="notification">
                                             <tr data-id="${notification.alarm.alarmId}" data-action-id="${notification.alarm.action.actionId}" data-location-id-csv="${notification.alarm.locationIdCsv}" data-device="${notification.alarm.device}" data-screen-command="${notification.alarm.screenCommand}" data-masked-by="${notification.alarm.maskedBy}" data-pv="${notification.alarm.pv}">
                                                 <td>
+                                                    <c:url value="/inventory/alarm-detail" var="url">
+                                                        <c:param name="name" value="${notification.name}"/>
+                                                    </c:url>
                                                     <a title="Alarm Information" class="dialog-ready"
-                                                       data-dialog-title="Alarm Information: ${fn:escapeXml(notification.alarm.name)}"
-                                                       href="${pageContext.request.contextPath}/inventory/alarms/detail?alarmId=${notification.alarm.alarmId}"><c:out
+                                                       data-dialog-title="Alarm Information: ${fn:escapeXml(notification.name)}"
+                                                       href="${url}"><c:out
                                                             value="${notification.name}"/></a>
                                                 </td>
                                                 <td>
