@@ -63,10 +63,11 @@ public class Notifications extends HttpServlet {
         BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
         String componentName = request.getParameter("componentName");
         BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
+        Boolean registered = ParamConverter.convertYNBoolean(request, "registered");
         int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
         int maxPerPage = 100;
 
-        List<Notification> notificationList = notificationFacade.filterList(state, overridden, override, activationType, locationIdArray, priorityId, teamId, alarmName, actionName, componentName, offset, maxPerPage);
+        List<Notification> notificationList = notificationFacade.filterList(state, overridden, override, activationType, locationIdArray, priorityId, teamId, registered, alarmName, actionName, componentName, offset, maxPerPage);
         List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
         List<OverriddenState> overrideList = Arrays.asList(OverriddenState.values());
         List<BinaryState> stateList = Arrays.asList(BinaryState.values());
@@ -106,11 +107,11 @@ public class Notifications extends HttpServlet {
             selectedTeam = teamFacade.find(teamId);
         }
 
-        long totalRecords = notificationFacade.countList(state, overridden, override, activationType, locationIdArray, priorityId, teamId, alarmName, actionName, componentName);
+        long totalRecords = notificationFacade.countList(state, overridden, override, activationType, locationIdArray, priorityId, teamId, registered, alarmName, actionName, componentName);
 
         Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
-        String selectionMessage = createSelectionMessage(paginator, state, overridden, override, activationType, selectedLocationList, selectedPriority, selectedTeam, alarmName, actionName, componentName);
+        String selectionMessage = createSelectionMessage(paginator, state, overridden, override, activationType, selectedLocationList, selectedPriority, selectedTeam, registered, alarmName, actionName, componentName);
 
         request.setAttribute("notificationList", notificationList);
         request.setAttribute("actionList", actionList);
@@ -151,7 +152,7 @@ public class Notifications extends HttpServlet {
         return state;
     }
 
-    private String createSelectionMessage(Paginator paginator, BinaryState state, Boolean overridden, OverriddenAlarmType override, String activationType, List<Location> locationList, Priority priority, Team team, String alarmName, String actionName, String componentName) {
+    private String createSelectionMessage(Paginator paginator, BinaryState state, Boolean overridden, OverriddenAlarmType override, String activationType, List<Location> locationList, Priority priority, Team team, Boolean registered, String alarmName, String actionName, String componentName) {
         DecimalFormat formatter = new DecimalFormat("###,###");
 
         String selectionMessage = "All Notifications ";
@@ -191,6 +192,10 @@ public class Notifications extends HttpServlet {
 
         if(team != null) {
             filters.add("Team \"" + team.getName() + "\"");
+        }
+
+        if(registered != null) {
+            filters.add("Registered \"" + (registered ? "Yes" : "No") + "\"");
         }
 
         if(alarmName != null && !alarmName.isBlank()) {

@@ -117,6 +117,18 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
+                                        <label for="type-select">Registered</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="registered-select" name="registered">
+                                            <option value="">&nbsp;</option>
+                                            <option value="Y"${param.registered eq 'Y' ? ' selected="selected"' : ''}>Yes</option>
+                                            <option value="N"${param.registered eq 'N' ? ' selected="selected"' : ''}>No</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
                                         <label for="alarm-name">Alarm Name</label>
                                     </div>
                                     <div class="li-value">
