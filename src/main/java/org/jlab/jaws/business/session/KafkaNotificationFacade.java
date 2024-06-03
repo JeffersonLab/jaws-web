@@ -1,5 +1,6 @@
 package org.jlab.jaws.business.session;
 
+import org.jlab.jaws.business.service.BatchNotificationService;
 import org.jlab.jaws.business.util.KafkaConfig;
 import org.jlab.jaws.clients.EffectiveNotificationConsumer;
 import org.jlab.jaws.entity.EffectiveNotification;
@@ -37,13 +38,18 @@ public class KafkaNotificationFacade {
 
     @PostConstruct
     private void init() {
-        notificationFacade.clearCache();
+        if(System.getenv("SKIP_NOTIFICATION_MERGE") == null) {
+            LOG.log(Level.WARNING, "Monitoring Kafka for notifications");
+            notificationFacade.clearCache();
 
-        final Properties notificationProps = KafkaConfig.getConsumerPropsWithRegistry(-1, false);
-        notificationConsumer = new EffectiveNotificationConsumer(notificationProps);
-        EventSourceListener<String, EffectiveNotification> notificationListener = new NotificationListener<>();
-        notificationConsumer.addListener(notificationListener);
-        notificationConsumer.start();
+            final Properties notificationProps = KafkaConfig.getConsumerPropsWithRegistry(-1, false);
+            notificationConsumer = new EffectiveNotificationConsumer(notificationProps);
+            EventSourceListener<String, EffectiveNotification> notificationListener = new NotificationListener<>();
+            notificationConsumer.addListener(notificationListener);
+            notificationConsumer.start();
+        } else {
+            LOG.log(Level.WARNING, "Skipping monitoring Kafka for notifications");
+        }
     }
 
     @PreDestroy
@@ -60,7 +66,8 @@ public class KafkaNotificationFacade {
                 notificationFacade.oracleMerge(records);
 
                 // TODO: Consider moving history updates to a separate thread to avoid blocking notification merge
-                notificationFacade.oracleMergeHistory(records);
+                //BatchNotificationService service = new BatchNotificationService();
+                //service.oracleMergeHistory(records);
 
             } catch (SQLException e) {
                 LOG.log(Level.SEVERE, "Unable to merge Kafka notifications into Oracle", e);

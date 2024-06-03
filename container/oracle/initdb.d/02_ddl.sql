@@ -167,3 +167,21 @@ CREATE TABLE JAWS_OWNER.NOTIFICATION_HISTORY
     CONSTRAINT NOTIFICATION_HISTORY_PK PRIMARY KEY (NAME, ACTIVE_START),
     CONSTRAINT NOTIFICATION_HISTORY_AK1 UNIQUE (NAME, ACTIVE_END)
 );
+
+-- Procedures
+create or replace procedure JAWS_OWNER.MERGE_NOTIFICATION_HISTORY (
+    nameIn in varchar2, dateIn in timestamp with local time zone, updateIn in char, typeIn varchar2,
+    noteIn varchar2, sevrIn varchar2, statIn varchar2, errorIn varchar2) as
+begin
+    if updateIn = 'Y' then
+        update JAWS_OWNER.NOTIFICATION_HISTORY set active_end = dateIn where name = nameIn and active_end is null;
+    else
+        insert
+        when not exists (select 1 from JAWS_OWNER.NOTIFICATION_HISTORY where name = nameIn and active_end is null)
+        then
+        into JAWS_OWNER.NOTIFICATION_HISTORY (name, active_start, active_end, activation_type, activation_note,
+                                              activation_sevr, activation_stat, activation_error) select
+                                              nameIn, dateIn, null, typeIn, noteIn, sevrIn, statIn, errorIn from dual;
+    end if;
+end;
+/
