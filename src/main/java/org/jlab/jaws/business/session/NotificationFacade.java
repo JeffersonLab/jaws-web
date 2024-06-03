@@ -206,27 +206,31 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         }
     }
 
-    private void mergeStartHistory(List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
+    // Note: Can't restrict to jaws-admin because caller in NotificationFacade RunAs doesn't work
+    @PermitAll
+    public void oracleMergeHistory(List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
         String sql = "MERGE INTO JAWS_OWNER.NOTIFICATION_HISTORY existing " +
                 "                USING " +
                 "                    (SELECT ?  AS name, " +
-                "                ? AS active_start, " +
+                "                ? AS activation_date, " +
+                "                ? AS activation_update, " +
                 "                ? AS activation_type, " +
                 "                ? AS activation_note, " +
                 "                ? AS activation_sevr, " +
                 "                ? AS activation_stat, " +
                 "                ? AS activation_error " +
                 "                    FROM DUAL) a " +
-                "                 ON (a.name = existing.name and existing.active_start = ( " +
-                "                       SELECT max(existing.ACTIVE_START) over (partition by name) FROM JAWS_OWNER.NOTIFICATION_HISTORY WHERE name = a.name " +
-                "                       ) and existing.active_end is null " +
-                "                    ) " +
+                "                 ON (a.name = existing.name and a.activation_update = 'Y') " +
+                "                WHEN MATCHED THEN UPDATE " +
+                "                SET " +
+                "                existing.active_end = a.activation_date where existing.active_end is null " +
                 "                WHEN NOT MATCHED THEN INSERT " +
                 "                    (existing.name, existing.active_start, existing.active_end, " +
                 "                        existing.activation_type, existing.activation_note, existing.activation_sevr, " +
                 "                        existing.activation_stat, existing.activation_error) " +
-                "                    VALUES (a.name, a.active_start, null, a.activation_type, " +
-                "                        a.activation_note, a.activation_sevr, a.activation_stat, a.activation_error) ";
+                "                    VALUES (a.name, a.activation_date, null, a.activation_type, " +
+                "                        a.activation_note, a.activation_sevr, a.activation_stat, a.activation_error) " +
+                "                    WHERE (select 'Y' from JAWS_OWNER.NOTIFICATION_HISTORY c where name = a.name and c.active_end is null) is null ";
         Connection con = null;
         PreparedStatement stmt = null;
 
@@ -236,6 +240,8 @@ public class NotificationFacade extends AbstractFacade<Notification> {
 
             for(EventSourceRecord<String, EffectiveNotification> record : records) {
                 AlarmActivationUnion union = record.getValue().getActivation();
+
+                BinaryState state = BinaryState.fromAlarmState(record.getValue().getState());
 
                 String activationType = "NotActive";
                 String note = null;
@@ -264,26 +270,27 @@ public class NotificationFacade extends AbstractFacade<Notification> {
 
                 stmt.setString(1, record.getKey());
                 stmt.setDate(2, new java.sql.Date(record.getTimestamp()));
-                stmt.setString(3, activationType);
+                stmt.setString(3, BinaryState.Normal == state ? "Y" : "N");
+                stmt.setString(4, activationType);
                 if(note == null) {
-                    stmt.setNull(4, Types.VARCHAR);
-                } else {
-                    stmt.setString(4, note);
-                }
-                if(sevr == null) {
                     stmt.setNull(5, Types.VARCHAR);
                 } else {
-                    stmt.setString(5, sevr);
+                    stmt.setString(5, note);
                 }
-                if(stat == null) {
+                if(sevr == null) {
                     stmt.setNull(6, Types.VARCHAR);
                 } else {
-                    stmt.setString(6, stat);
+                    stmt.setString(6, sevr);
                 }
-                if(error == null) {
+                if(stat == null) {
                     stmt.setNull(7, Types.VARCHAR);
                 } else {
-                    stmt.setString(7, error);
+                    stmt.setString(7, stat);
+                }
+                if(error == null) {
+                    stmt.setNull(8, Types.VARCHAR);
+                } else {
+                    stmt.setString(8, error);
                 }
 
                 stmt.addBatch();
@@ -293,62 +300,6 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         } finally {
             OracleUtil.close(stmt, con);
         }
-    }
-
-    private void mergeEndHistory(List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
-        String sql = "MERGE INTO JAWS_OWNER.NOTIFICATION_HISTORY existing " +
-                "                USING " +
-                "                    (SELECT ? AS name, " +
-                "                            ? AS active_end " +
-                "                    FROM DUAL) a " +
-                "                 ON (a.name = existing.name and existing.active_start = ( " +
-                "                       SELECT max(existing.ACTIVE_START) over (partition by name) FROM JAWS_OWNER.NOTIFICATION_HISTORY WHERE name = a.name " +
-                "                       ) and existing.active_end is null " +
-                "                    ) " +
-                "                WHEN MATCHED THEN UPDATE " +
-                "                SET " +
-                "                existing.active_end = a.active_end ";
-        Connection con = null;
-        PreparedStatement stmt = null;
-
-        try {
-            con = OracleUtil.getConnection();
-            stmt = con.prepareStatement(sql);
-
-            for(EventSourceRecord<String, EffectiveNotification> record : records) {
-
-                stmt.setString(1, record.getKey());
-                stmt.setDate(2, new java.sql.Date(record.getTimestamp()));
-
-                stmt.addBatch();
-            }
-
-            stmt.executeBatch();
-        } finally {
-            OracleUtil.close(stmt, con);
-        }
-    }
-
-    // Note: Can't restrict to jaws-admin because caller in NotificationFacade RunAs doesn't work
-    @PermitAll
-    public void oracleMergeHistory(List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
-        List<EventSourceRecord<String, EffectiveNotification>> startRecords = new ArrayList<>();
-        List<EventSourceRecord<String, EffectiveNotification>> endRecords = new ArrayList<>();
-
-        for(EventSourceRecord<String, EffectiveNotification> record : records) {
-            BinaryState state = BinaryState.fromAlarmState(record.getValue().getState());
-            if(BinaryState.Active == state) {
-                startRecords.add(record);
-            } else {
-                endRecords.add(record);
-            }
-        }
-
-        // TODO: This isn't going to work because records must be inserted in order.
-        // TODO: If we compact ourselves then maybe it'll work, but could lose a quick chatty alarm.
-
-        mergeStartHistory(startRecords);
-        mergeEndHistory(endRecords);
     }
 
     private OverriddenAlarmType overrideFromAlarmState(AlarmState state) {
