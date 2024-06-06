@@ -168,11 +168,28 @@ CREATE TABLE JAWS_OWNER.NOTIFICATION_HISTORY
     CONSTRAINT NOTIFICATION_HISTORY_AK1 UNIQUE (NAME, ACTIVE_END)
 );
 
+-- This table exists solely to provide a mechanism to lock a parent row with "for update" to serialize
+-- merge_notification_history
+CREATE TABLE JAWS_OWNER.NOTIFICATION_NAME
+(
+    NAME                 VARCHAR2(64 CHAR) NOT NULL,
+    CONSTRAINT NOTIFICATION_NAME_PK PRIMARY KEY (NAME)
+);
+
 -- Procedures
 create or replace procedure JAWS_OWNER.MERGE_NOTIFICATION_HISTORY (
     nameIn in varchar2, dateIn in timestamp with local time zone, updateIn in char, typeIn varchar2,
     noteIn varchar2, sevrIn varchar2, statIn varchar2, errorIn varchar2) as
+    var1 integer;
 begin
+    insert
+    when not exists (select 1 from JAWS_OWNER.NOTIFICATION_NAME where name = nameIn)
+    then
+    into JAWS_OWNER.NOTIFICATION_NAME (name) select nameIn from dual;
+
+    -- Lock parent row with for update
+    select 1 into var1 from JAWS_OWNER.NOTIFICATION_NAME where name = nameIn for update;
+
     if updateIn = 'Y' then
         update JAWS_OWNER.NOTIFICATION_HISTORY set active_end = dateIn where name = nameIn and active_end is null;
     else

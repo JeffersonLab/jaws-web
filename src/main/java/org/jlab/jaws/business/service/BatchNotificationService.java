@@ -5,7 +5,6 @@ import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.model.BinaryState;
 import org.jlab.kafka.eventsource.EventSourceRecord;
 
-import javax.annotation.security.PermitAll;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -20,6 +19,10 @@ public class BatchNotificationService {
 
         try {
             con = OracleUtil.getConnection();
+
+            con.setAutoCommit(true);
+            con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
             stmt = con.prepareCall(sql);
 
             for(EventSourceRecord<String, EffectiveNotification> record : records) {
