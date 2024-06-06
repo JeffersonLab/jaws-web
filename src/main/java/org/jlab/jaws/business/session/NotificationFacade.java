@@ -99,7 +99,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     // Note: Can't restrict to jaws-admin because caller in NotificationFacade RunAs doesn't work
     @PermitAll
     public void oracleMerge(List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
-        String sql = "MERGE INTO JAWS_OWNER.NOTIFICATION existing " +
+        final String sql = "MERGE INTO JAWS_OWNER.NOTIFICATION existing " +
                 "                USING " +
                 "                    (SELECT ?  AS name, " +
                 "                ? AS state, " +

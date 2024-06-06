@@ -63,11 +63,17 @@ public class KafkaNotificationFacade {
         @Override
         public void batch(List<EventSourceRecord<String, EffectiveNotification>> records, boolean highWaterReached) {
             try {
+                long start = System.currentTimeMillis();
                 notificationFacade.oracleMerge(records);
+                long end = System.currentTimeMillis();
 
                 // TODO: Consider moving history updates to a separate thread to avoid blocking notification merge
+                long hStart = System.currentTimeMillis();
                 BatchNotificationService service = new BatchNotificationService();
                 service.oracleMergeHistory(records);
+                long hEnd = System.currentTimeMillis();
+
+                LOG.log(Level.INFO, "Merged {0} batch notifications in {1} milliseconds, merged history in {2} milliseconds", new Object[]{records.size(), end - start, hEnd - hStart});
 
             } catch (SQLException e) {
                 LOG.log(Level.SEVERE, "Unable to merge Kafka notifications into Oracle", e);
