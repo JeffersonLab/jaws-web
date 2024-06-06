@@ -43,17 +43,22 @@ public class KafkaOverrideFacade {
 
     @PostConstruct
     private void init() {
-        populateSelectOverrides();
+        if(System.getenv("SKIP_OVERRIDE_KAFKA_CONNECT") == null) {
+            LOG.log(Level.WARNING, "Sending and monitoring Kafka for overrides");
+            populateSelectOverrides();
+
+            overrideFacade.clearCache();
+
+            final Properties props = KafkaConfig.getConsumerPropsWithRegistry(-1, false);
+            consumer = new OverrideConsumer(props);
+            EventSourceListener<AlarmOverrideKey, AlarmOverrideUnion> listener = new OverrideListener<>();
+            consumer.addListener(listener);
+            consumer.start();
+        } else {
+            LOG.log(Level.WARNING, "Skipping sending and monitoring Kafka for overrides");
+        }
 
         status.setOverridesSent();
-
-        overrideFacade.clearCache();
-
-        final Properties props = KafkaConfig.getConsumerPropsWithRegistry(-1, false);
-        consumer = new OverrideConsumer(props);
-        EventSourceListener<AlarmOverrideKey, AlarmOverrideUnion> listener = new OverrideListener<>();
-        consumer.addListener(listener);
-        consumer.start();
     }
 
     private void populateSelectOverrides() {

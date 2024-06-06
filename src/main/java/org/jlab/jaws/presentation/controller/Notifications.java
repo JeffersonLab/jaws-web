@@ -127,7 +127,7 @@ public class Notifications extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/views/notifications.jsp").forward(request, response);
     }
 
-    private OverriddenAlarmType convertOverrideKey(HttpServletRequest request, String name) {
+    public static OverriddenAlarmType convertOverrideKey(HttpServletRequest request, String name) {
         String value = request.getParameter(name);
 
         OverriddenAlarmType type = null;
@@ -140,7 +140,7 @@ public class Notifications extends HttpServlet {
         return type;
     }
 
-    private BinaryState convertState(HttpServletRequest request, String name) {
+    public static BinaryState convertState(HttpServletRequest request, String name) {
         String value = request.getParameter(name);
 
         BinaryState state = null;
@@ -152,7 +152,7 @@ public class Notifications extends HttpServlet {
         return state;
     }
 
-    private String createSelectionMessage(Paginator paginator, BinaryState state, Boolean overridden, OverriddenAlarmType override, String activationType, List<Location> locationList, Priority priority, Team team, Boolean registered, String alarmName, String actionName, String componentName) {
+    public static String createSelectionMessage(Paginator paginator, BinaryState state, Boolean overridden, OverriddenAlarmType override, String activationType, List<Location> locationList, Priority priority, Team team, Boolean registered, String alarmName, String actionName, String componentName) {
         DecimalFormat formatter = new DecimalFormat("###,###");
 
         String selectionMessage = "All Notifications ";

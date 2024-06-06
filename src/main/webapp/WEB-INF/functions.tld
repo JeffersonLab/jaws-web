@@ -15,4 +15,9 @@
         <function-class>org.jlab.jaws.presentation.util.TagFunctions</function-class>
         <function-signature>java.lang.String urlEncode(java.lang.String)</function-signature>
     </function>
+    <function>
+        <name>millisToHumanReadable</name>
+        <function-class>org.jlab.jaws.presentation.util.TagFunctions</function-class>
+        <function-signature>java.lang.String millisToHumanReadable(long)</function-signature>
+    </function>
 </taglib>

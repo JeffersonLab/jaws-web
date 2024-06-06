@@ -1,7 +1,6 @@
 package org.jlab.jaws.business.session;
 
 import org.jlab.jaws.business.util.KafkaConfig;
-import org.jlab.jaws.clients.CategoryProducer;
 import org.jlab.jaws.clients.LocationProducer;
 import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.entity.Action;
@@ -15,6 +14,7 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -40,10 +40,15 @@ public class KafkaRegistrationFacade {
 
     @PostConstruct
     private void init() {
-        populateLocations();
-        populateComponents();
-        populateActions();
-        populateAlarms();
+        if(System.getenv("SKIP_SEND_REGISTRATION_TO_KAFKA") == null) {
+            LOG.log(Level.WARNING, "Sending registrations to Kafka");
+            populateLocations();
+            populateComponents();
+            populateActions();
+            populateAlarms();
+        } else {
+            LOG.log(Level.WARNING, "Skipping send registration to Kafka");
+        }
         status.setRegistrationsSent();
     }
 
