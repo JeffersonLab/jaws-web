@@ -157,8 +157,8 @@ CREATE TABLE JAWS_OWNER.OVERRIDE
 CREATE TABLE JAWS_OWNER.NOTIFICATION_HISTORY
 (
     NAME                 VARCHAR2(64 CHAR) NOT NULL,
-    ACTIVE_START         TIMESTAMP(0) WITH LOCAL TIME ZONE NOT NULL,
-    ACTIVE_END           TIMESTAMP(0) WITH LOCAL TIME ZONE NULL,
+    ACTIVE_START         TIMESTAMP(3) WITH LOCAL TIME ZONE NOT NULL,
+    ACTIVE_END           TIMESTAMP(3) WITH LOCAL TIME ZONE NULL,
     ACTIVATION_TYPE      VARCHAR2(64 CHAR) NOT NULL,
     ACTIVATION_NOTE      VARCHAR2(128 CHAR) NULL,
     ACTIVATION_SEVR      VARCHAR2(32 CHAR) NULL,
@@ -177,7 +177,7 @@ CREATE TABLE JAWS_OWNER.NOTIFICATION_NAME
 );
 
 -- Procedures
-create or replace procedure JAWS_OWNER.MERGE_NOTIFICATION_HISTORY (
+create or replace procedure JAWS_OWNER.MERGE_NOTIFICATION_HISTORY_WITH_LOCK (
     nameIn in varchar2, dateIn in timestamp with local time zone, updateIn in char, typeIn varchar2,
     noteIn varchar2, sevrIn varchar2, statIn varchar2, errorIn varchar2) as
     var1 integer;
@@ -191,14 +191,35 @@ begin
     select 1 into var1 from JAWS_OWNER.NOTIFICATION_NAME where name = nameIn for update;
 
     if updateIn = 'Y' then
-        update JAWS_OWNER.NOTIFICATION_HISTORY set active_end = dateIn where name = nameIn and active_end is null;
+        update JAWS_OWNER.NOTIFICATION_HISTORY set active_end = dateIn where name = nameIn and active_end is null and
+            not exists (select 1 from JAWS_OWNER.NOTIFICATION_HISTORY where name = nameIn and active_end = dateIn);
     else
         insert
-        when not exists (select 1 from JAWS_OWNER.NOTIFICATION_HISTORY where name = nameIn and active_end is null)
+        when not exists (select 1 from JAWS_OWNER.NOTIFICATION_HISTORY where name = nameIn and active_end is null) and
+             not exists (select 1 from JAWS_OWNER.NOTIFICATION_HISTORY where name = nameIn and active_start = dateIn)
         then
         into JAWS_OWNER.NOTIFICATION_HISTORY (name, active_start, active_end, activation_type, activation_note,
                                               activation_sevr, activation_stat, activation_error) select
                                               nameIn, dateIn, null, typeIn, noteIn, sevrIn, statIn, errorIn from dual;
+    end if;
+end;
+/
+
+create or replace procedure JAWS_OWNER.MERGE_NOTIFICATION_HISTORY (
+    nameIn in varchar2, dateIn in timestamp with local time zone, updateIn in char, typeIn varchar2,
+    noteIn varchar2, sevrIn varchar2, statIn varchar2, errorIn varchar2) as
+begin
+    if updateIn = 'Y' then
+        update JAWS_OWNER.NOTIFICATION_HISTORY set active_end = dateIn where name = nameIn and active_end is null and
+               not exists (select 1 from JAWS_OWNER.NOTIFICATION_HISTORY where name = nameIn and active_end = dateIn);
+    else
+        insert
+            when not exists (select 1 from JAWS_OWNER.NOTIFICATION_HISTORY where name = nameIn and active_end is null) and
+                 not exists (select 1 from JAWS_OWNER.NOTIFICATION_HISTORY where name = nameIn and active_start = dateIn)
+            then
+            into JAWS_OWNER.NOTIFICATION_HISTORY (name, active_start, active_end, activation_type, activation_note,
+                                                  activation_sevr, activation_stat, activation_error) select
+                                                   nameIn, dateIn, null, typeIn, noteIn, sevrIn, statIn, errorIn from dual;
     end if;
 end;
 /

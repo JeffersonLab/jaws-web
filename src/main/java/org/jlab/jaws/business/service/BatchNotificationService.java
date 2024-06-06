@@ -12,7 +12,7 @@ import java.sql.Types;
 import java.util.*;
 
 public class BatchNotificationService {
-    private void oracleMergeHistoryUnique(List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
+    public void oracleMergeHistory(List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
         String sql = "{call JAWS_OWNER.MERGE_NOTIFICATION_HISTORY(?, ?, ?, ?, ?, ?, ?, ?)}";
         Connection con = null;
         PreparedStatement stmt = null;
@@ -20,6 +20,7 @@ public class BatchNotificationService {
         try {
             con = OracleUtil.getConnection();
 
+            // Use default autoCommit and Transaction Isolation Level (explicitly stated)
             con.setAutoCommit(true);
             con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
@@ -89,7 +90,7 @@ public class BatchNotificationService {
         }
     }
 
-    public void oracleMergeHistory(List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
+    public void oracleMergeHistoryBatchWithUniqueNames(List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
         List<EventSourceRecord<String, EffectiveNotification>> clone = new ArrayList<>(records);
 
         // We must maintain insert and update order, event by event, so must parse batches to contain unique alarms
@@ -106,7 +107,7 @@ public class BatchNotificationService {
                 }
             }
 
-            oracleMergeHistoryUnique(new ArrayList<>(batch.values()));
+            oracleMergeHistory(new ArrayList<>(batch.values()));
         }
     }
 }

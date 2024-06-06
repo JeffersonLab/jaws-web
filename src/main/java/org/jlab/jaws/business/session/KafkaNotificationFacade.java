@@ -66,8 +66,8 @@ public class KafkaNotificationFacade {
                 notificationFacade.oracleMerge(records);
 
                 // TODO: Consider moving history updates to a separate thread to avoid blocking notification merge
-                //BatchNotificationService service = new BatchNotificationService();
-                //service.oracleMergeHistory(records);
+                BatchNotificationService service = new BatchNotificationService();
+                service.oracleMergeHistory(records);
 
             } catch (SQLException e) {
                 LOG.log(Level.SEVERE, "Unable to merge Kafka notifications into Oracle", e);

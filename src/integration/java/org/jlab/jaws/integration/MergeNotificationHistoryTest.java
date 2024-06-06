@@ -34,10 +34,25 @@ public class MergeNotificationHistoryTest {
         List<EventSourceRecord<String, EffectiveNotification>> records = new ArrayList<>();
 
         long offset = 0;
-        long timestamp = (new Date()).getTime();
+        long timestamp = (new Date(0)).getTime(); // We use fixed start date so we can test replay of same duplicate messages by running this test case multiple times
 
-        records.add(new EventSourceRecord<>("Alarm1", new EffectiveNotification(null, null, AlarmState.Active), offset, timestamp));
-        records.add(new EventSourceRecord<>("Alarm1", new EffectiveNotification(null, null, AlarmState.Normal), offset, timestamp));
+        records.add(new EventSourceRecord<>("Alarm1", new EffectiveNotification(null, null, AlarmState.Active), offset++, timestamp));
+        timestamp = timestamp + 1000;
+        records.add(new EventSourceRecord<>("Alarm1", new EffectiveNotification(null, null, AlarmState.Normal), offset++, timestamp));
+        timestamp = timestamp + 1000;
+        records.add(new EventSourceRecord<>("Alarm1", new EffectiveNotification(null, null, AlarmState.Active), offset++, timestamp));
+        timestamp = timestamp + 1000;
+        records.add(new EventSourceRecord<>("Alarm1", new EffectiveNotification(null, null, AlarmState.Normal), offset++, timestamp));
+        timestamp = timestamp + 1000;
+        records.add(new EventSourceRecord<>("Alarm1", new EffectiveNotification(null, null, AlarmState.Active), offset++, timestamp));
+        timestamp = timestamp + 1000;
+        records.add(new EventSourceRecord<>("Alarm1", new EffectiveNotification(null, null, AlarmState.Normal), offset++, timestamp));
+        timestamp = timestamp + 1000;
+        records.add(new EventSourceRecord<>("Alarm1", new EffectiveNotification(null, null, AlarmState.Normal), offset++, timestamp));
+        timestamp = timestamp + 1000;
+        records.add(new EventSourceRecord<>("Alarm1", new EffectiveNotification(null, null, AlarmState.Active), offset++, timestamp));
+        timestamp = timestamp + 1000;
+        records.add(new EventSourceRecord<>("Alarm1", new EffectiveNotification(null, null, AlarmState.Active), offset++, timestamp));
 
         service.oracleMergeHistory(records);
     }
