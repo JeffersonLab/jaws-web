@@ -2,7 +2,7 @@
 A [Java EE 8](https://en.wikipedia.org/wiki/Jakarta_EE) web application for managing [JAWS](https://github.com/JeffersonLab/jaws) alarm registrations and notifications built with the [Smoothness](https://github.com/JeffersonLab/smoothness) web template.
 
 <p>
-<a href="#"><img src="https://github.com/JeffersonLab/jaws-admin-gui/raw/main/src/main/webapp/resources/img/screenshot1.png"/></a>     
+<a href="#"><img src="https://github.com/JeffersonLab/jaws-admin-gui/raw/main/screenshot.png"/></a>     
 </p>
 
 ---
