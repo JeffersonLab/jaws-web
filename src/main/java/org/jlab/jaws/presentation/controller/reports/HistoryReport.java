@@ -18,8 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,6 +53,16 @@ public class HistoryReport extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        Date start, end;
+
+        try {
+            start = ParamConverter.convertFriendlyDateTime(request, "start");
+            end = ParamConverter.convertFriendlyDateTime(request, "end");
+        } catch (ParseException e) {
+            throw new RuntimeException("Unable to parse date");
+        }
+
         BinaryState state = Notifications.convertState(request, "state");
         Boolean overridden = ParamConverter.convertYNBoolean(request, "overridden");
         OverriddenAlarmType override = Notifications.convertOverrideKey(request, "override");
@@ -65,7 +77,7 @@ public class HistoryReport extends HttpServlet {
         int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
         int maxPerPage = 100;
 
-        List<NotificationHistory> notificationList = historyFacade.filterList(activationType, locationIdArray, priorityId, teamId, registered, alarmName, actionName, componentName, offset, maxPerPage);
+        List<NotificationHistory> notificationList = historyFacade.filterList(start, end, activationType, locationIdArray, priorityId, teamId, registered, alarmName, actionName, componentName, offset, maxPerPage);
         List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
         List<OverriddenState> overrideList = Arrays.asList(OverriddenState.values());
         List<BinaryState> stateList = Arrays.asList(BinaryState.values());
@@ -105,11 +117,11 @@ public class HistoryReport extends HttpServlet {
             selectedTeam = teamFacade.find(teamId);
         }
 
-        long totalRecords = historyFacade.countList(activationType, locationIdArray, priorityId, teamId, registered, alarmName, actionName, componentName);
+        long totalRecords = historyFacade.countList(start, end, activationType, locationIdArray, priorityId, teamId, registered, alarmName, actionName, componentName);
 
         Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
-        String selectionMessage = Notifications.createSelectionMessage(paginator, state, overridden, override, activationType, selectedLocationList, selectedPriority, selectedTeam, registered, alarmName, actionName, componentName);
+        String selectionMessage = Notifications.createSelectionMessage(paginator, start, end, state, overridden, override, activationType, selectedLocationList, selectedPriority, selectedTeam, registered, alarmName, actionName, componentName);
 
         request.setAttribute("notificationList", notificationList);
         request.setAttribute("actionList", actionList);

@@ -37,6 +37,7 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
     }
 
     private List<Predicate> getFilters(CriteriaBuilder cb, CriteriaQuery<? extends Object> cq, Root<NotificationHistory> root,
+                                       Date start, Date end,
                                        String activationType,
                                        BigInteger[] locationIdArray,
                                        BigInteger priorityId, BigInteger teamId, Boolean registered, String alarmName, String actionName,
@@ -50,6 +51,14 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
         joins.put("alarm", alarmJoin);
         joins.put("action", actionJoin);
         joins.put("component", componentJoin);
+
+        if(start != null) {
+            filters.add(cb.greaterThanOrEqualTo(root.get("notificationHistoryPK").get("activeStart"), start));
+        }
+
+        if(end != null) {
+            filters.add(cb.lessThan(root.get("notificationHistoryPK").get("activeStart"), end));
+        }
 
         if (activationType != null && !activationType.isEmpty()) {
             filters.add(cb.like(cb.lower(root.get("activationType")), activationType.toLowerCase()));
@@ -113,7 +122,7 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
     }
 
     @PermitAll
-    public List<NotificationHistory> filterList(String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, Boolean registered, String alarmName, String actionName, String componentName, int offset, int max) {
+    public List<NotificationHistory> filterList(Date start, Date end, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, Boolean registered, String alarmName, String actionName, String componentName, int offset, int max) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<NotificationHistory> cq = cb.createQuery(NotificationHistory.class);
         Root<NotificationHistory> root = cq.from(NotificationHistory.class);
@@ -121,7 +130,7 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
 
         Map<String, Join> joins = new HashMap<>();
 
-        List<Predicate> filters = getFilters(cb, cq, root, activationType, locationIdArray, priorityId, teamId, registered, alarmName, actionName,
+        List<Predicate> filters = getFilters(cb, cq, root, start, end, activationType, locationIdArray, priorityId, teamId, registered, alarmName, actionName,
                 componentName, joins);
 
         if (!filters.isEmpty()) {
@@ -143,14 +152,14 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
     }
 
     @PermitAll
-    public long countList(String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, Boolean registered, String alarmName, String actionName, String componentName) {
+    public long countList(Date start, Date end, String activationType, BigInteger[] locationIdArray, BigInteger priorityId, BigInteger teamId, Boolean registered, String alarmName, String actionName, String componentName) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<NotificationHistory> root = cq.from(NotificationHistory.class);
 
         Map<String, Join> joins = new HashMap<>();
 
-        List<Predicate> filters = getFilters(cb, cq, root, activationType, locationIdArray, priorityId, teamId, registered, alarmName, actionName,
+        List<Predicate> filters = getFilters(cb, cq, root, start, end, activationType, locationIdArray, priorityId, teamId, registered, alarmName, actionName,
                 componentName, joins);
 
         if (!filters.isEmpty()) {

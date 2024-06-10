@@ -6,6 +6,7 @@ import org.jlab.jaws.entity.OverriddenAlarmType;
 import org.jlab.jaws.persistence.entity.*;
 import org.jlab.jaws.persistence.model.BinaryState;
 import org.jlab.jaws.persistence.model.OverriddenState;
+import org.jlab.smoothness.business.util.TimeUtil;
 import org.jlab.smoothness.presentation.util.Paginator;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 import org.jlab.smoothness.presentation.util.ParamUtil;
@@ -21,6 +22,7 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -111,7 +113,7 @@ public class Notifications extends HttpServlet {
 
         Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
-        String selectionMessage = createSelectionMessage(paginator, state, overridden, override, activationType, selectedLocationList, selectedPriority, selectedTeam, registered, alarmName, actionName, componentName);
+        String selectionMessage = createSelectionMessage(paginator, null, null, state, overridden, override, activationType, selectedLocationList, selectedPriority, selectedTeam, registered, alarmName, actionName, componentName);
 
         request.setAttribute("notificationList", notificationList);
         request.setAttribute("actionList", actionList);
@@ -152,12 +154,20 @@ public class Notifications extends HttpServlet {
         return state;
     }
 
-    public static String createSelectionMessage(Paginator paginator, BinaryState state, Boolean overridden, OverriddenAlarmType override, String activationType, List<Location> locationList, Priority priority, Team team, Boolean registered, String alarmName, String actionName, String componentName) {
+    public static String createSelectionMessage(Paginator paginator, Date start, Date end, BinaryState state, Boolean overridden, OverriddenAlarmType override, String activationType, List<Location> locationList, Priority priority, Team team, Boolean registered, String alarmName, String actionName, String componentName) {
         DecimalFormat formatter = new DecimalFormat("###,###");
 
         String selectionMessage = "All Notifications ";
 
         List<String> filters = new ArrayList<>();
+
+        if (start != null && end != null) {
+            filters.add(TimeUtil.formatSmartRangeSeparateTime(start, end));
+        } else if (start != null) {
+            filters.add("Active After " + TimeUtil.formatSmartSingleTime(start));
+        } else if (end != null) {
+            filters.add("Active Before " + TimeUtil.formatSmartSingleTime(end));
+        }
 
         if(state != null) {
             filters.add("State \"" + state + "\"");

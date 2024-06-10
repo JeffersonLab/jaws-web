@@ -1,6 +1,9 @@
 var jlab = jlab || {};
 
 $(document).on("click", ".default-clear-panel", function () {
+    $("#date-range").val('custom').change();
+    $("#start").val('');
+    $("#end").val('');
     $("#state-select").val('');
     $("#overridden-select").val('');
     $("#override-select").val('');

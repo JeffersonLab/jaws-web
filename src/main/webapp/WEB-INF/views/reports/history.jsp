@@ -20,6 +20,7 @@
                     <div id="filter-form-panel">
                         <fieldset>
                             <legend>Filter</legend>
+                            <s:date-range datetime="${true}" sevenAmOffset="${false}"/>
                             <ul class="key-value-list">
                                 <li>
                                     <div class="li-key">
