@@ -139,7 +139,7 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
 
         List<Order> orders = new ArrayList<>();
         Path p0 = root.get("notificationHistoryPK").get("activeStart");
-        Order o0 = cb.asc(p0);
+        Order o0 = cb.desc(p0);
         orders.add(o0);
         Path p1 = joins.get("action").get("priority");
         Order o1 = cb.asc(p1);
