@@ -1,5 +1,6 @@
 plugins {
     id 'war'
+    id "com.diffplug.spotless" version "6.25.0"
 }
 
 description 'Jefferson Lab Alarm Warning System (JAWS) web admin interface'
@@ -102,5 +103,11 @@ war {
         filter {
             String line -> line.replaceAll("@CACHE_VERSION@", cacheVersion)
         }
+    }
+}
+
+spotless {
+    java {
+        googleJavaFormat()
     }
 }

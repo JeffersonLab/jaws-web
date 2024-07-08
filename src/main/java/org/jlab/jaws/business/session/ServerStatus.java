@@ -6,21 +6,21 @@ import javax.ejb.Singleton;
 
 @Singleton
 public class ServerStatus {
-    private boolean registrationsSent = false;
-    private boolean overridesSent = false;
+  private boolean registrationsSent = false;
+  private boolean overridesSent = false;
 
-    @PermitAll
-    public boolean isHealthy() {
-        return registrationsSent && overridesSent;
-    }
+  @PermitAll
+  public boolean isHealthy() {
+    return registrationsSent && overridesSent;
+  }
 
-    @RolesAllowed("jaws-admin")
-    public void setRegistrationsSent() {
-        this.registrationsSent = true;
-    }
+  @RolesAllowed("jaws-admin")
+  public void setRegistrationsSent() {
+    this.registrationsSent = true;
+  }
 
-    @RolesAllowed("jaws-admin")
-    public void setOverridesSent() {
-        this.overridesSent = true;
-    }
+  @RolesAllowed("jaws-admin")
+  public void setOverridesSent() {
+    this.overridesSent = true;
+  }
 }

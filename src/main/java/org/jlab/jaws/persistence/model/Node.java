@@ -7,9 +7,9 @@ import java.util.List;
  * @author ryans
  */
 public interface Node {
-    String getName();
+  String getName();
 
-    BigInteger getId();
+  BigInteger getId();
 
-    List<? extends Node> getChildren();
+  List<? extends Node> getChildren();
 }
