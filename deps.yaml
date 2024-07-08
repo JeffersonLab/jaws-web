@@ -47,7 +47,7 @@ services:
       - SCHEMA_REGISTRY_KAFKA_BROKERS=PLAINTEXT://kafka:9092
 
   jaws:
-    image: jeffersonlab/jaws-libp:4.8.0
+    image: jeffersonlab/jaws-libp:4.9.2
     tty: true
     stdin_open: true
     hostname: jaws
@@ -72,7 +72,7 @@ services:
   effective:
     hostname: effective
     container_name: effective
-    image: jeffersonlab/jaws-effective-processor:4.4.0
+    image: jeffersonlab/jaws-effective-processor:4.5.0
     healthcheck:
       test: test $(ps | grep jaws | wc -l) -gt 1
       start_period: 30s

@@ -385,7 +385,6 @@ public class ActionFacade extends AbstractFacade<Action> {
 
                     value.setCategory(action.getComponent().getName());
                     value.setCorrectiveaction(action.getCorrectiveAction());
-                    value.setPointofcontactusername(action.getComponent().getTeam().getName());
                     value.setFilterable(action.isFilterable());
                     value.setLatchable(action.isLatchable());
 

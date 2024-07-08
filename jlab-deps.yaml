@@ -33,7 +33,7 @@ services:
       service: keycloak
 
   epics2kafka:
-    image: jeffersonlab/jaws-epics2kafka:4.6.0
+    image: jeffersonlab/jaws-epics2kafka:4.7.0
     hostname: epics2kafka
     container_name: epics2kafka
     healthcheck:
@@ -58,7 +58,7 @@ services:
       - ./container/epics2kafka/initdb.d:/config
 
   registrations2epics:
-    image: jeffersonlab/jaws-registrations2epics:4.5.0
+    image: jeffersonlab/jaws-registrations2epics:4.6.0
     hostname: registrations2epics
     container_name: registrations2epics
     healthcheck:
