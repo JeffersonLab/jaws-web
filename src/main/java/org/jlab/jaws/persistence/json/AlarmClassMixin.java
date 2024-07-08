@@ -21,9 +21,6 @@ public interface AlarmClassMixin {
   String getCorrectiveaction();
 
   @JsonProperty
-  String getPointofcontactusername();
-
-  @JsonProperty
   boolean getLatchable();
 
   @JsonProperty
