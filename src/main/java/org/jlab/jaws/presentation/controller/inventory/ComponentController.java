@@ -1,5 +1,16 @@
 package org.jlab.jaws.presentation.controller.inventory;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import javax.ejb.EJB;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.jlab.jaws.business.session.AbstractFacade;
 import org.jlab.jaws.business.session.ComponentFacade;
 import org.jlab.jaws.business.session.TeamFacade;
@@ -9,106 +20,100 @@ import org.jlab.smoothness.presentation.util.Paginator;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 import org.jlab.smoothness.presentation.util.ParamUtil;
 
-import javax.ejb.EJB;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- *
  * @author ryans
  */
-@WebServlet(name = "ComponentController", urlPatterns = {"/inventory/components"})
+@WebServlet(
+    name = "ComponentController",
+    urlPatterns = {"/inventory/components"})
 public class ComponentController extends HttpServlet {
 
-    @EJB
-    ComponentFacade componentFacade;
+  @EJB ComponentFacade componentFacade;
 
-    @EJB
-    TeamFacade teamFacade;
+  @EJB TeamFacade teamFacade;
 
-    /**
-     * Handles the HTTP
-     * <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+  /**
+   * Handles the HTTP <code>GET</code> method.
+   *
+   * @param request servlet request
+   * @param response servlet response
+   * @throws ServletException if a servlet-specific error occurs
+   * @throws IOException if an I/O error occurs
+   */
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-        String componentName = request.getParameter("componentName");
-        BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
-        int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
-        int maxPerPage = 100;
+    String componentName = request.getParameter("componentName");
+    BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
+    int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
+    int maxPerPage = 100;
 
-        List<Component> componentList = componentFacade.filterList(componentName, teamId, offset, maxPerPage);
-        List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
+    List<Component> componentList =
+        componentFacade.filterList(componentName, teamId, offset, maxPerPage);
+    List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
 
-        Team selectedTeam = null;
+    Team selectedTeam = null;
 
-        if(teamId != null) {
-            selectedTeam = teamFacade.find(teamId);
-        }
-
-        long totalRecords = componentFacade.countList(componentName, teamId);
-
-        Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
-
-        String selectionMessage = createSelectionMessage(paginator, selectedTeam, componentName);
-
-        request.setAttribute("selectionMessage", selectionMessage);
-        request.setAttribute("componentList", componentList);
-        request.setAttribute("teamList", teamList);
-        request.setAttribute("paginator", paginator);
-
-        request.getRequestDispatcher("/WEB-INF/views/inventory/components.jsp").forward(request, response);
+    if (teamId != null) {
+      selectedTeam = teamFacade.find(teamId);
     }
 
-    private String createSelectionMessage(Paginator paginator, Team team, String componentName) {
-        DecimalFormat formatter = new DecimalFormat("###,###");
+    long totalRecords = componentFacade.countList(componentName, teamId);
 
-        String selectionMessage = "All Components ";
+    Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
-        List<String> filters = new ArrayList<>();
+    String selectionMessage = createSelectionMessage(paginator, selectedTeam, componentName);
 
-        if(team != null) {
-            filters.add("Team \"" + team.getName() + "\"");
-        }
+    request.setAttribute("selectionMessage", selectionMessage);
+    request.setAttribute("componentList", componentList);
+    request.setAttribute("teamList", teamList);
+    request.setAttribute("paginator", paginator);
 
-        if(componentName != null && !componentName.isBlank()) {
-            filters.add("Component Name \"" + componentName + "\"");
-        }
+    request
+        .getRequestDispatcher("/WEB-INF/views/inventory/components.jsp")
+        .forward(request, response);
+  }
 
-        if (!filters.isEmpty()) {
-            selectionMessage = filters.get(0);
+  private String createSelectionMessage(Paginator paginator, Team team, String componentName) {
+    DecimalFormat formatter = new DecimalFormat("###,###");
 
-            for (int i = 1; i < filters.size(); i++) {
-                String filter = filters.get(i);
-                selectionMessage += " and " + filter;
-            }
-        }
+    String selectionMessage = "All Components ";
 
-        if (paginator.getTotalRecords() < paginator.getMaxPerPage() && paginator.getOffset() == 0) {
-            selectionMessage = selectionMessage + " {" + formatter.format(
-                    paginator.getTotalRecords()) + "}";
-        } else {
-            selectionMessage = selectionMessage + " {"
-                    + formatter.format(paginator.getStartNumber())
-                    + " - " + formatter.format(paginator.getEndNumber())
-                    + " of " + formatter.format(paginator.getTotalRecords()) + "}";
-        }
+    List<String> filters = new ArrayList<>();
 
-        return selectionMessage;
+    if (team != null) {
+      filters.add("Team \"" + team.getName() + "\"");
     }
+
+    if (componentName != null && !componentName.isBlank()) {
+      filters.add("Component Name \"" + componentName + "\"");
+    }
+
+    if (!filters.isEmpty()) {
+      selectionMessage = filters.get(0);
+
+      for (int i = 1; i < filters.size(); i++) {
+        String filter = filters.get(i);
+        selectionMessage += " and " + filter;
+      }
+    }
+
+    if (paginator.getTotalRecords() < paginator.getMaxPerPage() && paginator.getOffset() == 0) {
+      selectionMessage =
+          selectionMessage + " {" + formatter.format(paginator.getTotalRecords()) + "}";
+    } else {
+      selectionMessage =
+          selectionMessage
+              + " {"
+              + formatter.format(paginator.getStartNumber())
+              + " - "
+              + formatter.format(paginator.getEndNumber())
+              + " of "
+              + formatter.format(paginator.getTotalRecords())
+              + "}";
+    }
+
+    return selectionMessage;
+  }
 }
