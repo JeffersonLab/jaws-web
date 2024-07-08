@@ -44,7 +44,7 @@ dependencies {
                     'javax.servlet:jstl:1.2'
 
     // A custom JBoss Module
-    jbossModule 'org.jlab:jaws-libj:4.8.0',
+    jbossModule 'org.jlab:jaws-libj:4.8.2',
                 'io.confluent:kafka-avro-serializer:7.4.0'
 
     testImplementation 'junit:junit:4.13.2',

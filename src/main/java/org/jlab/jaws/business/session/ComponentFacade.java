@@ -15,6 +15,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import org.jlab.jaws.business.util.KafkaConfig;
 import org.jlab.jaws.clients.CategoryProducer;
+import org.jlab.jaws.entity.AlarmCategory;
 import org.jlab.jaws.persistence.entity.Component;
 import org.jlab.jaws.persistence.entity.Team;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
@@ -192,7 +193,9 @@ public class ComponentFacade extends AbstractFacade<Component> {
         for (Component component : componentList) {
           String key = component.getName();
 
-          String value = "";
+          Team team = component.getTeam();
+
+          AlarmCategory value = new AlarmCategory(team.getName());
 
           producer.send(key, value);
         }
