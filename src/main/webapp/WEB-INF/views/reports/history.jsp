@@ -132,21 +132,6 @@
             <h2 id="page-header-title"><c:out value="${title}"/></h2>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="chart-wrap" class="chart-wrap-backdrop">
-                <c:set var="editable" value="${pageContext.request.isUserInRole('jaws-admin')}"/>
-                <c:if test="${editable}">
-                    <s:editable-row-table-controls excludeAdd="${true}" excludeDelete="${true}"
-                                                   excludeEdit="${true}" multiselect="${true}">
-                        <button type="button" id="acknowledge-button" class="selected-row-action"
-                                disabled="disabled">Acknowledge
-                        </button>
-                        <button type="button" id="open-suppress-button" class="selected-row-action"
-                                disabled="disabled">Suppress
-                        </button>
-                        <button type="button" id="open-unsuppress-button" class="selected-row-action"
-                                disabled="disabled">Unsuppress
-                        </button>
-                    </s:editable-row-table-controls>
-                </c:if>
                 <table id="notification-table" class="data-table outer-table stripped-table">
                     <thead>
                     <tr>
@@ -163,7 +148,7 @@
                         <td class="inner-table-cell" colspan="6">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
-                                    <table class="data-table inner-table${editable ? ' multiselect-table editable-row-table' : ''}">
+                                    <table class="data-table inner-table">
                                         <tbody>
                                         <c:forEach items="${notificationList}" var="notification">
                                             <tr data-id="${notification.alarm.alarmId}" data-action-id="${notification.alarm.action.actionId}" data-location-id-csv="${notification.alarm.locationIdCsv}" data-device="${notification.alarm.device}" data-screen-command="${notification.alarm.screenCommand}" data-masked-by="${notification.alarm.maskedBy}" data-pv="${notification.alarm.pv}">
