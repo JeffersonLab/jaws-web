@@ -21,6 +21,9 @@
                             <li${'/reports/active-history' eq currentPath ? ' class="current-secondary"' : ''}><a
                                     href="${pageContext.request.contextPath}/reports/active-history">Active History</a>
                             </li>
+                            <li${'/reports/suppress-history' eq currentPath ? ' class="current-secondary"' : ''}><a
+                                    href="${pageContext.request.contextPath}/reports/suppress-history">Suppress History</a>
+                            </li>
                         </ul>
                     </nav>
                 </section>

@@ -27,11 +27,11 @@ import org.jlab.smoothness.presentation.util.ParamUtil;
  * @author ryans
  */
 @WebServlet(
-    name = "ActiveHistoryReport",
-    urlPatterns = {"/reports/active-history"})
-public class ActiveHistoryReport extends HttpServlet {
+    name = "SuppressHistoryReport",
+    urlPatterns = {"/reports/suppress-history"})
+public class SuppressHistoryReport extends HttpServlet {
 
-  @EJB ActiveHistoryFacade historyFacade;
+  @EJB SuppressedHistoryFacade historyFacade;
   @EJB TeamFacade teamFacade;
   @EJB PriorityFacade priorityFacade;
   @EJB ActionFacade actionFacade;
@@ -72,7 +72,7 @@ public class ActiveHistoryReport extends HttpServlet {
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
 
-    List<ActiveHistory> notificationList =
+    List<SuppressedHistory> notificationList =
         historyFacade.filterList(
             start,
             end,
@@ -143,7 +143,7 @@ public class ActiveHistoryReport extends HttpServlet {
 
     String selectionMessage =
         Notifications.createSelectionMessage(
-            "Active Notifications",
+            "Suppress Notifications",
             paginator,
             start,
             end,
@@ -172,7 +172,7 @@ public class ActiveHistoryReport extends HttpServlet {
 
     getServletConfig()
         .getServletContext()
-        .getRequestDispatcher("/WEB-INF/views/reports/active-history.jsp")
+        .getRequestDispatcher("/WEB-INF/views/reports/suppress-history.jsp")
         .forward(request, response);
   }
 }

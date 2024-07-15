@@ -165,7 +165,7 @@ public class BatchNotificationService {
         String error = null;
         String suppressedWith = getSuppressedWith(record.getValue().getState());
         String comments = null;
-        String oneshot = null;
+        boolean oneshot = AlarmState.NormalOneShotShelved.equals(record.getValue().getState());
         Date expiration = null;
         String reason = null;
 
@@ -222,11 +222,7 @@ public class BatchNotificationService {
         } else {
           stmt.setString(10, comments);
         }
-        if (oneshot == null) {
-          stmt.setNull(11, Types.VARCHAR);
-        } else {
-          stmt.setString(11, oneshot);
-        }
+        stmt.setString(11, oneshot ? "Y" : "N");
         if (expiration == null) {
           stmt.setNull(12, Types.VARCHAR);
         } else {
