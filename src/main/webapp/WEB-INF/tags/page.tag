@@ -32,7 +32,7 @@
                             <a href="${pageContext.request.contextPath}/inventory/alarms">Inventory</a>
                         </li>
                         <li${fn:startsWith(currentPath, '/reports') ? ' class="current-primary"' : ''}><a
-                                href="${pageContext.request.contextPath}/reports/history">Reports</a></li>
+                                href="${pageContext.request.contextPath}/reports/active-history">Reports</a></li>
                         <c:if test="${pageContext.request.isUserInRole('jaws-admin')}">
                         <li${fn:startsWith(currentPath, '/setup') ? ' class="current-primary"' : ''}>
                             <a href="${pageContext.request.contextPath}/setup/transfer">Setup</a>

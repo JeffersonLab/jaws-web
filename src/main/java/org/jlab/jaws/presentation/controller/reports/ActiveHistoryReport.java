@@ -28,8 +28,8 @@ import org.jlab.smoothness.presentation.util.ParamUtil;
  */
 @WebServlet(
     name = "HistoryReport",
-    urlPatterns = {"/reports/history"})
-public class HistoryReport extends HttpServlet {
+    urlPatterns = {"/reports/active-history"})
+public class ActiveHistoryReport extends HttpServlet {
 
   @EJB NotificationHistoryFacade historyFacade;
   @EJB TeamFacade teamFacade;
@@ -171,7 +171,7 @@ public class HistoryReport extends HttpServlet {
 
     getServletConfig()
         .getServletContext()
-        .getRequestDispatcher("/WEB-INF/views/reports/history.jsp")
+        .getRequestDispatcher("/WEB-INF/views/reports/active-history.jsp")
         .forward(request, response);
   }
 }

@@ -18,8 +18,8 @@
                     <h2 id="left-column-header">Reports</h2>
                     <nav id="secondary-nav">
                         <ul>
-                            <li${'/reports/history' eq currentPath ? ' class="current-secondary"' : ''}><a
-                                    href="${pageContext.request.contextPath}/reports/history">History</a>
+                            <li${'/reports/active-history' eq currentPath ? ' class="current-secondary"' : ''}><a
+                                    href="${pageContext.request.contextPath}/reports/active-history">Active History</a>
                             </li>
                         </ul>
                     </nav>
