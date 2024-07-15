@@ -1,9 +1,8 @@
 package org.jlab.jaws.persistence.model;
 
-import org.jlab.jaws.entity.AlarmState;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.jlab.jaws.entity.AlarmState;
 
 public enum SuppressedState {
   SUPPRESSED,

@@ -12,8 +12,8 @@ import org.jlab.jaws.persistence.model.SuppressedState;
 import org.jlab.kafka.eventsource.EventSourceRecord;
 
 public class BatchNotificationService {
-  public void oracleMergeActiveHistory(List<EventSourceRecord<String, EffectiveNotification>> records)
-      throws SQLException {
+  public void oracleMergeActiveHistory(
+      List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
     String sql = "{call JAWS_OWNER.MERGE_ACTIVE_HISTORY(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
     Connection con = null;
     PreparedStatement stmt = null;
@@ -137,9 +137,10 @@ public class BatchNotificationService {
     return suppressedWith;
   }
 
-  public void oracleMergeSuppressedHistory(List<EventSourceRecord<String, EffectiveNotification>> records)
-          throws SQLException {
-    String sql = "{call JAWS_OWNER.MERGE_SUPPRESSED_HISTORY(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+  public void oracleMergeSuppressedHistory(
+      List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
+    String sql =
+        "{call JAWS_OWNER.MERGE_SUPPRESSED_HISTORY(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
     Connection con = null;
     PreparedStatement stmt = null;
 
