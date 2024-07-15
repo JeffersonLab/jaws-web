@@ -99,7 +99,7 @@
                         <td class="inner-table-cell" colspan="5">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
-                                    <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table'} editable-row-table">
+                                    <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
                                         <tbody>
                                         <c:forEach items="${actionList}" var="action">
                                             <tr data-id="${action.actionId}" data-component-id="${action.component.componentId}" data-priority-id="${action.priority.priorityId}" data-corrective-action="${fn:escapeXml(action.correctiveAction)}" data-rationale="${fn:escapeXml(action.rationale)}"  data-filterable="${action.filterable}" data-latchable="${action.latchable}" data-ondelay="${action.onDelaySeconds}" data-offdelay="${action.offDelaySeconds}">

@@ -27,7 +27,7 @@
                         <td class="inner-table-cell" colspan="2">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
-                                    <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table'} editable-row-table">
+                                    <table class="data-table inner-table stripped-table">
                                         <tbody>
                                         <c:forEach items="${priorityList}" var="priority">
                                             <tr data-id="${priority.priorityId}">

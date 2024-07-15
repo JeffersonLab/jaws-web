@@ -123,7 +123,7 @@
                         <td class="inner-table-cell" colspan="4">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
-                                    <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table'} editable-row-table">
+                                    <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
                                         <tbody>
                                         <c:forEach items="${alarmList}" var="alarm">
                                             <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}">

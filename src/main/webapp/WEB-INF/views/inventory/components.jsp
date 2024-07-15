@@ -73,7 +73,7 @@
                         <td class="inner-table-cell" colspan="3">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
-                                    <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table'} editable-row-table">
+                                    <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
                                         <tbody>
                                         <c:forEach items="${componentList}" var="component">
                                             <tr data-id="${component.componentId}" data-team-id="${component.team.teamId}">
