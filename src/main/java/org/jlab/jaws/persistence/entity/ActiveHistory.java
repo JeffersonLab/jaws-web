@@ -43,6 +43,10 @@ public class ActiveHistory implements Serializable {
   @Column(name = "ACTIVATION_ERROR", length = 128, nullable = true)
   private String activationError;
 
+  @Size(max = 32)
+  @Column(name = "INCITED_WITH", length = 32, nullable = true)
+  private String incitedWith;
+
   public ActiveHistoryPK getActiveHistoryPK() {
     return activeHistoryPK;
   }
@@ -105,6 +109,14 @@ public class ActiveHistory implements Serializable {
 
   public void setActivationError(String activationError) {
     this.activationError = activationError;
+  }
+
+  public @Size(max = 32) String getIncitedWith() {
+    return incitedWith;
+  }
+
+  public void setIncitedWith(@Size(max = 32) String incitedWith) {
+    this.incitedWith = incitedWith;
   }
 
   @Override

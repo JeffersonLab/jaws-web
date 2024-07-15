@@ -99,6 +99,6 @@ public class MergeActiveHistoryTest {
             offset++,
             timestamp));
 
-    service.oracleMergeHistory(records);
+    service.oracleMergeActiveHistory(records);
   }
 }

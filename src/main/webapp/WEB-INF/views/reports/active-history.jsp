@@ -8,10 +8,10 @@
 <c:set var="title" value="Active History"/>
 <t:reports-page title="${title}">  
     <jsp:attribute name="stylesheets">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/notification-history.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/active-history.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
-        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/notification-history.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/active-history.js"></script>
     </jsp:attribute>
     <jsp:body>
         <section>
@@ -139,13 +139,14 @@
                         <th>Name</th>
                         <th>Priority</th>
                         <th>Type</th>
+                        <th>Incitement</th>
                         <th></th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="inner-table-cell" colspan="6">
+                        <td class="inner-table-cell" colspan="7">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table">
@@ -171,6 +172,7 @@
                                                 </td>
                                                 <td><c:out value="${notification.alarm.action.priority.name}"/></td>
                                                 <td><c:out value="${notification.activationType}"/></td>
+                                                <td><c:out value="${notification.incitedWith}"/></td>
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${'ChannelError' eq notification.activationType}">

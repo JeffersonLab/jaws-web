@@ -22,6 +22,12 @@
 .inner-table tbody td:nth-child(4) {
     width: 135px;
 }
+.outer-table thead th:nth-child(5) {
+    width: 100px;
+}
+.inner-table tbody td:nth-child(5) {
+    width: 100px;
+}
 
 #filter-flyout-panel {
     width: 655px;

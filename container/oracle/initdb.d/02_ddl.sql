@@ -164,6 +164,7 @@ CREATE TABLE JAWS_OWNER.ACTIVE_HISTORY
     ACTIVATION_SEVR      VARCHAR2(32 CHAR) NULL,
     ACTIVATION_STAT      VARCHAR2(32 CHAR) NULL,
     ACTIVATION_ERROR     VARCHAR2(128 CHAR) NULL,
+    INCITED_WITH         VARCHAR2(32 CHAR) NULL,
     CONSTRAINT ACTIVE_HISTORY_PK PRIMARY KEY (NAME, ACTIVE_START),
     CONSTRAINT ACTIVE_HISTORY_AK1 UNIQUE (NAME, ACTIVE_END)
 );
@@ -173,7 +174,12 @@ CREATE TABLE JAWS_OWNER.SUPPRESSED_HISTORY
     NAME                 VARCHAR2(64 CHAR) NOT NULL,
     SUPPRESSED_START     TIMESTAMP(3) WITH LOCAL TIME ZONE NOT NULL,
     SUPPRESSED_END       TIMESTAMP(3) WITH LOCAL TIME ZONE NULL,
-    TYPE                 VARCHAR2(32 CHAR) NOT NULL,
+    ACTIVATION_TYPE      VARCHAR2(64 CHAR) NOT NULL,
+    ACTIVATION_NOTE      VARCHAR2(128 CHAR) NULL,
+    ACTIVATION_SEVR      VARCHAR2(32 CHAR) NULL,
+    ACTIVATION_STAT      VARCHAR2(32 CHAR) NULL,
+    ACTIVATION_ERROR     VARCHAR2(128 CHAR) NULL,
+    SUPPRESSED_WITH      VARCHAR2(32 CHAR) NOT NULL,
     COMMENTS             VARCHAR2(512 CHAR) NULL,
     ONESHOT              CHAR(1 CHAR) DEFAULT 'N' NOT NULL,
     EXPIRATION           TIMESTAMP(0) WITH LOCAL TIME ZONE NULL,
@@ -185,7 +191,7 @@ CREATE TABLE JAWS_OWNER.SUPPRESSED_HISTORY
 -- Procedures
 create or replace procedure JAWS_OWNER.MERGE_ACTIVE_HISTORY (
     nameIn in varchar2, dateIn in timestamp with local time zone, updateIn in char, typeIn varchar2,
-    noteIn varchar2, sevrIn varchar2, statIn varchar2, errorIn varchar2) as
+    noteIn varchar2, sevrIn varchar2, statIn varchar2, errorIn varchar2, incitedIn varchar2) as
 begin
     if updateIn = 'Y' then
         update JAWS_OWNER.ACTIVE_HISTORY set active_end = dateIn where name = nameIn and active_end is null and
@@ -196,14 +202,15 @@ begin
                  not exists (select 1 from JAWS_OWNER.ACTIVE_HISTORY where name = nameIn and active_start = dateIn)
             then
             into JAWS_OWNER.ACTIVE_HISTORY (name, active_start, active_end, activation_type, activation_note,
-                                                  activation_sevr, activation_stat, activation_error) select
-                                                   nameIn, dateIn, null, typeIn, noteIn, sevrIn, statIn, errorIn from dual;
+                                            activation_sevr, activation_stat, activation_error, incited_with) select
+                                            nameIn, dateIn, null, typeIn, noteIn, sevrIn, statIn, errorIn, incitedIn from dual;
     end if;
 end;
 /
 
 create or replace procedure JAWS_OWNER.MERGE_SUPPRESSED_HISTORY (
     nameIn in varchar2, dateIn in timestamp with local time zone, updateIn in char, typeIn varchar2,
+    noteIn varchar2, sevrIn varchar2, statIn varchar2, errorIn varchar2, suppressedIn varchar2,
     commentsIn varchar2, oneshotIn varchar2, expirationIn timestamp with local time zone, reasonIn varchar2) as
 begin
     if updateIn = 'Y' then
@@ -214,9 +221,11 @@ begin
             when not exists (select 1 from JAWS_OWNER.SUPPRESSED_HISTORY where name = nameIn and suppressed_end is null) and
                  not exists (select 1 from JAWS_OWNER.SUPPRESSED_HISTORY where name = nameIn and suppressed_start = dateIn)
             then
-            into JAWS_OWNER.SUPPRESSED_HISTORY (name, suppressed_start, suppressed_end, type, comments,
-                                            oneshot, expiration, shelved_reason) select
-                                            nameIn, dateIn, null, typeIn, commentsIn, oneshotIn, expirationIn, reasonIn from dual;
+            into JAWS_OWNER.SUPPRESSED_HISTORY (name, suppressed_start, suppressed_end,
+                                                activation_type, activation_note, activation_sevr, activation_stat, activation_error,
+                                                suppressed_with, comments, oneshot, expiration, shelved_reason) select
+                                                nameIn, dateIn, null, typeIn, noteIn, sevrIn, statIn, errorIn,
+                                                suppressedIn, commentsIn, oneshotIn, expirationIn, reasonIn from dual;
     end if;
 end;
 /
