@@ -16,7 +16,7 @@
     <jsp:body>
         <section>
             <s:filter-flyout-widget ribbon="false" clearButton="true">
-                <form id="filter-form" method="get" action="history">
+                <form id="filter-form" method="get" action="suppress-history">
                     <div id="filter-form-panel">
                         <fieldset>
                             <legend>Filter</legend>
