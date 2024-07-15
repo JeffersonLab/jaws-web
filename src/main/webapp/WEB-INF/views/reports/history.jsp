@@ -157,7 +157,7 @@
                                                     <c:if test="${notification.activeEnd ne null}">
                                                         <fmt:formatDate value="${notification.activeEnd}" pattern="dd-MMM-yyyy HH:mm:ss" var="end"/>
                                                         <c:set var="duration" value="${notification.activeEnd.time - notification.notificationHistoryPK.activeStart.time}"/>
-                                                        <span title="${end}">(<c:out value="${jaws:millisToHumanReadable(duration)}"/>)</span>
+                                                        <div title="${end}">(<c:out value="${jaws:millisToHumanReadable(duration)}"/>)</div>
                                                     </c:if>
                                                 </td>
                                                 <td>
