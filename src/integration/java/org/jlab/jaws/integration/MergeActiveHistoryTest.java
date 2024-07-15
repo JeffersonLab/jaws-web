@@ -13,7 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MergeNotificationHistoryTest {
+public class MergeActiveHistoryTest {
 
   @Before
   public void setup() throws SQLException, NamingException {

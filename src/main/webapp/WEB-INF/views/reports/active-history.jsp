@@ -153,21 +153,21 @@
                                         <c:forEach items="${notificationList}" var="notification">
                                             <tr data-id="${notification.alarm.alarmId}" data-action-id="${notification.alarm.action.actionId}" data-location-id-csv="${notification.alarm.locationIdCsv}" data-device="${notification.alarm.device}" data-screen-command="${notification.alarm.screenCommand}" data-masked-by="${notification.alarm.maskedBy}" data-pv="${notification.alarm.pv}">
                                                 <td>
-                                                    <fmt:formatDate value="${notification.notificationHistoryPK.activeStart}" pattern="dd-MMM-yyyy HH:mm:ss"/>
+                                                    <fmt:formatDate value="${notification.activeHistoryPK.activeStart}" pattern="dd-MMM-yyyy HH:mm:ss"/>
                                                     <c:if test="${notification.activeEnd ne null}">
                                                         <fmt:formatDate value="${notification.activeEnd}" pattern="dd-MMM-yyyy HH:mm:ss" var="end"/>
-                                                        <c:set var="duration" value="${notification.activeEnd.time - notification.notificationHistoryPK.activeStart.time}"/>
+                                                        <c:set var="duration" value="${notification.activeEnd.time - notification.activeHistoryPK.activeStart.time}"/>
                                                         <div title="${end}">(<c:out value="${jaws:millisToHumanReadable(duration)}"/>)</div>
                                                     </c:if>
                                                 </td>
                                                 <td>
                                                     <c:url value="/inventory/alarm-detail" var="url">
-                                                        <c:param name="name" value="${notification.notificationHistoryPK.name}"/>
+                                                        <c:param name="name" value="${notification.activeHistoryPK.name}"/>
                                                     </c:url>
                                                     <a title="Alarm Information" class="dialog-ready"
-                                                       data-dialog-title="Alarm Information: ${fn:escapeXml(notification.notificationHistoryPK.name)}"
+                                                       data-dialog-title="Alarm Information: ${fn:escapeXml(notification.activeHistoryPK.name)}"
                                                        href="${url}"><c:out
-                                                            value="${notification.notificationHistoryPK.name}"/></a>
+                                                            value="${notification.activeHistoryPK.name}"/></a>
                                                 </td>
                                                 <td><c:out value="${notification.alarm.action.priority.name}"/></td>
                                                 <td><c:out value="${notification.activationType}"/></td>

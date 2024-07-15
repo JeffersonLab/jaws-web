@@ -7,7 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class NotificationHistoryPK implements Serializable, Comparable<NotificationHistoryPK> {
+public class ActiveHistoryPK implements Serializable, Comparable<ActiveHistoryPK> {
   @NotNull
   @Size(max = 64)
   @Column(name = "NAME", length = 64, nullable = false)
@@ -18,9 +18,9 @@ public class NotificationHistoryPK implements Serializable, Comparable<Notificat
   @NotNull
   private Date activeStart;
 
-  public NotificationHistoryPK() {}
+  public ActiveHistoryPK() {}
 
-  public NotificationHistoryPK(String name, Date activeStart) {
+  public ActiveHistoryPK(String name, Date activeStart) {
     this.name = name;
     this.activeStart = activeStart;
   }
@@ -44,8 +44,8 @@ public class NotificationHistoryPK implements Serializable, Comparable<Notificat
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof NotificationHistoryPK)) return false;
-    NotificationHistoryPK that = (NotificationHistoryPK) o;
+    if (!(o instanceof ActiveHistoryPK)) return false;
+    ActiveHistoryPK that = (ActiveHistoryPK) o;
     return Objects.equals(name, that.name) && activeStart == that.activeStart;
   }
 
@@ -55,7 +55,7 @@ public class NotificationHistoryPK implements Serializable, Comparable<Notificat
   }
 
   @Override
-  public int compareTo(NotificationHistoryPK o) {
+  public int compareTo(ActiveHistoryPK o) {
     int val = this.name.compareTo(o.getName());
 
     if (val == 0) { // Same name

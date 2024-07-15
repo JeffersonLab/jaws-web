@@ -135,6 +135,7 @@ public class Notifications extends HttpServlet {
 
     String selectionMessage =
         createSelectionMessage(
+            "Notifications",
             paginator,
             null,
             null,
@@ -190,6 +191,7 @@ public class Notifications extends HttpServlet {
   }
 
   public static String createSelectionMessage(
+      String entityName,
       Paginator paginator,
       Date start,
       Date end,
@@ -206,7 +208,7 @@ public class Notifications extends HttpServlet {
       String componentName) {
     DecimalFormat formatter = new DecimalFormat("###,###");
 
-    String selectionMessage = "All Notifications ";
+    String selectionMessage = "All " + entityName + " ";
 
     List<String> filters = new ArrayList<>();
 

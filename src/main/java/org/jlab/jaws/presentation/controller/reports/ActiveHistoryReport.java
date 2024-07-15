@@ -31,7 +31,7 @@ import org.jlab.smoothness.presentation.util.ParamUtil;
     urlPatterns = {"/reports/active-history"})
 public class ActiveHistoryReport extends HttpServlet {
 
-  @EJB NotificationHistoryFacade historyFacade;
+  @EJB ActiveHistoryFacade historyFacade;
   @EJB TeamFacade teamFacade;
   @EJB PriorityFacade priorityFacade;
   @EJB ActionFacade actionFacade;
@@ -72,7 +72,7 @@ public class ActiveHistoryReport extends HttpServlet {
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
 
-    List<NotificationHistory> notificationList =
+    List<ActiveHistory> notificationList =
         historyFacade.filterList(
             start,
             end,
@@ -143,6 +143,7 @@ public class ActiveHistoryReport extends HttpServlet {
 
     String selectionMessage =
         Notifications.createSelectionMessage(
+            "Active Notifications",
             paginator,
             start,
             end,

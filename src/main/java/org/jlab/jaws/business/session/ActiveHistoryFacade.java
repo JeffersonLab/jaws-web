@@ -16,8 +16,8 @@ import org.jlab.jaws.persistence.entity.*;
  * @author ryans
  */
 @Stateless
-public class NotificationHistoryFacade extends AbstractFacade<NotificationHistory> {
-  private static final Logger logger = Logger.getLogger(NotificationHistoryFacade.class.getName());
+public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
+  private static final Logger logger = Logger.getLogger(ActiveHistoryFacade.class.getName());
 
   @EJB LocationFacade locationFacade;
 
@@ -29,14 +29,14 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
     return em;
   }
 
-  public NotificationHistoryFacade() {
-    super(NotificationHistory.class);
+  public ActiveHistoryFacade() {
+    super(ActiveHistory.class);
   }
 
   private List<Predicate> getFilters(
       CriteriaBuilder cb,
       CriteriaQuery<? extends Object> cq,
-      Root<NotificationHistory> root,
+      Root<ActiveHistory> root,
       Date start,
       Date end,
       String activationType,
@@ -50,7 +50,7 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
       Map<String, Join> joins) {
     List<Predicate> filters = new ArrayList<>();
 
-    Join<NotificationHistory, Alarm> alarmJoin = root.join("alarm", JoinType.LEFT);
+    Join<ActiveHistory, Alarm> alarmJoin = root.join("alarm", JoinType.LEFT);
     Join<Alarm, Action> actionJoin = alarmJoin.join("action", JoinType.LEFT);
     Join<Action, Component> componentJoin = actionJoin.join("component", JoinType.LEFT);
 
@@ -59,12 +59,11 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
     joins.put("component", componentJoin);
 
     if (start != null) {
-      filters.add(
-          cb.greaterThanOrEqualTo(root.get("notificationHistoryPK").get("activeStart"), start));
+      filters.add(cb.greaterThanOrEqualTo(root.get("activeHistoryPK").get("activeStart"), start));
     }
 
     if (end != null) {
-      filters.add(cb.lessThan(root.get("notificationHistoryPK").get("activeStart"), end));
+      filters.add(cb.lessThan(root.get("activeHistoryPK").get("activeStart"), end));
     }
 
     if (activationType != null && !activationType.isEmpty()) {
@@ -129,7 +128,7 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
   }
 
   @PermitAll
-  public List<NotificationHistory> filterList(
+  public List<ActiveHistory> filterList(
       Date start,
       Date end,
       String activationType,
@@ -143,8 +142,8 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
       int offset,
       int max) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-    CriteriaQuery<NotificationHistory> cq = cb.createQuery(NotificationHistory.class);
-    Root<NotificationHistory> root = cq.from(NotificationHistory.class);
+    CriteriaQuery<ActiveHistory> cq = cb.createQuery(ActiveHistory.class);
+    Root<ActiveHistory> root = cq.from(ActiveHistory.class);
     cq.select(root);
 
     Map<String, Join> joins = new HashMap<>();
@@ -171,13 +170,13 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
     }
 
     List<Order> orders = new ArrayList<>();
-    Path p0 = root.get("notificationHistoryPK").get("activeStart");
+    Path p0 = root.get("activeHistoryPK").get("activeStart");
     Order o0 = cb.desc(p0);
     orders.add(o0);
     Path p1 = joins.get("action").get("priority");
     Order o1 = cb.asc(p1);
     orders.add(o1);
-    Path p2 = root.get("notificationHistoryPK").get("name");
+    Path p2 = root.get("activeHistoryPK").get("name");
     Order o2 = cb.asc(p2);
     orders.add(o2);
     cq.orderBy(orders);
@@ -202,7 +201,7 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
       String componentName) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-    Root<NotificationHistory> root = cq.from(NotificationHistory.class);
+    Root<ActiveHistory> root = cq.from(ActiveHistory.class);
 
     Map<String, Join> joins = new HashMap<>();
 

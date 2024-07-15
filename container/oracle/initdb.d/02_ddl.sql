@@ -154,7 +154,7 @@ CREATE TABLE JAWS_OWNER.OVERRIDE
     CONSTRAINT OVERRIDE_CK3 CHECK (SHELVED_REASON IN ('Stale_Alarm', 'Chattering_Fleeting_Alarm', 'Other'))
 );
 
-CREATE TABLE JAWS_OWNER.NOTIFICATION_HISTORY
+CREATE TABLE JAWS_OWNER.ACTIVE_HISTORY
 (
     NAME                 VARCHAR2(64 CHAR) NOT NULL,
     ACTIVE_START         TIMESTAMP(3) WITH LOCAL TIME ZONE NOT NULL,
@@ -164,26 +164,59 @@ CREATE TABLE JAWS_OWNER.NOTIFICATION_HISTORY
     ACTIVATION_SEVR      VARCHAR2(32 CHAR) NULL,
     ACTIVATION_STAT      VARCHAR2(32 CHAR) NULL,
     ACTIVATION_ERROR     VARCHAR2(128 CHAR) NULL,
-    CONSTRAINT NOTIFICATION_HISTORY_PK PRIMARY KEY (NAME, ACTIVE_START),
-    CONSTRAINT NOTIFICATION_HISTORY_AK1 UNIQUE (NAME, ACTIVE_END)
+    CONSTRAINT ACTIVE_HISTORY_PK PRIMARY KEY (NAME, ACTIVE_START),
+    CONSTRAINT ACTIVE_HISTORY_AK1 UNIQUE (NAME, ACTIVE_END)
+);
+
+CREATE TABLE JAWS_OWNER.SUPPRESSED_HISTORY
+(
+    NAME                 VARCHAR2(64 CHAR) NOT NULL,
+    SUPPRESSED_START     TIMESTAMP(3) WITH LOCAL TIME ZONE NOT NULL,
+    SUPPRESSED_END       TIMESTAMP(3) WITH LOCAL TIME ZONE NULL,
+    TYPE                 VARCHAR2(32 CHAR) NOT NULL,
+    COMMENTS             VARCHAR2(512 CHAR) NULL,
+    ONESHOT              CHAR(1 CHAR) DEFAULT 'N' NOT NULL,
+    EXPIRATION           TIMESTAMP(0) WITH LOCAL TIME ZONE NULL,
+    SHELVED_REASON       VARCHAR2(32 CHAR) NULL,
+    CONSTRAINT SUPPRESSED_HISTORY_PK PRIMARY KEY (NAME, SUPPRESSED_START),
+    CONSTRAINT SUPPRESSED_HISTORY_AK1 UNIQUE (NAME, SUPPRESSED_END)
 );
 
 -- Procedures
-create or replace procedure JAWS_OWNER.MERGE_NOTIFICATION_HISTORY (
+create or replace procedure JAWS_OWNER.MERGE_ACTIVE_HISTORY (
     nameIn in varchar2, dateIn in timestamp with local time zone, updateIn in char, typeIn varchar2,
     noteIn varchar2, sevrIn varchar2, statIn varchar2, errorIn varchar2) as
 begin
     if updateIn = 'Y' then
-        update JAWS_OWNER.NOTIFICATION_HISTORY set active_end = dateIn where name = nameIn and active_end is null and
-               not exists (select 1 from JAWS_OWNER.NOTIFICATION_HISTORY where name = nameIn and active_end = dateIn);
+        update JAWS_OWNER.ACTIVE_HISTORY set active_end = dateIn where name = nameIn and active_end is null and
+               not exists (select 1 from JAWS_OWNER.ACTIVE_HISTORY where name = nameIn and active_end = dateIn);
     else
         insert
-            when not exists (select 1 from JAWS_OWNER.NOTIFICATION_HISTORY where name = nameIn and active_end is null) and
-                 not exists (select 1 from JAWS_OWNER.NOTIFICATION_HISTORY where name = nameIn and active_start = dateIn)
+            when not exists (select 1 from JAWS_OWNER.ACTIVE_HISTORY where name = nameIn and active_end is null) and
+                 not exists (select 1 from JAWS_OWNER.ACTIVE_HISTORY where name = nameIn and active_start = dateIn)
             then
-            into JAWS_OWNER.NOTIFICATION_HISTORY (name, active_start, active_end, activation_type, activation_note,
+            into JAWS_OWNER.ACTIVE_HISTORY (name, active_start, active_end, activation_type, activation_note,
                                                   activation_sevr, activation_stat, activation_error) select
                                                    nameIn, dateIn, null, typeIn, noteIn, sevrIn, statIn, errorIn from dual;
+    end if;
+end;
+/
+
+create or replace procedure JAWS_OWNER.MERGE_SUPPRESSED_HISTORY (
+    nameIn in varchar2, dateIn in timestamp with local time zone, updateIn in char, typeIn varchar2,
+    commentsIn varchar2, oneshotIn varchar2, expirationIn timestamp with local time zone, reasonIn varchar2) as
+begin
+    if updateIn = 'Y' then
+        update JAWS_OWNER.SUPPRESSED_HISTORY set suppressed_end = dateIn where name = nameIn and suppressed_end is null and
+            not exists (select 1 from JAWS_OWNER.SUPPRESSED_HISTORY where name = nameIn and suppressed_end = dateIn);
+    else
+        insert
+            when not exists (select 1 from JAWS_OWNER.SUPPRESSED_HISTORY where name = nameIn and suppressed_end is null) and
+                 not exists (select 1 from JAWS_OWNER.SUPPRESSED_HISTORY where name = nameIn and suppressed_start = dateIn)
+            then
+            into JAWS_OWNER.SUPPRESSED_HISTORY (name, suppressed_start, suppressed_end, type, comments,
+                                            oneshot, expiration, shelved_reason) select
+                                            nameIn, dateIn, null, typeIn, commentsIn, oneshotIn, expirationIn, reasonIn from dual;
     end if;
 end;
 /

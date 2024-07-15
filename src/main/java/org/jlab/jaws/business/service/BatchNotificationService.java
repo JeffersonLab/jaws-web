@@ -13,7 +13,7 @@ import org.jlab.kafka.eventsource.EventSourceRecord;
 public class BatchNotificationService {
   public void oracleMergeHistory(List<EventSourceRecord<String, EffectiveNotification>> records)
       throws SQLException {
-    String sql = "{call JAWS_OWNER.MERGE_NOTIFICATION_HISTORY(?, ?, ?, ?, ?, ?, ?, ?)}";
+    String sql = "{call JAWS_OWNER.MERGE_ACTIVE_HISTORY(?, ?, ?, ?, ?, ?, ?, ?)}";
     Connection con = null;
     PreparedStatement stmt = null;
 

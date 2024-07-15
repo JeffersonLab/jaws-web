@@ -8,11 +8,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "NOTIFICATION_HISTORY", schema = "JAWS_OWNER")
-public class NotificationHistory implements Serializable {
+@Table(name = "ACTIVE_HISTORY", schema = "JAWS_OWNER")
+public class ActiveHistory implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  @EmbeddedId protected NotificationHistoryPK notificationHistoryPK;
+  @EmbeddedId protected ActiveHistoryPK activeHistoryPK;
 
   @JoinColumn(name = "NAME", referencedColumnName = "NAME", updatable = false, insertable = false)
   @ManyToOne // This should be OneToOne, but doesn't work given name is an alternate key in Alarm
@@ -43,12 +43,12 @@ public class NotificationHistory implements Serializable {
   @Column(name = "ACTIVATION_ERROR", length = 128, nullable = true)
   private String activationError;
 
-  public NotificationHistoryPK getNotificationHistoryPK() {
-    return notificationHistoryPK;
+  public ActiveHistoryPK getActiveHistoryPK() {
+    return activeHistoryPK;
   }
 
-  public void setNotificationHistoryPK(NotificationHistoryPK notificationHistoryPK) {
-    this.notificationHistoryPK = notificationHistoryPK;
+  public void setActiveHistoryPK(ActiveHistoryPK activeHistoryPK) {
+    this.activeHistoryPK = activeHistoryPK;
   }
 
   public Alarm getAlarm() {
@@ -110,13 +110,13 @@ public class NotificationHistory implements Serializable {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof NotificationHistory)) return false;
-    NotificationHistory entity = (NotificationHistory) o;
-    return Objects.equals(notificationHistoryPK, entity.notificationHistoryPK);
+    if (!(o instanceof ActiveHistory)) return false;
+    ActiveHistory entity = (ActiveHistory) o;
+    return Objects.equals(activeHistoryPK, entity.activeHistoryPK);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(notificationHistoryPK);
+    return Objects.hash(activeHistoryPK);
   }
 }
