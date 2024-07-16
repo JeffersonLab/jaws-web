@@ -6,9 +6,13 @@ import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.jlab.smoothness.persistence.util.YnStringToBoolean;
 
 @Entity
+@Audited
 @Table(name = "ACTION", schema = "JAWS_OWNER")
 public class Action implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -27,10 +31,12 @@ public class Action implements Serializable {
 
   @JoinColumn(name = "COMPONENT_ID", referencedColumnName = "COMPONENT_ID", nullable = false)
   @ManyToOne(optional = false)
+  @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
   private Component component;
 
   @JoinColumn(name = "PRIORITY_ID", referencedColumnName = "PRIORITY_ID", nullable = false)
   @ManyToOne(optional = false)
+  @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
   private Priority priority;
 
   @Column(name = "CORRECTIVE_ACTION")
