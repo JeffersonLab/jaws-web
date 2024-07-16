@@ -1,8 +1,5 @@
 package org.jlab.jaws.persistence.entity;
 
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -11,6 +8,8 @@ import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 @Entity
 @Audited

@@ -1,6 +1,8 @@
 package org.jlab.jaws.presentation.util;
 
+import java.net.InetAddress;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
 public class TagFunctions {
@@ -39,5 +41,24 @@ public class TagFunctions {
     }
 
     return time;
+  }
+
+  public static String getHostnameFromIp(String ip) {
+    String hostname = ip;
+
+    if (ip != null) {
+      try {
+        InetAddress address = InetAddress.getByName(ip);
+        hostname = address.getHostName();
+
+        if (!ip.equals(hostname)) {
+          hostname = hostname + " (" + ip + ")";
+        }
+      } catch (UnknownHostException e) {
+        // Unable to resolve... oh well, just use ip
+      }
+    }
+
+    return hostname;
   }
 }

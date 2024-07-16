@@ -24,6 +24,9 @@
                             <li${'/reports/suppress-history' eq currentPath ? ' class="current-secondary"' : ''}><a
                                     href="${pageContext.request.contextPath}/reports/suppress-history">Suppress History</a>
                             </li>
+                            <li${fn:startsWith(currentPath, '/reports/inventory-history') ? ' class="current-secondary"' : ''}>
+                                <a href="${pageContext.request.contextPath}/reports/inventory-history">Inventory
+                                    History</a></li>
                         </ul>
                     </nav>
                 </section>
