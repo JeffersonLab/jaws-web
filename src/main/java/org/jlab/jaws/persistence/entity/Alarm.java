@@ -1,5 +1,8 @@
 package org.jlab.jaws.persistence.entity;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -10,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
+@Audited
 @Table(name = "ALARM", schema = "JAWS_OWNER")
 public class Alarm implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -35,6 +39,7 @@ public class Alarm implements Serializable {
       name = "ALARM_LOCATION",
       joinColumns = @JoinColumn(name = "ALARM_ID"),
       inverseJoinColumns = @JoinColumn(name = "LOCATION_ID"))
+  @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
   private List<Location> locationList;
 
   @Size(max = 64)
