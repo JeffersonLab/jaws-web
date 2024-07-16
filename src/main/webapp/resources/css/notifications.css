@@ -1,3 +1,7 @@
+.inner-table tbody td {
+    word-wrap: break-word;
+    word-break: break-all;
+}
 .outer-table thead th:first-child {
     width: 205px;
 }

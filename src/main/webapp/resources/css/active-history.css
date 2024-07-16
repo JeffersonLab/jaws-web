@@ -1,3 +1,7 @@
+.inner-table tbody td {
+    word-wrap: break-word;
+    word-break: break-all;
+}
 .outer-table thead th:first-child {
     width: 205px;
 }
@@ -21,12 +25,6 @@
 }
 .inner-table tbody td:nth-child(4) {
     width: 135px;
-}
-.outer-table thead th:nth-child(5) {
-    width: 100px;
-}
-.inner-table tbody td:nth-child(5) {
-    width: 100px;
 }
 
 #filter-flyout-panel {

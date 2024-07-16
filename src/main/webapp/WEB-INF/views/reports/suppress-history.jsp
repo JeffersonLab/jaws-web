@@ -138,15 +138,13 @@
                         <th>Suppressed</th>
                         <th>Name</th>
                         <th>Priority</th>
-                        <th>Type</th>
-                        <th>Suppression</th>
                         <th></th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="inner-table-cell" colspan="7">
+                        <td class="inner-table-cell" colspan="5">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table">
@@ -170,9 +168,10 @@
                                                        href="${url}"><c:out
                                                             value="${notification.suppressedHistoryPK.name}"/></a>
                                                 </td>
-                                                <td><c:out value="${notification.alarm.action.priority.name}"/></td>
-                                                <td><c:out value="${notification.activationType}"/></td>
-                                                <td><c:out value="${notification.suppressedWith}"/></td>
+                                                <td>
+                                                    <c:out value="${notification.alarm.action.priority.name}"/>
+                                                    <div>(<c:out value="${notification.activationType}"/>)</div>
+                                                </td>
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${'ChannelError' eq notification.activationType}">
@@ -186,6 +185,7 @@
                                                             Note=<c:out value="${notification.activationNote}"/>
                                                         </c:when>
                                                     </c:choose>
+                                                    <div><c:out value="${notification.suppressedWith}"/></div>
                                                 </td>
                                             </tr>
                                         </c:forEach>
