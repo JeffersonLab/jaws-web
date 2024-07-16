@@ -3,6 +3,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
+<%@taglib prefix="jaws" uri="http://jlab.org/jaws/functions" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <c:set var="title" value="Alarm Actions"/>
 <t:inventory-page title="${title}">
@@ -91,12 +92,13 @@
                         <th>Name</th>
                         <th>Component</th>
                         <th>Priority</th>
+                        <th></th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="inner-table-cell" colspan="5">
+                        <td class="inner-table-cell" colspan="6">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
@@ -104,8 +106,7 @@
                                         <c:forEach items="${actionList}" var="action">
                                             <tr data-id="${action.actionId}" data-component-id="${action.component.componentId}" data-priority-id="${action.priority.priorityId}" data-corrective-action="${fn:escapeXml(action.correctiveAction)}" data-rationale="${fn:escapeXml(action.rationale)}"  data-filterable="${action.filterable}" data-latchable="${action.latchable}" data-ondelay="${action.onDelaySeconds}" data-offdelay="${action.offDelaySeconds}">
                                                 <td>
-                                                    <c:url value="/inventory/action-detail" var="url">
-                                                        <c:param name="name" value="${action.name}"/>
+                                                    <c:url value="/inventory/actions/${jaws:urlEncode(action.name)}" var="url">
                                                     </c:url>
                                                     <a title="Action Information" class="dialog-ready"
                                                        data-dialog-title="Action Information: ${fn:escapeXml(action.name)}"
@@ -114,6 +115,13 @@
                                                 </td>
                                                 <td><c:out value="${action.component.name}"/></td>
                                                 <td><c:out value="${action.priority.name}"/></td>
+                                                <td>
+                                                    <!-- Use onclick to avoid https://bugs.webkit.org/show_bug.cgi?id=30103 -->
+                                                    <form method="get"
+                                                          action="${pageContext.request.contextPath}/inventory/actions/${fn:escapeXml(action.name)}">
+                                                        <button class="single-char-button" type="button" onclick="window.location.href = '${url}';  return false;">&rarr;</button>
+                                                    </form>
+                                                </td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>

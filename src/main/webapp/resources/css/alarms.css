@@ -10,6 +10,12 @@
 .inner-table tbody td:nth-child(2) {
     width: 201px;
 }
+.outer-table thead th:nth-child(3) {
+    width: 201px;
+}
+.inner-table tbody td:nth-child(3) {
+    width: 201px;
+}
 
 #filter-flyout-panel {
     width: 655px;

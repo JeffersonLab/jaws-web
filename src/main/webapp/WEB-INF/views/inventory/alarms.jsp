@@ -3,6 +3,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
+<%@taglib prefix="jaws" uri="http://jlab.org/jaws/functions" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%> 
 <c:set var="title" value="Alarms"/>
 <t:inventory-page title="${title}">
@@ -115,12 +116,13 @@
                         <th>Name</th>
                         <th>Action</th>
                         <th>Location</th>
+                        <th></th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="inner-table-cell" colspan="4">
+                        <td class="inner-table-cell" colspan="5">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
@@ -128,8 +130,7 @@
                                         <c:forEach items="${alarmList}" var="alarm">
                                             <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}">
                                                 <td>
-                                                    <c:url value="/inventory/alarm-detail" var="url">
-                                                        <c:param name="name" value="${alarm.name}"/>
+                                                    <c:url value="/inventory/alarms/${jaws:urlEncode(alarm.name)}" var="url">
                                                     </c:url>
                                                     <a title="Alarm Information" class="dialog-ready"
                                                        data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
@@ -138,6 +139,13 @@
                                                 </td>
                                                 <td><c:out value="${alarm.action.name}"/></td>
                                                 <td><c:out value="${alarm.locationNameCsv}"/></td>
+                                                <td>
+                                                    <!-- Use onclick to avoid https://bugs.webkit.org/show_bug.cgi?id=30103 -->
+                                                    <form method="get"
+                                                          action="${pageContext.request.contextPath}/inventory/alarms/${fn:escapeXml(alarm.name)}">
+                                                        <button class="single-char-button" type="button" onclick="window.location.href = '${url}';  return false;">&rarr;</button>
+                                                    </form>
+                                                </td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>
