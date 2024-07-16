@@ -175,14 +175,14 @@
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${'ChannelError' eq notification.activationType}">
-                                                            Error=<c:out value="${notification.activationError}"/>
+                                                            <div>Error=<c:out value="${notification.activationError}"/></div>
                                                         </c:when>
                                                         <c:when test="${'EPICS' eq notification.activationType}">
-                                                            SEVR=<c:out value="${notification.activationSevr}"/>,
-                                                            STAT=<c:out value="${notification.activationStat}"/>
+                                                            <div>SEVR=<c:out value="${notification.activationSevr}"/></div>
+                                                            <div>STAT=<c:out value="${notification.activationStat}"/></div>
                                                         </c:when>
                                                         <c:when test="${'Note' eq notification.activationType}">
-                                                            Note=<c:out value="${notification.activationNote}"/>
+                                                            <div>Note=<c:out value="${notification.activationNote}"/></div>
                                                         </c:when>
                                                     </c:choose>
                                                     <div><c:out value="${notification.incitedWith}"/></div>

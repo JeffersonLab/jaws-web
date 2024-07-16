@@ -24,6 +24,21 @@
                             <ul class="key-value-list">
                                 <li>
                                     <div class="li-key">
+                                        <label for="override-select">Override</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="override-select" name="override">
+                                            <option value="">&nbsp;</option>
+                                            <option value="Disabled"${param.override eq 'Disabled' ? ' selected="selected"' : ''}>Disabled</option>
+                                            <option value="Filtered"${param.override eq 'Filtered' ? ' selected="selected"' : ''}>Filtered</option>
+                                            <option value="Masked"${param.override eq 'Masked' ? ' selected="selected"' : ''}>Masked</option>
+                                            <option value="OnDelayed"${param.override eq 'OnDelayed' ? ' selected="selected"' : ''}>OnDelayed</option>
+                                            <option value="Shelved"${param.override eq 'Shelved' ? ' selected="selected"' : ''}>Shelved</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
                                         <label for="type-select">Type</label>
                                     </div>
                                     <div class="li-value">
@@ -175,14 +190,14 @@
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${'ChannelError' eq notification.activationType}">
-                                                            Error=<c:out value="${notification.activationError}"/>
+                                                            <div>Error=<c:out value="${notification.activationError}"/></div>
                                                         </c:when>
                                                         <c:when test="${'EPICS' eq notification.activationType}">
-                                                            SEVR=<c:out value="${notification.activationSevr}"/>,
-                                                            STAT=<c:out value="${notification.activationStat}"/>
+                                                            <div>SEVR=<c:out value="${notification.activationSevr}"/></div>
+                                                            <div>STAT=<c:out value="${notification.activationStat}"/></div>
                                                         </c:when>
                                                         <c:when test="${'Note' eq notification.activationType}">
-                                                            Note=<c:out value="${notification.activationNote}"/>
+                                                            <div>Note=<c:out value="${notification.activationNote}"/></div>
                                                         </c:when>
                                                     </c:choose>
                                                     <div><c:out value="${notification.suppressedWith}"/></div>

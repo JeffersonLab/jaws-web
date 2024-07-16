@@ -20,12 +20,6 @@
 .inner-table tbody td:nth-child(3) {
     width: 135px;
 }
-.outer-table thead th:nth-child(4) {
-    width: 135px;
-}
-.inner-table tbody td:nth-child(4) {
-    width: 135px;
-}
 
 #filter-flyout-panel {
     width: 655px;

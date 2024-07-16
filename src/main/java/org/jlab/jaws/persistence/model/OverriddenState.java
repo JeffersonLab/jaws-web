@@ -6,8 +6,8 @@ public enum OverriddenState {
   Disabled("Disabled (Normal)", OverriddenAlarmType.Disabled),
   Filtered("Filtered (Normal)", OverriddenAlarmType.Filtered),
   Masked("Masked (Normal)", OverriddenAlarmType.Masked),
-  OnDelayed("On-Delayed (Normal)", OverriddenAlarmType.OnDelayed),
-  OffDelayed("Off-Delayed (Active)", OverriddenAlarmType.OffDelayed),
+  OnDelayed("OnDelayed (Normal)", OverriddenAlarmType.OnDelayed),
+  OffDelayed("OffDelayed (Active)", OverriddenAlarmType.OffDelayed),
   Shelved("Shelved (Normal)", OverriddenAlarmType.Shelved),
   Latched("Latched (Active)", OverriddenAlarmType.Latched);
 
