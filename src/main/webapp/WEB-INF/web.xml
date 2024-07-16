@@ -74,6 +74,7 @@
         <web-resource-collection>
             <web-resource-name>Setup Pages</web-resource-name>
             <url-pattern>/setup/*</url-pattern>
+            <url-pattern>/reports/inventory-history/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>jaws-admin</role-name>
