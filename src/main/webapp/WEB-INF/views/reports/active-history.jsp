@@ -24,6 +24,18 @@
                             <ul class="key-value-list">
                                 <li>
                                     <div class="li-key">
+                                        <label for="override-select">Override</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="override-select" name="override">
+                                            <option value="">&nbsp;</option>
+                                            <option value="Latched"${param.override eq 'Latched' ? ' selected="selected"' : ''}>Latched</option>
+                                            <option value="OffDelayed"${param.override eq 'OffDelayed' ? ' selected="selected"' : ''}>OffDelayed</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
                                         <label for="type-select">Type</label>
                                     </div>
                                     <div class="li-value">

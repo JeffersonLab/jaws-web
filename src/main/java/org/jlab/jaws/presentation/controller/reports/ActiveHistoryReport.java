@@ -76,6 +76,7 @@ public class ActiveHistoryReport extends HttpServlet {
         historyFacade.filterList(
             start,
             end,
+            override,
             activationType,
             locationIdArray,
             priorityId,
@@ -130,6 +131,7 @@ public class ActiveHistoryReport extends HttpServlet {
         historyFacade.countList(
             start,
             end,
+            override,
             activationType,
             locationIdArray,
             priorityId,

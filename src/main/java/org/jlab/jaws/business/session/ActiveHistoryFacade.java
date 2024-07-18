@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import org.jlab.jaws.entity.OverriddenAlarmType;
 import org.jlab.jaws.persistence.entity.*;
 
 /**
@@ -39,6 +40,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
       Root<ActiveHistory> root,
       Date start,
       Date end,
+      OverriddenAlarmType override,
       String activationType,
       BigInteger[] locationIdArray,
       BigInteger priorityId,
@@ -64,6 +66,10 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
 
     if (end != null) {
       filters.add(cb.lessThan(root.get("activeHistoryPK").get("activeStart"), end));
+    }
+
+    if (override != null) {
+      filters.add(cb.equal(root.get("incitedWith"), override.name()));
     }
 
     if (activationType != null && !activationType.isEmpty()) {
@@ -131,6 +137,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
   public List<ActiveHistory> filterList(
       Date start,
       Date end,
+      OverriddenAlarmType override,
       String activationType,
       BigInteger[] locationIdArray,
       BigInteger priorityId,
@@ -155,6 +162,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
             root,
             start,
             end,
+            override,
             activationType,
             locationIdArray,
             priorityId,
@@ -191,6 +199,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
   public long countList(
       Date start,
       Date end,
+      OverriddenAlarmType override,
       String activationType,
       BigInteger[] locationIdArray,
       BigInteger priorityId,
@@ -212,6 +221,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
             root,
             start,
             end,
+            override,
             activationType,
             locationIdArray,
             priorityId,

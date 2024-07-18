@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import org.jlab.jaws.entity.OverriddenAlarmType;
 import org.jlab.jaws.persistence.entity.*;
 
 /**
@@ -39,6 +40,7 @@ public class SuppressedHistoryFacade extends AbstractFacade<SuppressedHistory> {
       Root<SuppressedHistory> root,
       Date start,
       Date end,
+      OverriddenAlarmType override,
       String activationType,
       BigInteger[] locationIdArray,
       BigInteger priorityId,
@@ -65,6 +67,10 @@ public class SuppressedHistoryFacade extends AbstractFacade<SuppressedHistory> {
 
     if (end != null) {
       filters.add(cb.lessThan(root.get("suppressedHistoryPK").get("suppressedStart"), end));
+    }
+
+    if (override != null) {
+      filters.add(cb.equal(root.get("suppressedWith"), override.name()));
     }
 
     if (activationType != null && !activationType.isEmpty()) {
@@ -132,6 +138,7 @@ public class SuppressedHistoryFacade extends AbstractFacade<SuppressedHistory> {
   public List<SuppressedHistory> filterList(
       Date start,
       Date end,
+      OverriddenAlarmType override,
       String activationType,
       BigInteger[] locationIdArray,
       BigInteger priorityId,
@@ -156,6 +163,7 @@ public class SuppressedHistoryFacade extends AbstractFacade<SuppressedHistory> {
             root,
             start,
             end,
+            override,
             activationType,
             locationIdArray,
             priorityId,
@@ -192,6 +200,7 @@ public class SuppressedHistoryFacade extends AbstractFacade<SuppressedHistory> {
   public long countList(
       Date start,
       Date end,
+      OverriddenAlarmType override,
       String activationType,
       BigInteger[] locationIdArray,
       BigInteger priorityId,
@@ -213,6 +222,7 @@ public class SuppressedHistoryFacade extends AbstractFacade<SuppressedHistory> {
             root,
             start,
             end,
+            override,
             activationType,
             locationIdArray,
             priorityId,
