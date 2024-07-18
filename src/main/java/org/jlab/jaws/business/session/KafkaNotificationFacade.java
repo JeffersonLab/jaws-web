@@ -69,6 +69,7 @@ public class KafkaNotificationFacade {
         // merge
         long hStart = System.currentTimeMillis();
         BatchNotificationService service = new BatchNotificationService();
+        service.oracleInsertNotificationHistory(records);
         service.oracleMergeActiveHistory(records);
         service.oracleMergeSuppressedHistory(records);
         long hEnd = System.currentTimeMillis();

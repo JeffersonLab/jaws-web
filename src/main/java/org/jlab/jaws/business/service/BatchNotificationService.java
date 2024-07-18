@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.*;
+import org.jlab.jaws.business.session.NotificationFacade;
 import org.jlab.jaws.business.util.OracleUtil;
 import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.model.BinaryState;
@@ -232,6 +233,95 @@ public class BatchNotificationService {
           stmt.setNull(13, Types.VARCHAR);
         } else {
           stmt.setString(13, reason);
+        }
+
+        stmt.addBatch();
+      }
+
+      stmt.executeBatch();
+    } finally {
+      OracleUtil.close(stmt, con);
+    }
+  }
+
+  public void oracleInsertNotificationHistory(
+      List<EventSourceRecord<String, EffectiveNotification>> records) throws SQLException {
+    String sql =
+        "insert into jaws_owner.notification_history(notification_history_id, offset, name, state, since, "
+            + "active_override, activation_type, activation_note, activation_sevr, activation_stat, activation_error) "
+            + "values(jaws_owner.notification_history_id.nextval, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    Connection con = null;
+    PreparedStatement stmt = null;
+
+    try {
+      con = OracleUtil.getConnection();
+
+      // Use default autoCommit and Transaction Isolation Level (explicitly stated)
+      con.setAutoCommit(true);
+      con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
+      stmt = con.prepareCall(sql);
+
+      for (EventSourceRecord<String, EffectiveNotification> record : records) {
+        AlarmActivationUnion union = record.getValue().getActivation();
+
+        String state = BinaryState.fromAlarmState(record.getValue().getState()).name();
+        OverriddenAlarmType override =
+            NotificationFacade.overrideFromAlarmState(record.getValue().getState());
+        String activationType = "NotActive";
+        String note = null;
+        String sevr = null;
+        String stat = null;
+        String error = null;
+
+        if (union != null) {
+          if (union.getUnion() instanceof EPICSActivation) {
+            activationType = "EPICS";
+            EPICSActivation epics = (EPICSActivation) union.getUnion();
+            sevr = epics.getSevr().name();
+            stat = epics.getStat().name();
+          } else if (union.getUnion() instanceof NoteActivation) {
+            activationType = "Note";
+            NoteActivation noteObj = (NoteActivation) union.getUnion();
+            note = noteObj.getNote();
+          } else if (union.getUnion() instanceof ChannelErrorActivation) {
+            activationType = "ChannelError";
+            ChannelErrorActivation channel = (ChannelErrorActivation) union.getUnion();
+            error = channel.getError();
+          } else if (union.getUnion() instanceof Activation) {
+            activationType = "Simple";
+          }
+        }
+
+        stmt.setLong(1, record.getOffset());
+        stmt.setString(2, record.getKey());
+        stmt.setString(3, state);
+        stmt.setDate(4, new java.sql.Date(record.getTimestamp()));
+        if (override == null) {
+          stmt.setNull(5, Types.VARCHAR);
+        } else {
+          stmt.setString(5, override.name());
+        }
+        stmt.setString(6, activationType);
+        if (note == null) {
+          stmt.setNull(7, Types.VARCHAR);
+        } else {
+          stmt.setString(7, note);
+        }
+        if (sevr == null) {
+          stmt.setNull(8, Types.VARCHAR);
+        } else {
+          stmt.setString(8, sevr);
+        }
+        if (stat == null) {
+          stmt.setNull(9, Types.VARCHAR);
+        } else {
+          stmt.setString(9, stat);
+        }
+        if (error == null) {
+          stmt.setNull(10, Types.VARCHAR);
+        } else {
+          stmt.setString(10, error);
         }
 
         stmt.addBatch();
