@@ -24,16 +24,41 @@
                             <ul class="key-value-list">
                                 <li>
                                     <div class="li-key">
+                                        <label for="state-select">State</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="state-select" name="state">
+                                            <option value="">&nbsp;</option>
+                                            <c:forEach items="${stateList}" var="state">
+                                                <option value="${state.name()}"${param.state eq state.name() ? ' selected="selected"' : ''}>
+                                                    <c:out value="${state.name()}"/></option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
+                                        <label for="type-select">Overridden</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="overridden-select" name="overridden">
+                                            <option value="">&nbsp;</option>
+                                            <option value="Y"${param.overridden eq 'Y' ? ' selected="selected"' : ''}>Yes</option>
+                                            <option value="N"${param.overridden eq 'N' ? ' selected="selected"' : ''}>No</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
                                         <label for="override-select">Override</label>
                                     </div>
                                     <div class="li-value">
                                         <select id="override-select" name="override">
                                             <option value="">&nbsp;</option>
-                                            <option value="Disabled"${param.override eq 'Disabled' ? ' selected="selected"' : ''}>Disabled</option>
-                                            <option value="Filtered"${param.override eq 'Filtered' ? ' selected="selected"' : ''}>Filtered</option>
-                                            <option value="Masked"${param.override eq 'Masked' ? ' selected="selected"' : ''}>Masked</option>
-                                            <option value="OnDelayed"${param.override eq 'OnDelayed' ? ' selected="selected"' : ''}>OnDelayed</option>
-                                            <option value="Shelved"${param.override eq 'Shelved' ? ' selected="selected"' : ''}>Shelved</option>
+                                            <c:forEach items="${overrideList}" var="override">
+                                                <option value="${override.name()}"${param.override eq override.name() ? ' selected="selected"' : ''}>
+                                                    <c:out value="${override.getLabel()}"/></option>
+                                            </c:forEach>
                                         </select>
                                     </div>
                                 </li>
@@ -152,6 +177,7 @@
                     <tr>
                         <th>Since</th>
                         <th>Name</th>
+                        <th>State</th>
                         <th>Priority</th>
                         <th></th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
@@ -159,7 +185,7 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="inner-table-cell" colspan="5">
+                        <td class="inner-table-cell" colspan="6">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table">
@@ -179,6 +205,12 @@
                                                             value="${notification.alarm.name}"/></a>
                                                 </td>
                                                 <td>
+                                                    <c:out value="${notification.state}"/>
+                                                    <c:if test="${notification.activeOverride ne null}">
+                                                        (<c:out value="${notification.activeOverride}"/>)
+                                                    </c:if>
+                                                </td>
+                                                <td>
                                                     <c:out value="${notification.alarm.action.priority.name}"/>
                                                     <div>(<c:out value="${notification.activationType}"/>)</div>
                                                 </td>
@@ -195,7 +227,6 @@
                                                             <div>Note=<c:out value="${notification.activationNote}"/></div>
                                                         </c:when>
                                                     </c:choose>
-                                                    <div><c:out value="${notification.activeOverride}"/></div>
                                                 </td>
                                             </tr>
                                         </c:forEach>

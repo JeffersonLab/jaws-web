@@ -7,6 +7,7 @@ import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.jlab.jaws.persistence.model.BinaryState;
 
 @Entity
 @Table(name = "NOTIFICATION_HISTORY", schema = "JAWS_OWNER")
@@ -36,6 +37,12 @@ public class NotificationHistory implements Serializable {
   @Temporal(TemporalType.TIMESTAMP)
   @NotNull
   private Date since;
+
+  @Basic(optional = false)
+  @Column(name = "STATE", nullable = false, length = 32)
+  @Enumerated(EnumType.STRING)
+  @NotNull
+  private BinaryState state;
 
   @Size(max = 64)
   @NotNull
@@ -76,6 +83,14 @@ public class NotificationHistory implements Serializable {
 
   public void setOffset(@NotNull BigInteger offset) {
     this.offset = offset;
+  }
+
+  public @NotNull BinaryState getState() {
+    return state;
+  }
+
+  public void setState(@NotNull BinaryState state) {
+    this.state = state;
   }
 
   public @Size(max = 32) String getActiveOverride() {

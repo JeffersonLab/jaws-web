@@ -12,6 +12,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import org.jlab.jaws.entity.OverriddenAlarmType;
 import org.jlab.jaws.persistence.entity.*;
+import org.jlab.jaws.persistence.model.BinaryState;
 
 /**
  * @author ryans
@@ -40,6 +41,8 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
       Root<NotificationHistory> root,
       Date start,
       Date end,
+      BinaryState state,
+      Boolean overridden,
       OverriddenAlarmType override,
       String activationType,
       BigInteger[] locationIdArray,
@@ -66,6 +69,18 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
 
     if (end != null) {
       filters.add(cb.lessThan(root.get("since"), end));
+    }
+
+    if (state != null) {
+      filters.add(cb.equal(root.get("state"), state));
+    }
+
+    if (overridden != null) {
+      if (overridden) {
+        filters.add(cb.isNotNull(root.get("activeOverride")));
+      } else {
+        filters.add(cb.isNull(root.get("activeOverride")));
+      }
     }
 
     if (override != null) {
@@ -137,6 +152,8 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
   public List<NotificationHistory> filterList(
       Date start,
       Date end,
+      BinaryState state,
+      Boolean overridden,
       OverriddenAlarmType override,
       String activationType,
       BigInteger[] locationIdArray,
@@ -162,6 +179,8 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
             root,
             start,
             end,
+            state,
+            overridden,
             override,
             activationType,
             locationIdArray,
@@ -199,6 +218,8 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
   public long countList(
       Date start,
       Date end,
+      BinaryState state,
+      Boolean overridden,
       OverriddenAlarmType override,
       String activationType,
       BigInteger[] locationIdArray,
@@ -221,6 +242,8 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
             root,
             start,
             end,
+            state,
+            overridden,
             override,
             activationType,
             locationIdArray,

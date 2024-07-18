@@ -76,6 +76,8 @@ public class NotifyHistoryReport extends HttpServlet {
         historyFacade.filterList(
             start,
             end,
+            state,
+            overridden,
             override,
             activationType,
             locationIdArray,
@@ -131,6 +133,8 @@ public class NotifyHistoryReport extends HttpServlet {
         historyFacade.countList(
             start,
             end,
+            state,
+            overridden,
             override,
             activationType,
             locationIdArray,
