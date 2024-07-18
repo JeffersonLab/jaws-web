@@ -207,7 +207,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     }
   }
 
-  private OverriddenAlarmType overrideFromAlarmState(AlarmState state) {
+  public static OverriddenAlarmType overrideFromAlarmState(AlarmState state) {
     OverriddenAlarmType override = null;
 
     switch (state) {

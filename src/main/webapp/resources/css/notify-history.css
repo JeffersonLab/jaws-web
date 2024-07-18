@@ -1,0 +1,31 @@
+.inner-table tbody td {
+    word-wrap: break-word;
+}
+.outer-table thead th:first-child {
+    width: 205px;
+}
+.inner-table tbody td:first-child {
+    width: 201px;
+}
+.outer-table thead th:nth-child(2) {
+    width: 201px;
+}
+.inner-table tbody td:nth-child(2) {
+    width: 201px;
+}
+.outer-table thead th:nth-child(3) {
+    width: 135px;
+}
+.inner-table tbody td:nth-child(3) {
+    width: 135px;
+}
+.outer-table thead th:nth-child(4) {
+    width: 135px;
+}
+.inner-table tbody td:nth-child(4) {
+    width: 135px;
+}
+
+#filter-flyout-panel {
+    width: 655px;
+}
