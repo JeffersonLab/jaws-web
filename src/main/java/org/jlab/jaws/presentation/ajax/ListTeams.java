@@ -1,9 +1,10 @@
 package org.jlab.jaws.presentation.ajax;
 
-import org.jlab.jaws.business.session.AbstractFacade;
-import org.jlab.jaws.business.session.TeamFacade;
-import org.jlab.jaws.persistence.entity.Team;
-
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
@@ -12,11 +13,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jlab.jaws.business.session.AbstractFacade;
+import org.jlab.jaws.business.session.TeamFacade;
+import org.jlab.jaws.persistence.entity.Team;
 
 /**
  * @author ryans
@@ -28,8 +27,7 @@ public class ListTeams extends HttpServlet {
 
   private static final Logger logger = Logger.getLogger(ListTeams.class.getName());
 
-  @EJB
-  TeamFacade teamFacade;
+  @EJB TeamFacade teamFacade;
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -56,7 +54,7 @@ public class ListTeams extends HttpServlet {
       gen.writeStartObject().write("stat", stat);
       if (error != null) {
         gen.write("error", error);
-        //response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        // response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       } else {
         gen.writeStartArray("list");
         for (Team team : teamList) {

@@ -1,10 +1,11 @@
 package org.jlab.jaws.presentation.ajax;
 
-import org.jlab.jaws.business.session.ActionFacade;
-import org.jlab.jaws.persistence.entity.Action;
-import org.jlab.smoothness.presentation.util.ParamConverter;
-import org.jlab.smoothness.presentation.util.ParamUtil;
-
+import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
@@ -13,12 +14,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jlab.jaws.business.session.ActionFacade;
+import org.jlab.jaws.persistence.entity.Action;
+import org.jlab.smoothness.presentation.util.ParamConverter;
+import org.jlab.smoothness.presentation.util.ParamUtil;
 
 /**
  * @author ryans
@@ -30,8 +29,7 @@ public class ListActions extends HttpServlet {
 
   private static final Logger logger = Logger.getLogger(ListActions.class.getName());
 
-  @EJB
-  ActionFacade actionFacade;
+  @EJB ActionFacade actionFacade;
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -51,7 +49,7 @@ public class ListActions extends HttpServlet {
 
     try {
       actionList =
-              actionFacade.filterList(priorityId, teamId, actionName, componentName, offset, max);
+          actionFacade.filterList(priorityId, teamId, actionName, componentName, offset, max);
     } catch (RuntimeException e) {
       stat = "fail";
       error = "Unable to list Actions";
@@ -66,7 +64,7 @@ public class ListActions extends HttpServlet {
       gen.writeStartObject().write("stat", stat);
       if (error != null) {
         gen.write("error", error);
-        //response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        // response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       } else {
         gen.writeStartArray("list");
         for (Action action : actionList) {
@@ -81,12 +79,12 @@ public class ListActions extends HttpServlet {
           gen.writeEnd();
           gen.write("filterable", action.isFilterable());
           gen.write("latchable", action.isLatchable());
-          if(action.getOnDelaySeconds() == null) {
+          if (action.getOnDelaySeconds() == null) {
             gen.writeNull("ondelayseconds");
           } else {
             gen.write("ondelayseconds", action.getOnDelaySeconds());
           }
-          if(action.getOffDelaySeconds() == null) {
+          if (action.getOffDelaySeconds() == null) {
             gen.writeNull("offdelayseconds");
           } else {
             gen.write("offdelayseconds", action.getOffDelaySeconds());

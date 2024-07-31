@@ -1,12 +1,10 @@
 package org.jlab.jaws.presentation.ajax;
 
-import org.jlab.jaws.business.session.AbstractFacade;
-import org.jlab.jaws.business.session.LocationFacade;
-import org.jlab.jaws.persistence.entity.Action;
-import org.jlab.jaws.persistence.entity.Location;
-import org.jlab.smoothness.presentation.util.ParamConverter;
-import org.jlab.smoothness.presentation.util.ParamUtil;
-
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
@@ -15,12 +13,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jlab.jaws.business.session.AbstractFacade;
+import org.jlab.jaws.business.session.LocationFacade;
+import org.jlab.jaws.persistence.entity.Location;
 
 /**
  * @author ryans
@@ -32,8 +27,7 @@ public class ListLocations extends HttpServlet {
 
   private static final Logger logger = Logger.getLogger(ListLocations.class.getName());
 
-  @EJB
-  LocationFacade locationFacade;
+  @EJB LocationFacade locationFacade;
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -45,8 +39,7 @@ public class ListLocations extends HttpServlet {
     String error = null;
 
     try {
-      locationList =
-              locationFacade.findAll(new AbstractFacade.OrderDirective("locationId"));
+      locationList = locationFacade.findAll(new AbstractFacade.OrderDirective("locationId"));
     } catch (RuntimeException e) {
       stat = "fail";
       error = "Unable to list Locations";
@@ -61,19 +54,19 @@ public class ListLocations extends HttpServlet {
       gen.writeStartObject().write("stat", stat);
       if (error != null) {
         gen.write("error", error);
-        //response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        // response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       } else {
         gen.writeStartArray("list");
         for (Location location : locationList) {
           gen.writeStartObject();
           gen.write("name", location.getName());
           gen.write("id", location.getLocationId());
-          if(location.getWeight() == null) {
+          if (location.getWeight() == null) {
             gen.writeNull("weight");
           } else {
             gen.write("weight", location.getWeight());
           }
-          if(location.getParent() == null) {
+          if (location.getParent() == null) {
             gen.writeNull("parent");
           } else {
             gen.write("parent", location.getParent().getLocationId());

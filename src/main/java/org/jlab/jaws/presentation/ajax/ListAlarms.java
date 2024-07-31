@@ -1,11 +1,11 @@
 package org.jlab.jaws.presentation.ajax;
 
-import org.jlab.jaws.business.session.AlarmFacade;
-import org.jlab.jaws.persistence.entity.Alarm;
-import org.jlab.jaws.persistence.entity.Location;
-import org.jlab.smoothness.presentation.util.ParamConverter;
-import org.jlab.smoothness.presentation.util.ParamUtil;
-
+import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
@@ -14,12 +14,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jlab.jaws.business.session.AlarmFacade;
+import org.jlab.jaws.persistence.entity.Alarm;
+import org.jlab.jaws.persistence.entity.Location;
+import org.jlab.smoothness.presentation.util.ParamConverter;
+import org.jlab.smoothness.presentation.util.ParamUtil;
 
 /**
  * @author ryans
@@ -53,15 +52,15 @@ public class ListAlarms extends HttpServlet {
 
     try {
       alarmList =
-              alarmFacade.filterList(
-                      locationIdArray,
-                      priorityId,
-                      teamId,
-                      alarmName,
-                      actionName,
-                      componentName,
-                      offset,
-                      max);
+          alarmFacade.filterList(
+              locationIdArray,
+              priorityId,
+              teamId,
+              alarmName,
+              actionName,
+              componentName,
+              offset,
+              max);
     } catch (RuntimeException e) {
       stat = "fail";
       error = "Unable to list Alarms";
@@ -76,14 +75,14 @@ public class ListAlarms extends HttpServlet {
       gen.writeStartObject().write("stat", stat);
       if (error != null) {
         gen.write("error", error);
-        //response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        // response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       } else {
         gen.writeStartArray("list");
         for (Alarm alarm : alarmList) {
           gen.writeStartObject();
           gen.write("name", alarm.getName());
           gen.write("id", alarm.getAlarmId());
-          if(alarm.getAction() == null) {
+          if (alarm.getAction() == null) {
             gen.writeNull("action");
           } else {
             gen.writeStartObject("action");
@@ -91,38 +90,38 @@ public class ListAlarms extends HttpServlet {
             gen.write("id", alarm.getAction().getActionId());
             gen.writeEnd();
           }
-          if(alarm.getDevice() == null) {
+          if (alarm.getDevice() == null) {
             gen.writeNull("device");
           } else {
             gen.write("device", alarm.getDevice());
           }
-          if(alarm.getPv() == null) {
+          if (alarm.getPv() == null) {
             gen.writeNull("pv");
           } else {
             gen.write("pv", alarm.getPv());
           }
-          if(alarm.getMaskedBy() == null) {
+          if (alarm.getMaskedBy() == null) {
             gen.writeNull("maskedBy");
           } else {
             gen.write("maskedBy", alarm.getMaskedBy());
           }
-          if(alarm.getScreenCommand() == null) {
+          if (alarm.getScreenCommand() == null) {
             gen.writeNull("screenCommand");
           } else {
             gen.write("screenCommand", alarm.getScreenCommand());
           }
           gen.writeStartArray("locations");
-          if(alarm.getLocationList() != null) {
+          if (alarm.getLocationList() != null) {
             for (Location location : alarm.getLocationList()) {
               gen.writeStartObject();
               gen.write("name", location.getName());
               gen.write("id", location.getId());
-              if(location.getWeight() == null) {
+              if (location.getWeight() == null) {
                 gen.writeNull("weight");
               } else {
                 gen.write("weight", location.getWeight());
               }
-              if(location.getParent() == null) {
+              if (location.getParent() == null) {
                 gen.writeNull("parent");
               } else {
                 gen.write("parent", location.getParent().getLocationId());
