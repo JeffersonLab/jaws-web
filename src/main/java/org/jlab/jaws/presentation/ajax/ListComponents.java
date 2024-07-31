@@ -1,10 +1,11 @@
 package org.jlab.jaws.presentation.ajax;
 
-import org.jlab.jaws.business.session.ComponentFacade;
-import org.jlab.jaws.persistence.entity.Component;
-import org.jlab.smoothness.presentation.util.ParamConverter;
-import org.jlab.smoothness.presentation.util.ParamUtil;
-
+import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
@@ -13,12 +14,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jlab.jaws.business.session.ComponentFacade;
+import org.jlab.jaws.persistence.entity.Component;
+import org.jlab.smoothness.presentation.util.ParamConverter;
+import org.jlab.smoothness.presentation.util.ParamUtil;
 
 /**
  * @author ryans
@@ -30,8 +29,7 @@ public class ListComponents extends HttpServlet {
 
   private static final Logger logger = Logger.getLogger(ListComponents.class.getName());
 
-  @EJB
-  ComponentFacade componentFacade;
+  @EJB ComponentFacade componentFacade;
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
