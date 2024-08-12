@@ -300,7 +300,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     if (state != null) {
       filters.add(cb.equal(root.get("state"), state));
 
-      if("Active".equals(state.name())) {
+      if ("Active".equals(state.name())) {
         Predicate isActive = cb.equal(root.get("state"), BinaryState.Active);
 
         if (alwaysIncludeUnregistered) {
@@ -308,7 +308,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
         }
 
         if (alwaysIncludeUnfilterable) {
-          orFilters.add(cb.and(isActive,cb.equal(actionJoin.get("filterable"), false)));
+          orFilters.add(cb.and(isActive, cb.equal(actionJoin.get("filterable"), false)));
         }
       }
     }

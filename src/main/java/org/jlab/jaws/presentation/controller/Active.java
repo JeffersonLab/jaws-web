@@ -39,7 +39,8 @@ public class Active extends HttpServlet {
 
     List<Location> selectedLocationList = new ArrayList<>();
     Set<Location> materializedLocations = new HashSet<>();
-    String listActiveParams = "?state=Active&alwaysIncludeUnregistered=Y&alwaysIncludeUnfilterable=Y";
+    String listActiveParams =
+        "?state=Active&alwaysIncludeUnregistered=Y&alwaysIncludeUnfilterable=Y";
 
     if (locationIdArray != null && locationIdArray.length > 0) {
       for (BigInteger id : locationIdArray) {

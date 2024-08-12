@@ -240,7 +240,7 @@ public class Notifications extends HttpServlet {
     if (state != null) {
       String stateFilter = "State \"" + state + "\"";
 
-      if("Active".equals(state.name())) {
+      if ("Active".equals(state.name())) {
         if (alwaysIncludeUnregistered) {
           stateFilter = stateFilter + " (+Unregistered)";
         }
