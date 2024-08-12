@@ -194,7 +194,22 @@ evtSource.addEventListener('alarm', (e) => {
         if (value === null || value.notification.state.startsWith('Normal')) {
             remove.push(key);
         } else {
-            updateOrAdd.push(toAlarm(key, value));
+            let inLocationSet = false;
+
+            if(jlab.materializedLocations.length === 0 || value.registration.location === undefined || value.registration.filterable === false) {
+                inLocationSet = true;
+            } else {
+                for(const l of value.registration.location) {
+                    if(jlab.materializedLocations.includes(l)) {
+                        inLocationSet = true;
+                        break;
+                    }
+                }
+            }
+
+            if(inLocationSet) {
+                updateOrAdd.push(toAlarm(key, value));
+            }
         }
     }
 
@@ -256,11 +271,23 @@ function removeFromDiagram(name) {
         element.remove();
     }
 }
+$(document).on("click", ".default-clear-panel", function () {
+    $("#location-select").val(null).trigger('change');
+    return false;
+});
+function formatLocation(location) {
+    return location.text.trim();
+}
 $(function() {
     $("#all-dialog").dialog({
         autoOpen: false,
         width: 800,
         height: 600
+    });
+
+    $("#location-select").select2({
+        width: 390,
+        templateSelection: formatLocation
     });
 });
 

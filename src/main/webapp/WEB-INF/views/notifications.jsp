@@ -36,7 +36,7 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="type-select">Overridden</label>
+                                        <label for="overridden-select">Overridden</label>
                                     </div>
                                     <div class="li-value">
                                         <select id="overridden-select" name="overridden">
@@ -117,7 +117,7 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="type-select">Registered</label>
+                                        <label for="registered-select">Registered</label>
                                     </div>
                                     <div class="li-value">
                                         <select id="registered-select" name="registered">
