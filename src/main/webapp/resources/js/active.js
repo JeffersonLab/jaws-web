@@ -134,14 +134,14 @@ function removeFromTable(keys) {
     }
 }
 
-function addAlarms(data) {
+function updateOrAddAlarms(data) {
 
     let keys = data.map(item => item.name);
 
     for(const record of data) {
         activeByName.set(record.name, record);
 
-        addToDiagram(record);
+        updateOrAddToDiagram(record);
     }
 
     //removeFromTable(keys);
@@ -203,7 +203,7 @@ evtSource.addEventListener('alarm', (e) => {
     }
 
     if (updateOrAdd.length > 0) {
-        addAlarms(updateOrAdd);
+        updateOrAddAlarms(updateOrAdd);
     }
 
     updateCount();
@@ -219,20 +219,31 @@ function updateCount() {
         alarmCountSpan.classList.remove("alarming");
     }
 }
-function addToDiagram(alarm) {
+function updateOrAddToDiagram(alarm) {
     const element = document.createElement("span"),
           id = "alarm-" + alarm.name.replaceAll(' ', ''),
+          existing = document.getElementById(id),
           locationCsv = alarm.location;
 
     element.setAttribute("id", id);
 
-    let locationArray = locationCsv.split(",");
+    let locationArray = [];
+
+    if(locationCsv === undefined) {
+        locationArray = ['JLAB']
+    } else {
+        locationArray = locationCsv.split(",");
+    }
 
     for(let l of locationArray) {
         const locElement = document.createElement("span");
         let locationClass = 'location-' + l.replaceAll(' ', '');
         locElement.classList.add(locationClass);
         element.append(locElement);
+    }
+
+    if(existing !== null) {
+        existing.remove();
     }
 
     diagramContainer.appendChild(element);
