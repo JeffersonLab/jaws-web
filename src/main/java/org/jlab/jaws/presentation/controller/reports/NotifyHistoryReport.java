@@ -147,6 +147,10 @@ public class NotifyHistoryReport extends HttpServlet {
 
     Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
+    Boolean filterable = null;
+    boolean alwaysIncludeUnregistered = false;
+    boolean alwaysIncludeUnfilterable = false;
+
     String selectionMessage =
         Notifications.createSelectionMessage(
             "Notifications",
@@ -161,9 +165,12 @@ public class NotifyHistoryReport extends HttpServlet {
             selectedPriority,
             selectedTeam,
             registered,
+            filterable,
             alarmName,
             actionName,
-            componentName);
+            componentName,
+            alwaysIncludeUnregistered,
+            alwaysIncludeUnfilterable);
 
     request.setAttribute("notificationList", notificationList);
     request.setAttribute("actionList", actionList);

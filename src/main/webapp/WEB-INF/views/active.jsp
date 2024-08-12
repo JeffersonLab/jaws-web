@@ -48,7 +48,12 @@
             <div id="diagram-container">
                 <img draggable="false" alt="machine" src="${pageContext.request.contextPath}/resources/img/accelerator.png"/>
             </div>
-            <a id="list-active-link" href="${pageContext.request.contextPath}/notifications${listActiveParams}">List Active</a>
+            <span id="link-bar">
+                List:
+                <a id="list-active-link" href="${pageContext.request.contextPath}/notifications${listActiveParams}">Active</a>
+                <span id="unregistered" class="initially-none"> | Unregistered <a href="${pageContext.request.contextPath}/notifications?state=Active&registered=N">(<span id="unregistered-count"></span>)</a></span>
+                <span id="unfilterable" class="initially-none"> | Unfilterable <a href="${pageContext.request.contextPath}/notifications?state=Active&filterable=N">(<span id="unfilterable-count"></span>)</a></span>
+            </span>
         </section>
         <div id="all-dialog" class="dialog" title="Active Alarms">
             <table id="alarm-table" class="data-table">

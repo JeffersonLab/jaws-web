@@ -262,9 +262,12 @@ $(document).on("click", ".default-clear-panel", function () {
     $("#priority-select").val('');
     $("#team-select").val('');
     $("#registered-select").val('');
+    $("#filterable-select").val('');
     $("#alarm-name").val('');
     $("#action-name").val('');
     $("#component-name").val('');
+    $("#always-include-unregistered").prop( "checked", false );
+    $("#always-include-unfilterable").prop( "checked", false );
     return false;
 });
 jlab.initDialog = function () {

@@ -2,6 +2,8 @@ const urlObject = new URL(self.location);
 const contextPath = '/' + urlObject.pathname.split('/')[1];
 
 const activeByName = new Map();
+const activeUnregistered = new Map();
+const activeUnfilterable = new Map();
 
 class EffectiveAlarm {
     constructor(name, priority, category, rationale, action, contact, filterable, latchable,
@@ -98,7 +100,11 @@ let table = document.getElementById("alarm-table"),
     thList = table.querySelectorAll("thead th"),
     columnStrList = [...thList.values()].map(th => th.textContent),
     alarmCountSpan = document.getElementById("alarm-count"),
-    diagramContainer = document.getElementById("diagram-container");
+    diagramContainer = document.getElementById("diagram-container"),
+    unregisteredCountSpan = document.getElementById("unregistered-count"),
+    unregisteredSpan = document.getElementById("unregistered"),
+    unfilterableCountSpan = document.getElementById("unfilterable-count"),
+    unfilterableSpan = document.getElementById("unfilterable");
 
 function addToTable(data) {
     for(const record of data) {
@@ -153,6 +159,8 @@ function removeAlarms(keys) {
 
     for(const name of keys) {
         activeByName.delete(name);
+        activeUnregistered.delete(name);
+        activeUnfilterable.delete(name);
 
         removeFromDiagram(name);
     }
@@ -196,8 +204,17 @@ evtSource.addEventListener('alarm', (e) => {
         } else {
             let inLocationSet = false;
 
-            if(jlab.materializedLocations.length === 0 || value.registration.location === undefined || value.registration.filterable === false) {
+            if(value.registration.location === undefined) {
+                // Unregistered
+                activeUnregistered.set(key, value);
                 inLocationSet = true;
+            } else if(value.registration.filterable === false) {
+                // Unfilterable
+                activeUnfilterable.set(key, value);
+                inLocationSet = true;
+            } else if(jlab.materializedLocations.length === 0) {
+                    // No filter applied
+                    inLocationSet = true;
             } else {
                 for(const l of value.registration.location) {
                     if(jlab.materializedLocations.includes(l)) {
@@ -232,6 +249,22 @@ function updateCount() {
         alarmCountSpan.classList.add("alarming");
     } else {
         alarmCountSpan.classList.remove("alarming");
+    }
+
+    unregisteredCountSpan.textContent = jlab.integerWithCommas(activeUnregistered.size);
+
+    if(activeUnregistered.size > 0) {
+        unregisteredSpan.classList.add("shown");
+    } else {
+        unregisteredSpan.classList.remove("shown");
+    }
+
+    unfilterableCountSpan.textContent = jlab.integerWithCommas(activeUnfilterable.size);
+
+    if(activeUnfilterable.size > 0) {
+        unfilterableSpan.classList.add("shown");
+    } else {
+        unfilterableSpan.classList.remove("shown");
     }
 }
 function updateOrAddToDiagram(alarm) {

@@ -22,10 +22,14 @@
 #loading .button-indicator {
     display: inline-block;
 }
+.initially-none,
 #alarm-count {
     display: none;
 }
-#list-active-link {
+span.shown {
+    display: inline-block;
+}
+#link-bar {
     display: inline-block;
     width: 100%;
     text-align: center;

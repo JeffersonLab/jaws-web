@@ -238,7 +238,36 @@ public class NotificationFacade extends AbstractFacade<Notification> {
     return override;
   }
 
-  private List<Predicate> getFilters(
+  static class FilterPredicates {
+    public FilterPredicates(List<Predicate> andFilters, List<Predicate> orFilters) {
+      this.andFilters = andFilters;
+      this.orFilters = orFilters;
+    }
+
+    public List<Predicate> andFilters;
+    public List<Predicate> orFilters;
+
+    public Predicate getWhere(CriteriaBuilder cb) {
+      Predicate where = null;
+
+      if (!andFilters.isEmpty()) {
+
+        Predicate and = cb.and(andFilters.toArray(new Predicate[] {}));
+        Predicate or = null;
+
+        if (!orFilters.isEmpty()) {
+          or = cb.or(orFilters.toArray(new Predicate[] {}));
+          where = cb.or(or, and);
+        } else {
+          where = and;
+        }
+      }
+
+      return where;
+    }
+  }
+
+  private FilterPredicates getFilters(
       CriteriaBuilder cb,
       CriteriaQuery<? extends Object> cq,
       Root<Notification> root,
@@ -250,11 +279,15 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       BigInteger priorityId,
       BigInteger teamId,
       Boolean registered,
+      Boolean filterable,
       String alarmName,
       String actionName,
       String componentName,
+      boolean alwaysIncludeUnregistered,
+      boolean alwaysIncludeUnfilterable,
       Map<String, Join> joins) {
     List<Predicate> filters = new ArrayList<>();
+    List<Predicate> orFilters = new ArrayList<>();
 
     Join<Notification, Alarm> alarmJoin = root.join("alarm", JoinType.LEFT);
     Join<Alarm, Action> actionJoin = alarmJoin.join("action", JoinType.LEFT);
@@ -266,6 +299,18 @@ public class NotificationFacade extends AbstractFacade<Notification> {
 
     if (state != null) {
       filters.add(cb.equal(root.get("state"), state));
+
+      if("Active".equals(state.name())) {
+        Predicate isActive = cb.equal(root.get("state"), BinaryState.Active);
+
+        if (alwaysIncludeUnregistered) {
+          orFilters.add(cb.and(isActive, cb.isNull(actionJoin.get("priority"))));
+        }
+
+        if (alwaysIncludeUnfilterable) {
+          orFilters.add(cb.and(isActive,cb.equal(actionJoin.get("filterable"), false)));
+        }
+      }
     }
 
     if (overridden != null) {
@@ -338,7 +383,11 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       }
     }
 
-    return filters;
+    if (filterable != null) {
+      filters.add(cb.equal(actionJoin.get("filterable"), filterable));
+    }
+
+    return new FilterPredicates(filters, orFilters);
   }
 
   @PermitAll
@@ -351,9 +400,12 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       BigInteger priorityId,
       BigInteger teamId,
       Boolean registered,
+      Boolean filterable,
       String alarmName,
       String actionName,
       String componentName,
+      boolean alwaysIncludeUnregistered,
+      boolean alwaysIncludeUnfilterable,
       int offset,
       int max) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
@@ -363,7 +415,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
 
     Map<String, Join> joins = new HashMap<>();
 
-    List<Predicate> filters =
+    FilterPredicates filters =
         getFilters(
             cb,
             cq,
@@ -376,13 +428,18 @@ public class NotificationFacade extends AbstractFacade<Notification> {
             priorityId,
             teamId,
             registered,
+            filterable,
             alarmName,
             actionName,
             componentName,
+            alwaysIncludeUnregistered,
+            alwaysIncludeUnfilterable,
             joins);
 
-    if (!filters.isEmpty()) {
-      cq.where(cb.and(filters.toArray(new Predicate[] {})));
+    Predicate where = filters.getWhere(cb);
+
+    if (where != null) {
+      cq.where(where);
     }
 
     List<Order> orders = new ArrayList<>();
@@ -413,16 +470,19 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       BigInteger priorityId,
       BigInteger teamId,
       Boolean registered,
+      Boolean filterable,
       String alarmName,
       String actionName,
-      String componentName) {
+      String componentName,
+      boolean alwaysIncludeUnregistered,
+      boolean alwaysIncludeUnfilterable) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
     Root<Notification> root = cq.from(Notification.class);
 
     Map<String, Join> joins = new HashMap<>();
 
-    List<Predicate> filters =
+    FilterPredicates filters =
         getFilters(
             cb,
             cq,
@@ -435,13 +495,18 @@ public class NotificationFacade extends AbstractFacade<Notification> {
             priorityId,
             teamId,
             registered,
+            filterable,
             alarmName,
             actionName,
             componentName,
+            alwaysIncludeUnregistered,
+            alwaysIncludeUnfilterable,
             joins);
 
-    if (!filters.isEmpty()) {
-      cq.where(cb.and(filters.toArray(new Predicate[] {})));
+    Predicate where = filters.getWhere(cb);
+
+    if (where != null) {
+      cq.where(where);
     }
 
     cq.select(cb.count(root));

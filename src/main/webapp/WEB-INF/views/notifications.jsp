@@ -129,6 +129,18 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
+                                        <label for="filterable-select">Filterable</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="filterable-select" name="filterable">
+                                            <option value="">&nbsp;</option>
+                                            <option value="Y"${param.filterable eq 'Y' ? ' selected="selected"' : ''}>Yes</option>
+                                            <option value="N"${param.filterable eq 'N' ? ' selected="selected"' : ''}>No</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
                                         <label for="alarm-name">Alarm Name</label>
                                     </div>
                                     <div class="li-value">
@@ -158,6 +170,27 @@
                                                name="componentName" value="${fn:escapeXml(param.componentName)}"
                                                placeholder="component name"/>
                                         <div>(use % as wildcard)</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </fieldset>
+                        <fieldset>
+                            <legend>When Filtering by Active State</legend>
+                            <ul class="key-value-list">
+                                <li>
+                                    <div class="li-key">
+                                        <label for="always-include-unregistered">Always Include Unregistered</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <input type="checkbox" id="always-include-unregistered" name="alwaysIncludeUnregistered" value="Y" ${param.alwaysIncludeUnregistered eq 'Y' ? 'checked="checked"' : ''}>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
+                                        <label for="always-include-unfilterable">Always Include Unfilterable</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <input type="checkbox" id="always-include-unfilterable" name="alwaysIncludeUnfilterable" value="Y" ${param.alwaysIncludeUnfilterable eq 'Y' ? 'checked="checked"' : ''}>
                                     </div>
                                 </li>
                             </ul>

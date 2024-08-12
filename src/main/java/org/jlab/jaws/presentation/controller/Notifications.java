@@ -59,6 +59,11 @@ public class Notifications extends HttpServlet {
     String componentName = request.getParameter("componentName");
     BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
     Boolean registered = ParamConverter.convertYNBoolean(request, "registered");
+    Boolean filterable = ParamConverter.convertYNBoolean(request, "filterable");
+    boolean alwaysIncludeUnregistered =
+        ParamUtil.convertAndValidateYNBoolean(request, "alwaysIncludeUnregistered", false);
+    boolean alwaysIncludeUnfilterable =
+        ParamUtil.convertAndValidateYNBoolean(request, "alwaysIncludeUnfilterable", false);
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
 
@@ -72,9 +77,12 @@ public class Notifications extends HttpServlet {
             priorityId,
             teamId,
             registered,
+            filterable,
             alarmName,
             actionName,
             componentName,
+            alwaysIncludeUnregistered,
+            alwaysIncludeUnfilterable,
             offset,
             maxPerPage);
     List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
@@ -127,9 +135,12 @@ public class Notifications extends HttpServlet {
             priorityId,
             teamId,
             registered,
+            filterable,
             alarmName,
             actionName,
-            componentName);
+            componentName,
+            alwaysIncludeUnregistered,
+            alwaysIncludeUnfilterable);
 
     Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
@@ -147,9 +158,12 @@ public class Notifications extends HttpServlet {
             selectedPriority,
             selectedTeam,
             registered,
+            filterable,
             alarmName,
             actionName,
-            componentName);
+            componentName,
+            alwaysIncludeUnregistered,
+            alwaysIncludeUnfilterable);
 
     request.setAttribute("notificationList", notificationList);
     request.setAttribute("actionList", actionList);
@@ -203,9 +217,12 @@ public class Notifications extends HttpServlet {
       Priority priority,
       Team team,
       Boolean registered,
+      Boolean filterable,
       String alarmName,
       String actionName,
-      String componentName) {
+      String componentName,
+      boolean alwaysIncludeUnregistered,
+      boolean alwaysIncludeUnfilterable) {
     DecimalFormat formatter = new DecimalFormat("###,###");
 
     String selectionMessage = "All " + entityName + " ";
@@ -221,7 +238,18 @@ public class Notifications extends HttpServlet {
     }
 
     if (state != null) {
-      filters.add("State \"" + state + "\"");
+      String stateFilter = "State \"" + state + "\"";
+
+      if("Active".equals(state.name())) {
+        if (alwaysIncludeUnregistered) {
+          stateFilter = stateFilter + " (+Unregistered)";
+        }
+        if (alwaysIncludeUnfilterable) {
+          stateFilter = stateFilter + " (+Unfilterable)";
+        }
+
+        filters.add(stateFilter);
+      }
     }
 
     if (overridden != null) {
@@ -257,6 +285,10 @@ public class Notifications extends HttpServlet {
 
     if (registered != null) {
       filters.add("Registered \"" + (registered ? "Yes" : "No") + "\"");
+    }
+
+    if (filterable != null) {
+      filters.add("Filterable \"" + (filterable ? "Yes" : "No") + "\"");
     }
 
     if (alarmName != null && !alarmName.isBlank()) {
