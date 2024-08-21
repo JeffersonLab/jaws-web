@@ -42,18 +42,16 @@
                     <input id="filter-form-submit-button" type="submit" value="Apply"/>
                 </form>
             </s:filter-flyout-widget>
-            <h2 id="page-header-title"><c:out value="${title}"/><span class="status" id="alarm-count">0</span><span class="status" id="loading"><span class="button-indicator"></span> Loading...</span></h2>
+            <h2 id="page-header-title"><c:out value="${title}"/><span class="status" id="alarm-count"><a id="list-active-link" href="${pageContext.request.contextPath}/notifications${listActiveParams}">0</a></span><span class="status" id="loading"><span class="button-indicator"></span> Loading...</span></h2>
             <div id="liveness-heartbeat">Liveness Heartbeat: <span id="liveness-ts">None</span></div>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="diagram-container">
                 <img draggable="false" alt="site" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/img/site.png"/>
-                <span class="location-status" id="cebaf-count"><a href="#">0</a></span>
-                <span class="location-status" id="injector-count"><a href="#">0</a></span>
-                <span class="location-status" id="southlinac-count"><a href="#">0</a></span>
+                <span class="location-status" id="cebaf-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&locationId=1">0</a></span>
+                <span class="location-status" id="injector-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&locationId=5">0</a></span>
+                <span class="location-status" id="southlinac-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&locationId=7">0</a></span>
             </div>
             <span id="link-bar">
-                List:
-                <a id="list-active-link" href="${pageContext.request.contextPath}/notifications${listActiveParams}">Active</a>
                 <span id="unregistered" class="initially-none"> | Unregistered <a href="${pageContext.request.contextPath}/notifications?state=Active&registered=N">(<span id="unregistered-count"></span>)</a></span>
                 <span id="unfilterable" class="initially-none"> | Unfilterable <a href="${pageContext.request.contextPath}/notifications?state=Active&filterable=N">(<span id="unfilterable-count"></span>)</a></span>
             </span>

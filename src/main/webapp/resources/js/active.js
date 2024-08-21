@@ -280,7 +280,7 @@ evtSource.addEventListener('alarm', (e) => {
 function updateCount() {
     let count = activeByName.size;
 
-    alarmCountSpan.innerText = jlab.integerWithCommas(count);
+    alarmCountSpan.firstElementChild.innerText = jlab.integerWithCommas(count);
 
     if (count > 0) {
         alarmCountSpan.classList.add("alarming");
