@@ -46,7 +46,7 @@
             <div id="liveness-heartbeat">Liveness Heartbeat: <span id="liveness-ts">None</span></div>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="diagram-container">
-                <img draggable="false" alt="machine" src="${pageContext.request.contextPath}/resources/img/accelerator.png"/>
+                <img draggable="false" alt="site" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/img/site.png"/>
             </div>
             <span id="link-bar">
                 List:
