@@ -216,12 +216,16 @@ evtSource.addEventListener('alarm', (e) => {
                     // No filter applied
                     inLocationSet = true;
             } else {
+                //console.log('before', JSON.stringify(value.registration.location));
+                let effectiveLocation = [];
                 for(const l of value.registration.location) {
                     if(jlab.materializedLocations.includes(l)) {
                         inLocationSet = true;
-                        break;
+                        effectiveLocation.push(l);
                     }
                 }
+                value.registration.location = effectiveLocation;
+                //console.log('after', JSON.stringify(value.registration.location));
             }
 
             if(inLocationSet) {
