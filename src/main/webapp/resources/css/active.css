@@ -161,3 +161,29 @@ div#page {
     width: 56px;
     background: url("https://ace.jlab.org/workmap/resources/img/pss/GTS_red_line.png") no-repeat scroll 0 0 transparent;
 }
+.location-status {
+    display: none;
+    position: absolute;
+    background-color: red;
+    color: white;
+    border-radius: 24px;
+    padding: 2px 4px;
+}
+.location-status a {
+    color: white;
+}
+span.location-active {
+    display: block;
+}
+#cebaf-count {
+    top: 150px;
+    left: 1130px;
+}
+#injector-count {
+    top: 330px;
+    left: 270px;
+}
+#southlinac-count {
+    top: 725px;
+    left: 705px;
+}

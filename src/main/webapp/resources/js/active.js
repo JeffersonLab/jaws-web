@@ -1,9 +1,18 @@
 const urlObject = new URL(self.location);
 const contextPath = '/' + urlObject.pathname.split('/')[1];
 
+const activeByLocation = new Map();
 const activeByName = new Map();
 const activeUnregistered = new Map();
 const activeUnfilterable = new Map();
+
+const cebafTree = ['CEBAF', 'MCC', 'ESR', 'HallA', 'HallB', 'HallC', 'HallD'],
+      injTree = ['Injector', '1D', '2D', '3D', '4D', '5D'],
+      nlTree = ['North Linac', 'Linac1', 'Linac3', 'Linac5', 'Linac7', 'Linac9'],
+      slTree = ['South Linac', 'Linac2', 'Linac4', 'Linac6', 'Linac8'],
+      eaTree = ['East Arc', 'ARC1', 'ARC3', 'ARC5', 'ARC7', 'ARC9'],
+      waTree = ['West Arc', 'ARC2', 'ARC4', 'ARC6', 'ARC8', 'ARCA'],
+      bsyTree = ['BSY', 'BSY Dump', 'BSY2', 'BSY4', 'BSY6', 'BSY8', 'BSYA'];
 
 class EffectiveAlarm {
     constructor(name, priority, category, rationale, action, contact, filterable, latchable,
@@ -100,6 +109,9 @@ let table = document.getElementById("alarm-table"),
     thList = table.querySelectorAll("thead th"),
     columnStrList = [...thList.values()].map(th => th.textContent),
     alarmCountSpan = document.getElementById("alarm-count"),
+    cebafCountSpan = document.getElementById("cebaf-count"),
+    injectorCountSpan = document.getElementById("injector-count"),
+    southlinacCountSpan = document.getElementById("southlinac-count"),
     diagramContainer = document.getElementById("diagram-container"),
     unregisteredCountSpan = document.getElementById("unregistered-count"),
     unregisteredSpan = document.getElementById("unregistered"),
@@ -158,6 +170,27 @@ function updateOrAddAlarms(data) {
 function removeAlarms(keys) {
 
     for(const name of keys) {
+        let alarm = activeByName.get(name);
+
+
+        if(alarm !== undefined) {
+            let locationCsv = alarm.location;
+            let locationArray = [];
+
+            if (locationCsv === undefined) {
+                locationArray = ['JLAB']
+            } else {
+                locationArray = locationCsv.split(",");
+            }
+
+            for (let l of locationArray) {
+                let alarmSet = activeByLocation.get(l);
+                if (alarmSet !== undefined) {
+                    alarmSet.delete(name);
+                }
+            }
+        }
+
         activeByName.delete(name);
         activeUnregistered.delete(name);
         activeUnfilterable.delete(name);
@@ -174,7 +207,7 @@ evtSource.addEventListener('ping', (e) =>{
     let ts = e.data,
         formatted = new Date(ts);
 
-    livenessEl.innerHTML = formatted.toLocaleString();
+    livenessEl.innerHTML = formatted.toLocaleTimeString();
 });
 
 const loading = document.getElementById('loading');
@@ -249,7 +282,7 @@ function updateCount() {
 
     alarmCountSpan.innerText = jlab.integerWithCommas(count);
 
-    if(count > 0) {
+    if (count > 0) {
         alarmCountSpan.classList.add("alarming");
     } else {
         alarmCountSpan.classList.remove("alarming");
@@ -257,7 +290,7 @@ function updateCount() {
 
     unregisteredCountSpan.textContent = jlab.integerWithCommas(activeUnregistered.size);
 
-    if(activeUnregistered.size > 0) {
+    if (activeUnregistered.size > 0) {
         unregisteredSpan.classList.add("shown");
     } else {
         unregisteredSpan.classList.remove("shown");
@@ -265,12 +298,58 @@ function updateCount() {
 
     unfilterableCountSpan.textContent = jlab.integerWithCommas(activeUnfilterable.size);
 
-    if(activeUnfilterable.size > 0) {
+    if (activeUnfilterable.size > 0) {
         unfilterableSpan.classList.add("shown");
     } else {
         unfilterableSpan.classList.remove("shown");
     }
+
+    //console.log('activeByLocation', activeByLocation);
+
+    let injUnion = unionOfLocationTree(injTree);
+    let nlUnion = unionOfLocationTree(nlTree);
+    let slUnion = unionOfLocationTree(slTree);
+    let eaUnion = unionOfLocationTree(eaTree);
+    let waUnion = unionOfLocationTree(waTree);
+    let bsyUnion = unionOfLocationTree(bsyTree);
+
+    let cebafUnion = unionOfLocationTree(cebafTree);
+    cebafUnion = cebafUnion.union(injUnion);
+    cebafUnion = cebafUnion.union(nlUnion);
+    cebafUnion = cebafUnion.union(slUnion);
+    cebafUnion = cebafUnion.union(eaUnion);
+    cebafUnion = cebafUnion.union(waUnion);
+    cebafUnion = cebafUnion.union(bsyUnion);
+
+    //console.log('cebafUnion', cebafUnion);
+
+    cebafCountSpan.firstElementChild.innerText = jlab.integerWithCommas(cebafUnion.size);
+    injectorCountSpan.firstElementChild.innerText = jlab.integerWithCommas(injUnion.size);
+    southlinacCountSpan.firstElementChild.innerText = jlab.integerWithCommas(slUnion.size);
+
+    updateShown(cebafUnion, cebafCountSpan);
+    updateShown(injUnion, injectorCountSpan);
+    updateShown(slUnion, southlinacCountSpan);
 }
+function updateShown(locationUnion, span) {
+    if (locationUnion.size > 0) {
+        span.classList.add("location-active");
+    } else {
+        span.classList.remove("location-active");
+    }
+}
+function unionOfLocationTree(locationTree) {
+    let unionSet = new Set([]);
+    for (let l of locationTree) {
+        let locationSet = activeByLocation.get(l);
+        if(locationSet !== undefined) {
+            unionSet = unionSet.union(locationSet);
+        }
+    }
+
+    return unionSet;
+}
+
 function updateOrAddToDiagram(alarm) {
     const element = document.createElement("span"),
           id = "alarm-" + alarm.name.replaceAll(' ', ''),
@@ -288,6 +367,13 @@ function updateOrAddToDiagram(alarm) {
     }
 
     for(let l of locationArray) {
+        let alarmSet = activeByLocation.get(l);
+        if(alarmSet === undefined) {
+            alarmSet = new Set([]);
+            activeByLocation.set(l, alarmSet);
+        }
+        alarmSet.add(alarm.name);
+
         const locElement = document.createElement("span");
         let locationClass = 'location-' + l.replaceAll(' ', '');
         locElement.classList.add(locationClass);

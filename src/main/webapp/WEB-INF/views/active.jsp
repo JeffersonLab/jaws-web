@@ -47,6 +47,9 @@
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="diagram-container">
                 <img draggable="false" alt="site" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/img/site.png"/>
+                <span class="location-status" id="cebaf-count"><a href="#">0</a></span>
+                <span class="location-status" id="injector-count"><a href="#">0</a></span>
+                <span class="location-status" id="southlinac-count"><a href="#">0</a></span>
             </div>
             <span id="link-bar">
                 List:
