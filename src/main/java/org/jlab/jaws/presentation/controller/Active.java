@@ -9,7 +9,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.jlab.jaws.business.session.AbstractFacade;
 import org.jlab.jaws.business.session.ComponentFacade;
 import org.jlab.jaws.business.session.LocationFacade;
@@ -26,8 +25,7 @@ import org.jlab.smoothness.presentation.util.ParamConverter;
 public class Active extends HttpServlet {
 
   @EJB LocationFacade locationFacade;
-  @EJB
-  ComponentFacade componentFacade;
+  @EJB ComponentFacade componentFacade;
 
   /**
    * Handles the HTTP <code>GET</code> method.
@@ -82,7 +80,8 @@ public class Active extends HttpServlet {
 
     List<Location> locationList = locationFacade.findAll();
 
-    List<Component> componentList = componentFacade.findAll(new AbstractFacade.OrderDirective("name"));
+    List<Component> componentList =
+        componentFacade.findAll(new AbstractFacade.OrderDirective("name"));
 
     String selectionMessage = createSelectionMessage(selectedLocationList);
 
