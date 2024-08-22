@@ -204,3 +204,25 @@ span.location-active {
     top: 725px;
     left: 275px;
 }
+#category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 965px;
+    height: 212px;
+    position: absolute;
+    top: 69px;
+    left: 225px;
+    overflow: auto;
+}
+.category-status {
+    background-color: green;
+    padding: 0.2em;
+}
+.category-status a {
+    color: white;
+}
+.special-count {
+    background-color: red;
+    color: white;
+    padding: 0.2em;
+}

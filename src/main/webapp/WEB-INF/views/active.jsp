@@ -73,13 +73,18 @@
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="diagram-container">
                 <img draggable="false" alt="site" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/img/site.png"/>
+                <div id="category-grid">
+                    <c:forEach items="${categoryList}" var="category">
+                        <div id="category-div-${category.componentId}"><span class="category-status category-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&componentName=${category.name}">0</a></span> <c:out value="${category.name}"/></div>
+                    </c:forEach>
+                </div>
                 <c:forEach items="${locationList}" var="location">
                     <span class="location-status" id="location-count-${location.locationId}"><a href="${pageContext.request.contextPath}/notifications?state=Active&locationId=${location.locationId}">0</a></span>
                 </c:forEach>
             </div>
             <span id="link-bar">
-                <span id="unregistered" class="initially-none"> | Unregistered <a href="${pageContext.request.contextPath}/notifications?state=Active&registered=N">(<span id="unregistered-count"></span>)</a></span>
-                <span id="unfilterable" class="initially-none"> | Unfilterable <a href="${pageContext.request.contextPath}/notifications?state=Active&filterable=N">(<span id="unfilterable-count"></span>)</a></span>
+                <span id="unregistered" class="initially-none"><a href="${pageContext.request.contextPath}/notifications?state=Active&registered=N"><span class="special-count" id="unregistered-count"></span></a> Unregistered</span>
+                <span id="unfilterable" class="initially-none"><a href="${pageContext.request.contextPath}/notifications?state=Active&filterable=N"><span class="special-count" id="unfilterable-count"></span></a> Unfilterable</span>
             </span>
         </section>
         <div id="all-dialog" class="dialog" title="Active Alarms">
