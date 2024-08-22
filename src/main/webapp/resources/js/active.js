@@ -1,6 +1,8 @@
 const urlObject = new URL(self.location);
 const contextPath = '/' + urlObject.pathname.split('/')[1];
 
+const activeByLocation = new Map();
+const activeByCategory = new Map();
 const activeByName = new Map();
 const activeUnregistered = new Map();
 const activeUnfilterable = new Map();
@@ -147,7 +149,36 @@ function updateOrAddAlarms(data) {
     for(const record of data) {
         activeByName.set(record.name, record);
 
-        updateOrAddToDiagram(record);
+        let category = record.category;
+        if(category !== undefined) {
+            let alarmSet = activeByCategory.get(category);
+
+            if(alarmSet === undefined) {
+                alarmSet = new Set([]);
+                activeByCategory.set(category, alarmSet);
+            }
+            alarmSet.add(record.name);
+        }
+
+        let locationArray = [],
+            locationCsv = record.location;
+
+        if(locationCsv === undefined) {
+            locationArray = ['JLAB']
+        } else {
+            locationArray = locationCsv.split(",");
+        }
+
+        for(let l of locationArray) {
+            let alarmSet = activeByLocation.get(l);
+            if(alarmSet === undefined) {
+                alarmSet = new Set([]);
+                activeByLocation.set(l, alarmSet);
+            }
+            alarmSet.add(record.name);
+        }
+
+        //updateOrAddToDiagram(record);
     }
 
     //removeFromTable(keys);
@@ -158,11 +189,40 @@ function updateOrAddAlarms(data) {
 function removeAlarms(keys) {
 
     for(const name of keys) {
+        let alarm = activeByName.get(name);
+
+
+        if(alarm !== undefined) {
+            let category = alarm.category;
+            if(category !== undefined) {
+                let alarmSet = activeByCategory.get(category);
+                if(alarmSet !== undefined) {
+                    alarmSet.delete(name);
+                }
+            }
+
+            let locationCsv = alarm.location;
+            let locationArray = [];
+
+            if (locationCsv === undefined) {
+                locationArray = ['JLAB']
+            } else {
+                locationArray = locationCsv.split(",");
+            }
+
+            for (let l of locationArray) {
+                let alarmSet = activeByLocation.get(l);
+                if (alarmSet !== undefined) {
+                    alarmSet.delete(name);
+                }
+            }
+        }
+
         activeByName.delete(name);
         activeUnregistered.delete(name);
         activeUnfilterable.delete(name);
 
-        removeFromDiagram(name);
+        //removeFromDiagram(name);
     }
 
     //removeFromTable(keys);
@@ -174,7 +234,7 @@ evtSource.addEventListener('ping', (e) =>{
     let ts = e.data,
         formatted = new Date(ts);
 
-    livenessEl.innerHTML = formatted.toLocaleString();
+    livenessEl.innerHTML = formatted.toLocaleTimeString();
 });
 
 const loading = document.getElementById('loading');
@@ -244,12 +304,12 @@ evtSource.addEventListener('alarm', (e) => {
 
     updateCount();
 });
-function updateCount() {
+function updateSiteCount() {
     let count = activeByName.size;
 
-    alarmCountSpan.innerText = jlab.integerWithCommas(count);
+    alarmCountSpan.firstElementChild.innerText = jlab.integerWithCommas(count);
 
-    if(count > 0) {
+    if (count > 0) {
         alarmCountSpan.classList.add("alarming");
     } else {
         alarmCountSpan.classList.remove("alarming");
@@ -257,7 +317,7 @@ function updateCount() {
 
     unregisteredCountSpan.textContent = jlab.integerWithCommas(activeUnregistered.size);
 
-    if(activeUnregistered.size > 0) {
+    if (activeUnregistered.size > 0) {
         unregisteredSpan.classList.add("shown");
     } else {
         unregisteredSpan.classList.remove("shown");
@@ -265,12 +325,80 @@ function updateCount() {
 
     unfilterableCountSpan.textContent = jlab.integerWithCommas(activeUnfilterable.size);
 
-    if(activeUnfilterable.size > 0) {
+    if (activeUnfilterable.size > 0) {
         unfilterableSpan.classList.add("shown");
     } else {
         unfilterableSpan.classList.remove("shown");
     }
 }
+function updateLocationCount() {
+    let locationUnionMap = new Map();
+
+    for(let [id, loc] of jlab.visibleLocations) {
+        let locationUnion = unionOfLocationTree(loc.tree);
+
+        locationUnionMap.set(id, locationUnion);
+    }
+
+    /* BEGIN PERF OPTIMIZATION */
+    /* tree of CEBAF is intentionally missing many deps as they are aggregated here instead */
+    let cebafUnion = locationUnionMap.get(1);
+    cebafUnion = cebafUnion.union(locationUnionMap.get(5));
+    cebafUnion = cebafUnion.union(locationUnionMap.get(6));
+    cebafUnion = cebafUnion.union(locationUnionMap.get(7));
+    cebafUnion = cebafUnion.union(locationUnionMap.get(8));
+    cebafUnion = cebafUnion.union(locationUnionMap.get(9));
+    cebafUnion = cebafUnion.union(locationUnionMap.get(10));
+    locationUnionMap.set(1, cebafUnion);
+    /* END PERF OPTIMIZATION */
+
+    for(let [id, span] of jlab.locationCountSpanMap) {
+        let locationUnion = locationUnionMap.get(id);
+        span.firstElementChild.innerText = jlab.integerWithCommas(locationUnion.size);
+        updateShown(locationUnion, span);
+    }
+}
+function updateCategoryCount() {
+    for(let [name, id] of jlab.categoryNameIdMap) {
+        let div = jlab.categoryCountDivMap.get(id),
+            span = div.firstElementChild,
+            alarmArray = activeByCategory.get(name);
+
+        if(alarmArray !== undefined) {
+            span.firstElementChild.innerText = jlab.integerWithCommas(alarmArray.size)
+
+            if (alarmArray.size > 0) {
+                span.classList.add("category-active");
+            } else {
+                span.classList.remove("category-active");
+            }
+        }
+    }
+}
+function updateCount() {
+    updateSiteCount();
+    updateLocationCount();
+    updateCategoryCount();
+}
+function updateShown(locationUnion, span) {
+    if (locationUnion.size > 0) {
+        span.classList.add("location-active");
+    } else {
+        span.classList.remove("location-active");
+    }
+}
+function unionOfLocationTree(locationTree) {
+    let unionSet = new Set([]);
+    for (let l of locationTree) {
+        let locationSet = activeByLocation.get(l);
+        if(locationSet !== undefined) {
+            unionSet = unionSet.union(locationSet);
+        }
+    }
+
+    return unionSet;
+}
+
 function updateOrAddToDiagram(alarm) {
     const element = document.createElement("span"),
           id = "alarm-" + alarm.name.replaceAll(' ', ''),

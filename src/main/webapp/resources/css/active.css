@@ -161,3 +161,107 @@ div#page {
     width: 56px;
     background: url("https://ace.jlab.org/workmap/resources/img/pss/GTS_red_line.png") no-repeat scroll 0 0 transparent;
 }
+.location-status {
+    display: none;
+    position: absolute;
+    background-color: red;
+    color: white;
+    border-radius: 24px;
+    padding: 2px 4px;
+}
+.status a,
+.location-status a {
+    color: white;
+}
+span.location-active {
+    display: block;
+}
+#location-count-1 {
+    top: 845px;
+    left: 1135px;
+}
+#location-count-2 {
+    top: 560px;
+    left: 650px;
+}
+#location-count-3 {
+    top: 560px;
+    left: 885px;
+}
+#location-count-4 {
+    top: 90px;
+    left: 110px;
+}
+#location-count-5 {
+    top: 330px;
+    left: 270px;
+}
+#location-count-6 {
+    top: 334px;
+    left: 682px;
+}
+#location-count-7 {
+    top: 725px;
+    left: 705px;
+}
+#location-count-8 {
+    top: 525px;
+    left: 1125px;
+}
+#location-count-9 {
+    top: 525px;
+    left: 250px;
+}
+#location-count-10 {
+    top: 725px;
+    left: 275px;
+}
+#location-count-11 {
+    top: 565px;
+    left: 115px;
+}
+#location-count-12 {
+    top: 700px;
+    left: 75px;
+}
+#location-count-13 {
+    top: 825px;
+    left: 95px;
+}
+#location-count-14 {
+    top: 334px;
+    left: 1190px;
+}
+#location-count-45 {
+    top: 425px;
+    left: 570px;
+}
+#location-count-46 {
+    top: 610px;
+    left: 220px;
+}
+#category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 965px;
+    height: 212px;
+    position: absolute;
+    top: 69px;
+    left: 225px;
+    overflow: auto;
+}
+.category-status {
+    background-color: green;
+    padding: 0.2em;
+}
+.category-status a {
+    color: white;
+}
+span.category-active {
+    background-color: red;
+}
+.special-count {
+    background-color: red;
+    color: white;
+    padding: 0.2em;
+}

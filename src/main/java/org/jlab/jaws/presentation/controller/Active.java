@@ -9,7 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.jlab.jaws.business.session.AbstractFacade;
+import org.jlab.jaws.business.session.ComponentFacade;
 import org.jlab.jaws.business.session.LocationFacade;
+import org.jlab.jaws.persistence.entity.Component;
 import org.jlab.jaws.persistence.entity.Location;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 
@@ -22,6 +25,7 @@ import org.jlab.smoothness.presentation.util.ParamConverter;
 public class Active extends HttpServlet {
 
   @EJB LocationFacade locationFacade;
+  @EJB ComponentFacade componentFacade;
 
   /**
    * Handles the HTTP <code>GET</code> method.
@@ -74,12 +78,19 @@ public class Active extends HttpServlet {
 
     Location locationRoot = locationFacade.findBranch(Location.TREE_ROOT);
 
+    List<Location> locationList = locationFacade.findAll();
+
+    List<Component> componentList =
+        componentFacade.findAll(new AbstractFacade.OrderDirective("name"));
+
     String selectionMessage = createSelectionMessage(selectedLocationList);
 
     request.setAttribute("selectionMessage", selectionMessage);
     request.setAttribute("locationRoot", locationRoot);
+    request.setAttribute("locationList", locationList);
     request.setAttribute("materializedLocationsArrayStr", materializedLocationsArrayStr);
     request.setAttribute("listActiveParams", listActiveParams);
+    request.setAttribute("categoryList", componentList);
 
     request.getRequestDispatcher("/WEB-INF/views/active.jsp").forward(request, response);
   }

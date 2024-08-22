@@ -12,8 +12,46 @@
     <jsp:attribute name="scripts">
         <script>
             jlab.materializedLocations = ${materializedLocationsArrayStr};
+
+            jlab.visibleLocations = new Map([
+                [1, {name: 'CEBAF', tree: ['CEBAF', 'MCC', 'ESR', 'HallA', 'HallB', 'HallC', 'HallD']}],
+                [2, {name: 'CHL', tree: ['CHL']}],
+                [3, {name: 'LERF', tree: ['LERF']}],
+                [4, {name: 'UITF', tree: ['UITF']}],
+                [5, {name: 'Injector', tree: ['Injector', '1D', '2D', '3D', '4D', '5D']}],
+                [6, {name: 'North Linac', tree: ['North Linac', 'Linac1', 'Linac3', 'Linac5', 'Linac7', 'Linac9']}],
+                [7, {name: 'South Linac', tree: ['South Linac', 'Linac2', 'Linac4', 'Linac6', 'Linac8']}],
+                [8, {name: 'East Arc', tree: ['East Arc', 'ARC1', 'ARC3', 'ARC5', 'ARC7', 'ARC9']}],
+                [9, {name: 'West Arc', tree: ['West Arc', 'ARC2', 'ARC4', 'ARC6', 'ARC8', 'ARCA']}],
+                [10, {name: 'BSY', tree: ['BSY', 'BSY Dump', 'BSY2', 'BSY4', 'BSY6', 'BSY8', 'BSYA']}],
+                [11, {name: 'HallA', tree: ['HallA']}],
+                [12, {name: 'HallB', tree: ['HallB']}],
+                [13, {name: 'HallC', tree: ['HallC']}],
+                [14, {name: 'HallD', tree: ['HallD']}],
+                [45, {name: 'MCC', tree: ['MCC']}],
+                [46, {name: 'ESR', tree: ['ESR']}]
+            ]);
+
+            jlab.locationCountSpanMap = new Map();
+
+            for(let id of jlab.visibleLocations.keys()) {
+                jlab.locationCountSpanMap.set(id, document.getElementById("location-count-" + id));
+            }
+
+            jlab.categoryNameIdMap = new Map([
+                <c:forEach items="${categoryList}" var="category">
+                ['${fn:escapeXml(category.name)}',${category.componentId}],
+                </c:forEach>
+            ]);
+
+            jlab.categoryCountDivMap = new Map();
+
+            for(let id of jlab.categoryNameIdMap.values()) {
+                jlab.categoryCountDivMap.set(id, document.getElementById("category-count-" + id));
+            }
         </script>
-        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/active.js"></script>
+        <script type="text/javascript"
+                src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/active.js"></script>
     </jsp:attribute>
     <jsp:body>
         <section>
@@ -42,17 +80,23 @@
                     <input id="filter-form-submit-button" type="submit" value="Apply"/>
                 </form>
             </s:filter-flyout-widget>
-            <h2 id="page-header-title"><c:out value="${title}"/><span class="status" id="alarm-count">0</span><span class="status" id="loading"><span class="button-indicator"></span> Loading...</span></h2>
+            <h2 id="page-header-title"><c:out value="${title}"/><span class="status" id="alarm-count"><a id="list-active-link" href="${pageContext.request.contextPath}/notifications${listActiveParams}">0</a></span><span class="status" id="loading"><span class="button-indicator"></span> Loading...</span></h2>
             <div id="liveness-heartbeat">Liveness Heartbeat: <span id="liveness-ts">None</span></div>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="diagram-container">
                 <img draggable="false" alt="site" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/img/site.png"/>
+                <div id="category-grid">
+                    <c:forEach items="${categoryList}" var="category">
+                        <div id="category-count-${category.componentId}"><span class="category-status category-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&componentName=${category.name}">0</a></span> <c:out value="${category.name}"/></div>
+                    </c:forEach>
+                </div>
+                <c:forEach items="${locationList}" var="location">
+                    <span class="location-status" id="location-count-${location.locationId}"><a href="${pageContext.request.contextPath}/notifications?state=Active&locationId=${location.locationId}">0</a></span>
+                </c:forEach>
             </div>
             <span id="link-bar">
-                List:
-                <a id="list-active-link" href="${pageContext.request.contextPath}/notifications${listActiveParams}">Active</a>
-                <span id="unregistered" class="initially-none"> | Unregistered <a href="${pageContext.request.contextPath}/notifications?state=Active&registered=N">(<span id="unregistered-count"></span>)</a></span>
-                <span id="unfilterable" class="initially-none"> | Unfilterable <a href="${pageContext.request.contextPath}/notifications?state=Active&filterable=N">(<span id="unfilterable-count"></span>)</a></span>
+                <span id="unregistered" class="initially-none"><a href="${pageContext.request.contextPath}/notifications?state=Active&registered=N"><span class="special-count" id="unregistered-count"></span></a> Unregistered</span>
+                <span id="unfilterable" class="initially-none"><a href="${pageContext.request.contextPath}/notifications?state=Active&filterable=N"><span class="special-count" id="unfilterable-count"></span></a> Unfilterable</span>
             </span>
         </section>
         <div id="all-dialog" class="dialog" title="Active Alarms">
