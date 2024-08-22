@@ -257,6 +257,9 @@ span.location-active {
 .category-status a {
     color: white;
 }
+span.category-active {
+    background-color: red;
+}
 .special-count {
     background-color: red;
     color: white;

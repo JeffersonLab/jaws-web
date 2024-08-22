@@ -2,6 +2,7 @@ const urlObject = new URL(self.location);
 const contextPath = '/' + urlObject.pathname.split('/')[1];
 
 const activeByLocation = new Map();
+const activeByCategory = new Map();
 const activeByName = new Map();
 const activeUnregistered = new Map();
 const activeUnfilterable = new Map();
@@ -148,6 +149,17 @@ function updateOrAddAlarms(data) {
     for(const record of data) {
         activeByName.set(record.name, record);
 
+        let category = record.category;
+        if(category !== undefined) {
+            let alarmSet = activeByCategory.get(category);
+
+            if(alarmSet === undefined) {
+                alarmSet = new Set([]);
+                activeByCategory.set(category, alarmSet);
+            }
+            alarmSet.add(record.name);
+        }
+
         let locationArray = [],
             locationCsv = record.location;
 
@@ -181,6 +193,14 @@ function removeAlarms(keys) {
 
 
         if(alarm !== undefined) {
+            let category = alarm.category;
+            if(category !== undefined) {
+                let alarmSet = activeByCategory.get(category);
+                if(alarmSet !== undefined) {
+                    alarmSet.delete(name);
+                }
+            }
+
             let locationCsv = alarm.location;
             let locationArray = [];
 
@@ -284,7 +304,7 @@ evtSource.addEventListener('alarm', (e) => {
 
     updateCount();
 });
-function updateCount() {
+function updateSiteCount() {
     let count = activeByName.size;
 
     alarmCountSpan.firstElementChild.innerText = jlab.integerWithCommas(count);
@@ -310,9 +330,8 @@ function updateCount() {
     } else {
         unfilterableSpan.classList.remove("shown");
     }
-
-    //console.log('activeByLocation', activeByLocation);
-
+}
+function updateLocationCount() {
     let locationUnionMap = new Map();
 
     for(let [id, loc] of jlab.visibleLocations) {
@@ -338,6 +357,28 @@ function updateCount() {
         span.firstElementChild.innerText = jlab.integerWithCommas(locationUnion.size);
         updateShown(locationUnion, span);
     }
+}
+function updateCategoryCount() {
+    for(let [name, id] of jlab.categoryNameIdMap) {
+        let div = jlab.categoryCountDivMap.get(id),
+            span = div.firstElementChild,
+            alarmArray = activeByCategory.get(name);
+
+        if(alarmArray !== undefined) {
+            span.firstElementChild.innerText = jlab.integerWithCommas(alarmArray.size)
+
+            if (alarmArray.size > 0) {
+                span.classList.add("category-active");
+            } else {
+                span.classList.remove("category-active");
+            }
+        }
+    }
+}
+function updateCount() {
+    updateSiteCount();
+    updateLocationCount();
+    updateCategoryCount();
 }
 function updateShown(locationUnion, span) {
     if (locationUnion.size > 0) {

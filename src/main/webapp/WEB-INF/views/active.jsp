@@ -37,6 +37,18 @@
             for(let id of jlab.visibleLocations.keys()) {
                 jlab.locationCountSpanMap.set(id, document.getElementById("location-count-" + id));
             }
+
+            jlab.categoryNameIdMap = new Map([
+                <c:forEach items="${categoryList}" var="category">
+                ['${fn:escapeXml(category.name)}',${category.componentId}],
+                </c:forEach>
+            ]);
+
+            jlab.categoryCountDivMap = new Map();
+
+            for(let id of jlab.categoryNameIdMap.values()) {
+                jlab.categoryCountDivMap.set(id, document.getElementById("category-count-" + id));
+            }
         </script>
         <script type="text/javascript"
                 src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/active.js"></script>
@@ -75,7 +87,7 @@
                 <img draggable="false" alt="site" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/img/site.png"/>
                 <div id="category-grid">
                     <c:forEach items="${categoryList}" var="category">
-                        <div id="category-div-${category.componentId}"><span class="category-status category-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&componentName=${category.name}">0</a></span> <c:out value="${category.name}"/></div>
+                        <div id="category-count-${category.componentId}"><span class="category-status category-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&componentName=${category.name}">0</a></span> <c:out value="${category.name}"/></div>
                     </c:forEach>
                 </div>
                 <c:forEach items="${locationList}" var="location">
