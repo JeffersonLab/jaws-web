@@ -12,8 +12,34 @@
     <jsp:attribute name="scripts">
         <script>
             jlab.materializedLocations = ${materializedLocationsArrayStr};
+
+            jlab.visibleLocations = new Map([
+                [1, {name: 'CEBAF', tree: ['CEBAF', 'MCC', 'ESR', 'HallA', 'HallB', 'HallC', 'HallD']}],
+                [2, {name: 'CHL', tree: ['CHL']}],
+                [3, {name: 'LERF', tree: ['LERF']}],
+                [4, {name: 'UITF', tree: ['UITF']}],
+                [5, {name: 'Injector', tree: ['Injector', '1D', '2D', '3D', '4D', '5D']}],
+                [6, {name: 'North Linac', tree: ['North Linac', 'Linac1', 'Linac3', 'Linac5', 'Linac7', 'Linac9']}],
+                [7, {name: 'South Linac', tree: ['South Linac', 'Linac2', 'Linac4', 'Linac6', 'Linac8']}],
+                [8, {name: 'East Arc', tree: ['East Arc', 'ARC1', 'ARC3', 'ARC5', 'ARC7', 'ARC9']}],
+                [9, {name: 'West Arc', tree: ['West Arc', 'ARC2', 'ARC4', 'ARC6', 'ARC8', 'ARCA']}],
+                [10, {name: 'BSY', tree: ['BSY', 'BSY Dump', 'BSY2', 'BSY4', 'BSY6', 'BSY8', 'BSYA']}],
+                [11, {name: 'HallA', tree: ['HallA']}],
+                [12, {name: 'HallB', tree: ['HallB']}],
+                [13, {name: 'HallC', tree: ['HallC']}],
+                [14, {name: 'HallD', tree: ['HallD']}],
+                [45, {name: 'MCC', tree: ['MCC']}],
+                [46, {name: 'ESR', tree: ['ESR']}]
+            ]);
+
+            jlab.locationCountSpanMap = new Map();
+
+            for(let id of jlab.visibleLocations.keys()) {
+                jlab.locationCountSpanMap.set(id, document.getElementById("location-count-" + id));
+            }
         </script>
-        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/active.js"></script>
+        <script type="text/javascript"
+                src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/active.js"></script>
     </jsp:attribute>
     <jsp:body>
         <section>
@@ -47,9 +73,9 @@
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="diagram-container">
                 <img draggable="false" alt="site" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/img/site.png"/>
-                <span class="location-status" id="cebaf-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&locationId=1">0</a></span>
-                <span class="location-status" id="injector-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&locationId=5">0</a></span>
-                <span class="location-status" id="southlinac-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&locationId=7">0</a></span>
+                <c:forEach items="${locationList}" var="location">
+                    <span class="location-status" id="location-count-${location.locationId}"><a href="${pageContext.request.contextPath}/notifications?state=Active&locationId=${location.locationId}">0</a></span>
+                </c:forEach>
             </div>
             <span id="link-bar">
                 <span id="unregistered" class="initially-none"> | Unregistered <a href="${pageContext.request.contextPath}/notifications?state=Active&registered=N">(<span id="unregistered-count"></span>)</a></span>

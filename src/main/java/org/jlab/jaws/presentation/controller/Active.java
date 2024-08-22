@@ -74,10 +74,13 @@ public class Active extends HttpServlet {
 
     Location locationRoot = locationFacade.findBranch(Location.TREE_ROOT);
 
+    List<Location> locationList = locationFacade.findAll();
+
     String selectionMessage = createSelectionMessage(selectedLocationList);
 
     request.setAttribute("selectionMessage", selectionMessage);
     request.setAttribute("locationRoot", locationRoot);
+    request.setAttribute("locationList", locationList);
     request.setAttribute("materializedLocationsArrayStr", materializedLocationsArrayStr);
     request.setAttribute("listActiveParams", listActiveParams);
 

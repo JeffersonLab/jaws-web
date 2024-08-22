@@ -176,15 +176,31 @@ div#page {
 span.location-active {
     display: block;
 }
-#cebaf-count {
-    top: 150px;
-    left: 1130px;
+#location-count-1 {
+    top: 845px;
+    left: 1135px;
 }
-#injector-count {
+#location-count-5 {
     top: 330px;
     left: 270px;
 }
-#southlinac-count {
+#location-count-6 {
+    top: 334px;
+    left: 682px;
+}
+#location-count-7 {
     top: 725px;
     left: 705px;
+}
+#location-count-8 {
+    top: 525px;
+    left: 1125px;
+}
+#location-count-9 {
+    top: 525px;
+    left: 250px;
+}
+#location-count-10 {
+    top: 725px;
+    left: 275px;
 }

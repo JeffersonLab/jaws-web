@@ -6,14 +6,6 @@ const activeByName = new Map();
 const activeUnregistered = new Map();
 const activeUnfilterable = new Map();
 
-const cebafTree = ['CEBAF', 'MCC', 'ESR', 'HallA', 'HallB', 'HallC', 'HallD'],
-      injTree = ['Injector', '1D', '2D', '3D', '4D', '5D'],
-      nlTree = ['North Linac', 'Linac1', 'Linac3', 'Linac5', 'Linac7', 'Linac9'],
-      slTree = ['South Linac', 'Linac2', 'Linac4', 'Linac6', 'Linac8'],
-      eaTree = ['East Arc', 'ARC1', 'ARC3', 'ARC5', 'ARC7', 'ARC9'],
-      waTree = ['West Arc', 'ARC2', 'ARC4', 'ARC6', 'ARC8', 'ARCA'],
-      bsyTree = ['BSY', 'BSY Dump', 'BSY2', 'BSY4', 'BSY6', 'BSY8', 'BSYA'];
-
 class EffectiveAlarm {
     constructor(name, priority, category, rationale, action, contact, filterable, latchable,
                 ondelay, offdelay, alarmclass, device, location, maskedby, screencommand, epicspv, state,
@@ -109,9 +101,6 @@ let table = document.getElementById("alarm-table"),
     thList = table.querySelectorAll("thead th"),
     columnStrList = [...thList.values()].map(th => th.textContent),
     alarmCountSpan = document.getElementById("alarm-count"),
-    cebafCountSpan = document.getElementById("cebaf-count"),
-    injectorCountSpan = document.getElementById("injector-count"),
-    southlinacCountSpan = document.getElementById("southlinac-count"),
     diagramContainer = document.getElementById("diagram-container"),
     unregisteredCountSpan = document.getElementById("unregistered-count"),
     unregisteredSpan = document.getElementById("unregistered"),
@@ -159,7 +148,25 @@ function updateOrAddAlarms(data) {
     for(const record of data) {
         activeByName.set(record.name, record);
 
-        updateOrAddToDiagram(record);
+        let locationArray = [],
+            locationCsv = record.location;
+
+        if(locationCsv === undefined) {
+            locationArray = ['JLAB']
+        } else {
+            locationArray = locationCsv.split(",");
+        }
+
+        for(let l of locationArray) {
+            let alarmSet = activeByLocation.get(l);
+            if(alarmSet === undefined) {
+                alarmSet = new Set([]);
+                activeByLocation.set(l, alarmSet);
+            }
+            alarmSet.add(record.name);
+        }
+
+        //updateOrAddToDiagram(record);
     }
 
     //removeFromTable(keys);
@@ -195,7 +202,7 @@ function removeAlarms(keys) {
         activeUnregistered.delete(name);
         activeUnfilterable.delete(name);
 
-        removeFromDiagram(name);
+        //removeFromDiagram(name);
     }
 
     //removeFromTable(keys);
@@ -306,30 +313,31 @@ function updateCount() {
 
     //console.log('activeByLocation', activeByLocation);
 
-    let injUnion = unionOfLocationTree(injTree);
-    let nlUnion = unionOfLocationTree(nlTree);
-    let slUnion = unionOfLocationTree(slTree);
-    let eaUnion = unionOfLocationTree(eaTree);
-    let waUnion = unionOfLocationTree(waTree);
-    let bsyUnion = unionOfLocationTree(bsyTree);
+    let locationUnionMap = new Map();
 
-    let cebafUnion = unionOfLocationTree(cebafTree);
-    cebafUnion = cebafUnion.union(injUnion);
-    cebafUnion = cebafUnion.union(nlUnion);
-    cebafUnion = cebafUnion.union(slUnion);
-    cebafUnion = cebafUnion.union(eaUnion);
-    cebafUnion = cebafUnion.union(waUnion);
-    cebafUnion = cebafUnion.union(bsyUnion);
+    for(let [id, loc] of jlab.visibleLocations) {
+        let locationUnion = unionOfLocationTree(loc.tree);
 
-    //console.log('cebafUnion', cebafUnion);
+        locationUnionMap.set(id, locationUnion);
+    }
 
-    cebafCountSpan.firstElementChild.innerText = jlab.integerWithCommas(cebafUnion.size);
-    injectorCountSpan.firstElementChild.innerText = jlab.integerWithCommas(injUnion.size);
-    southlinacCountSpan.firstElementChild.innerText = jlab.integerWithCommas(slUnion.size);
+    /* BEGIN PERF OPTIMIZATION */
+    /* tree of CEBAF is intentionally missing many deps as they are aggregated here instead */
+    let cebafUnion = locationUnionMap.get(1);
+    cebafUnion = cebafUnion.union(locationUnionMap.get(5));
+    cebafUnion = cebafUnion.union(locationUnionMap.get(6));
+    cebafUnion = cebafUnion.union(locationUnionMap.get(7));
+    cebafUnion = cebafUnion.union(locationUnionMap.get(8));
+    cebafUnion = cebafUnion.union(locationUnionMap.get(9));
+    cebafUnion = cebafUnion.union(locationUnionMap.get(10));
+    locationUnionMap.set(1, cebafUnion);
+    /* END PERF OPTIMIZATION */
 
-    updateShown(cebafUnion, cebafCountSpan);
-    updateShown(injUnion, injectorCountSpan);
-    updateShown(slUnion, southlinacCountSpan);
+    for(let [id, span] of jlab.locationCountSpanMap) {
+        let locationUnion = locationUnionMap.get(id);
+        span.firstElementChild.innerText = jlab.integerWithCommas(locationUnion.size);
+        updateShown(locationUnion, span);
+    }
 }
 function updateShown(locationUnion, span) {
     if (locationUnion.size > 0) {
@@ -367,13 +375,6 @@ function updateOrAddToDiagram(alarm) {
     }
 
     for(let l of locationArray) {
-        let alarmSet = activeByLocation.get(l);
-        if(alarmSet === undefined) {
-            alarmSet = new Set([]);
-            activeByLocation.set(l, alarmSet);
-        }
-        alarmSet.add(alarm.name);
-
         const locElement = document.createElement("span");
         let locationClass = 'location-' + l.replaceAll(' ', '');
         locElement.classList.add(locationClass);
