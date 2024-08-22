@@ -180,6 +180,18 @@ span.location-active {
     top: 845px;
     left: 1135px;
 }
+#location-count-2 {
+    top: 560px;
+    left: 650px;
+}
+#location-count-3 {
+    top: 560px;
+    left: 885px;
+}
+#location-count-4 {
+    top: 90px;
+    left: 110px;
+}
 #location-count-5 {
     top: 330px;
     left: 270px;
@@ -203,6 +215,30 @@ span.location-active {
 #location-count-10 {
     top: 725px;
     left: 275px;
+}
+#location-count-11 {
+    top: 565px;
+    left: 115px;
+}
+#location-count-12 {
+    top: 700px;
+    left: 75px;
+}
+#location-count-13 {
+    top: 825px;
+    left: 95px;
+}
+#location-count-14 {
+    top: 334px;
+    left: 1190px;
+}
+#location-count-45 {
+    top: 425px;
+    left: 570px;
+}
+#location-count-46 {
+    top: 610px;
+    left: 220px;
 }
 #category-grid {
     display: grid;
