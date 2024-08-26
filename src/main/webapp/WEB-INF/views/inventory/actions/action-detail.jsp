@@ -26,7 +26,7 @@
         <section>
             <div class="dialog-content">
                 <div class="dialog-links">
-                    <c:url value="/inventory/actions/${jaws:urlEncode(param.name)}" var="url">
+                    <c:url value="/inventory/actions/${jaws:urlEncodePath(param.name)}" var="url">
                     </c:url>
                     <a class="dialog-only-link" href="${url}">Link</a>
                     <c:set var="editable" value="${pageContext.request.isUserInRole('jaws-admin')}"/>

@@ -1,8 +1,6 @@
 package org.jlab.jaws.presentation.util;
 
-import java.net.InetAddress;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 public class TagFunctions {
@@ -11,8 +9,12 @@ public class TagFunctions {
     // cannot instantiate publicly
   }
 
-  public static String urlEncode(String value) {
+  public static String urlEncodeParam(String value) {
     return URLEncoder.encode(value, StandardCharsets.UTF_8);
+  }
+
+  public static String urlEncodePath(String value) throws URISyntaxException {
+    return new URI(null, value, null).toASCIIString();
   }
 
   public static String addS(int x) {

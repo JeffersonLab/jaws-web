@@ -130,7 +130,7 @@
                                         <c:forEach items="${alarmList}" var="alarm">
                                             <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}">
                                                 <td>
-                                                    <c:url value="/inventory/alarms/${jaws:urlEncode(alarm.name)}" var="url">
+                                                    <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}" var="url">
                                                     </c:url>
                                                     <a title="Alarm Information" class="dialog-ready"
                                                        data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"

@@ -11,9 +11,14 @@
     <uri>http://jlab.org/jaws/functions</uri>
 
     <function>
-        <name>urlEncode</name>
+        <name>urlEncodeParam</name>
         <function-class>org.jlab.jaws.presentation.util.TagFunctions</function-class>
-        <function-signature>java.lang.String urlEncode(java.lang.String)</function-signature>
+        <function-signature>java.lang.String urlEncodeParam(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>urlEncodePath</name>
+        <function-class>org.jlab.jaws.presentation.util.TagFunctions</function-class>
+        <function-signature>java.lang.String urlEncodePath(java.lang.String)</function-signature>
     </function>
     <function>
         <name>millisToHumanReadable</name>
