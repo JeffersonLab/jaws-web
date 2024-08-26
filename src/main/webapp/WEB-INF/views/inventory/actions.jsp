@@ -106,7 +106,7 @@
                                         <c:forEach items="${actionList}" var="action">
                                             <tr data-id="${action.actionId}" data-component-id="${action.component.componentId}" data-priority-id="${action.priority.priorityId}" data-corrective-action="${fn:escapeXml(action.correctiveAction)}" data-rationale="${fn:escapeXml(action.rationale)}"  data-filterable="${action.filterable}" data-latchable="${action.latchable}" data-ondelay="${action.onDelaySeconds}" data-offdelay="${action.offDelaySeconds}">
                                                 <td>
-                                                    <c:url value="/inventory/actions/${jaws:urlEncode(action.name)}" var="url">
+                                                    <c:url value="/inventory/actions/${jaws:urlEncodePath(action.name)}" var="url">
                                                     </c:url>
                                                     <a title="Action Information" class="dialog-ready"
                                                        data-dialog-title="Action Information: ${fn:escapeXml(action.name)}"

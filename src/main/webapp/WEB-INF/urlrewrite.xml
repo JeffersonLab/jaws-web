@@ -16,7 +16,7 @@
     </rule>
     <rule>
         <from>^/inventory/alarms/(.*)$</from>
-        <to>/inventory/alarm-detail?name=$1</to>
+        <to>/inventory/alarm-detail?name=${escape:${unescapePath:$1}}</to>
     </rule>
     <rule>
         <from>^/inventory/actions/(.*)$</from>

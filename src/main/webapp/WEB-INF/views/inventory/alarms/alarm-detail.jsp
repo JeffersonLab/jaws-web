@@ -27,7 +27,7 @@
         <section>
             <div class="dialog-content">
                 <div class="dialog-links">
-                    <c:url value="/inventory/alarms/${jaws:urlEncode(param.name)}" var="url">
+                    <c:url value="/inventory/alarms/${jaws:urlEncodePath(param.name)}" var="url">
                     </c:url>
                     <a class="dialog-only-link"
                        href="${url}">Link</a>
@@ -122,7 +122,7 @@
                         <h3>Registration Details</h3>
                         <dl>
                             <dt>Taxonomy:</dt>
-                            <c:url var="url" value="/inventory/actions/${jaws:urlEncode(alarm.action.name)}">
+                            <c:url var="url" value="/inventory/actions/${jaws:urlEncodePath(alarm.action.name)}">
                             </c:url>
                             <dd>
                                 <c:out value="${alarm.action.component.team.name}"/> &gt;
