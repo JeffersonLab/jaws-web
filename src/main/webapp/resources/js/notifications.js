@@ -265,7 +265,7 @@ $(document).on("click", ".default-clear-panel", function () {
     $("#filterable-select").val('');
     $("#alarm-name").val('');
     $("#action-name").val('');
-    $("#component-name").val('');
+    $("#system-name").val('');
     $("#always-include-unregistered").prop( "checked", false );
     $("#always-include-unfilterable").prop( "checked", false );
     return false;
