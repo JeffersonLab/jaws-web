@@ -50,9 +50,9 @@ public class SSE implements ServletContextListener {
         new Mixin(ChannelErrorActivation.class, ChannelErrorActivationMixin.class));
     ACTIVATION_MIXINS.add(new Mixin(NoActivation.class, NoActivationMixin.class));
 
-    CLASS_MIXINS.add(new Mixin(AlarmClass.class, AlarmClassMixin.class));
+    CLASS_MIXINS.add(new Mixin(AlarmAction.class, AlarmClassMixin.class));
 
-    INSTANCE_MIXINS.add(new Mixin(AlarmInstance.class, AlarmInstanceMixin.class));
+    INSTANCE_MIXINS.add(new Mixin(Alarm.class, AlarmInstanceMixin.class));
     INSTANCE_MIXINS.add(new Mixin(Source.class, SourceMixin.class));
     INSTANCE_MIXINS.add(new Mixin(EPICSSource.class, EPICSSourceMixin.class));
     INSTANCE_MIXINS.add(new Mixin(CALCSource.class, CALCSourceMixin.class));
@@ -219,9 +219,9 @@ public class SSE implements ServletContextListener {
 
             try (EffectiveAlarmConsumer alarmConsumer = new EffectiveAlarmConsumer(alarmProps);
                 ActivationConsumer activationConsumer = new ActivationConsumer(activationProps);
-                CategoryConsumer categoryConsumer = new CategoryConsumer(categoryProps);
-                ClassConsumer classConsumer = new ClassConsumer(classProps);
-                InstanceConsumer instanceConsumer = new InstanceConsumer(instanceProps);
+                SystemConsumer categoryConsumer = new SystemConsumer(categoryProps);
+                ActionConsumer classConsumer = new ActionConsumer(classProps);
+                AlarmConsumer instanceConsumer = new AlarmConsumer(instanceProps);
                 LocationConsumer locationConsumer = new LocationConsumer(locationProps);
                 EffectiveNotificationConsumer notificationConsumer =
                     new EffectiveNotificationConsumer(notificationProps);

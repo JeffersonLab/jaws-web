@@ -16,7 +16,7 @@ public class ActiveHistory implements Serializable {
 
   @JoinColumn(name = "NAME", referencedColumnName = "NAME", updatable = false, insertable = false)
   @ManyToOne // This should be OneToOne, but doesn't work given name is an alternate key in Alarm
-  private Alarm alarm;
+  private AlarmEntity alarm;
 
   @Column(name = "ACTIVE_END", nullable = true)
   @Temporal(TemporalType.TIMESTAMP)
@@ -55,11 +55,11 @@ public class ActiveHistory implements Serializable {
     this.activeHistoryPK = activeHistoryPK;
   }
 
-  public Alarm getAlarm() {
+  public AlarmEntity getAlarm() {
     return alarm;
   }
 
-  public void setAlarm(Alarm alarm) {
+  public void setAlarm(AlarmEntity alarm) {
     this.alarm = alarm;
   }
 

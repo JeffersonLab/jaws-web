@@ -55,8 +55,8 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
       Map<String, Join> joins) {
     List<Predicate> filters = new ArrayList<>();
 
-    Join<NotificationHistory, Alarm> alarmJoin = root.join("alarm", JoinType.LEFT);
-    Join<Alarm, Action> actionJoin = alarmJoin.join("action", JoinType.LEFT);
+    Join<NotificationHistory, AlarmEntity> alarmJoin = root.join("alarm", JoinType.LEFT);
+    Join<AlarmEntity, Action> actionJoin = alarmJoin.join("action", JoinType.LEFT);
     Join<Action, Component> componentJoin = actionJoin.join("component", JoinType.LEFT);
 
     joins.put("alarm", alarmJoin);
@@ -110,7 +110,7 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
       if (!locationIdList.isEmpty()) {
         Subquery<BigInteger> subquery = cq.subquery(BigInteger.class);
         Root<Location> subqueryRoot = subquery.from(Location.class);
-        Join<Location, Alarm> alarmLocationJoin = subqueryRoot.join("alarmList");
+        Join<Location, AlarmEntity> alarmLocationJoin = subqueryRoot.join("alarmList");
         subquery.select(alarmLocationJoin.get("alarmId"));
         subquery.where(subqueryRoot.get("locationId").in(locationIdList));
         filters.add(cb.in(alarmJoin.get("alarmId")).value(subquery));

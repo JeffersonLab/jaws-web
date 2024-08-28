@@ -12,7 +12,7 @@ import org.jlab.jaws.business.util.KafkaConfig;
 import org.jlab.jaws.clients.LocationProducer;
 import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.entity.Action;
-import org.jlab.jaws.persistence.entity.Alarm;
+import org.jlab.jaws.persistence.entity.AlarmEntity;
 import org.jlab.jaws.persistence.entity.Component;
 import org.jlab.jaws.persistence.entity.Location;
 
@@ -78,7 +78,7 @@ public class KafkaRegistrationFacade {
   }
 
   private void populateAlarms() {
-    List<Alarm> alarmList = alarmFacade.findAll(new AbstractFacade.OrderDirective("name"));
+    List<AlarmEntity> alarmList = alarmFacade.findAll(new AbstractFacade.OrderDirective("name"));
 
     alarmFacade.kafkaSet(alarmList);
   }

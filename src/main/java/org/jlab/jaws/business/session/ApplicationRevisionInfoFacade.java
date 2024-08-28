@@ -13,7 +13,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import org.hibernate.envers.RevisionType;
 import org.jlab.jaws.persistence.entity.Action;
-import org.jlab.jaws.persistence.entity.Alarm;
+import org.jlab.jaws.persistence.entity.AlarmEntity;
 import org.jlab.jaws.persistence.entity.ApplicationRevisionInfo;
 import org.jlab.jaws.persistence.model.AuditedEntityChange;
 import org.jlab.smoothness.business.service.UserAuthorizationService;
@@ -141,7 +141,7 @@ public class ApplicationRevisionInfoFacade extends AbstractFacade<ApplicationRev
     if (c != null) {
       switch (c) {
         case 'A':
-          entityClass = Alarm.class;
+          entityClass = AlarmEntity.class;
           break;
         case 'B':
           entityClass = Action.class;

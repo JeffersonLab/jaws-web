@@ -18,8 +18,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import org.jlab.jaws.business.util.KafkaConfig;
-import org.jlab.jaws.clients.ClassProducer;
-import org.jlab.jaws.entity.AlarmClass;
+import org.jlab.jaws.clients.ActionProducer;
+import org.jlab.jaws.entity.AlarmAction;
 import org.jlab.jaws.entity.AlarmPriority;
 import org.jlab.jaws.persistence.entity.Action;
 import org.jlab.jaws.persistence.entity.Component;
@@ -411,11 +411,12 @@ public class ActionFacade extends AbstractFacade<Action> {
   @RolesAllowed("jaws-admin")
   public void kafkaSet(List<Action> actionList) {
     if (actionList != null) {
-      try (ClassProducer producer = new ClassProducer(KafkaConfig.getProducerPropsWithRegistry())) {
+      try (ActionProducer producer =
+          new ActionProducer(KafkaConfig.getProducerPropsWithRegistry())) {
         for (Action action : actionList) {
           String key = action.getName();
 
-          AlarmClass value = new AlarmClass();
+          AlarmAction value = new AlarmAction();
 
           value.setRationale(action.getRationale());
 
@@ -423,7 +424,7 @@ public class ActionFacade extends AbstractFacade<Action> {
           AlarmPriority ap = AlarmPriority.valueOf(priorityName);
           value.setPriority(ap);
 
-          value.setCategory(action.getComponent().getName());
+          value.setSystem(action.getComponent().getName());
           value.setCorrectiveaction(action.getCorrectiveAction());
           value.setFilterable(action.isFilterable());
           value.setLatchable(action.isLatchable());
@@ -449,7 +450,8 @@ public class ActionFacade extends AbstractFacade<Action> {
   @RolesAllowed("jaws-admin")
   public void kafkaUnset(List<String> list) {
     if (list != null) {
-      try (ClassProducer producer = new ClassProducer(KafkaConfig.getProducerPropsWithRegistry())) {
+      try (ActionProducer producer =
+          new ActionProducer(KafkaConfig.getProducerPropsWithRegistry())) {
         for (String name : list) {
           producer.send(name, null);
         }

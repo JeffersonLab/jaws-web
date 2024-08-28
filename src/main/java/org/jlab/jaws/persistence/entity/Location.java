@@ -47,7 +47,7 @@ public class Location implements Serializable, Node {
         @JoinColumn(name = "ALARM_ID", referencedColumnName = "ALARM_ID", nullable = false)
       })
   @ManyToMany
-  private List<Alarm> alarmList;
+  private List<AlarmEntity> alarmList;
 
   public BigInteger getLocationId() {
     return locationId;
@@ -99,11 +99,11 @@ public class Location implements Serializable, Node {
     this.childList = childList;
   }
 
-  public List<Alarm> getAlarmList() {
+  public List<AlarmEntity> getAlarmList() {
     return alarmList;
   }
 
-  public void setAlarmList(List<Alarm> alarmList) {
+  public void setAlarmList(List<AlarmEntity> alarmList) {
     this.alarmList = alarmList;
   }
 

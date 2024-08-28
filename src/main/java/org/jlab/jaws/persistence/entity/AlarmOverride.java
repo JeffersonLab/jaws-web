@@ -31,7 +31,7 @@ public class AlarmOverride implements Serializable, Comparable<AlarmOverride> {
 
   @JoinColumn(name = "NAME", referencedColumnName = "NAME", updatable = false, insertable = false)
   @ManyToOne // This should be OneToOne, but doesn't work given name is an alternate key in Alarm
-  private Alarm alarm;
+  private AlarmEntity alarm;
 
   public OverridePK getOverridePK() {
     return overridePK;
@@ -41,11 +41,11 @@ public class AlarmOverride implements Serializable, Comparable<AlarmOverride> {
     this.overridePK = overridePK;
   }
 
-  public Alarm getAlarm() {
+  public AlarmEntity getAlarm() {
     return alarm;
   }
 
-  public void setAlarm(Alarm alarm) {
+  public void setAlarm(AlarmEntity alarm) {
     this.alarm = alarm;
   }
 

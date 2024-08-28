@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jlab.jaws.business.session.AlarmFacade;
-import org.jlab.jaws.persistence.entity.Alarm;
+import org.jlab.jaws.persistence.entity.AlarmEntity;
 import org.jlab.jaws.persistence.entity.Location;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 import org.jlab.smoothness.presentation.util.ParamUtil;
@@ -45,7 +45,7 @@ public class ListAlarms extends HttpServlet {
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int max = ParamUtil.convertAndValidateNonNegativeInt(request, "max", Integer.MAX_VALUE);
 
-    List<Alarm> alarmList = null;
+    List<AlarmEntity> alarmList = null;
 
     String stat = "ok";
     String error = null;
@@ -78,7 +78,7 @@ public class ListAlarms extends HttpServlet {
         // response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       } else {
         gen.writeStartArray("list");
-        for (Alarm alarm : alarmList) {
+        for (AlarmEntity alarm : alarmList) {
           gen.writeStartObject();
           gen.write("name", alarm.getName());
           gen.write("id", alarm.getAlarmId());

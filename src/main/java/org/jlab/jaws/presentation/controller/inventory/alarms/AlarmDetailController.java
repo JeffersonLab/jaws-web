@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jlab.jaws.business.session.AlarmFacade;
 import org.jlab.jaws.business.session.NotificationFacade;
 import org.jlab.jaws.business.session.OverrideFacade;
-import org.jlab.jaws.persistence.entity.Alarm;
+import org.jlab.jaws.persistence.entity.AlarmEntity;
 import org.jlab.jaws.persistence.entity.AlarmOverride;
 import org.jlab.jaws.persistence.entity.Notification;
 import org.jlab.smoothness.presentation.util.ParamConverter;
@@ -42,7 +42,7 @@ public class AlarmDetailController extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    Alarm alarm = null;
+    AlarmEntity alarm = null;
 
     BigInteger alarmId = ParamConverter.convertBigInteger(request, "alarmId");
     String name = request.getParameter("name");

@@ -14,8 +14,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import org.jlab.jaws.business.util.KafkaConfig;
-import org.jlab.jaws.clients.CategoryProducer;
-import org.jlab.jaws.entity.AlarmCategory;
+import org.jlab.jaws.clients.SystemProducer;
+import org.jlab.jaws.entity.AlarmSystem;
 import org.jlab.jaws.persistence.entity.Component;
 import org.jlab.jaws.persistence.entity.Team;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
@@ -188,14 +188,14 @@ public class ComponentFacade extends AbstractFacade<Component> {
   @RolesAllowed("jaws-admin")
   public void kafkaSet(List<Component> componentList) {
     if (componentList != null) {
-      try (CategoryProducer producer =
-          new CategoryProducer(KafkaConfig.getProducerPropsWithRegistry())) {
+      try (SystemProducer producer =
+          new SystemProducer(KafkaConfig.getProducerPropsWithRegistry())) {
         for (Component component : componentList) {
           String key = component.getName();
 
           Team team = component.getTeam();
 
-          AlarmCategory value = new AlarmCategory(team.getName());
+          AlarmSystem value = new AlarmSystem(team.getName());
 
           producer.send(key, value);
         }
@@ -206,8 +206,8 @@ public class ComponentFacade extends AbstractFacade<Component> {
   @RolesAllowed("jaws-admin")
   public void kafkaUnset(List<String> list) {
     if (list != null) {
-      try (CategoryProducer producer =
-          new CategoryProducer(KafkaConfig.getProducerPropsWithRegistry())) {
+      try (SystemProducer producer =
+          new SystemProducer(KafkaConfig.getProducerPropsWithRegistry())) {
         for (String name : list) {
           producer.send(name, null);
         }

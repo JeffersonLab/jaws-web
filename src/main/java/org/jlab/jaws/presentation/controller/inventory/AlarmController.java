@@ -55,7 +55,7 @@ public class AlarmController extends HttpServlet {
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
 
-    List<Alarm> alarmList =
+    List<AlarmEntity> alarmList =
         alarmFacade.filterList(
             locationIdArray,
             priorityId,
