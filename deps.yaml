@@ -72,7 +72,7 @@ services:
   effective:
     hostname: effective
     container_name: effective
-    image: jeffersonlab/jaws-effective-processor:4.6.1
+    image: jeffersonlab/jaws-effective-processor:5.0.0
     healthcheck:
       test: test $(ps | grep jaws | wc -l) -gt 1
       start_period: 30s
