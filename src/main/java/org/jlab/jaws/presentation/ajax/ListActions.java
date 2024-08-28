@@ -71,6 +71,7 @@ public class ListActions extends HttpServlet {
           gen.writeStartObject();
           gen.write("name", action.getName());
           gen.write("id", action.getActionId());
+          gen.write("system", action.getSystem().getName());
           gen.write("correctiveActionMarkdown", action.getCorrectiveAction());
           gen.write("rationaleMarkdown", action.getRationale());
           gen.writeStartObject("priority");
