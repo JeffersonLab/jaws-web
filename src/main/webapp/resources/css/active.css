@@ -240,7 +240,7 @@ span.location-active {
     top: 610px;
     left: 220px;
 }
-#category-grid {
+#system-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     width: 965px;
@@ -250,14 +250,14 @@ span.location-active {
     left: 225px;
     overflow: auto;
 }
-.category-status {
+.system-status {
     background-color: green;
     padding: 0.2em;
 }
-.category-status a {
+.system-status a {
     color: white;
 }
-span.category-active {
+span.system-active {
     background-color: red;
 }
 .special-count {

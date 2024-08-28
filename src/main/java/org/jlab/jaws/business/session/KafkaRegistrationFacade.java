@@ -12,9 +12,9 @@ import org.jlab.jaws.business.util.KafkaConfig;
 import org.jlab.jaws.clients.LocationProducer;
 import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.entity.Action;
-import org.jlab.jaws.persistence.entity.Alarm;
-import org.jlab.jaws.persistence.entity.Component;
+import org.jlab.jaws.persistence.entity.AlarmEntity;
 import org.jlab.jaws.persistence.entity.Location;
+import org.jlab.jaws.persistence.entity.SystemEntity;
 
 /**
  * @author ryans
@@ -26,7 +26,7 @@ public class KafkaRegistrationFacade {
   private static final Logger LOG = Logger.getLogger(KafkaRegistrationFacade.class.getName());
 
   @EJB LocationFacade locationFacade;
-  @EJB ComponentFacade componentFacade;
+  @EJB SystemFacade systemFacade;
   @EJB ActionFacade actionFacade;
   @EJB AlarmFacade alarmFacade;
   @EJB ServerStatus status;
@@ -65,10 +65,10 @@ public class KafkaRegistrationFacade {
   }
 
   private void populateComponents() {
-    List<Component> componentList =
-        componentFacade.findAll(new AbstractFacade.OrderDirective("name"));
+    List<SystemEntity> componentList =
+        systemFacade.findAll(new AbstractFacade.OrderDirective("name"));
 
-    componentFacade.kafkaSet(componentList);
+    systemFacade.kafkaSet(componentList);
   }
 
   private void populateActions() {
@@ -78,7 +78,7 @@ public class KafkaRegistrationFacade {
   }
 
   private void populateAlarms() {
-    List<Alarm> alarmList = alarmFacade.findAll(new AbstractFacade.OrderDirective("name"));
+    List<AlarmEntity> alarmList = alarmFacade.findAll(new AbstractFacade.OrderDirective("name"));
 
     alarmFacade.kafkaSet(alarmList);
   }

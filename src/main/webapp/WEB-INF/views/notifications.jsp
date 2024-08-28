@@ -163,12 +163,12 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="component-name">Component Name</label>
+                                        <label for="system-name">System Name</label>
                                     </div>
                                     <div class="li-value">
-                                        <input id="component-name"
-                                               name="componentName" value="${fn:escapeXml(param.componentName)}"
-                                               placeholder="component name"/>
+                                        <input id="system-name"
+                                               name="systemName" value="${fn:escapeXml(param.systemName)}"
+                                               placeholder="system name"/>
                                         <div>(use % as wildcard)</div>
                                     </div>
                                 </li>

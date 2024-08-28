@@ -90,8 +90,8 @@
                                             <c:forEach items="${revision.changeList}" var="change">
                                                 <li class="table-cell-list-item">
                                                     <a title="${change.entityClass.simpleName} Audit"
-                                                       href="${pageContext.request.contextPath}/reports/inventory-history/${change.entityClass.simpleName eq 'Alarm' ? 'alarm?alarmId' : change.entityClass.simpleName eq 'Action' ? 'action?actionId' : 'unknown?entityId'}=${change.entityId}"><c:out
-                                                            value="${change.type} ${change.entityClass.simpleName} ${change.entityName}"/></a>
+                                                       href="${pageContext.request.contextPath}/reports/inventory-history/${change.entityClass.simpleName eq 'AlarmEntity' ? 'alarm?alarmId' : change.entityClass.simpleName eq 'Action' ? 'action?actionId' : 'unknown?entityId'}=${change.entityId}"><c:out
+                                                            value="${change.type} ${change.classLabel} ${change.entityName}"/></a>
                                                 </li>
                                             </c:forEach>
                                         </ul>

@@ -28,10 +28,10 @@ public class Action implements Serializable {
   @Column(length = 64)
   private String name;
 
-  @JoinColumn(name = "COMPONENT_ID", referencedColumnName = "COMPONENT_ID", nullable = false)
+  @JoinColumn(name = "SYSTEM_ID", referencedColumnName = "SYSTEM_ID", nullable = false)
   @ManyToOne(optional = false)
   @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-  private Component component;
+  private SystemEntity system;
 
   @JoinColumn(name = "PRIORITY_ID", referencedColumnName = "PRIORITY_ID", nullable = false)
   @ManyToOne(optional = false)
@@ -76,12 +76,12 @@ public class Action implements Serializable {
     this.name = name;
   }
 
-  public Component getComponent() {
-    return component;
+  public SystemEntity getSystem() {
+    return system;
   }
 
-  public void setComponent(Component component) {
-    this.component = component;
+  public void setSystem(SystemEntity component) {
+    this.system = component;
   }
 
   public Priority getPriority() {

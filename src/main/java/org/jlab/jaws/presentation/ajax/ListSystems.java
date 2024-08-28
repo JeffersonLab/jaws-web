@@ -14,8 +14,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.jlab.jaws.business.session.ComponentFacade;
-import org.jlab.jaws.persistence.entity.Component;
+import org.jlab.jaws.business.session.SystemFacade;
+import org.jlab.jaws.persistence.entity.SystemEntity;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 import org.jlab.smoothness.presentation.util.ParamUtil;
 
@@ -23,30 +23,30 @@ import org.jlab.smoothness.presentation.util.ParamUtil;
  * @author ryans
  */
 @WebServlet(
-    name = "ListComponents",
-    urlPatterns = {"/ajax/list-components"})
-public class ListComponents extends HttpServlet {
+    name = "ListSystems",
+    urlPatterns = {"/ajax/list-systems"})
+public class ListSystems extends HttpServlet {
 
-  private static final Logger logger = Logger.getLogger(ListComponents.class.getName());
+  private static final Logger logger = Logger.getLogger(ListSystems.class.getName());
 
-  @EJB ComponentFacade componentFacade;
+  @EJB SystemFacade systemFacade;
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    String componentName = request.getParameter("componentName");
+    String systemName = request.getParameter("systemName");
     BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int max = ParamUtil.convertAndValidateNonNegativeInt(request, "max", Integer.MAX_VALUE);
 
-    List<Component> componentList = null;
+    List<SystemEntity> systemList = null;
 
     String stat = "ok";
     String error = null;
 
     try {
-      componentList = componentFacade.filterList(componentName, teamId, offset, max);
+      systemList = systemFacade.filterList(systemName, teamId, offset, max);
     } catch (RuntimeException e) {
       stat = "fail";
       error = "Unable to list components";
@@ -64,13 +64,13 @@ public class ListComponents extends HttpServlet {
         // response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       } else {
         gen.writeStartArray("list");
-        for (Component component : componentList) {
+        for (SystemEntity system : systemList) {
           gen.writeStartObject();
-          gen.write("name", component.getName());
-          gen.write("id", component.getComponentId());
+          gen.write("name", system.getName());
+          gen.write("id", system.getSystemId());
           gen.writeStartObject("team");
-          gen.write("name", component.getTeam().getName());
-          gen.write("id", component.getTeam().getTeamId());
+          gen.write("name", system.getTeam().getName());
+          gen.write("id", system.getTeam().getTeamId());
           gen.writeEnd();
           gen.writeEnd();
         }

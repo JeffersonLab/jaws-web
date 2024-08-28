@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jlab.jaws.business.session.*;
 import org.jlab.jaws.persistence.entity.Action;
-import org.jlab.jaws.persistence.entity.Component;
 import org.jlab.jaws.persistence.entity.Priority;
+import org.jlab.jaws.persistence.entity.SystemEntity;
 import org.jlab.jaws.persistence.entity.Team;
 import org.jlab.smoothness.presentation.util.Paginator;
 import org.jlab.smoothness.presentation.util.ParamConverter;
@@ -34,7 +34,7 @@ public class ActionController extends HttpServlet {
 
   @EJB PriorityFacade priorityFacade;
 
-  @EJB ComponentFacade componentFacade;
+  @EJB SystemFacade systemFacade;
 
   /**
    * Handles the HTTP <code>GET</code> method.
@@ -50,18 +50,17 @@ public class ActionController extends HttpServlet {
 
     String actionName = request.getParameter("actionName");
     BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
-    String componentName = request.getParameter("componentName");
+    String systemName = request.getParameter("systemName");
     BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
 
     List<Action> actionList =
-        actionFacade.filterList(priorityId, teamId, actionName, componentName, offset, maxPerPage);
+        actionFacade.filterList(priorityId, teamId, actionName, systemName, offset, maxPerPage);
     List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
     List<Priority> priorityList =
         priorityFacade.findAll(new AbstractFacade.OrderDirective("priorityId"));
-    List<Component> componentList =
-        componentFacade.findAll(new AbstractFacade.OrderDirective("name"));
+    List<SystemEntity> systemList = systemFacade.findAll(new AbstractFacade.OrderDirective("name"));
 
     Priority selectedPriority = null;
 
@@ -75,26 +74,25 @@ public class ActionController extends HttpServlet {
       selectedTeam = teamFacade.find(teamId);
     }
 
-    long totalRecords = actionFacade.countList(priorityId, teamId, actionName, componentName);
+    long totalRecords = actionFacade.countList(priorityId, teamId, actionName, systemName);
 
     Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
     String selectionMessage =
-        createSelectionMessage(
-            paginator, selectedPriority, selectedTeam, actionName, componentName);
+        createSelectionMessage(paginator, selectedPriority, selectedTeam, actionName, systemName);
 
     request.setAttribute("selectionMessage", selectionMessage);
     request.setAttribute("actionList", actionList);
     request.setAttribute("teamList", teamList);
     request.setAttribute("priorityList", priorityList);
-    request.setAttribute("componentList", componentList);
+    request.setAttribute("systemList", systemList);
     request.setAttribute("paginator", paginator);
 
     request.getRequestDispatcher("/WEB-INF/views/inventory/actions.jsp").forward(request, response);
   }
 
   private String createSelectionMessage(
-      Paginator paginator, Priority priority, Team team, String actionName, String componentName) {
+      Paginator paginator, Priority priority, Team team, String actionName, String systemName) {
     DecimalFormat formatter = new DecimalFormat("###,###");
 
     String selectionMessage = "All Actions ";
@@ -113,8 +111,8 @@ public class ActionController extends HttpServlet {
       filters.add("Action Name \"" + actionName + "\"");
     }
 
-    if (componentName != null && !componentName.isBlank()) {
-      filters.add("Component Name \"" + componentName + "\"");
+    if (systemName != null && !systemName.isBlank()) {
+      filters.add("System Name \"" + systemName + "\"");
     }
 
     if (!filters.isEmpty()) {

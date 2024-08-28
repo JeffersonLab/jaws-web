@@ -17,7 +17,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import org.jlab.jaws.business.util.KafkaConfig;
-import org.jlab.jaws.clients.InstanceProducer;
+import org.jlab.jaws.clients.AlarmProducer;
 import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.entity.*;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
@@ -26,7 +26,7 @@ import org.jlab.smoothness.business.exception.UserFriendlyException;
  * @author ryans
  */
 @Stateless
-public class AlarmFacade extends AbstractFacade<Alarm> {
+public class AlarmFacade extends AbstractFacade<AlarmEntity> {
   private static final Logger logger = Logger.getLogger(AlarmFacade.class.getName());
 
   @EJB LocationFacade locationFacade;
@@ -42,13 +42,13 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
   }
 
   public AlarmFacade() {
-    super(Alarm.class);
+    super(AlarmEntity.class);
   }
 
   private List<Predicate> getFilters(
       CriteriaBuilder cb,
       CriteriaQuery<? extends Object> cq,
-      Root<Alarm> root,
+      Root<AlarmEntity> root,
       BigInteger[] locationIdArray,
       BigInteger priorityId,
       BigInteger teamId,
@@ -58,7 +58,7 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
     List<Predicate> filters = new ArrayList<>();
 
     Join<Alarm, Action> actionJoin = root.join("action");
-    Join<Action, Component> componentJoin = actionJoin.join("component");
+    Join<Action, SystemEntity> systemJoin = actionJoin.join("system");
 
     if (locationIdArray != null && locationIdArray.length > 0) {
       // Parent locations imply children locations
@@ -99,18 +99,18 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
     }
 
     if (componentName != null && !componentName.isEmpty()) {
-      filters.add(cb.like(cb.lower(componentJoin.get("name")), componentName.toLowerCase()));
+      filters.add(cb.like(cb.lower(systemJoin.get("name")), componentName.toLowerCase()));
     }
 
     if (teamId != null) {
-      filters.add(cb.equal(componentJoin.get("team"), teamId));
+      filters.add(cb.equal(systemJoin.get("team"), teamId));
     }
 
     return filters;
   }
 
   @PermitAll
-  public List<Alarm> filterList(
+  public List<AlarmEntity> filterList(
       BigInteger[] locationIdArray,
       BigInteger priorityId,
       BigInteger teamId,
@@ -120,8 +120,8 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
       int offset,
       int max) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-    CriteriaQuery<Alarm> cq = cb.createQuery(Alarm.class);
-    Root<Alarm> root = cq.from(Alarm.class);
+    CriteriaQuery<AlarmEntity> cq = cb.createQuery(AlarmEntity.class);
+    Root<AlarmEntity> root = cq.from(AlarmEntity.class);
     cq.select(root);
 
     List<Predicate> filters =
@@ -162,7 +162,7 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
       String componentName) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-    Root<Alarm> root = cq.from(Alarm.class);
+    Root<AlarmEntity> root = cq.from(AlarmEntity.class);
 
     List<Predicate> filters =
         getFilters(
@@ -186,10 +186,10 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
   }
 
   @PermitAll
-  public Alarm findByName(String name) {
-    List<Alarm> list = this.filterList(null, null, null, name, null, null, 0, 1);
+  public AlarmEntity findByName(String name) {
+    List<AlarmEntity> list = this.filterList(null, null, null, name, null, null, 0, 1);
 
-    Alarm entity = null;
+    AlarmEntity entity = null;
 
     if (list != null && !list.isEmpty()) {
       entity = list.get(0);
@@ -238,7 +238,7 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
       }
     }
 
-    Alarm alarm = new Alarm();
+    AlarmEntity alarm = new AlarmEntity();
 
     alarm.setName(name);
     alarm.setAction(action);
@@ -254,16 +254,15 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
   }
 
   @RolesAllowed("jaws-admin")
-  public void kafkaSet(List<Alarm> alarmList) {
+  public void kafkaSet(List<AlarmEntity> alarmList) {
     if (alarmList != null) {
-      try (InstanceProducer producer =
-          new InstanceProducer(KafkaConfig.getProducerPropsWithRegistry())) {
-        for (Alarm alarm : alarmList) {
+      try (AlarmProducer producer = new AlarmProducer(KafkaConfig.getProducerPropsWithRegistry())) {
+        for (AlarmEntity alarm : alarmList) {
           String key = alarm.getName();
 
-          AlarmInstance value = new AlarmInstance();
+          Alarm value = new Alarm();
 
-          value.setAlarmclass(alarm.getAction().getName());
+          value.setAction(alarm.getAction().getName());
 
           Object source = new Source();
 
@@ -285,8 +284,7 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
   @RolesAllowed("jaws-admin")
   public void kafkaUnset(List<String> list) {
     if (list != null) {
-      try (InstanceProducer producer =
-          new InstanceProducer(KafkaConfig.getProducerPropsWithRegistry())) {
+      try (AlarmProducer producer = new AlarmProducer(KafkaConfig.getProducerPropsWithRegistry())) {
         for (String name : list) {
           producer.send(name, null);
         }
@@ -300,7 +298,7 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
       throw new UserFriendlyException("Alarm ID is required");
     }
 
-    Alarm alarm = find(alarmId);
+    AlarmEntity alarm = find(alarmId);
 
     if (alarm == null) {
       throw new UserFriendlyException("Alarm not found with ID: " + alarmId);
@@ -326,7 +324,7 @@ public class AlarmFacade extends AbstractFacade<Alarm> {
       throw new UserFriendlyException("Alarm ID is required");
     }
 
-    Alarm alarm = find(alarmId);
+    AlarmEntity alarm = find(alarmId);
 
     if (alarm == null) {
       throw new UserFriendlyException("Alarm not found with ID: " + alarmId);

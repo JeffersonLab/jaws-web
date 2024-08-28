@@ -14,7 +14,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Audited
 @Table(name = "ALARM", schema = "JAWS_OWNER")
-public class Alarm implements Serializable {
+public class AlarmEntity implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
@@ -185,8 +185,8 @@ public class Alarm implements Serializable {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof Alarm)) return false;
-    Alarm entity = (Alarm) o;
+    if (!(o instanceof AlarmEntity)) return false;
+    AlarmEntity entity = (AlarmEntity) o;
     return Objects.equals(name, entity.name);
   }
 

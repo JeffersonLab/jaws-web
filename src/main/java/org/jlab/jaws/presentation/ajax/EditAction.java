@@ -36,7 +36,7 @@ public class EditAction extends HttpServlet {
 
     BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
     String name = request.getParameter("name");
-    BigInteger componentId = ParamConverter.convertBigInteger(request, "componentId");
+    BigInteger systemId = ParamConverter.convertBigInteger(request, "systemId");
     BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
     String correctiveAction = request.getParameter("correctiveAction");
     String rationale = request.getParameter("rationale");
@@ -52,8 +52,7 @@ public class EditAction extends HttpServlet {
       actionFacade.editAction(
           actionId,
           name,
-          actionId,
-          componentId,
+          systemId,
           priorityId,
           correctiveAction,
           rationale,

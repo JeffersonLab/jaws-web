@@ -123,10 +123,10 @@
                             </c:forEach>
                         </tr>
                         <tr>
-                            <th>Component:</th>
+                            <th>System:</th>
                             <c:forEach items="${revisionList}" var="entity">
                                 <td>
-                                    <c:out value="${entity.component.name}"/>
+                                    <c:out value="${entity.system.name}"/>
                                 </td>
                             </c:forEach>
                         </tr>

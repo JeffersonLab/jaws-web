@@ -62,12 +62,12 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="component-name">Component Name</label>
+                                        <label for="system-name">System Name</label>
                                     </div>
                                     <div class="li-value">
-                                        <input id="component-name"
-                                               name="componentName" value="${fn:escapeXml(param.componentName)}"
-                                               placeholder="component name"/>
+                                        <input id="system-name"
+                                               name="systemName" value="${fn:escapeXml(param.systemName)}"
+                                               placeholder="system name"/>
                                         <div>(use % as wildcard)</div>
                                     </div>
                                 </li>
@@ -90,7 +90,7 @@
                     <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Component</th>
+                        <th>System</th>
                         <th>Priority</th>
                         <th></th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
@@ -104,7 +104,7 @@
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
                                         <tbody>
                                         <c:forEach items="${actionList}" var="action">
-                                            <tr data-id="${action.actionId}" data-component-id="${action.component.componentId}" data-priority-id="${action.priority.priorityId}" data-corrective-action="${fn:escapeXml(action.correctiveAction)}" data-rationale="${fn:escapeXml(action.rationale)}"  data-filterable="${action.filterable}" data-latchable="${action.latchable}" data-ondelay="${action.onDelaySeconds}" data-offdelay="${action.offDelaySeconds}">
+                                            <tr data-id="${action.actionId}" data-system-id="${action.system.systemId}" data-priority-id="${action.priority.priorityId}" data-corrective-action="${fn:escapeXml(action.correctiveAction)}" data-rationale="${fn:escapeXml(action.rationale)}"  data-filterable="${action.filterable}" data-latchable="${action.latchable}" data-ondelay="${action.onDelaySeconds}" data-offdelay="${action.offDelaySeconds}">
                                                 <td>
                                                     <c:url value="/inventory/actions/${jaws:urlEncodePath(action.name)}" var="url">
                                                     </c:url>
@@ -113,7 +113,7 @@
                                                        href="${url}"><c:out
                                                         value="${action.name}"/></a>
                                                 </td>
-                                                <td><c:out value="${action.component.name}"/></td>
+                                                <td><c:out value="${action.system.name}"/></td>
                                                 <td><c:out value="${action.priority.name}"/></td>
                                                 <td>
                                                     <!-- Use onclick to avoid https://bugs.webkit.org/show_bug.cgi?id=30103 -->
@@ -153,14 +153,14 @@
                     </li>
                     <li>
                         <div class="li-key">
-                            <label for="row-component">Component</label>
+                            <label for="row-system">System</label>
                         </div>
                         <div class="li-value">
-                            <select id="row-component" required="required">
+                            <select id="row-system" required="required">
                                 <option value="">&nbsp;</option>
-                                <c:forEach items="${componentList}" var="component">
-                                    <option value="${component.componentId}">
-                                        <c:out value="${component.name}"/></option>
+                                <c:forEach items="${systemList}" var="system">
+                                    <option value="${system.systemId}">
+                                        <c:out value="${system.name}"/></option>
                                 </c:forEach>
                             </select>
                         </div>

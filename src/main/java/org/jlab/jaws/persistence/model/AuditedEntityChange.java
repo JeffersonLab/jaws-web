@@ -12,14 +12,21 @@ public class AuditedEntityChange {
   private final BigInteger entityId;
   private final String entityName;
   private final Class entityClass;
+  private final String classLabel;
 
   public AuditedEntityChange(
-      long revision, RevisionType type, BigInteger entityId, String entityName, Class entityClass) {
+      long revision,
+      RevisionType type,
+      BigInteger entityId,
+      String entityName,
+      Class entityClass,
+      String classLabel) {
     this.revision = revision;
     this.type = type;
     this.entityId = entityId;
     this.entityName = entityName;
     this.entityClass = entityClass;
+    this.classLabel = classLabel;
   }
 
   public long getRevision() {
@@ -40,5 +47,9 @@ public class AuditedEntityChange {
 
   public Class getEntityClass() {
     return entityClass;
+  }
+
+  public String getClassLabel() {
+    return classLabel;
   }
 }

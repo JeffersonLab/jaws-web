@@ -48,17 +48,17 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
       Boolean registered,
       String alarmName,
       String actionName,
-      String componentName,
+      String systemName,
       Map<String, Join> joins) {
     List<Predicate> filters = new ArrayList<>();
 
-    Join<ActiveHistory, Alarm> alarmJoin = root.join("alarm", JoinType.LEFT);
-    Join<Alarm, Action> actionJoin = alarmJoin.join("action", JoinType.LEFT);
-    Join<Action, Component> componentJoin = actionJoin.join("component", JoinType.LEFT);
+    Join<ActiveHistory, AlarmEntity> alarmJoin = root.join("alarm", JoinType.LEFT);
+    Join<AlarmEntity, Action> actionJoin = alarmJoin.join("action", JoinType.LEFT);
+    Join<Action, SystemEntity> systemJoin = actionJoin.join("system", JoinType.LEFT);
 
     joins.put("alarm", alarmJoin);
     joins.put("action", actionJoin);
-    joins.put("component", componentJoin);
+    joins.put("system", systemJoin);
 
     if (start != null) {
       filters.add(cb.greaterThanOrEqualTo(root.get("activeHistoryPK").get("activeStart"), start));
@@ -95,7 +95,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
       if (!locationIdList.isEmpty()) {
         Subquery<BigInteger> subquery = cq.subquery(BigInteger.class);
         Root<Location> subqueryRoot = subquery.from(Location.class);
-        Join<Location, Alarm> alarmLocationJoin = subqueryRoot.join("alarmList");
+        Join<Location, AlarmEntity> alarmLocationJoin = subqueryRoot.join("alarmList");
         subquery.select(alarmLocationJoin.get("alarmId"));
         subquery.where(subqueryRoot.get("locationId").in(locationIdList));
         filters.add(cb.in(alarmJoin.get("alarmId")).value(subquery));
@@ -114,12 +114,12 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
       filters.add(cb.like(cb.lower(actionJoin.get("name")), actionName.toLowerCase()));
     }
 
-    if (componentName != null && !componentName.isEmpty()) {
-      filters.add(cb.like(cb.lower(componentJoin.get("name")), componentName.toLowerCase()));
+    if (systemName != null && !systemName.isEmpty()) {
+      filters.add(cb.like(cb.lower(systemJoin.get("name")), systemName.toLowerCase()));
     }
 
     if (teamId != null) {
-      filters.add(cb.equal(componentJoin.get("team"), teamId));
+      filters.add(cb.equal(systemJoin.get("team"), teamId));
     }
 
     if (registered != null) {
@@ -145,7 +145,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
       Boolean registered,
       String alarmName,
       String actionName,
-      String componentName,
+      String systemName,
       int offset,
       int max) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
@@ -170,7 +170,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
             registered,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             joins);
 
     if (!filters.isEmpty()) {
@@ -207,7 +207,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
       Boolean registered,
       String alarmName,
       String actionName,
-      String componentName) {
+      String systemName) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
     Root<ActiveHistory> root = cq.from(ActiveHistory.class);
@@ -229,7 +229,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
             registered,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             joins);
 
     if (!filters.isEmpty()) {

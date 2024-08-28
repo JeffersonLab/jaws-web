@@ -66,7 +66,7 @@ public class NotifyHistoryReport extends HttpServlet {
     BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
     String actionName = request.getParameter("actionName");
     BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
-    String componentName = request.getParameter("componentName");
+    String systemName = request.getParameter("systemName");
     BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
     Boolean registered = ParamConverter.convertYNBoolean(request, "registered");
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
@@ -86,7 +86,7 @@ public class NotifyHistoryReport extends HttpServlet {
             registered,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             offset,
             maxPerPage);
     List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
@@ -143,7 +143,7 @@ public class NotifyHistoryReport extends HttpServlet {
             registered,
             alarmName,
             actionName,
-            componentName);
+            systemName);
 
     Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
@@ -168,7 +168,7 @@ public class NotifyHistoryReport extends HttpServlet {
             filterable,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             alwaysIncludeUnregistered,
             alwaysIncludeUnfilterable);
 

@@ -35,7 +35,7 @@ public class AddAction extends HttpServlet {
       throws ServletException, IOException {
 
     String name = request.getParameter("name");
-    BigInteger componentId = ParamConverter.convertBigInteger(request, "componentId");
+    BigInteger systemId = ParamConverter.convertBigInteger(request, "systemId");
     BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
     String correctiveAction = request.getParameter("correctiveAction");
     String rationale = request.getParameter("rationale");
@@ -50,7 +50,7 @@ public class AddAction extends HttpServlet {
     try {
       actionFacade.addAction(
           name,
-          componentId,
+          systemId,
           priorityId,
           correctiveAction,
           rationale,

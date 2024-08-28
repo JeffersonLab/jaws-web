@@ -44,8 +44,8 @@
                             <dd><c:out value="${action.priority.name}"/></dd>
                             <dt>Taxonomy:</dt>
                             <dd>
-                                <c:out value="${action.component.team.name}"/> &gt;
-                                <c:out value="${action.component.name}"/>
+                                <c:out value="${action.system.team.name}"/> &gt;
+                                <c:out value="${action.system.name}"/>
                             </dd>
                             <dt>Corrective Action:</dt>
                             <dd>

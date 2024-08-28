@@ -22,7 +22,7 @@ public class Notification implements Serializable {
 
   @JoinColumn(name = "NAME", referencedColumnName = "NAME", updatable = false, insertable = false)
   @ManyToOne // This should be OneToOne, but doesn't work given name is an alternate key in Alarm
-  private Alarm alarm;
+  private AlarmEntity alarm;
 
   @Basic(optional = false)
   @Column(name = "STATE", nullable = false, length = 32)
@@ -69,11 +69,11 @@ public class Notification implements Serializable {
     this.name = name;
   }
 
-  public Alarm getAlarm() {
+  public AlarmEntity getAlarm() {
     return alarm;
   }
 
-  public void setAlarm(Alarm alarm) {
+  public void setAlarm(AlarmEntity alarm) {
     this.alarm = alarm;
   }
 

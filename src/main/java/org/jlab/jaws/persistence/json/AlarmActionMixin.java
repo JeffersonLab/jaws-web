@@ -7,9 +7,9 @@ import org.jlab.jaws.entity.AlarmPriority;
 @JsonAutoDetect(
     getterVisibility = JsonAutoDetect.Visibility.NONE,
     isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-public interface AlarmClassMixin {
+public interface AlarmActionMixin {
   @JsonProperty
-  String getCategory();
+  String getSystem();
 
   @JsonProperty
   AlarmPriority getPriority();

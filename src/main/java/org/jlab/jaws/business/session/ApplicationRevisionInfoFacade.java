@@ -13,7 +13,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import org.hibernate.envers.RevisionType;
 import org.jlab.jaws.persistence.entity.Action;
-import org.jlab.jaws.persistence.entity.Alarm;
+import org.jlab.jaws.persistence.entity.AlarmEntity;
 import org.jlab.jaws.persistence.entity.ApplicationRevisionInfo;
 import org.jlab.jaws.persistence.model.AuditedEntityChange;
 import org.jlab.smoothness.business.service.UserAuthorizationService;
@@ -123,11 +123,13 @@ public class ApplicationRevisionInfoFacade extends AbstractFacade<ApplicationRev
 
     if (resultList != null) {
       for (Object[] row : resultList) {
-        Class entityClass = fromCharacter(((Character) row[0]));
+        Class entityClass = classFromChar(((Character) row[0]));
+        String classLabel = classLabelFromChar(((Character) row[0]));
         BigInteger entityId = BigInteger.valueOf(((Number) row[1]).longValue());
         String entityName = (String) row[2];
         RevisionType type = fromNumber((Number) row[3]);
-        changeList.add(new AuditedEntityChange(revision, type, entityId, entityName, entityClass));
+        changeList.add(
+            new AuditedEntityChange(revision, type, entityId, entityName, entityClass, classLabel));
       }
     }
 
@@ -135,13 +137,36 @@ public class ApplicationRevisionInfoFacade extends AbstractFacade<ApplicationRev
   }
 
   @PermitAll
-  public Class fromCharacter(Character c) {
+  public String classLabelFromChar(Character c) {
+
+    // We don't want to see Class.simpleName "AlarmEntity", we want to see "Alarm"
+
+    String label = null;
+
+    if (c != null) {
+      switch (c) {
+        case 'A':
+          label = "Alarm";
+          break;
+        case 'B':
+          label = "Action";
+          break;
+        default:
+          break;
+      }
+    }
+
+    return label;
+  }
+
+  @PermitAll
+  public Class classFromChar(Character c) {
     Class entityClass = null;
 
     if (c != null) {
       switch (c) {
         case 'A':
-          entityClass = Alarm.class;
+          entityClass = AlarmEntity.class;
           break;
         case 'B':
           entityClass = Action.class;
