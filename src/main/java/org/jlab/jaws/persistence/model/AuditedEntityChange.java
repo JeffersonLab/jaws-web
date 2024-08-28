@@ -15,7 +15,12 @@ public class AuditedEntityChange {
   private final String classLabel;
 
   public AuditedEntityChange(
-      long revision, RevisionType type, BigInteger entityId, String entityName, Class entityClass, String classLabel) {
+      long revision,
+      RevisionType type,
+      BigInteger entityId,
+      String entityName,
+      Class entityClass,
+      String classLabel) {
     this.revision = revision;
     this.type = type;
     this.entityId = entityId;

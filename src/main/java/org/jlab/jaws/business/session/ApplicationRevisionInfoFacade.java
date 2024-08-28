@@ -128,7 +128,8 @@ public class ApplicationRevisionInfoFacade extends AbstractFacade<ApplicationRev
         BigInteger entityId = BigInteger.valueOf(((Number) row[1]).longValue());
         String entityName = (String) row[2];
         RevisionType type = fromNumber((Number) row[3]);
-        changeList.add(new AuditedEntityChange(revision, type, entityId, entityName, entityClass, classLabel));
+        changeList.add(
+            new AuditedEntityChange(revision, type, entityId, entityName, entityClass, classLabel));
       }
     }
 
