@@ -22,11 +22,11 @@ import org.jlab.smoothness.presentation.util.ParamConverter;
  * @author ryans
  */
 @WebServlet(
-    name = "EditComponent",
-    urlPatterns = {"/ajax/edit-component"})
-public class EditComponent extends HttpServlet {
+    name = "EditSystem",
+    urlPatterns = {"/ajax/edit-system"})
+public class EditSystem extends HttpServlet {
 
-  private static final Logger logger = Logger.getLogger(EditComponent.class.getName());
+  private static final Logger logger = Logger.getLogger(EditSystem.class.getName());
 
   @EJB SystemFacade systemFacade;
 
@@ -45,14 +45,14 @@ public class EditComponent extends HttpServlet {
       systemFacade.editSystem(id, name, teamId);
     } catch (UserFriendlyException e) {
       stat = "fail";
-      error = "Unable to edit Component: " + e.getMessage();
+      error = "Unable to edit System: " + e.getMessage();
     } catch (EJBAccessException e) {
       stat = "fail";
-      error = "Unable to edit Component: Not authenticated / authorized (do you need to re-login?)";
+      error = "Unable to edit System: Not authenticated / authorized (do you need to re-login?)";
     } catch (RuntimeException e) {
       stat = "fail";
-      error = "Unable to edit Component";
-      logger.log(Level.SEVERE, "Unable to edit Component", e);
+      error = "Unable to edit System";
+      logger.log(Level.SEVERE, "Unable to edit System", e);
     }
 
     response.setContentType("application/json");

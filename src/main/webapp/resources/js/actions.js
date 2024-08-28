@@ -5,7 +5,7 @@ jlab.editableRowTable.dialog.width = 800;
 jlab.editableRowTable.dialog.height = 600;
 jlab.addRow = function () {
     var name = $("#row-name").val(),
-        componentId = $("#row-component").val(),
+        systemId = $("#row-system").val(),
         priorityId = $("#row-priority").val(),
         correctiveAction = $("#corrective-action-textarea").val(),
         rationale = $("#rationale-textarea").val(),
@@ -27,7 +27,7 @@ jlab.addRow = function () {
         type: "POST",
         data: {
             name: name,
-            componentId: componentId,
+            systemId: systemId,
             priorityId: priorityId,
             correctiveAction: correctiveAction,
             rationale: rationale,
@@ -63,7 +63,7 @@ jlab.addRow = function () {
 };
 jlab.editRow = function () {
     var name = $("#row-name").val(),
-        componentId = $("#row-component").val(),
+        systemId = $("#row-system").val(),
         priorityId = $("#row-priority").val(),
         correctiveAction = $("#corrective-action-textarea").val(),
         rationale = $("#rationale-textarea").val(),
@@ -87,7 +87,7 @@ jlab.editRow = function () {
         data: {
             actionId: actionId,
             name: name,
-            componentId: componentId,
+            systemId: systemId,
             priorityId: priorityId,
             correctiveAction: correctiveAction,
             rationale: rationale,
@@ -176,7 +176,7 @@ $(document).on("dialogclose", "#table-row-dialog", function () {
 $(document).on("click", "#open-edit-row-dialog-button", function () {
     var $selectedRow = $(".editable-row-table tr.selected-row");
     $("#row-name").val($selectedRow.find("td:first-child a").text());
-    $("#row-component").val($selectedRow.attr("data-component-id"));
+    $("#row-system").val($selectedRow.attr("data-system-id"));
     $("#row-priority").val($selectedRow.attr("data-priority-id"));
 
     $("#row-filterable").prop("checked", $selectedRow.attr("data-filterable") === "true");
@@ -206,7 +206,7 @@ $(document).on("click", ".default-clear-panel", function () {
     $("#priority-select").val('');
     $("#team-select").val('');
     $("#action-name").val('');
-    $("#component-name").val('');
+    $("#system-name").val('');
     return false;
 });
 $(".left-pane").resizable({
