@@ -7,9 +7,9 @@ import java.util.List;
 @JsonAutoDetect(
     getterVisibility = JsonAutoDetect.Visibility.NONE,
     isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-public interface AlarmInstanceMixin {
+public interface AlarmMixin {
   @JsonProperty
-  String getAlarmclass();
+  String getAction();
 
   @JsonProperty
   Object getSource();
@@ -19,6 +19,9 @@ public interface AlarmInstanceMixin {
 
   @JsonProperty
   List<String> getLocation();
+
+  @JsonProperty
+  String getManagedby();
 
   @JsonProperty
   String getMaskedby();

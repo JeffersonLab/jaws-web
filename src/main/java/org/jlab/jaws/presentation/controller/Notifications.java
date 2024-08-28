@@ -56,7 +56,7 @@ public class Notifications extends HttpServlet {
     BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
     String actionName = request.getParameter("actionName");
     BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
-    String componentName = request.getParameter("componentName");
+    String systemName = request.getParameter("systemName");
     BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
     Boolean registered = ParamConverter.convertYNBoolean(request, "registered");
     Boolean filterable = ParamConverter.convertYNBoolean(request, "filterable");
@@ -80,7 +80,7 @@ public class Notifications extends HttpServlet {
             filterable,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             alwaysIncludeUnregistered,
             alwaysIncludeUnfilterable,
             offset,
@@ -138,7 +138,7 @@ public class Notifications extends HttpServlet {
             filterable,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             alwaysIncludeUnregistered,
             alwaysIncludeUnfilterable);
 
@@ -161,7 +161,7 @@ public class Notifications extends HttpServlet {
             filterable,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             alwaysIncludeUnregistered,
             alwaysIncludeUnfilterable);
 
@@ -220,7 +220,7 @@ public class Notifications extends HttpServlet {
       Boolean filterable,
       String alarmName,
       String actionName,
-      String componentName,
+      String systemName,
       boolean alwaysIncludeUnregistered,
       boolean alwaysIncludeUnfilterable) {
     DecimalFormat formatter = new DecimalFormat("###,###");
@@ -299,8 +299,8 @@ public class Notifications extends HttpServlet {
       filters.add("Action Name \"" + actionName + "\"");
     }
 
-    if (componentName != null && !componentName.isBlank()) {
-      filters.add("Component Name \"" + componentName + "\"");
+    if (systemName != null && !systemName.isBlank()) {
+      filters.add("System Name \"" + systemName + "\"");
     }
 
     if (!filters.isEmpty()) {

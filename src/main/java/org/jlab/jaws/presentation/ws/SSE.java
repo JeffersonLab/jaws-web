@@ -30,11 +30,12 @@ public class SSE implements ServletContextListener {
   private final ExecutorService exec = Executors.newFixedThreadPool(10);
   private Sse sse;
 
-  private final List<Mixin> ALARM_MIXINS = new ArrayList<>();
+  private final List<Mixin> EFFECTIVE_ALARM_MIXINS = new ArrayList<>();
   private final List<Mixin> ACTIVATION_MIXINS = new ArrayList<>();
-  private final List<Mixin> CLASS_MIXINS = new ArrayList<>();
-  private final List<Mixin> INSTANCE_MIXINS = new ArrayList<>();
+  private final List<Mixin> ACTION_MIXINS = new ArrayList<>();
+  private final List<Mixin> ALARM_MIXINS = new ArrayList<>();
   private final List<Mixin> LOCATION_MIXINS = new ArrayList<>();
+  private final List<Mixin> SYSTEM_MIXINS = new ArrayList<>();
   private final List<Mixin> NOTIFICATION_MIXINS = new ArrayList<>();
   private final List<Mixin> OVERRIDE_MIXINS = new ArrayList<>();
   private final List<Mixin> REGISTRATION_MIXINS = new ArrayList<>();
@@ -50,14 +51,16 @@ public class SSE implements ServletContextListener {
         new Mixin(ChannelErrorActivation.class, ChannelErrorActivationMixin.class));
     ACTIVATION_MIXINS.add(new Mixin(NoActivation.class, NoActivationMixin.class));
 
-    CLASS_MIXINS.add(new Mixin(AlarmAction.class, AlarmClassMixin.class));
+    ACTION_MIXINS.add(new Mixin(AlarmAction.class, AlarmActionMixin.class));
 
-    INSTANCE_MIXINS.add(new Mixin(Alarm.class, AlarmInstanceMixin.class));
-    INSTANCE_MIXINS.add(new Mixin(Source.class, SourceMixin.class));
-    INSTANCE_MIXINS.add(new Mixin(EPICSSource.class, EPICSSourceMixin.class));
-    INSTANCE_MIXINS.add(new Mixin(CALCSource.class, CALCSourceMixin.class));
+    ALARM_MIXINS.add(new Mixin(Alarm.class, AlarmMixin.class));
+    ALARM_MIXINS.add(new Mixin(Source.class, SourceMixin.class));
+    ALARM_MIXINS.add(new Mixin(EPICSSource.class, EPICSSourceMixin.class));
+    ALARM_MIXINS.add(new Mixin(CALCSource.class, CALCSourceMixin.class));
 
     LOCATION_MIXINS.add(new Mixin(AlarmLocation.class, AlarmLocationMixin.class));
+
+    SYSTEM_MIXINS.add(new Mixin(AlarmSystem.class, AlarmSystemMixin.class));
 
     OVERRIDE_MIXINS.add(new Mixin(AlarmOverrideUnion.class, AlarmOverrideMixin.class));
     OVERRIDE_MIXINS.add(new Mixin(DisabledOverride.class, DisabledOverrideMixin.class));
@@ -77,12 +80,12 @@ public class SSE implements ServletContextListener {
 
     REGISTRATION_MIXINS.add(
         new Mixin(EffectiveRegistration.class, EffectiveRegistrationMixin.class));
-    REGISTRATION_MIXINS.addAll(INSTANCE_MIXINS);
-    REGISTRATION_MIXINS.addAll(CLASS_MIXINS);
+    REGISTRATION_MIXINS.addAll(ALARM_MIXINS);
+    REGISTRATION_MIXINS.addAll(ACTION_MIXINS);
 
-    ALARM_MIXINS.add(new Mixin(EffectiveAlarm.class, EffectiveAlarmMixin.class));
-    ALARM_MIXINS.addAll(NOTIFICATION_MIXINS);
-    ALARM_MIXINS.addAll(REGISTRATION_MIXINS);
+    EFFECTIVE_ALARM_MIXINS.add(new Mixin(EffectiveAlarm.class, EffectiveAlarmMixin.class));
+    EFFECTIVE_ALARM_MIXINS.addAll(NOTIFICATION_MIXINS);
+    EFFECTIVE_ALARM_MIXINS.addAll(REGISTRATION_MIXINS);
   }
 
   @Override
@@ -114,8 +117,8 @@ public class SSE implements ServletContextListener {
    *     records are sent (so inactivation is provided)
    * @param alarmIndex The starting EffectiveAlarm index or -1 to receive all records
    * @param activationIndex The starting AlarmActivation index or -1 to receive all records
-   * @param categoryIndex The starting Category index or -1 to receive all records
-   * @param classIndex The starting AlarmClass index or -1 to receive all records
+   * @param systemIndex The starting AlarmSystem index or -1 to receive all records
+   * @param actionIndex The starting AlarmAction index or -1 to receive all records
    * @param instanceIndex The starting AlarmInstance index or -1 to receive all records
    * @param locationIndex The starting AlarmLocation index or -1 to receive all records
    * @param notificationIndex The starting EffectiveNotification index or -1 to receive all records
@@ -128,13 +131,13 @@ public class SSE implements ServletContextListener {
       @Context final SseEventSink sink,
       @QueryParam("entitiesCsv")
           @DefaultValue(
-              "alarm,activation,category,class,instance,location,notification,override,registration")
+              "alarm,activation,system,action,instance,location,notification,override,registration")
           String entitiesCsv,
       @QueryParam("initiallyActiveOnly") @DefaultValue("false") String initiallyActiveOnlyStr,
       @QueryParam("alarmIndex") @DefaultValue("-1") long alarmIndex,
       @QueryParam("activationIndex") @DefaultValue("-1") long activationIndex,
-      @QueryParam("categoryIndex") @DefaultValue("-1") long categoryIndex,
-      @QueryParam("classIndex") @DefaultValue("-1") long classIndex,
+      @QueryParam("systemIndex") @DefaultValue("-1") long systemIndex,
+      @QueryParam("actionIndex") @DefaultValue("-1") long actionIndex,
       @QueryParam("instanceIndex") @DefaultValue("-1") long instanceIndex,
       @QueryParam("locationIndex") @DefaultValue("-1") long locationIndex,
       @QueryParam("notificationIndex") @DefaultValue("-1") long notificationIndex,
@@ -150,10 +153,10 @@ public class SSE implements ServletContextListener {
             + alarmIndex
             + ", activationIndex: "
             + activationIndex
-            + ", categoryIndex: "
-            + categoryIndex
-            + ", classIndex: "
-            + classIndex
+            + ", systemIndex: "
+            + systemIndex
+            + ", actionIndex: "
+            + actionIndex
             + ", instanceIndex: "
             + instanceIndex
             + ", locationIndex: "
@@ -172,8 +175,8 @@ public class SSE implements ServletContextListener {
 
     boolean alarm = entities.contains("alarm");
     boolean activation = entities.contains("activation");
-    boolean category = entities.contains("category");
-    boolean clazz = entities.contains("class");
+    boolean system = entities.contains("system");
+    boolean action = entities.contains("action");
     boolean instance = entities.contains("instance");
     boolean location = entities.contains("location");
     boolean notification = entities.contains("notification");
@@ -182,8 +185,8 @@ public class SSE implements ServletContextListener {
 
     if (!(alarm
         || activation
-        || category
-        || clazz
+        || system
+        || action
         || instance
         || location
         || notification
@@ -203,9 +206,9 @@ public class SSE implements ServletContextListener {
                 KafkaConfig.getConsumerPropsWithRegistry(alarmIndex, initiallyActiveOnly);
             final Properties activationProps =
                 KafkaConfig.getConsumerPropsWithRegistry(activationIndex, initiallyActiveOnly);
-            final Properties categoryProps = KafkaConfig.getConsumerProps(categoryIndex, false);
-            final Properties classProps =
-                KafkaConfig.getConsumerPropsWithRegistry(classIndex, false);
+            final Properties systemProps = KafkaConfig.getConsumerProps(systemIndex, false);
+            final Properties actionProps =
+                KafkaConfig.getConsumerPropsWithRegistry(actionIndex, false);
             final Properties instanceProps =
                 KafkaConfig.getConsumerPropsWithRegistry(instanceIndex, false);
             final Properties locationProps =
@@ -219,8 +222,8 @@ public class SSE implements ServletContextListener {
 
             try (EffectiveAlarmConsumer alarmConsumer = new EffectiveAlarmConsumer(alarmProps);
                 ActivationConsumer activationConsumer = new ActivationConsumer(activationProps);
-                SystemConsumer categoryConsumer = new SystemConsumer(categoryProps);
-                ActionConsumer classConsumer = new ActionConsumer(classProps);
+                SystemConsumer systemConsumer = new SystemConsumer(systemProps);
+                ActionConsumer actionConsumer = new ActionConsumer(actionProps);
                 AlarmConsumer instanceConsumer = new AlarmConsumer(instanceProps);
                 LocationConsumer locationConsumer = new LocationConsumer(locationProps);
                 EffectiveNotificationConsumer notificationConsumer =
@@ -237,7 +240,7 @@ public class SSE implements ServletContextListener {
                 notificationListener = new NotificationIAOListener(sink);
                 activationListener = new ActivationIAOListener(sink);
               } else {
-                alarmListener = new ESListener<>(sink, "alarm", strKeyConv, ALARM_MIXINS);
+                alarmListener = new ESListener<>(sink, "alarm", strKeyConv, EFFECTIVE_ALARM_MIXINS);
                 notificationListener =
                     new ESListener<>(sink, "notification", strKeyConv, NOTIFICATION_MIXINS);
                 activationListener =
@@ -246,10 +249,12 @@ public class SSE implements ServletContextListener {
 
               alarmConsumer.addListener(alarmListener);
               activationConsumer.addListener(activationListener);
-              categoryConsumer.addListener(new ESListener<>(sink, "category", strKeyConv, null));
-              classConsumer.addListener(new ESListener<>(sink, "class", strKeyConv, CLASS_MIXINS));
+              systemConsumer.addListener(
+                  new ESListener<>(sink, "system", strKeyConv, SYSTEM_MIXINS));
+              actionConsumer.addListener(
+                  new ESListener<>(sink, "action", strKeyConv, ACTION_MIXINS));
               instanceConsumer.addListener(
-                  new ESListener<>(sink, "instance", strKeyConv, INSTANCE_MIXINS));
+                  new ESListener<>(sink, "instance", strKeyConv, ALARM_MIXINS));
               locationConsumer.addListener(
                   new ESListener<>(sink, "location", strKeyConv, LOCATION_MIXINS));
               notificationConsumer.addListener(notificationListener);
@@ -260,8 +265,8 @@ public class SSE implements ServletContextListener {
 
               if (alarm) alarmConsumer.start();
               if (activation) activationConsumer.start();
-              if (category) categoryConsumer.start();
-              if (clazz) classConsumer.start();
+              if (system) systemConsumer.start();
+              if (action) actionConsumer.start();
               if (instance) instanceConsumer.start();
               if (location) locationConsumer.start();
               if (notification) notificationConsumer.start();
@@ -357,7 +362,7 @@ public class SSE implements ServletContextListener {
   class AlarmIAOListener extends ActiveOnlyESListener<String, EffectiveAlarm> {
 
     AlarmIAOListener(SseEventSink sink) {
-      super(sink, "alarm", strKeyConv, ALARM_MIXINS);
+      super(sink, "alarm", strKeyConv, EFFECTIVE_ALARM_MIXINS);
     }
 
     @Override
