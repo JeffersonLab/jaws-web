@@ -50,7 +50,7 @@ public class AlarmController extends HttpServlet {
     BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
     String actionName = request.getParameter("actionName");
     BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
-    String componentName = request.getParameter("componentName");
+    String systemName = request.getParameter("systemName");
     BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
@@ -62,7 +62,7 @@ public class AlarmController extends HttpServlet {
             teamId,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             offset,
             maxPerPage);
     List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
@@ -98,7 +98,7 @@ public class AlarmController extends HttpServlet {
 
     long totalRecords =
         alarmFacade.countList(
-            locationIdArray, priorityId, teamId, alarmName, actionName, componentName);
+            locationIdArray, priorityId, teamId, alarmName, actionName, systemName);
 
     Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
@@ -110,7 +110,7 @@ public class AlarmController extends HttpServlet {
             selectedTeam,
             alarmName,
             actionName,
-            componentName);
+            systemName);
 
     request.setAttribute("actionList", actionList);
     request.setAttribute("alarmList", alarmList);
@@ -130,7 +130,7 @@ public class AlarmController extends HttpServlet {
       Team team,
       String alarmName,
       String actionName,
-      String componentName) {
+      String systemName) {
     DecimalFormat formatter = new DecimalFormat("###,###");
 
     String selectionMessage = "All Alarms ";
@@ -164,8 +164,8 @@ public class AlarmController extends HttpServlet {
       filters.add("Action Name \"" + actionName + "\"");
     }
 
-    if (componentName != null && !componentName.isBlank()) {
-      filters.add("Component Name \"" + componentName + "\"");
+    if (systemName != null && !systemName.isBlank()) {
+      filters.add("System Name \"" + systemName + "\"");
     }
 
     if (!filters.isEmpty()) {

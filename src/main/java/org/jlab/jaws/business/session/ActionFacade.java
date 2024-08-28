@@ -55,7 +55,7 @@ public class ActionFacade extends AbstractFacade<Action> {
       BigInteger priorityId,
       BigInteger teamId,
       String actionName,
-      String componentName) {
+      String systemName) {
     List<Predicate> filters = new ArrayList<>();
 
     if (priorityId != null) {
@@ -66,18 +66,18 @@ public class ActionFacade extends AbstractFacade<Action> {
       filters.add(cb.like(cb.lower(root.get("name")), actionName.toLowerCase()));
     }
 
-    Join<Action, SystemEntity> componentJoin = null;
+    Join<Action, SystemEntity> systemJoin = null;
 
-    if (componentName != null && !componentName.isEmpty() || teamId != null) {
-      componentJoin = root.join("component");
+    if (systemName != null && !systemName.isEmpty() || teamId != null) {
+      systemJoin = root.join("system");
     }
 
-    if (componentName != null && !componentName.isEmpty()) {
-      filters.add(cb.like(cb.lower(componentJoin.get("name")), componentName.toLowerCase()));
+    if (systemName != null && !systemName.isEmpty()) {
+      filters.add(cb.like(cb.lower(systemJoin.get("name")), systemName.toLowerCase()));
     }
 
     if (teamId != null) {
-      filters.add(cb.equal(componentJoin.get("team"), teamId));
+      filters.add(cb.equal(systemJoin.get("team"), teamId));
     }
 
     return filters;
@@ -88,7 +88,7 @@ public class ActionFacade extends AbstractFacade<Action> {
       BigInteger priorityId,
       BigInteger teamId,
       String actionName,
-      String componentName,
+      String systemName,
       int offset,
       int max) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
@@ -96,7 +96,7 @@ public class ActionFacade extends AbstractFacade<Action> {
     Root<Action> root = cq.from(Action.class);
     cq.select(root);
 
-    List<Predicate> filters = getFilters(cb, root, priorityId, teamId, actionName, componentName);
+    List<Predicate> filters = getFilters(cb, root, priorityId, teamId, actionName, systemName);
 
     if (!filters.isEmpty()) {
       cq.where(cb.and(filters.toArray(new Predicate[] {})));
@@ -116,12 +116,12 @@ public class ActionFacade extends AbstractFacade<Action> {
 
   @PermitAll
   public long countList(
-      BigInteger priorityId, BigInteger teamId, String actionName, String componentName) {
+      BigInteger priorityId, BigInteger teamId, String actionName, String systemName) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
     Root<Action> root = cq.from(Action.class);
 
-    List<Predicate> filters = getFilters(cb, root, priorityId, teamId, actionName, componentName);
+    List<Predicate> filters = getFilters(cb, root, priorityId, teamId, actionName, systemName);
 
     if (!filters.isEmpty()) {
       cq.where(cb.and(filters.toArray(new Predicate[] {})));
@@ -148,7 +148,7 @@ public class ActionFacade extends AbstractFacade<Action> {
   @RolesAllowed("jaws-admin")
   public void addAction(
       String name,
-      BigInteger componentId,
+      BigInteger systemId,
       BigInteger priorityId,
       String correctiveAction,
       String rationale,
@@ -161,14 +161,14 @@ public class ActionFacade extends AbstractFacade<Action> {
       throw new UserFriendlyException("Name is required");
     }
 
-    if (componentId == null) {
-      throw new UserFriendlyException("Component is required");
+    if (systemId == null) {
+      throw new UserFriendlyException("System is required");
     }
 
-    SystemEntity component = systemFacade.find(componentId);
+    SystemEntity system = systemFacade.find(systemId);
 
-    if (component == null) {
-      throw new UserFriendlyException("Component not found with ID: " + componentId);
+    if (system == null) {
+      throw new UserFriendlyException("System not found with ID: " + systemId);
     }
 
     if (priorityId == null) {
@@ -200,7 +200,7 @@ public class ActionFacade extends AbstractFacade<Action> {
     Action action = new Action();
 
     action.setName(name);
-    action.setSystem(component);
+    action.setSystem(system);
     action.setPriority(priority);
     action.setCorrectiveAction(correctiveAction);
     action.setRationale(rationale);
@@ -235,8 +235,7 @@ public class ActionFacade extends AbstractFacade<Action> {
   public void editAction(
       BigInteger actionId,
       String name,
-      BigInteger actionId1,
-      BigInteger componentId,
+      BigInteger systemId,
       BigInteger priorityId,
       String correctiveAction,
       String rationale,
@@ -259,14 +258,14 @@ public class ActionFacade extends AbstractFacade<Action> {
       throw new UserFriendlyException("Name is required");
     }
 
-    if (componentId == null) {
-      throw new UserFriendlyException("Component is required");
+    if (systemId == null) {
+      throw new UserFriendlyException("System is required");
     }
 
-    SystemEntity component = systemFacade.find(componentId);
+    SystemEntity system = systemFacade.find(systemId);
 
-    if (component == null) {
-      throw new UserFriendlyException("Component not found with ID: " + componentId);
+    if (system == null) {
+      throw new UserFriendlyException("System not found with ID: " + systemId);
     }
 
     if (priorityId == null) {
@@ -296,7 +295,7 @@ public class ActionFacade extends AbstractFacade<Action> {
     }
 
     action.setName(name);
-    action.setSystem(component);
+    action.setSystem(system);
     action.setPriority(priority);
     action.setCorrectiveAction(correctiveAction);
     action.setRationale(rationale);
