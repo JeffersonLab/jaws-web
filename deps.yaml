@@ -82,7 +82,7 @@ services:
       timeout: 10s
       retries: 5
     depends_on:
-      jaws:
+      cli:
         condition: service_healthy
     environment:
       BOOTSTRAP_SERVERS: "kafka:9092"
