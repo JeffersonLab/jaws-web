@@ -16,7 +16,7 @@ import javax.persistence.criteria.*;
 import org.jlab.jaws.business.util.KafkaConfig;
 import org.jlab.jaws.clients.SystemProducer;
 import org.jlab.jaws.entity.AlarmSystem;
-import org.jlab.jaws.persistence.entity.Component;
+import org.jlab.jaws.persistence.entity.SystemEntity;
 import org.jlab.jaws.persistence.entity.Team;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
@@ -24,8 +24,8 @@ import org.jlab.smoothness.business.exception.UserFriendlyException;
  * @author ryans
  */
 @Stateless
-public class ComponentFacade extends AbstractFacade<Component> {
-  private static final Logger logger = Logger.getLogger(ComponentFacade.class.getName());
+public class SystemFacade extends AbstractFacade<SystemEntity> {
+  private static final Logger logger = Logger.getLogger(SystemFacade.class.getName());
 
   @PersistenceContext(unitName = "webappPU")
   private EntityManager em;
@@ -37,12 +37,12 @@ public class ComponentFacade extends AbstractFacade<Component> {
     return em;
   }
 
-  public ComponentFacade() {
-    super(Component.class);
+  public SystemFacade() {
+    super(SystemEntity.class);
   }
 
   private List<Predicate> getFilters(
-      CriteriaBuilder cb, Root<Component> root, String componentName, BigInteger teamId) {
+      CriteriaBuilder cb, Root<SystemEntity> root, String componentName, BigInteger teamId) {
     List<Predicate> filters = new ArrayList<>();
 
     if (componentName != null && !componentName.isEmpty()) {
@@ -57,10 +57,11 @@ public class ComponentFacade extends AbstractFacade<Component> {
   }
 
   @PermitAll
-  public List<Component> filterList(String componentName, BigInteger teamId, int offset, int max) {
+  public List<SystemEntity> filterList(
+      String componentName, BigInteger teamId, int offset, int max) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-    CriteriaQuery<Component> cq = cb.createQuery(Component.class);
-    Root<Component> root = cq.from(Component.class);
+    CriteriaQuery<SystemEntity> cq = cb.createQuery(SystemEntity.class);
+    Root<SystemEntity> root = cq.from(SystemEntity.class);
     cq.select(root);
 
     List<Predicate> filters = getFilters(cb, root, componentName, teamId);
@@ -85,7 +86,7 @@ public class ComponentFacade extends AbstractFacade<Component> {
   public long countList(String componentName, BigInteger teamId) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-    Root<Component> root = cq.from(Component.class);
+    Root<SystemEntity> root = cq.from(SystemEntity.class);
 
     List<Predicate> filters = getFilters(cb, root, componentName, teamId);
 
@@ -99,7 +100,7 @@ public class ComponentFacade extends AbstractFacade<Component> {
   }
 
   @RolesAllowed("jaws-admin")
-  public void addComponent(String name, BigInteger teamId) throws UserFriendlyException {
+  public void addSystem(String name, BigInteger teamId) throws UserFriendlyException {
     if (name == null || name.isBlank()) {
       throw new UserFriendlyException("Name is required");
     }
@@ -114,27 +115,27 @@ public class ComponentFacade extends AbstractFacade<Component> {
       throw new UserFriendlyException("Team not found with ID: " + teamId);
     }
 
-    Component component = new Component();
+    SystemEntity system = new SystemEntity();
 
-    component.setName(name);
-    component.setTeam(team);
+    system.setName(name);
+    system.setTeam(team);
 
-    create(component);
+    create(system);
 
-    kafkaSet(Arrays.asList(component));
+    kafkaSet(Arrays.asList(system));
   }
 
   @RolesAllowed("jaws-admin")
-  public void editComponent(BigInteger componentId, String name, BigInteger teamId)
+  public void editSystem(BigInteger systemId, String name, BigInteger teamId)
       throws UserFriendlyException {
-    if (componentId == null) {
-      throw new UserFriendlyException("Component ID is required");
+    if (systemId == null) {
+      throw new UserFriendlyException("System ID is required");
     }
 
-    Component component = find(componentId);
+    SystemEntity system = find(systemId);
 
-    if (component == null) {
-      throw new UserFriendlyException("Component not found with ID: " + componentId);
+    if (system == null) {
+      throw new UserFriendlyException("System not found with ID: " + systemId);
     }
 
     if (name == null || name.isBlank()) {
@@ -147,50 +148,50 @@ public class ComponentFacade extends AbstractFacade<Component> {
 
     Team team = teamFacade.find(teamId);
 
-    component.setName(name);
-    component.setTeam(team);
+    system.setName(name);
+    system.setTeam(team);
 
-    edit(component);
+    edit(system);
 
-    kafkaSet(Arrays.asList(component));
+    kafkaSet(Arrays.asList(system));
   }
 
   @RolesAllowed("jaws-admin")
-  public void removeComponent(BigInteger componentId) throws UserFriendlyException {
-    if (componentId == null) {
-      throw new UserFriendlyException("Component ID is required");
+  public void removeSystem(BigInteger systemId) throws UserFriendlyException {
+    if (systemId == null) {
+      throw new UserFriendlyException("System ID is required");
     }
 
-    Component component = find(componentId);
+    SystemEntity system = find(systemId);
 
-    if (component == null) {
-      throw new UserFriendlyException("Component not found with ID: " + componentId);
+    if (system == null) {
+      throw new UserFriendlyException("System not found with ID: " + systemId);
     }
 
-    remove(component);
+    remove(system);
 
-    kafkaUnset(Arrays.asList(component.getName()));
+    kafkaUnset(Arrays.asList(system.getName()));
   }
 
   @PermitAll
-  public Component findByName(String name) {
-    List<Component> componentList = this.filterList(name, null, 0, 1);
+  public SystemEntity findByName(String name) {
+    List<SystemEntity> systemList = this.filterList(name, null, 0, 1);
 
-    Component component = null;
+    SystemEntity system = null;
 
-    if (componentList != null && !componentList.isEmpty()) {
-      component = componentList.get(0);
+    if (systemList != null && !systemList.isEmpty()) {
+      system = systemList.get(0);
     }
 
-    return component;
+    return system;
   }
 
   @RolesAllowed("jaws-admin")
-  public void kafkaSet(List<Component> componentList) {
-    if (componentList != null) {
+  public void kafkaSet(List<SystemEntity> systemList) {
+    if (systemList != null) {
       try (SystemProducer producer =
           new SystemProducer(KafkaConfig.getProducerPropsWithRegistry())) {
-        for (Component component : componentList) {
+        for (SystemEntity component : systemList) {
           String key = component.getName();
 
           Team team = component.getTeam();

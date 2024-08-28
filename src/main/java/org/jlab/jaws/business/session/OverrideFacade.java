@@ -119,11 +119,11 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
 
     Join<AlarmOverride, Alarm> alarmJoin = root.join("alarm", JoinType.LEFT);
     Join<Alarm, Action> actionJoin = alarmJoin.join("action", JoinType.LEFT);
-    Join<Action, Component> componentJoin = actionJoin.join("component", JoinType.LEFT);
+    Join<Action, SystemEntity> systemJoin = actionJoin.join("system", JoinType.LEFT);
 
     joins.put("alarm", alarmJoin);
     joins.put("action", actionJoin);
-    joins.put("component", componentJoin);
+    joins.put("system", systemJoin);
 
     if (typeList != null && typeList.size() > 0) {
       filters.add(root.get("overridePK").get("type").in(typeList));
@@ -168,11 +168,11 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
     }
 
     if (componentName != null && !componentName.isEmpty()) {
-      filters.add(cb.like(cb.lower(componentJoin.get("name")), componentName.toLowerCase()));
+      filters.add(cb.like(cb.lower(systemJoin.get("name")), componentName.toLowerCase()));
     }
 
     if (teamId != null) {
-      filters.add(cb.equal(componentJoin.get("team"), teamId));
+      filters.add(cb.equal(systemJoin.get("team"), teamId));
     }
 
     return filters;
@@ -186,7 +186,7 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
       BigInteger teamId,
       String alarmName,
       String actionName,
-      String componentName,
+      String systemName,
       int offset,
       int max) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
@@ -207,7 +207,7 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
             teamId,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             joins);
 
     if (!filters.isEmpty()) {
@@ -237,7 +237,7 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
       BigInteger teamId,
       String alarmName,
       String actionName,
-      String componentName) {
+      String systemName) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
     Root<AlarmOverride> root = cq.from(AlarmOverride.class);
@@ -255,7 +255,7 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
             teamId,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             joins);
 
     if (!filters.isEmpty()) {

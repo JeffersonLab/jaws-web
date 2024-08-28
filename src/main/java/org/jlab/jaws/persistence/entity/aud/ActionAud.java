@@ -8,8 +8,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.hibernate.envers.RevisionType;
 import org.jlab.jaws.persistence.entity.ApplicationRevisionInfo;
-import org.jlab.jaws.persistence.entity.Component;
 import org.jlab.jaws.persistence.entity.Priority;
+import org.jlab.jaws.persistence.entity.SystemEntity;
 import org.jlab.smoothness.persistence.util.YnStringToBoolean;
 
 /**
@@ -41,9 +41,9 @@ public class ActionAud implements Serializable {
   @Column(length = 64)
   private String name;
 
-  @JoinColumn(name = "COMPONENT_ID", referencedColumnName = "COMPONENT_ID", nullable = false)
+  @JoinColumn(name = "SYSTEM_ID", referencedColumnName = "SYSTEM_ID", nullable = false)
   @ManyToOne(optional = false)
-  private Component component;
+  private SystemEntity system;
 
   @JoinColumn(name = "PRIORITY_ID", referencedColumnName = "PRIORITY_ID", nullable = false)
   @ManyToOne(optional = false)
@@ -79,12 +79,12 @@ public class ActionAud implements Serializable {
     this.name = name;
   }
 
-  public Component getComponent() {
-    return component;
+  public SystemEntity getSystem() {
+    return system;
   }
 
-  public void setComponent(Component component) {
-    this.component = component;
+  public void setSystem(SystemEntity component) {
+    this.system = component;
   }
 
   public Priority getPriority() {

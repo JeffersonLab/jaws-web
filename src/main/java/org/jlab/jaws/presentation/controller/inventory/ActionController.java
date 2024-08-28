@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jlab.jaws.business.session.*;
 import org.jlab.jaws.persistence.entity.Action;
-import org.jlab.jaws.persistence.entity.Component;
 import org.jlab.jaws.persistence.entity.Priority;
+import org.jlab.jaws.persistence.entity.SystemEntity;
 import org.jlab.jaws.persistence.entity.Team;
 import org.jlab.smoothness.presentation.util.Paginator;
 import org.jlab.smoothness.presentation.util.ParamConverter;
@@ -34,7 +34,7 @@ public class ActionController extends HttpServlet {
 
   @EJB PriorityFacade priorityFacade;
 
-  @EJB ComponentFacade componentFacade;
+  @EJB SystemFacade systemFacade;
 
   /**
    * Handles the HTTP <code>GET</code> method.
@@ -60,8 +60,7 @@ public class ActionController extends HttpServlet {
     List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
     List<Priority> priorityList =
         priorityFacade.findAll(new AbstractFacade.OrderDirective("priorityId"));
-    List<Component> componentList =
-        componentFacade.findAll(new AbstractFacade.OrderDirective("name"));
+    List<SystemEntity> systemList = systemFacade.findAll(new AbstractFacade.OrderDirective("name"));
 
     Priority selectedPriority = null;
 
@@ -87,7 +86,7 @@ public class ActionController extends HttpServlet {
     request.setAttribute("actionList", actionList);
     request.setAttribute("teamList", teamList);
     request.setAttribute("priorityList", priorityList);
-    request.setAttribute("componentList", componentList);
+    request.setAttribute("systemList", systemList);
     request.setAttribute("paginator", paginator);
 
     request.getRequestDispatcher("/WEB-INF/views/inventory/actions.jsp").forward(request, response);

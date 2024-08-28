@@ -125,8 +125,8 @@
                             <c:url var="url" value="/inventory/actions/${jaws:urlEncodePath(alarm.action.name)}">
                             </c:url>
                             <dd>
-                                <c:out value="${alarm.action.component.team.name}"/> &gt;
-                                <c:out value="${alarm.action.component.name}"/> &gt;
+                                <c:out value="${alarm.action.system.team.name}"/> &gt;
+                                <c:out value="${alarm.action.system.name}"/> &gt;
                                 <a href="${url}"><c:out value="${alarm.action.name}"/></a>
                             </dd>
                             <dt>Location:</dt>

@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jlab.jaws.business.session.AbstractFacade;
-import org.jlab.jaws.business.session.ComponentFacade;
 import org.jlab.jaws.business.session.LocationFacade;
-import org.jlab.jaws.persistence.entity.Component;
+import org.jlab.jaws.business.session.SystemFacade;
 import org.jlab.jaws.persistence.entity.Location;
+import org.jlab.jaws.persistence.entity.SystemEntity;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 
 /**
@@ -25,7 +25,7 @@ import org.jlab.smoothness.presentation.util.ParamConverter;
 public class Active extends HttpServlet {
 
   @EJB LocationFacade locationFacade;
-  @EJB ComponentFacade componentFacade;
+  @EJB SystemFacade systemFacade;
 
   /**
    * Handles the HTTP <code>GET</code> method.
@@ -80,8 +80,7 @@ public class Active extends HttpServlet {
 
     List<Location> locationList = locationFacade.findAll();
 
-    List<Component> componentList =
-        componentFacade.findAll(new AbstractFacade.OrderDirective("name"));
+    List<SystemEntity> systemList = systemFacade.findAll(new AbstractFacade.OrderDirective("name"));
 
     String selectionMessage = createSelectionMessage(selectedLocationList);
 
@@ -90,7 +89,7 @@ public class Active extends HttpServlet {
     request.setAttribute("locationList", locationList);
     request.setAttribute("materializedLocationsArrayStr", materializedLocationsArrayStr);
     request.setAttribute("listActiveParams", listActiveParams);
-    request.setAttribute("categoryList", componentList);
+    request.setAttribute("systemList", systemList);
 
     request.getRequestDispatcher("/WEB-INF/views/active.jsp").forward(request, response);
   }

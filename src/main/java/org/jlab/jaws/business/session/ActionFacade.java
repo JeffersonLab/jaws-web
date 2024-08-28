@@ -22,8 +22,8 @@ import org.jlab.jaws.clients.ActionProducer;
 import org.jlab.jaws.entity.AlarmAction;
 import org.jlab.jaws.entity.AlarmPriority;
 import org.jlab.jaws.persistence.entity.Action;
-import org.jlab.jaws.persistence.entity.Component;
 import org.jlab.jaws.persistence.entity.Priority;
+import org.jlab.jaws.persistence.entity.SystemEntity;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
 /**
@@ -33,7 +33,7 @@ import org.jlab.smoothness.business.exception.UserFriendlyException;
 public class ActionFacade extends AbstractFacade<Action> {
   private static final Logger logger = Logger.getLogger(ActionFacade.class.getName());
 
-  @EJB ComponentFacade componentFacade;
+  @EJB SystemFacade systemFacade;
 
   @EJB PriorityFacade priorityFacade;
 
@@ -66,7 +66,7 @@ public class ActionFacade extends AbstractFacade<Action> {
       filters.add(cb.like(cb.lower(root.get("name")), actionName.toLowerCase()));
     }
 
-    Join<Action, Component> componentJoin = null;
+    Join<Action, SystemEntity> componentJoin = null;
 
     if (componentName != null && !componentName.isEmpty() || teamId != null) {
       componentJoin = root.join("component");
@@ -165,7 +165,7 @@ public class ActionFacade extends AbstractFacade<Action> {
       throw new UserFriendlyException("Component is required");
     }
 
-    Component component = componentFacade.find(componentId);
+    SystemEntity component = systemFacade.find(componentId);
 
     if (component == null) {
       throw new UserFriendlyException("Component not found with ID: " + componentId);
@@ -200,7 +200,7 @@ public class ActionFacade extends AbstractFacade<Action> {
     Action action = new Action();
 
     action.setName(name);
-    action.setComponent(component);
+    action.setSystem(component);
     action.setPriority(priority);
     action.setCorrectiveAction(correctiveAction);
     action.setRationale(rationale);
@@ -263,7 +263,7 @@ public class ActionFacade extends AbstractFacade<Action> {
       throw new UserFriendlyException("Component is required");
     }
 
-    Component component = componentFacade.find(componentId);
+    SystemEntity component = systemFacade.find(componentId);
 
     if (component == null) {
       throw new UserFriendlyException("Component not found with ID: " + componentId);
@@ -296,7 +296,7 @@ public class ActionFacade extends AbstractFacade<Action> {
     }
 
     action.setName(name);
-    action.setComponent(component);
+    action.setSystem(component);
     action.setPriority(priority);
     action.setCorrectiveAction(correctiveAction);
     action.setRationale(rationale);
@@ -347,7 +347,7 @@ public class ActionFacade extends AbstractFacade<Action> {
 
     JsonObject object = reader.readObject();
 
-    String componentName = object.getString("category");
+    String systemName = object.getString("system");
     String priorityName = object.getString("priority");
     String correctiveAction = null;
 
@@ -361,7 +361,7 @@ public class ActionFacade extends AbstractFacade<Action> {
       rationale = object.getString("rationale");
     }
 
-    Boolean filterable = false;
+    Boolean filterable = true;
 
     if (!object.isNull("filterable")) {
       filterable = object.getBoolean("filterable");
@@ -385,11 +385,11 @@ public class ActionFacade extends AbstractFacade<Action> {
       offDelaySeconds = BigInteger.valueOf(object.getInt("offdelayseconds"));
     }
 
-    Component component = componentFacade.findByName(componentName);
+    SystemEntity system = systemFacade.findByName(systemName);
     Priority priority = priorityFacade.findByName(priorityName);
 
-    if (component == null) {
-      throw new UserFriendlyException("Component not found: " + componentName);
+    if (system == null) {
+      throw new UserFriendlyException("System not found: " + systemName);
     }
 
     if (priority == null) {
@@ -398,7 +398,7 @@ public class ActionFacade extends AbstractFacade<Action> {
 
     addAction(
         name,
-        component.getComponentId(),
+        system.getSystemId(),
         priority.getPriorityId(),
         correctiveAction,
         rationale,
@@ -424,7 +424,7 @@ public class ActionFacade extends AbstractFacade<Action> {
           AlarmPriority ap = AlarmPriority.valueOf(priorityName);
           value.setPriority(ap);
 
-          value.setSystem(action.getComponent().getName());
+          value.setSystem(action.getSystem().getName());
           value.setCorrectiveaction(action.getCorrectiveAction());
           value.setFilterable(action.isFilterable());
           value.setLatchable(action.isLatchable());

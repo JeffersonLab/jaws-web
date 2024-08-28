@@ -16,7 +16,7 @@
         <ul>
             <li${fn:startsWith(currentPath, '/inventory/alarms') ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/alarms">Alarms</a></li>
             <li${fn:startsWith(currentPath, '/inventory/actions') ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/actions">Actions</a></li>
-            <li${'/inventory/components' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/components">Components</a></li>
+            <li${'/inventory/systems' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/systems">Systems</a></li>
             <li${'/inventory/locations' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/locations">Locations</a></li>
             <li${'/inventory/priorities' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/priorities">Priorities</a></li>
             <li${'/inventory/teams' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/inventory/teams">Teams</a></li>

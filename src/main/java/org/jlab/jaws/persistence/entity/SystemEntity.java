@@ -8,17 +8,17 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "COMPONENT", schema = "JAWS_OWNER")
-public class Component implements Serializable {
+@Table(name = "SYSTEM", schema = "JAWS_OWNER")
+public class SystemEntity implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @SequenceGenerator(name = "ComponentId", sequenceName = "COMPONENT_ID", allocationSize = 1)
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ComponentId")
+  @SequenceGenerator(name = "SystemId", sequenceName = "SYSTEM_ID", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SystemId")
   @Basic(optional = false)
   @NotNull
-  @Column(name = "COMPONENT_ID", nullable = false, precision = 22, scale = 0)
-  private BigInteger componentId;
+  @Column(name = "SYSTEM_ID", nullable = false, precision = 22, scale = 0)
+  private BigInteger systemId;
 
   @JoinColumn(name = "TEAM_ID", referencedColumnName = "TEAM_ID", nullable = false)
   @ManyToOne(optional = false)
@@ -28,12 +28,12 @@ public class Component implements Serializable {
   @Column(length = 64)
   private String name;
 
-  public BigInteger getComponentId() {
-    return componentId;
+  public BigInteger getSystemId() {
+    return systemId;
   }
 
-  public void setComponentId(BigInteger componentId) {
-    this.componentId = componentId;
+  public void setSystemId(BigInteger systemId) {
+    this.systemId = systemId;
   }
 
   public Team getTeam() {
@@ -55,8 +55,8 @@ public class Component implements Serializable {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof Component)) return false;
-    Component entity = (Component) o;
+    if (!(o instanceof SystemEntity)) return false;
+    SystemEntity entity = (SystemEntity) o;
     return Objects.equals(name, entity.name);
   }
 

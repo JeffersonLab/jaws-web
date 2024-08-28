@@ -2,19 +2,19 @@ const urlObject = new URL(self.location);
 const contextPath = '/' + urlObject.pathname.split('/')[1];
 
 const activeByLocation = new Map();
-const activeByCategory = new Map();
+const activeBySystem = new Map();
 const activeByName = new Map();
 const activeUnregistered = new Map();
 const activeUnfilterable = new Map();
 
 class EffectiveAlarm {
-    constructor(name, priority, category, rationale, action, contact, filterable, latchable,
+    constructor(name, priority, system, rationale, action, contact, filterable, latchable,
                 ondelay, offdelay, alarmclass, device, location, maskedby, screencommand, epicspv, state,
                 disabled, ondelayed, offdelayed, filtered, oneshot, reason, comments, latched, masked, type, error, note, sevr, stat) {
         this.name = name;
 
         this.priority = priority;
-        this.category = category;
+        this.system = system;
         this.rationale = rationale;
         this.action = action;
         this.contact = contact;
@@ -58,7 +58,7 @@ let toAlarm = function(key, value) {
     return new EffectiveAlarm(
         key,
         value.registration.priority,
-        value.registration.category,
+        value.registration.system,
         value.registration.rationale,
         value.registration.action,
         value.registration.contact,
@@ -149,13 +149,13 @@ function updateOrAddAlarms(data) {
     for(const record of data) {
         activeByName.set(record.name, record);
 
-        let category = record.category;
-        if(category !== undefined) {
-            let alarmSet = activeByCategory.get(category);
+        let system = record.system;
+        if(system !== undefined) {
+            let alarmSet = activeBySystem.get(system);
 
             if(alarmSet === undefined) {
                 alarmSet = new Set([]);
-                activeByCategory.set(category, alarmSet);
+                activeBySystem.set(system, alarmSet);
             }
             alarmSet.add(record.name);
         }
@@ -193,9 +193,9 @@ function removeAlarms(keys) {
 
 
         if(alarm !== undefined) {
-            let category = alarm.category;
-            if(category !== undefined) {
-                let alarmSet = activeByCategory.get(category);
+            let system = alarm.system;
+            if(system !== undefined) {
+                let alarmSet = activeBySystem.get(system);
                 if(alarmSet !== undefined) {
                     alarmSet.delete(name);
                 }
@@ -358,19 +358,19 @@ function updateLocationCount() {
         updateShown(locationUnion, span);
     }
 }
-function updateCategoryCount() {
-    for(let [name, id] of jlab.categoryNameIdMap) {
-        let div = jlab.categoryCountDivMap.get(id),
+function updateSystemCount() {
+    for(let [name, id] of jlab.systemNameIdMap) {
+        let div = jlab.systemCountDivMap.get(id),
             span = div.firstElementChild,
-            alarmArray = activeByCategory.get(name);
+            alarmArray = activeBySystem.get(name);
 
         if(alarmArray !== undefined) {
             span.firstElementChild.innerText = jlab.integerWithCommas(alarmArray.size)
 
             if (alarmArray.size > 0) {
-                span.classList.add("category-active");
+                span.classList.add("system-active");
             } else {
-                span.classList.remove("category-active");
+                span.classList.remove("system-active");
             }
         }
     }
@@ -378,7 +378,7 @@ function updateCategoryCount() {
 function updateCount() {
     updateSiteCount();
     updateLocationCount();
-    updateCategoryCount();
+    updateSystemCount();
 }
 function updateShown(locationUnion, span) {
     if (locationUnion.size > 0) {

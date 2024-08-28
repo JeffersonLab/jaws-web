@@ -14,7 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.jlab.jaws.business.session.ComponentFacade;
+import org.jlab.jaws.business.session.SystemFacade;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 
@@ -28,7 +28,7 @@ public class EditComponent extends HttpServlet {
 
   private static final Logger logger = Logger.getLogger(EditComponent.class.getName());
 
-  @EJB ComponentFacade componentFacade;
+  @EJB SystemFacade systemFacade;
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -42,7 +42,7 @@ public class EditComponent extends HttpServlet {
     String error = null;
 
     try {
-      componentFacade.editComponent(id, name, teamId);
+      systemFacade.editSystem(id, name, teamId);
     } catch (UserFriendlyException e) {
       stat = "fail";
       error = "Unable to edit Component: " + e.getMessage();

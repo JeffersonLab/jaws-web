@@ -38,16 +38,16 @@
                 jlab.locationCountSpanMap.set(id, document.getElementById("location-count-" + id));
             }
 
-            jlab.categoryNameIdMap = new Map([
-                <c:forEach items="${categoryList}" var="category">
-                ['${fn:escapeXml(category.name)}',${category.componentId}],
+            jlab.systemNameIdMap = new Map([
+                <c:forEach items="${systemList}" var="system">
+                ['${fn:escapeXml(system.name)}',${system.systemId}],
                 </c:forEach>
             ]);
 
-            jlab.categoryCountDivMap = new Map();
+            jlab.systemCountDivMap = new Map();
 
-            for(let id of jlab.categoryNameIdMap.values()) {
-                jlab.categoryCountDivMap.set(id, document.getElementById("category-count-" + id));
+            for(let id of jlab.systemNameIdMap.values()) {
+                jlab.systemCountDivMap.set(id, document.getElementById("system-count-" + id));
             }
         </script>
         <script type="text/javascript"
@@ -85,9 +85,9 @@
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="diagram-container">
                 <img draggable="false" alt="site" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/img/site.png"/>
-                <div id="category-grid">
-                    <c:forEach items="${categoryList}" var="category">
-                        <div id="category-count-${category.componentId}"><span class="category-status category-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&componentName=${category.name}">0</a></span> <c:out value="${category.name}"/></div>
+                <div id="system-grid">
+                    <c:forEach items="${systemList}" var="system">
+                        <div id="system-count-${system.systemId}"><span class="system-status system-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&systemName=${system.name}">0</a></span> <c:out value="${system.name}"/></div>
                     </c:forEach>
                 </div>
                 <c:forEach items="${locationList}" var="location">

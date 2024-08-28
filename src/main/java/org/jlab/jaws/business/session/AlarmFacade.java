@@ -58,7 +58,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
     List<Predicate> filters = new ArrayList<>();
 
     Join<Alarm, Action> actionJoin = root.join("action");
-    Join<Action, Component> componentJoin = actionJoin.join("component");
+    Join<Action, SystemEntity> systemJoin = actionJoin.join("system");
 
     if (locationIdArray != null && locationIdArray.length > 0) {
       // Parent locations imply children locations
@@ -99,11 +99,11 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
     }
 
     if (componentName != null && !componentName.isEmpty()) {
-      filters.add(cb.like(cb.lower(componentJoin.get("name")), componentName.toLowerCase()));
+      filters.add(cb.like(cb.lower(systemJoin.get("name")), componentName.toLowerCase()));
     }
 
     if (teamId != null) {
-      filters.add(cb.equal(componentJoin.get("team"), teamId));
+      filters.add(cb.equal(systemJoin.get("team"), teamId));
     }
 
     return filters;

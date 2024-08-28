@@ -4,18 +4,18 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%> 
-<c:set var="title" value="Alarm Components"/>
+<c:set var="title" value="Alarm Systems"/>
 <t:inventory-page title="${title}">
     <jsp:attribute name="stylesheets">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/components.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/systems.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
-        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/components.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/systems.js"></script>
     </jsp:attribute>        
     <jsp:body>
         <section>
             <s:filter-flyout-widget clearButton="true">
-                <form id="filter-form" method="get" action="components">
+                <form id="filter-form" method="get" action="systems">
                     <div id="filter-form-panel">
                         <fieldset>
                             <legend>Filter</legend>
@@ -36,11 +36,11 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="component-name">Component Name</label>
+                                        <label for="system-name">System Name</label>
                                     </div>
                                     <div class="li-value">
-                                        <input id="component-name"
-                                               name="componentName" value="${fn:escapeXml(param.componentName)}"
+                                        <input id="system-name"
+                                               name="systemName" value="${fn:escapeXml(param.systemName)}"
                                                placeholder="name"/>
                                         <div>(use % as wildcard)</div>
                                     </div>
@@ -75,10 +75,10 @@
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
                                         <tbody>
-                                        <c:forEach items="${componentList}" var="component">
-                                            <tr data-id="${component.componentId}" data-team-id="${component.team.teamId}">
-                                                <td><c:out value="${component.name}"/></td>
-                                                <td><c:out value="${component.team.name}"/></td>
+                                        <c:forEach items="${systemList}" var="system">
+                                            <tr data-id="${system.systemId}" data-team-id="${system.team.teamId}">
+                                                <td><c:out value="${system.name}"/></td>
+                                                <td><c:out value="${system.team.name}"/></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>

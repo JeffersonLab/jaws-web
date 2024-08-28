@@ -14,7 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.jlab.jaws.business.session.ComponentFacade;
+import org.jlab.jaws.business.session.SystemFacade;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 
@@ -22,36 +22,36 @@ import org.jlab.smoothness.presentation.util.ParamConverter;
  * @author ryans
  */
 @WebServlet(
-    name = "AddComponent",
-    urlPatterns = {"/ajax/add-component"})
-public class AddComponent extends HttpServlet {
+    name = "RemoveSystem",
+    urlPatterns = {"/ajax/remove-system"})
+public class RemoveSystem extends HttpServlet {
 
-  private static final Logger logger = Logger.getLogger(AddComponent.class.getName());
+  private static final Logger logger = Logger.getLogger(RemoveSystem.class.getName());
 
-  @EJB ComponentFacade componentFacade;
+  @EJB SystemFacade systemFacade;
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    String name = request.getParameter("name");
-    BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
+    BigInteger id = ParamConverter.convertBigInteger(request, "id");
 
     String stat = "ok";
     String error = null;
 
     try {
-      componentFacade.addComponent(name, teamId);
+      systemFacade.removeSystem(id);
     } catch (UserFriendlyException e) {
       stat = "fail";
-      error = "Unable to add Component: " + e.getMessage();
+      error = "Unable to remove System: " + e.getMessage();
     } catch (EJBAccessException e) {
       stat = "fail";
-      error = "Unable to add Component: Not authenticated / authorized (do you need to re-login?)";
+      error =
+          "Unable to remove Component: Not authenticated / authorized (do you need to re-login?)";
     } catch (RuntimeException e) {
       stat = "fail";
-      error = "Unable to add Component";
-      logger.log(Level.SEVERE, "Unable to add Component", e);
+      error = "Unable to remove Component";
+      logger.log(Level.SEVERE, "Unable to remove Component", e);
     }
 
     response.setContentType("application/json");

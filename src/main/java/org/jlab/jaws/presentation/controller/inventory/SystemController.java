@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jlab.jaws.business.session.AbstractFacade;
-import org.jlab.jaws.business.session.ComponentFacade;
+import org.jlab.jaws.business.session.SystemFacade;
 import org.jlab.jaws.business.session.TeamFacade;
-import org.jlab.jaws.persistence.entity.Component;
+import org.jlab.jaws.persistence.entity.SystemEntity;
 import org.jlab.jaws.persistence.entity.Team;
 import org.jlab.smoothness.presentation.util.Paginator;
 import org.jlab.smoothness.presentation.util.ParamConverter;
@@ -24,11 +24,11 @@ import org.jlab.smoothness.presentation.util.ParamUtil;
  * @author ryans
  */
 @WebServlet(
-    name = "ComponentController",
-    urlPatterns = {"/inventory/components"})
-public class ComponentController extends HttpServlet {
+    name = "SystemController",
+    urlPatterns = {"/inventory/systems"})
+public class SystemController extends HttpServlet {
 
-  @EJB ComponentFacade componentFacade;
+  @EJB SystemFacade systemFacade;
 
   @EJB TeamFacade teamFacade;
 
@@ -44,13 +44,12 @@ public class ComponentController extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    String componentName = request.getParameter("componentName");
+    String systemName = request.getParameter("systemName");
     BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
 
-    List<Component> componentList =
-        componentFacade.filterList(componentName, teamId, offset, maxPerPage);
+    List<SystemEntity> systemList = systemFacade.filterList(systemName, teamId, offset, maxPerPage);
     List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
 
     Team selectedTeam = null;
@@ -59,26 +58,24 @@ public class ComponentController extends HttpServlet {
       selectedTeam = teamFacade.find(teamId);
     }
 
-    long totalRecords = componentFacade.countList(componentName, teamId);
+    long totalRecords = systemFacade.countList(systemName, teamId);
 
     Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
-    String selectionMessage = createSelectionMessage(paginator, selectedTeam, componentName);
+    String selectionMessage = createSelectionMessage(paginator, selectedTeam, systemName);
 
     request.setAttribute("selectionMessage", selectionMessage);
-    request.setAttribute("componentList", componentList);
+    request.setAttribute("systemList", systemList);
     request.setAttribute("teamList", teamList);
     request.setAttribute("paginator", paginator);
 
-    request
-        .getRequestDispatcher("/WEB-INF/views/inventory/components.jsp")
-        .forward(request, response);
+    request.getRequestDispatcher("/WEB-INF/views/inventory/systems.jsp").forward(request, response);
   }
 
-  private String createSelectionMessage(Paginator paginator, Team team, String componentName) {
+  private String createSelectionMessage(Paginator paginator, Team team, String systemName) {
     DecimalFormat formatter = new DecimalFormat("###,###");
 
-    String selectionMessage = "All Components ";
+    String selectionMessage = "All Systems ";
 
     List<String> filters = new ArrayList<>();
 
@@ -86,8 +83,8 @@ public class ComponentController extends HttpServlet {
       filters.add("Team \"" + team.getName() + "\"");
     }
 
-    if (componentName != null && !componentName.isBlank()) {
-      filters.add("Component Name \"" + componentName + "\"");
+    if (systemName != null && !systemName.isBlank()) {
+      filters.add("System Name \"" + systemName + "\"");
     }
 
     if (!filters.isEmpty()) {
