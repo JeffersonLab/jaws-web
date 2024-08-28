@@ -146,7 +146,7 @@ public class SuppressedHistoryFacade extends AbstractFacade<SuppressedHistory> {
       Boolean registered,
       String alarmName,
       String actionName,
-      String componentName,
+      String systemName,
       int offset,
       int max) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
@@ -171,7 +171,7 @@ public class SuppressedHistoryFacade extends AbstractFacade<SuppressedHistory> {
             registered,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             joins);
 
     if (!filters.isEmpty()) {
@@ -208,7 +208,7 @@ public class SuppressedHistoryFacade extends AbstractFacade<SuppressedHistory> {
       Boolean registered,
       String alarmName,
       String actionName,
-      String componentName) {
+      String systemName) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
     Root<SuppressedHistory> root = cq.from(SuppressedHistory.class);
@@ -230,7 +230,7 @@ public class SuppressedHistoryFacade extends AbstractFacade<SuppressedHistory> {
             registered,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             joins);
 
     if (!filters.isEmpty()) {

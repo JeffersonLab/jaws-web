@@ -14,7 +14,7 @@ $(document).on("click", ".default-clear-panel", function () {
     $("#registered-select").val('');
     $("#alarm-name").val('');
     $("#action-name").val('');
-    $("#component-name").val('');
+    $("#system-name").val('');
     return false;
 });
 jlab.initDialog = function () {

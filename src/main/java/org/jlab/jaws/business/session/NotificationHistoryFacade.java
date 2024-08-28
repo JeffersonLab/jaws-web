@@ -162,7 +162,7 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
       Boolean registered,
       String alarmName,
       String actionName,
-      String componentName,
+      String systemName,
       int offset,
       int max) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
@@ -189,7 +189,7 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
             registered,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             joins);
 
     if (!filters.isEmpty()) {
@@ -228,7 +228,7 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
       Boolean registered,
       String alarmName,
       String actionName,
-      String componentName) {
+      String systemName) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
     Root<NotificationHistory> root = cq.from(NotificationHistory.class);
@@ -252,7 +252,7 @@ public class NotificationHistoryFacade extends AbstractFacade<NotificationHistor
             registered,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             joins);
 
     if (!filters.isEmpty()) {

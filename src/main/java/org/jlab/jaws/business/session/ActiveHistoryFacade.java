@@ -48,7 +48,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
       Boolean registered,
       String alarmName,
       String actionName,
-      String componentName,
+      String systemName,
       Map<String, Join> joins) {
     List<Predicate> filters = new ArrayList<>();
 
@@ -114,8 +114,8 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
       filters.add(cb.like(cb.lower(actionJoin.get("name")), actionName.toLowerCase()));
     }
 
-    if (componentName != null && !componentName.isEmpty()) {
-      filters.add(cb.like(cb.lower(systemJoin.get("name")), componentName.toLowerCase()));
+    if (systemName != null && !systemName.isEmpty()) {
+      filters.add(cb.like(cb.lower(systemJoin.get("name")), systemName.toLowerCase()));
     }
 
     if (teamId != null) {
@@ -145,7 +145,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
       Boolean registered,
       String alarmName,
       String actionName,
-      String componentName,
+      String systemName,
       int offset,
       int max) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
@@ -170,7 +170,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
             registered,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             joins);
 
     if (!filters.isEmpty()) {
@@ -207,7 +207,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
       Boolean registered,
       String alarmName,
       String actionName,
-      String componentName) {
+      String systemName) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
     Root<ActiveHistory> root = cq.from(ActiveHistory.class);
@@ -229,7 +229,7 @@ public class ActiveHistoryFacade extends AbstractFacade<ActiveHistory> {
             registered,
             alarmName,
             actionName,
-            componentName,
+            systemName,
             joins);
 
     if (!filters.isEmpty()) {
