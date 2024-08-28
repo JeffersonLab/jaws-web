@@ -191,7 +191,7 @@ $(document).on("click", ".default-clear-panel", function () {
     $("#team-select").val('');
     $("#alarm-name").val('');
     $("#action-name").val('');
-    $("#component-name").val('');
+    $("#system-name").val('');
     return false;
 });
 function formatLocation(location) {
