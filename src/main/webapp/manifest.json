@@ -13,26 +13,19 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "/jaws/alarms",
+  "start_url": "/jaws/active",
   "background_color": "#3367D6",
   "display": "standalone",
   "scope": "/",
   "theme_color": "#3367D6",
   "shortcuts": [
     {
-      "name": "Effective Alarm Registrations",
-      "short_name": "Registrations",
-      "description": "Registered alarm instances with class, location, and category information",
-      "url": "/jaws/registrations",
+      "name": "Inventory",
+      "short_name": "Inventory",
+      "description": "Inventory of alarms",
+      "url": "/jaws/inventory/alarms",
       "icons": [{ "src": "/jaws/resources/img/logo-192.png", "sizes": "192x192" }]
     }
   ],
-  "description": "JLab Alarm System Admin App",
-  "screenshots": [
-    {
-      "src": "/jaws/resources/img/screenshot1.png",
-      "type": "image/png",
-      "sizes": "1800x1307"
-    }
-  ]
+  "description": "JLab Alarm System Admin App"
 }
