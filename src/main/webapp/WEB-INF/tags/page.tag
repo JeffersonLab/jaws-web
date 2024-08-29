@@ -17,9 +17,6 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/jaws.js"></script>
         <jsp:invoke fragment="scripts"/>
     </jsp:attribute>
-    <jsp:attribute name="footnote">
-        <a href="${pageContext.request.contextPath}/debug">Debug</a>
-    </jsp:attribute>
     <jsp:attribute name="primaryNavigation">
                     <ul>
                         <li${'/active' eq currentPath ? ' class="current-primary"' : ''}>

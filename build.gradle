@@ -7,8 +7,6 @@ description 'Jefferson Lab Alarm Warning System (JAWS) web admin interface'
 group 'org.jlab'
 version new File("${projectDir}/VERSION").text.trim()
 ext.releaseDate = new Date().format('MMM dd yyyy')
-// IndexDB Client-side cache data version
-ext.cacheVersion = '1'
 
 tasks.withType(JavaCompile) {
     options.release = 11
@@ -92,18 +90,6 @@ war {
         }
         filter {
             String line -> line.replaceAll("@RELEASE_DATE@", releaseDate)
-        }
-    }
-
-    filesMatching('worker.mjs') {
-        filter {
-            String line -> line.replaceAll("@VERSION@", project.version)
-        }
-    }
-
-    filesMatching('resources/modules/jaws-admin-gui/db.mjs') {
-        filter {
-            String line -> line.replaceAll("@CACHE_VERSION@", cacheVersion)
         }
     }
 }
