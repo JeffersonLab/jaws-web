@@ -80,14 +80,14 @@
                     <input id="filter-form-submit-button" type="submit" value="Apply"/>
                 </form>
             </s:filter-flyout-widget>
-            <h2 id="page-header-title"><c:out value="${title}"/><span class="status" id="alarm-count"><a id="list-active-link" href="${pageContext.request.contextPath}/notifications${listActiveParams}">0</a></span><span class="status" id="loading"><span class="button-indicator"></span> Loading...</span></h2>
+            <h2 id="page-header-title"><c:out value="${title}"/><span class="status" id="alarm-count"><a id="list-active-link" href="${pageContext.request.contextPath}/notifications?state=Active&alwaysIncludeUnregistered=Y&alwaysIncludeUnfilterable=Y${locationFilterStr}">0</a></span><span class="status" id="loading"><span class="button-indicator"></span> Loading...</span></h2>
             <div id="liveness-heartbeat">Liveness Heartbeat: <span id="liveness-ts">None</span></div>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="diagram-container">
                 <img draggable="false" alt="site" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/img/site.png"/>
                 <div id="system-grid">
                     <c:forEach items="${systemList}" var="system">
-                        <div id="system-count-${system.systemId}"><span class="system-status system-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&systemName=${system.name}">0</a></span> <c:out value="${system.name}"/></div>
+                        <div id="system-count-${system.systemId}"><span class="system-status system-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&systemName=${system.name}${locationFilterStr}">0</a></span> <c:out value="${system.name}"/></div>
                     </c:forEach>
                 </div>
                 <c:forEach items="${locationList}" var="location">
