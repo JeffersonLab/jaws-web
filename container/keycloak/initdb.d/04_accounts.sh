@@ -17,7 +17,7 @@ create_role
 KEYCLOAK_ROLE_NAME=group3Leaders
 create_role
 
-KEYCLOAK_ROLE_NAME=${KEYCLOAK_RESOURCE}-reviewer
+KEYCLOAK_ROLE_NAME=${KEYCLOAK_RESOURCE}-operator
 create_role
 
 echo "----------------"
@@ -56,6 +56,8 @@ KEYCLOAK_LASTNAME=Johnson
 KEYCLOAK_EMAIL=user1@example.com
 create_user
 KEYCLOAK_ROLE_NAME=${KEYCLOAK_RESOURCE}-user
+assign_role
+KEYCLOAK_ROLE_NAME=${KEYCLOAK_RESOURCE}-operator
 assign_role
 
 KEYCLOAK_USERNAME=user2
