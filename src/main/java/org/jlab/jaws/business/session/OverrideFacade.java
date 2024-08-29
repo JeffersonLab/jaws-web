@@ -79,7 +79,7 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
     }
   }
 
-  @RolesAllowed("jaws-admin")
+  @RolesAllowed({"jaws-admin", "jaws-operator"})
   public void kafkaSet(String[] nameArray, OverriddenAlarmType type, AlarmOverrideUnion value)
       throws UserFriendlyException {
     if (nameArray == null || nameArray.length == 0) {
@@ -374,7 +374,7 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
     }
   }
 
-  @RolesAllowed("jaws-admin")
+  @RolesAllowed({"jaws-admin", "jaws-operator"})
   public int acknowledgeAll() throws UserFriendlyException {
     int count = 0;
 

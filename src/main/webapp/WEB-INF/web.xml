@@ -59,6 +59,7 @@
         <web-resource-collection>
             <web-resource-name>SSO Page</web-resource-name>
             <url-pattern>/sso</url-pattern>
+            <url-pattern>/reports/inventory-history/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <!-- ** = any authenticated user.  See https://javaee.github.io/servlet-spec/downloads/servlet-4.0/servlet-4_0_FINAL.pdf section 13.8 -->
@@ -73,7 +74,6 @@
         <web-resource-collection>
             <web-resource-name>Setup Pages</web-resource-name>
             <url-pattern>/setup/*</url-pattern>
-            <url-pattern>/reports/inventory-history/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>jaws-admin</role-name>
@@ -87,5 +87,8 @@
     </login-config>
     <security-role>
         <role-name>jaws-admin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>jaws-operator</role-name>
     </security-role>
 </web-app>

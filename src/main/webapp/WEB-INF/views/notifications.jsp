@@ -203,7 +203,7 @@
             <h2 id="page-header-title"><c:out value="${title}"/></h2>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="chart-wrap" class="chart-wrap-backdrop">
-                <c:set var="editable" value="${pageContext.request.isUserInRole('jaws-admin')}"/>
+                <c:set var="editable" value="${pageContext.request.isUserInRole('jaws-admin') || pageContext.request.isUserInRole('jaws-operator')}"/>
                 <c:if test="${editable}">
                 <s:editable-row-table-controls excludeAdd="${true}" excludeDelete="${true}"
                                                excludeEdit="${true}" multiselect="${true}">
