@@ -20,6 +20,6 @@
     </rule>
     <rule>
         <from>^/inventory/actions/(.*)$</from>
-        <to>/inventory/action-detail?name=$1</to>
+        <to>/inventory/action-detail?name=${escape:${unescapePath:$1}}</to>
     </rule>
 </urlrewrite>
