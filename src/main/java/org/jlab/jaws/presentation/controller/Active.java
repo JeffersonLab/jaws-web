@@ -1,7 +1,6 @@
 package org.jlab.jaws.presentation.controller;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.*;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -14,7 +13,6 @@ import org.jlab.jaws.business.session.LocationFacade;
 import org.jlab.jaws.business.session.SystemFacade;
 import org.jlab.jaws.persistence.entity.Location;
 import org.jlab.jaws.persistence.entity.SystemEntity;
-import org.jlab.smoothness.presentation.util.ParamConverter;
 
 /**
  * @author ryans
@@ -47,7 +45,9 @@ public class Active extends HttpServlet {
 
     if (locationArray != null && locationArray.length > 0) {
       for (String name : locationArray) {
-        if (name == null || name.isBlank()) { // TODO: the convertBigIntegerArray method should be excluding empty/null
+        if (name == null
+            || name.isBlank()) { // TODO: the convertBigIntegerArray method should be excluding
+          // empty/null
           continue;
         }
 
