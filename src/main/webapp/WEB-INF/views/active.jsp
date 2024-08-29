@@ -66,10 +66,10 @@
                                         <label for="location-select">Location</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="location-select" name="locationId" multiple="multiple">
+                                        <select id="location-select" name="location" multiple="multiple">
                                             <c:forEach items="${locationRoot.children}" var="child">
-                                                <t:hierarchical-select-option node="${child}" level="0"
-                                                                              parameterName="locationId"/>
+                                                <t:hierarchical-select-option-by-name node="${child}" level="0"
+                                                                                      parameterName="location"/>
                                             </c:forEach>
                                         </select>
                                     </div>
