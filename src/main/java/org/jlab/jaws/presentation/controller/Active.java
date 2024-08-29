@@ -39,24 +39,24 @@ public class Active extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
+    String[] locationArray = request.getParameterValues("location");
 
     List<Location> selectedLocationList = new ArrayList<>();
     Set<Location> materializedLocations = new HashSet<>();
     String locationFilterStr = "";
 
-    if (locationIdArray != null && locationIdArray.length > 0) {
-      for (BigInteger id : locationIdArray) {
-        if (id == null) { // TODO: the convertBigIntegerArray method should be excluding empty/null
+    if (locationArray != null && locationArray.length > 0) {
+      for (String name : locationArray) {
+        if (name == null || name.isBlank()) { // TODO: the convertBigIntegerArray method should be excluding empty/null
           continue;
         }
 
-        Location l = locationFacade.find(id);
+        Location l = locationFacade.findByName(name);
         selectedLocationList.add(l);
 
-        locationFilterStr = locationFilterStr + "&locationId=" + id;
+        locationFilterStr = locationFilterStr + "&locationId=" + l.getLocationId();
 
-        Set<Location> subset = locationFacade.findBranchAsSet(id);
+        Set<Location> subset = locationFacade.findBranchAsSet(l.getLocationId());
         materializedLocations.addAll(subset);
       }
     }
