@@ -162,7 +162,7 @@
                                     <table class="data-table inner-table">
                                         <tbody>
                                         <c:forEach items="${notificationList}" var="notification">
-                                            <tr data-id="${notification.alarm.alarmId}" data-action-id="${notification.alarm.action.actionId}" data-location-id-csv="${notification.alarm.locationIdCsv}" data-device="${notification.alarm.device}" data-screen-command="${notification.alarm.screenCommand}" data-masked-by="${notification.alarm.maskedBy}" data-pv="${notification.alarm.pv}">
+                                            <tr data-id="${notification.alarm.alarmId}" data-action-id="${notification.alarm.action.actionId}" data-location-id-csv="${notification.alarm.locationIdCsv}" data-device="${notification.alarm.device}" data-screen-command="${notification.alarm.screenCommand}" data-managed-by="${notification.alarm.managedBy}" data-masked-by="${notification.alarm.maskedBy}" data-pv="${notification.alarm.pv}">
                                                 <td>
                                                     <fmt:formatDate value="${notification.activeHistoryPK.activeStart}" pattern="dd-MMM-yyyy HH:mm:ss"/>
                                                     <c:if test="${notification.activeEnd ne null}">

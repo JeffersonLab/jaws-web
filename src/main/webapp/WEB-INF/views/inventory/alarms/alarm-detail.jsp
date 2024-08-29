@@ -135,6 +135,8 @@
                             <dd><c:out value="${alarm.device eq null ? 'None' : alarm.device}"/></dd>
                             <dt>Screen Command:</dt>
                             <dd><c:out value="${alarm.screenCommand eq null ? 'None' : alarm.screenCommand}"/></dd>
+                            <dt>Managed By:</dt>
+                            <dd><c:out value="${alarm.managedBy eq null ? 'None' : alarm.managedBy}"/></dd>
                             <dt>Masked By:</dt>
                             <dd><c:out value="${alarm.maskedBy eq null ? 'None' : alarm.maskedBy}"/></dd>
                             <dt>Source:</dt>

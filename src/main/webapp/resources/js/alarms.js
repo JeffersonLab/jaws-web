@@ -9,6 +9,7 @@ jlab.addRow = function() {
         locationData = $("#row-location").select2('data');
         device = $("#row-device").val(),
         screenCommand = $("#row-screen-command").val(),
+        managedBy = $("#row-managed-by").val(),
         maskedBy = $("#row-masked-by").val(),
         pv = $("#row-pv").val(),
         reloading = false;
@@ -31,6 +32,7 @@ jlab.addRow = function() {
             locationId: locationId, /*renamed 'locationId[]' by jQuery*/
             device: device,
             screenCommand: screenCommand,
+            managedBy: managedBy,
             maskedBy: maskedBy,
             pv: pv
         },
@@ -65,6 +67,7 @@ jlab.editRow = function() {
         locationData = $("#row-location").select2('data');
         device = $("#row-device").val(),
         screenCommand = $("#row-screen-command").val(),
+        managedBy = $("#row-managed-by").val(),
         maskedBy = $("#row-masked-by").val(),
         pv = $("#row-pv").val(),
         alarmId = $(".editable-row-table tr.selected-row").attr("data-id"),
@@ -89,6 +92,7 @@ jlab.editRow = function() {
             locationId: locationId, /*renamed 'locationId[]' by jQuery*/
             device: device,
             screenCommand: screenCommand,
+            managedBy: managedBy,
             maskedBy: maskedBy,
             pv: pv
         },
@@ -166,6 +170,7 @@ $(document).on("click", "#open-edit-row-dialog-button", function() {
 
     $("#row-device").val($selectedRow.attr("data-device"));
     $("#row-screen-command").val($selectedRow.attr("data-screen-command"));
+    $("#row-managed-by").val($selectedRow.attr("data-managed-by"));
     $("#row-masked-by").val($selectedRow.attr("data-masked-by"));
     $("#row-pv").val($selectedRow.attr("data-pv"));
 
