@@ -237,7 +237,7 @@
                                     <table class="data-table inner-table${editable ? ' multiselect-table editable-row-table' : ''}">
                                         <tbody>
                                         <c:forEach items="${notificationList}" var="notification">
-                                            <tr data-id="${notification.alarm.alarmId}" data-action-id="${notification.alarm.action.actionId}" data-location-id-csv="${notification.alarm.locationIdCsv}" data-device="${notification.alarm.device}" data-screen-command="${notification.alarm.screenCommand}" data-masked-by="${notification.alarm.maskedBy}" data-pv="${notification.alarm.pv}">
+                                            <tr data-id="${notification.alarm.alarmId}" data-action-id="${notification.alarm.action.actionId}" data-location-id-csv="${notification.alarm.locationIdCsv}" data-device="${notification.alarm.device}" data-screen-command="${notification.alarm.screenCommand}" data-managed-by="${notification.alarm.managedBy}" data-masked-by="${notification.alarm.maskedBy}" data-pv="${notification.alarm.pv}">
                                                 <td>
                                                     <c:url value="/inventory/alarm-detail" var="url">
                                                         <c:param name="name" value="${notification.name}"/>

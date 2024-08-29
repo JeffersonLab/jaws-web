@@ -205,6 +205,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       BigInteger[] locationIdArray,
       String device,
       String screenCommand,
+      String managedBy,
       String maskedBy,
       String pv)
       throws UserFriendlyException {
@@ -245,6 +246,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
     alarm.setLocationList(locationList);
     alarm.setDevice(device);
     alarm.setScreenCommand(screenCommand);
+    alarm.setManagedBy(managedBy);
     alarm.setMaskedBy(maskedBy);
     alarm.setPv(pv);
 
@@ -272,6 +274,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
 
           value.setSource(source);
           value.setLocation(alarm.getLocationNameList());
+          value.setManagedby(alarm.getManagedBy());
           value.setMaskedby(alarm.getMaskedBy());
           value.setScreencommand(alarm.getScreenCommand());
 
@@ -317,6 +320,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       BigInteger[] locationIdArray,
       String device,
       String screenCommand,
+      String managedBy,
       String maskedBy,
       String pv)
       throws UserFriendlyException {
@@ -361,6 +365,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
     alarm.setLocationList(locationList);
     alarm.setDevice(device);
     alarm.setScreenCommand(screenCommand);
+    alarm.setManagedBy(managedBy);
     alarm.setMaskedBy(maskedBy);
     alarm.setPv(pv);
 
@@ -431,6 +436,12 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       screenCommand = object.getString("screencommand");
     }
 
+    String managedBy = null;
+
+    if (!object.isNull("managedby")) {
+      managedBy = object.getString("managedby");
+    }
+
     String maskedBy = null;
 
     if (!object.isNull("maskedby")) {
@@ -474,6 +485,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
         locationIdList.toArray(new BigInteger[0]),
         device,
         screenCommand,
+        managedBy,
         maskedBy,
         pv);
   }

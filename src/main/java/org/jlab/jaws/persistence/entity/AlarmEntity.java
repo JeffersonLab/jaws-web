@@ -50,6 +50,10 @@ public class AlarmEntity implements Serializable {
   private String screenCommand;
 
   @Size(max = 64)
+  @Column(name = "MANAGED_BY", length = 64, nullable = true)
+  private String managedBy;
+
+  @Size(max = 64)
   @Column(name = "MASKED_BY", length = 64, nullable = true)
   private String maskedBy;
 
@@ -107,6 +111,14 @@ public class AlarmEntity implements Serializable {
 
   public void setScreenCommand(String screenCommand) {
     this.screenCommand = screenCommand;
+  }
+
+  public String getManagedBy() {
+    return managedBy;
+  }
+
+  public void setManagedBy(String managedBy) {
+    this.managedBy = managedBy;
   }
 
   public String getMaskedBy() {

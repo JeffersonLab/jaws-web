@@ -128,7 +128,7 @@
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
                                         <tbody>
                                         <c:forEach items="${alarmList}" var="alarm">
-                                            <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}">
+                                            <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-managed-by="${alarm.managedBy}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}">
                                                 <td>
                                                     <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}" var="url">
                                                     </c:url>
@@ -216,6 +216,14 @@
                         </div>
                         <div class="li-value">
                             <input type="text" id="row-screen-command"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-managed-by">Managed By</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="row-managed-by"/>
                         </div>
                     </li>
                     <li>

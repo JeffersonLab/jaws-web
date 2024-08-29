@@ -39,6 +39,7 @@ public class AddAlarm extends HttpServlet {
     BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId[]");
     String device = request.getParameter("device");
     String screenCommand = request.getParameter("screenCommand");
+    String managedBy = request.getParameter("managedBy");
     String maskedBy = request.getParameter("maskedBy");
     String pv = request.getParameter("pv");
 
@@ -46,7 +47,8 @@ public class AddAlarm extends HttpServlet {
     String error = null;
 
     try {
-      alarmFacade.addAlarm(name, actionId, locationIdArray, device, screenCommand, maskedBy, pv);
+      alarmFacade.addAlarm(
+          name, actionId, locationIdArray, device, screenCommand, managedBy, maskedBy, pv);
     } catch (UserFriendlyException e) {
       stat = "fail";
       error = "Unable to add Alarm: " + e.getMessage();
