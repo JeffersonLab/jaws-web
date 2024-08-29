@@ -399,7 +399,7 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
 
     count = notificationList.size();
 
-    if(count > 0) {
+    if (count > 0) {
       String[] nameArray = new String[notificationList.size()];
 
       for (int i = 0; i < notificationList.size(); i++) {
