@@ -207,6 +207,8 @@
                 <c:if test="${editable}">
                 <s:editable-row-table-controls excludeAdd="${true}" excludeDelete="${true}"
                                                excludeEdit="${true}" multiselect="${true}">
+                    <button type="button" id="acknowledge-all-button" class="">Acknowledge All
+                    </button> |
                     <button type="button" id="acknowledge-button" class="selected-row-action"
                             disabled="disabled">Acknowledge
                     </button>

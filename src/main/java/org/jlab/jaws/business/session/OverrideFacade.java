@@ -33,6 +33,7 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
   @PersistenceContext(unitName = "webappPU")
   private EntityManager em;
 
+  @EJB NotificationFacade notificationFacade;
   @EJB LocationFacade locationFacade;
 
   @Override
@@ -371,5 +372,43 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
     } finally {
       OracleUtil.close(stmt, con);
     }
+  }
+
+  @RolesAllowed("jaws-admin")
+  public int acknowledgeAll() throws UserFriendlyException {
+    int count = 0;
+
+    List<Notification> notificationList =
+        notificationFacade.filterList(
+            null,
+            null,
+            OverriddenAlarmType.Latched,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            false,
+            0,
+            Integer.MAX_VALUE);
+
+    count = notificationList.size();
+
+    if (count > 0) {
+      String[] nameArray = new String[notificationList.size()];
+
+      for (int i = 0; i < notificationList.size(); i++) {
+        nameArray[i] = notificationList.get(i).getName();
+      }
+
+      kafkaSet(nameArray, OverriddenAlarmType.Latched, null);
+    }
+
+    return count;
   }
 }
