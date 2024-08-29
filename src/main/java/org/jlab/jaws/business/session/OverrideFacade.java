@@ -33,6 +33,7 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
   @PersistenceContext(unitName = "webappPU")
   private EntityManager em;
 
+  @EJB KafkaNotificationFacade kafkaNotificationFacade;
   @EJB NotificationFacade notificationFacade;
   @EJB LocationFacade locationFacade;
 
@@ -90,12 +91,26 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
       throw new UserFriendlyException("Type selection must not be null");
     }
 
-    try (OverrideProducer producer =
-        new OverrideProducer(KafkaConfig.getProducerPropsWithRegistry())) {
-      for (String name : nameArray) {
-        AlarmOverrideKey key = new AlarmOverrideKey(name, type);
-        producer.send(key, value);
+    // Duplicates are squashed
+    HashSet<String> nameSet = new HashSet<>(Arrays.asList(nameArray));
+    boolean wasNotified = false;
+
+    try (KafkaNotificationFacade.WaitForNotificationListener listener =
+        kafkaNotificationFacade.createWaitFor(nameSet)) {
+      try (OverrideProducer producer =
+          new OverrideProducer(KafkaConfig.getProducerPropsWithRegistry())) {
+        for (String name : nameArray) {
+          AlarmOverrideKey key = new AlarmOverrideKey(name, type);
+          producer.send(key, value);
+        }
       }
+
+      wasNotified = listener.await();
+    }
+
+    if (!wasNotified) {
+      throw new UserFriendlyException(
+          "Request submitted, but no confirmation received before timeout");
     }
   }
 
