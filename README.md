@@ -1,5 +1,5 @@
 # jaws-admin-gui [![Java CI with Gradle](https://github.com/JeffersonLab/jaws-admin-gui/actions/workflows/ci.yaml/badge.svg)](https://github.com/JeffersonLab/jaws-admin-gui/actions/workflows/ci.yaml) [![Docker](https://img.shields.io/docker/v/jeffersonlab/jaws-admin-gui?sort=semver&label=DockerHub)](https://hub.docker.com/r/jeffersonlab/jaws-admin-gui)
-A [Java EE 8](https://en.wikipedia.org/wiki/Jakarta_EE) web application for managing [JAWS](https://github.com/JeffersonLab/jaws) alarm registrations and notifications built with the [Smoothness](https://github.com/JeffersonLab/smoothness) web template.
+A [Java EE 8](https://en.wikipedia.org/wiki/Jakarta_EE) web application for managing [JAWS](https://github.com/JeffersonLab/jaws) inventory and notifications built with the [Smoothness](https://github.com/JeffersonLab/smoothness) web template.
 
 <p>
 <a href="#"><img src="https://github.com/JeffersonLab/jaws-admin-gui/raw/main/Screenshot.png"/></a>     
@@ -18,7 +18,7 @@ A [Java EE 8](https://en.wikipedia.org/wiki/Jakarta_EE) web application for mana
 ---
 
 ## Overview
-Alarm system registration data consists of locations, categories, classes, and instances.  Collectively the data forms effective registrations.
+This web app provides a user interface to JAWS.  Operators can view alarm notifications by Location and System and apply overrides.   Admins can manage the master alarm database (inventory of alarms).  Users can also view reports.
 
 ## Quick Start with Compose
 1. Grab project
