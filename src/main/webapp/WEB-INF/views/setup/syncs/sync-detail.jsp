@@ -61,15 +61,23 @@
                             </c:when>
                             <c:when test="${fn:length(alarmList) > 0}">
                                 <div>Found ${fn:length(alarmList)} alarms</div>
-                                <table>
+                                <table class="data-table">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
+                                            <th>Location</th>
+                                            <th>Screen Command</th>
+                                            <th>PV</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <c:forEach items="${alarmList}" var="alarm">
-                                            <td><c:out value="${alarm.name}"/></td>
+                                            <tr>
+                                                <td><c:out value="${alarm.name}"/></td>
+                                                <td><c:out value="${alarm.locationNameCsv}"/></td>
+                                                <td><c:out value="${alarm.screenCommand}"/></td>
+                                                <td><c:out value="${alarm.pv}"/></td>
+                                            </tr>
                                         </c:forEach>
                                     </tbody>
                                 </table>
