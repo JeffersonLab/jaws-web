@@ -15,6 +15,7 @@
         <h2 id="left-column-header">Setup</h2>
         <ul>
             <li${'/setup/transfer' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/setup/transfer">Transfer</a></li>
+            <li${fn:startsWith(currentPath, '/setup/syncs') ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/setup/syncs">Sync Rules</a></li>
         </ul>
     </jsp:attribute>
     <jsp:body>
