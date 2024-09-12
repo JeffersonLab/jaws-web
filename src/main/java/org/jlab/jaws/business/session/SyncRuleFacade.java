@@ -206,7 +206,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     if (200 == response.statusCode()) {
       String body = response.body();
 
-      //System.out.println(body);
+      // System.out.println(body);
 
       alarmList = convertResponse(body, rule);
     } else {
@@ -232,21 +232,23 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       List<Location> locationList = null;
       String epicsName = "";
 
-      if(o.containsKey("properties")) {
+      if (o.containsKey("properties")) {
         JsonObject properties = o.getJsonObject("properties");
 
-        if(properties.containsKey("EPICSName") && !properties.isNull("EPICSName")) {
+        if (properties.containsKey("EPICSName") && !properties.isNull("EPICSName")) {
           epicsName = properties.getString("EPICSName");
         }
 
-        if(properties.containsKey("SegMask") && !properties.isNull("SegMask")) {
+        if (properties.containsKey("SegMask") && !properties.isNull("SegMask")) {
           String segMask = properties.getString("SegMask");
 
           locationList = locationsFromSegMask(segMask);
         }
       }
 
-      String screenCommand = applyExpressionVars(rule.getScreenCommand(), elementName, epicsName, rule.getDeployment());
+      String screenCommand =
+          applyExpressionVars(
+              rule.getScreenCommand(), elementName, epicsName, rule.getDeployment());
       String pv = applyExpressionVars(rule.getPv(), elementName, epicsName, rule.getDeployment());
 
       AlarmEntity alarm = new AlarmEntity();
@@ -261,7 +263,8 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     return alarmList;
   }
 
-  private String applyExpressionVars(String input, String elementName, String epicsName, String deployment) {
+  private String applyExpressionVars(
+      String input, String elementName, String epicsName, String deployment) {
     String result = input.replaceAll("\\{ElementName}", elementName);
 
     result = result.replaceAll("\\{EPICSName}", epicsName);
@@ -274,75 +277,75 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   private List<Location> locationsFromSegMask(String segMask) {
     List<Location> locationList = new ArrayList<>();
 
-    if(segMask != null && !segMask.isEmpty()) {
-      if(segMask.contains("A_CHL")) {
+    if (segMask != null && !segMask.isEmpty()) {
+      if (segMask.contains("A_CHL")) {
 
         Location location = locationFacade.findByName("CHL");
 
-        if(location != null) {
+        if (location != null) {
           locationList.add(location);
         }
       }
 
-      if(segMask.contains("A_HallA")) {
+      if (segMask.contains("A_HallA")) {
 
         Location location = locationFacade.findByName("HallA");
 
-        if(location != null) {
+        if (location != null) {
           locationList.add(location);
         }
       }
 
-      if(segMask.contains("A_HallB")) {
+      if (segMask.contains("A_HallB")) {
 
         Location location = locationFacade.findByName("HallB");
 
-        if(location != null) {
+        if (location != null) {
           locationList.add(location);
         }
       }
 
-      if(segMask.contains("A_HallC")) {
+      if (segMask.contains("A_HallC")) {
 
         Location location = locationFacade.findByName("HallC");
 
-        if(location != null) {
+        if (location != null) {
           locationList.add(location);
         }
       }
 
-      if(segMask.contains("A_HallD")) {
+      if (segMask.contains("A_HallD")) {
 
         Location location = locationFacade.findByName("HallD");
 
-        if(location != null) {
+        if (location != null) {
           locationList.add(location);
         }
       }
 
-      if(segMask.contains("A_NorthLinac")) {
+      if (segMask.contains("A_NorthLinac")) {
 
         Location location = locationFacade.findByName("North Linac");
 
-        if(location != null) {
+        if (location != null) {
           locationList.add(location);
         }
       }
 
-      if(segMask.contains("A_SouthLinac")) {
+      if (segMask.contains("A_SouthLinac")) {
 
         Location location = locationFacade.findByName("South Linac");
 
-        if(location != null) {
+        if (location != null) {
           locationList.add(location);
         }
       }
 
-      if(segMask.contains("A_Injector")) {
+      if (segMask.contains("A_Injector")) {
 
         Location location = locationFacade.findByName("Injector");
 
-        if(location != null) {
+        if (location != null) {
           locationList.add(location);
         }
       }
