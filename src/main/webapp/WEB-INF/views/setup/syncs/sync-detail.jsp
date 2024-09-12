@@ -55,7 +55,32 @@
                             <dd><c:out value="${rule.pv}"/></dd>
                         </dl>
                         <h3>Results</h3>
-                        <button type="button" disabled="disabled">Merge</button>
+                        <c:choose>
+                            <c:when test="${error ne null}">
+                                Error: <c:out value="${error}"/>
+                            </c:when>
+                            <c:when test="${fn:length(alarmList) > 0}">
+                                <div>Found ${fn:length(alarmList)} alarms</div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach items="${alarmList}" var="alarm">
+                                            <td><c:out value="${alarm.name}"/></td>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </c:when>
+                            <c:otherwise>
+                                <div>No results found.</div>
+                            </c:otherwise>
+                        </c:choose>
+                        <div>
+                            <button type="button" disabled="disabled">Merge</button>
+                        </div>
                     </c:when>
                     <c:otherwise>
                         <div>Sync Rule with ID <c:out value="${param.syncRuleId}"/> not found!

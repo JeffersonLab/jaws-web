@@ -1,6 +1,12 @@
 package org.jlab.jaws.business.session;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -8,11 +14,17 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import org.jlab.jaws.entity.Alarm;
 import org.jlab.jaws.persistence.entity.Action;
+import org.jlab.jaws.persistence.entity.AlarmEntity;
 import org.jlab.jaws.persistence.entity.SyncRule;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
@@ -41,12 +53,14 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       CriteriaBuilder cb, Root<SyncRule> root, BigInteger syncId, String actionName) {
     List<Predicate> filters = new ArrayList<>();
 
+    Join<Alarm, Action> actionJoin = root.join("action");
+
     if (syncId != null) {
       filters.add(cb.equal(root.get("syncRuleId"), syncId));
     }
 
     if (actionName != null && !actionName.isEmpty()) {
-      filters.add(cb.like(cb.lower(root.get("name")), actionName.toLowerCase()));
+      filters.add(cb.like(cb.lower(actionJoin.get("name")), actionName.toLowerCase()));
     }
 
     return filters;
@@ -170,5 +184,54 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     rule.setPv(pv);
 
     edit(rule);
+  }
+
+  @RolesAllowed("jaws-admin")
+  public List<AlarmEntity> executeRule(SyncRule rule) throws UserFriendlyException {
+    List<AlarmEntity> alarmList = null;
+
+    HttpClient client = HttpClient.newHttpClient();
+
+    HttpRequest request = HttpRequest.newBuilder().uri(URI.create(rule.getQuery())).build();
+
+    HttpResponse<String> response = null;
+    try {
+      response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    } catch (IOException | InterruptedException e) {
+      throw new UserFriendlyException("Unable to execute query", e);
+    }
+
+    if (200 == response.statusCode()) {
+      String body = response.body();
+
+      System.out.println(body);
+
+      alarmList = convertResponse(body, rule);
+    } else {
+      throw new UserFriendlyException("Response code " + response.statusCode());
+    }
+
+    return alarmList;
+  }
+
+  private List<AlarmEntity> convertResponse(String body, SyncRule rule) {
+    List<AlarmEntity> alarmList = new ArrayList<>();
+
+    JsonObject object = Json.createReader(new StringReader(body)).readObject();
+
+    JsonObject inventory = object.getJsonObject("inventory");
+    JsonArray elements = inventory.getJsonArray("elements");
+
+    for (JsonValue v : elements) {
+      JsonObject o = v.asJsonObject();
+      AlarmEntity alarm = new AlarmEntity();
+      alarm.setName(o.getString("name") + " " + rule.getAction().getName());
+      alarm.setAction(rule.getAction());
+      alarm.setScreenCommand(rule.getScreenCommand());
+      alarm.setPv(rule.getPv());
+      alarmList.add(alarm);
+    }
+
+    return alarmList;
   }
 }

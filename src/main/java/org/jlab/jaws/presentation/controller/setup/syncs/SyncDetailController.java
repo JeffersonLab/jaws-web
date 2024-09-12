@@ -2,6 +2,7 @@ package org.jlab.jaws.presentation.controller.setup.syncs;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,7 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jlab.jaws.business.session.SyncRuleFacade;
+import org.jlab.jaws.persistence.entity.AlarmEntity;
 import org.jlab.jaws.persistence.entity.SyncRule;
+import org.jlab.smoothness.business.exception.UserFriendlyException;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 
 /**
@@ -42,13 +45,22 @@ public class SyncDetailController extends HttpServlet {
       rule = syncFacade.find(syncRuleId);
     }
 
+    List<AlarmEntity> alarmList = null;
+    String error = null;
+
     if (rule != null) {
-      // Run rule goes here!
+      try {
+        alarmList = syncFacade.executeRule(rule);
+      } catch (UserFriendlyException e) {
+        error = e.getMessage();
+      }
     }
 
     boolean editable = false;
 
     request.setAttribute("rule", rule);
+    request.setAttribute("alarmList", alarmList);
+    request.setAttribute("error", error);
     request.setAttribute("editable", editable);
 
     request
