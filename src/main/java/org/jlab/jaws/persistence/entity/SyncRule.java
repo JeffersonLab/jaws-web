@@ -8,21 +8,25 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "CED_SYNC_RULE", schema = "JAWS_OWNER")
-public class CEDSyncRule implements Serializable {
+@Table(name = "SYNC_RULE", schema = "JAWS_OWNER")
+public class SyncRule implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
-  @SequenceGenerator(name = "CEDSyncRuleId", sequenceName = "CED_SYNC_RULE_ID", allocationSize = 1)
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CEDSyncRuleId")
+  @SequenceGenerator(name = "SyncRuleId", sequenceName = "SYNC_RULE_ID", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SyncRuleId")
   @Basic(optional = false)
   @NotNull
-  @Column(name = "CED_SYNC_RULE_ID", nullable = false, precision = 22, scale = 0)
-  private BigInteger cedSyncRuleId;
+  @Column(name = "SYNC_RULE_ID", nullable = false, precision = 22, scale = 0)
+  private BigInteger syncRuleId;
 
   @JoinColumn(name = "ACTION_ID", referencedColumnName = "ACTION_ID", nullable = false)
   @ManyToOne(optional = false)
   private Action action;
+
+  @Size(max = 32)
+  @Column(length = 32)
+  private String deployment;
 
   @Size(max = 4096)
   @Column(length = 4096)
@@ -36,12 +40,12 @@ public class CEDSyncRule implements Serializable {
   @Column(length = 64, nullable = true)
   private String pv;
 
-  public BigInteger getCedSyncRuleId() {
-    return cedSyncRuleId;
+  public BigInteger getSyncRuleId() {
+    return syncRuleId;
   }
 
-  public void setCedSyncRuleId(BigInteger cedSyncRuleId) {
-    this.cedSyncRuleId = cedSyncRuleId;
+  public void setSyncRuleId(BigInteger syncRuleId) {
+    this.syncRuleId = syncRuleId;
   }
 
   public Action getAction() {
@@ -50,6 +54,14 @@ public class CEDSyncRule implements Serializable {
 
   public void setAction(Action action) {
     this.action = action;
+  }
+
+  public @Size(max = 32) String getDeployment() {
+    return deployment;
+  }
+
+  public void setDeployment(@Size(max = 32) String deployment) {
+    this.deployment = deployment;
   }
 
   public String getQuery() {
@@ -79,13 +91,13 @@ public class CEDSyncRule implements Serializable {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof CEDSyncRule)) return false;
-    CEDSyncRule that = (CEDSyncRule) o;
-    return Objects.equals(cedSyncRuleId, that.cedSyncRuleId);
+    if (!(o instanceof SyncRule)) return false;
+    SyncRule that = (SyncRule) o;
+    return Objects.equals(syncRuleId, that.syncRuleId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(cedSyncRuleId);
+    return Objects.hashCode(syncRuleId);
   }
 }

@@ -2,17 +2,13 @@ var jlab = jlab || {};
 jlab.editableRowTable = jlab.editableRowTable || {};
 jlab.editableRowTable.entity = 'Sync';
 jlab.editableRowTable.dialog.width = 800;
-jlab.editableRowTable.dialog.height = 600;
+jlab.editableRowTable.dialog.height = 400;
 jlab.addRow = function () {
-    var name = $("#row-name").val(),
-        systemId = $("#row-system").val(),
-        priorityId = $("#row-priority").val(),
-        correctiveAction = $("#corrective-action-textarea").val(),
-        rationale = $("#rationale-textarea").val(),
-        filterable = $("#row-filterable").is(":checked") ? 'Y' : 'N',
-        latchable = $("#row-latchable").is(":checked") ? 'Y' : 'N',
-        onDelaySeconds = $("#row-ondelay").val(),
-        offDelaySeconds = $("#row-offdelay").val(),
+    var actionId = $("#row-action").val(),
+        deployment = $("#row-deployment").val(),
+        query = $("#row-query").val(),
+        screencommand = $("#row-screencommand").val(),
+        pv = $("#row-pv").val(),
         reloading = false;
 
     $(".dialog-submit-button")
@@ -26,15 +22,11 @@ jlab.addRow = function () {
         url: "/jaws/ajax/add-sync",
         type: "POST",
         data: {
-            name: name,
-            systemId: systemId,
-            priorityId: priorityId,
-            correctiveAction: correctiveAction,
-            rationale: rationale,
-            filterable: filterable,
-            latchable: latchable,
-            onDelaySeconds: onDelaySeconds,
-            offDelaySeconds: offDelaySeconds
+            actionId: actionId,
+            deployment: deployment,
+            query: query,
+            screencommand: screencommand,
+            pv: pv
         },
         dataType: "json"
     });
@@ -49,7 +41,7 @@ jlab.addRow = function () {
     });
 
     request.fail(function (xhr, textStatus) {
-        window.console && console.log('Unable to add action; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
+        window.console && console.log('Unable to add sync; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
         alert('Unable to Save: Server unavailable or unresponsive');
     });
 
@@ -62,16 +54,12 @@ jlab.addRow = function () {
     });
 };
 jlab.editRow = function () {
-    var name = $("#row-name").val(),
-        systemId = $("#row-system").val(),
-        priorityId = $("#row-priority").val(),
-        correctiveAction = $("#corrective-action-textarea").val(),
-        rationale = $("#rationale-textarea").val(),
-        filterable = $("#row-filterable").is(":checked") ? 'Y' : 'N',
-        latchable = $("#row-latchable").is(":checked") ? 'Y' : 'N',
-        onDelaySeconds = $("#row-ondelay").val(),
-        offDelaySeconds = $("#row-offdelay").val(),
-        actionId = $(".editable-row-table tr.selected-row").attr("data-id"),
+    var id = $(".editable-row-table tr.selected-row").attr("data-id"),
+        actionId = $("#row-action").val(),
+        deployment = $("#row-deployment").val(),
+        query = $("#row-query").val(),
+        screencommand = $("#row-screencommand").val(),
+        pv = $("#row-pv").val(),
         reloading = false;
 
     $(".dialog-submit-button")
@@ -85,16 +73,12 @@ jlab.editRow = function () {
         url: "/jaws/ajax/edit-sync",
         type: "POST",
         data: {
+            id: id,
             actionId: actionId,
-            name: name,
-            systemId: systemId,
-            priorityId: priorityId,
-            correctiveAction: correctiveAction,
-            rationale: rationale,
-            filterable: filterable,
-            latchable: latchable,
-            onDelaySeconds: onDelaySeconds,
-            offDelaySeconds: offDelaySeconds
+            deployment: deployment,
+            query: query,
+            screencommand: screencommand,
+            pv: pv
         },
         dataType: "json"
     });
@@ -160,35 +144,17 @@ jlab.removeRow = function () {
         }
     });
 };
-jlab.initMarkdownSplitPanes = function() {
-    $(".split-pane").each(function (item) {
-        let markdown = $(this).find("textarea").val(),
-            rendered = DOMPurify.sanitize(marked.parse(markdown), jlab.sanitizeConfig);
-
-        $(this).find(".markdown-html").html(rendered);
-    });
-};
 $(document).on("dialogclose", "#table-row-dialog", function () {
     $("#row-form")[0].reset();
-
-    jlab.initMarkdownSplitPanes();
 });
 $(document).on("click", "#open-edit-row-dialog-button", function () {
     var $selectedRow = $(".editable-row-table tr.selected-row");
-    $("#row-name").val($selectedRow.find("td:first-child a").text());
-    $("#row-system").val($selectedRow.attr("data-system-id"));
-    $("#row-priority").val($selectedRow.attr("data-priority-id"));
+    $("#row-action").val($selectedRow.attr("data-action-id"));
 
-    $("#row-filterable").prop("checked", $selectedRow.attr("data-filterable") === "true");
-    $("#row-latchable").prop("checked", $selectedRow.attr("data-latchable") === "true")
-    $("#row-ondelay").val($selectedRow.attr("data-ondelay"));
-    $("#row-offdelay").val($selectedRow.attr("data-offdelay"));
-
-    $("#corrective-action-textarea").val($selectedRow.attr("data-corrective-action"));
-    $("#rationale-textarea").val($selectedRow.attr("data-rationale"));
-
-    jlab.initMarkdownSplitPanes();
-
+    $("#row-deployment").val($selectedRow.find("td:nth-child(3)").text());
+    $("#row-query").val($selectedRow.find("td:nth-child(4)").text());
+    $("#row-screencommand").val($selectedRow.attr("data-screencommand"));
+    $("#row-pv").val($selectedRow.attr("data-pv"));
 });
 $(document).on("table-row-add", function () {
     jlab.addRow();
@@ -210,19 +176,5 @@ $(document).on("click", ".default-clear-panel", function () {
 $(function () {
     $("#table-row-dialog").dialog("option", "resizable", true);
     $("#table-row-dialog").dialog("option", "minWidth", 800);
-    $("#table-row-dialog").dialog("option", "minHeight", 600);
-
-    /* TODO: run marked.parse in web worker?  https://marked.js.org/using_advanced */
-
-    let correctiveTextarea = document.getElementById("corrective-action-textarea"),
-        correctiveRenderDiv = document.getElementById('corrective-action-rendered');
-    $(document).on("keyup", "#corrective-action-textarea", function() {
-        correctiveRenderDiv.innerHTML = DOMPurify.sanitize(marked.parse(correctiveTextarea.value), jlab.sanitizeConfig);
-    });
-
-    let rationaleTextarea = document.getElementById("rationale-textarea"),
-        rationaleRenderDiv = document.getElementById('rationale-rendered');
-    $(document).on("keyup", "#rationale-textarea", function() {
-        rationaleRenderDiv.innerHTML = DOMPurify.sanitize(marked.parse(rationaleTextarea.value), jlab.sanitizeConfig);
-    });
+    $("#table-row-dialog").dialog("option", "minHeight", 500);
 });

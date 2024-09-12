@@ -5,7 +5,7 @@
 <%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
 <%@taglib prefix="jaws" uri="http://jlab.org/jaws/functions" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-<c:set var="title" value="Syncs"/>
+<c:set var="title" value="Sync Rules"/>
 <t:setup-page title="${title}">
     <jsp:attribute name="stylesheets">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/syncs.css"/>
@@ -61,23 +61,22 @@
                     <tr>
                         <th>ID</th>
                         <th>Action</th>
+                        <th>Deployment</th>
                         <th>Query</th>
-                        <th>Screen Command</th>
-                        <th>PV</th>
                         <th></th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="inner-table-cell" colspan="6">
+                        <td class="inner-table-cell" colspan="7">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
                                         <tbody>
                                         <c:forEach items="${syncList}" var="sync">
-                                            <tr data-id="${sync.cedSyncRuleId}" data-action-id="${sync.action.actionId}">
-                                                <td><c:out value="${sync.cedSyncRuleId}"/><td>
+                                            <tr data-id="${sync.syncRuleId}" data-action-id="${sync.action.actionId}" data-screencommand="${fn:escapeXml(sync.screenCommand)}" data-pv="${fn:escapeXml(sync.pv)}">
+                                                <td><c:out value="${sync.syncRuleId}"/></td>
                                                 <td>
                                                     <c:url value="/inventory/actions/${jaws:urlEncodePath(sync.action.name)}" var="url">
                                                     </c:url>
@@ -86,13 +85,14 @@
                                                        href="${url}"><c:out
                                                         value="${sync.action.name}"/></a>
                                                 </td>
+                                                <td><c:out value="${sync.deployment}"/></td>
                                                 <td><c:out value="${sync.query}"/></td>
-                                                <td><c:out value="${sync.screenCommand}"/></td>
-                                                <td><c:out value="${sync.pv}"/></td>
                                                 <td>
                                                     <!-- Use onclick to avoid https://bugs.webkit.org/show_bug.cgi?id=30103 -->
+                                                    <c:url value="/setup/syncs/${jaws:urlEncodePath(sync.syncRuleId)}" var="url">
+                                                    </c:url>
                                                     <form method="get"
-                                                          action="${pageContext.request.contextPath}/setup/syncs/${fn:escapeXml(sync.cedSyncRuleId)}">
+                                                          action="${pageContext.request.contextPath}/setup/syncs/${fn:escapeXml(sync.syncRuleId)}">
                                                         <button class="single-char-button" type="button" onclick="window.location.href = '${url}';  return false;">&rarr;</button>
                                                     </form>
                                                 </td>
@@ -133,6 +133,19 @@
                     </li>
                     <li>
                         <div class="li-key">
+                            <label for="row-deployment">Deployment</label>
+                        </div>
+                        <div class="li-value">
+                            <select id="row-deployment" required="required">
+                                <option value="">&nbsp;</option>
+                                <option value="CED">CED</option>
+                                <option value="LED">LED</option>
+                                <option value="UED">UED</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
                             <label for="row-query">Query</label>
                         </div>
                         <div class="li-value">
@@ -159,7 +172,7 @@
                         </div>
                     </li>
                 </ul>
-                <div>Expression variables: {CEDName}, {EPICSName}, {CEDDeployment}</div>
+                <div>Expression variables: {ElementName}, {EPICSName}, {Deployment}</div>
             </form>
         </s:editable-row-table-dialog>
     </jsp:body>         

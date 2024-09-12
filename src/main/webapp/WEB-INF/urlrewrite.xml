@@ -22,4 +22,8 @@
         <from>^/inventory/actions/(.*)$</from>
         <to>/inventory/action-detail?name=${escape:${unescapePath:$1}}</to>
     </rule>
+    <rule>
+        <from>^/setup/syncs/(.*)$</from>
+        <to>/setup/sync-detail?syncRuleId=${escape:${unescapePath:$1}}</to>
+    </rule>
 </urlrewrite>

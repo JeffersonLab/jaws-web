@@ -21,11 +21,11 @@ import org.jlab.smoothness.presentation.util.ParamUtil;
  * @author ryans
  */
 @WebServlet(
-    name = "SyncController",
+    name = "SyncRuleController",
     urlPatterns = {"/setup/syncs"})
-public class SyncController extends HttpServlet {
+public class SyncRuleController extends HttpServlet {
 
-  @EJB CEDSyncRuleFacade syncFacade;
+  @EJB SyncRuleFacade syncFacade;
   @EJB ActionFacade actionFacade;
 
   /**
@@ -46,7 +46,7 @@ public class SyncController extends HttpServlet {
     int maxPerPage = 100;
 
     List<Action> actionList = actionFacade.findAll(new AbstractFacade.OrderDirective("name"));
-    List<CEDSyncRule> syncList = syncFacade.filterList(syncId, actionName, offset, maxPerPage);
+    List<SyncRule> syncList = syncFacade.filterList(syncId, actionName, offset, maxPerPage);
 
     long totalRecords = syncFacade.countList(syncId, actionName);
 
@@ -65,7 +65,7 @@ public class SyncController extends HttpServlet {
   private String createSelectionMessage(Paginator paginator, BigInteger syncId, String actionName) {
     DecimalFormat formatter = new DecimalFormat("###,###");
 
-    String selectionMessage = "All Syncs ";
+    String selectionMessage = "All Sync Rules ";
 
     List<String> filters = new ArrayList<>();
 

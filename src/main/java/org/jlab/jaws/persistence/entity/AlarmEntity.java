@@ -66,7 +66,7 @@ public class AlarmEntity implements Serializable {
           @JoinColumn(name = "ACTION_ID", referencedColumnName = "ACTION_ID", nullable = true)
   })
   @ManyToOne(optional = true)*/
-  @Transient private CEDSyncRule syncRule;
+  @Transient private SyncRule syncRule;
 
   @Transient // The following doesn't work in Hibernate 5.3: @OneToOne(mappedBy = "alarm")
   private Notification notification;
@@ -144,11 +144,11 @@ public class AlarmEntity implements Serializable {
     this.pv = pv;
   }
 
-  public CEDSyncRule getSyncRule() {
+  public SyncRule getSyncRule() {
     return syncRule;
   }
 
-  public void setSyncRule(CEDSyncRule syncRule) {
+  public void setSyncRule(SyncRule syncRule) {
     this.syncRule = syncRule;
   }
 
