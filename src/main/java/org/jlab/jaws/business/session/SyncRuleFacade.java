@@ -8,7 +8,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -265,88 +267,58 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
 
   private String applyExpressionVars(
       String input, String elementName, String epicsName, String deployment) {
-    String result = input.replaceAll("\\{ElementName}", elementName);
+    String result = "";
 
-    result = result.replaceAll("\\{EPICSName}", epicsName);
+    if(input != null) {
+      result = input.replaceAll("\\{ElementName}", elementName);
 
-    result = result.replaceAll("\\{Deployment}", deployment);
+      result = result.replaceAll("\\{EPICSName}", epicsName);
+
+      result = result.replaceAll("\\{Deployment}", deployment);
+    }
 
     return result;
+  }
+
+  private Map<String, Location> loadSegmaskToLocationMap() {
+    Map<String, Location> map = new HashMap<>();
+
+    List<Location> locationList = locationFacade.findAll();
+
+    for (Location location : locationList) {
+      String segmaskCsv = location.getSegmask();
+
+      if(segmaskCsv != null) {
+        String[] masks = segmaskCsv.split(",");
+
+        for (String mask : masks) {
+          if(mask != null && !mask.isBlank()) {
+            map.put(mask.trim(), location);
+          }
+        }
+      }
+    }
+
+    return map;
   }
 
   private List<Location> locationsFromSegMask(String segMask) {
     List<Location> locationList = new ArrayList<>();
 
+    Map<String, Location> locationMap = loadSegmaskToLocationMap();
+
+
+
     if (segMask != null && !segMask.isEmpty()) {
-      if (segMask.contains("A_CHL")) {
+      String[] masks = segMask.split(",");
 
-        Location location = locationFacade.findByName("CHL");
+      for (String mask : masks) {
+        if (mask != null && !mask.isBlank()) {
+          Location loc = locationMap.get(mask.trim());
 
-        if (location != null) {
-          locationList.add(location);
-        }
-      }
-
-      if (segMask.contains("A_HallA")) {
-
-        Location location = locationFacade.findByName("HallA");
-
-        if (location != null) {
-          locationList.add(location);
-        }
-      }
-
-      if (segMask.contains("A_HallB")) {
-
-        Location location = locationFacade.findByName("HallB");
-
-        if (location != null) {
-          locationList.add(location);
-        }
-      }
-
-      if (segMask.contains("A_HallC")) {
-
-        Location location = locationFacade.findByName("HallC");
-
-        if (location != null) {
-          locationList.add(location);
-        }
-      }
-
-      if (segMask.contains("A_HallD")) {
-
-        Location location = locationFacade.findByName("HallD");
-
-        if (location != null) {
-          locationList.add(location);
-        }
-      }
-
-      if (segMask.contains("A_NorthLinac")) {
-
-        Location location = locationFacade.findByName("North Linac");
-
-        if (location != null) {
-          locationList.add(location);
-        }
-      }
-
-      if (segMask.contains("A_SouthLinac")) {
-
-        Location location = locationFacade.findByName("South Linac");
-
-        if (location != null) {
-          locationList.add(location);
-        }
-      }
-
-      if (segMask.contains("A_Injector")) {
-
-        Location location = locationFacade.findByName("Injector");
-
-        if (location != null) {
-          locationList.add(location);
+          if (loc != null) {
+            locationList.add(loc);
+          }
         }
       }
     }
