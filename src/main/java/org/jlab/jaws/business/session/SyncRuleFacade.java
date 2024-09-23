@@ -269,7 +269,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       String input, String elementName, String epicsName, String deployment) {
     String result = "";
 
-    if(input != null) {
+    if (input != null) {
       result = input.replaceAll("\\{ElementName}", elementName);
 
       result = result.replaceAll("\\{EPICSName}", epicsName);
@@ -288,11 +288,11 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     for (Location location : locationList) {
       String segmaskCsv = location.getSegmask();
 
-      if(segmaskCsv != null) {
+      if (segmaskCsv != null) {
         String[] masks = segmaskCsv.split(",");
 
         for (String mask : masks) {
-          if(mask != null && !mask.isBlank()) {
+          if (mask != null && !mask.isBlank()) {
             map.put(mask.trim(), location);
           }
         }
@@ -306,8 +306,6 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     List<Location> locationList = new ArrayList<>();
 
     Map<String, Location> locationMap = loadSegmaskToLocationMap();
-
-
 
     if (segMask != null && !segMask.isEmpty()) {
       String[] masks = segMask.split(",");
