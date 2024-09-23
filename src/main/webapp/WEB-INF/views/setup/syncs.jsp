@@ -157,6 +157,22 @@
                 <ul class="key-value-list">
                     <li>
                         <div class="li-key">
+                            <label for="row-name">Name</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="row-name" value="{ElementName} {Action}" disabled="disabled"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-location">Location</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="row-location" value="{function:locationFromSegMask(SegMask)}" disabled="disabled"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
                             <label for="row-screencommand">Screen Command</label>
                         </div>
                         <div class="li-value">

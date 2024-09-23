@@ -49,6 +49,13 @@
                             <dd><c:out value="${rule.deployment}"/></dd>
                             <dt>Query</dt>
                             <dd><c:out value="${rule.query}"/></dd>
+                        </dl>
+                        <h3>Template</h3>
+                        <dl>
+                            <dt>Name</dt>
+                            <dd>{ElementName} {Action}</dd>
+                            <dt>Location</dt>
+                            <dd>{function:locationFromSegMask(SegMask)}</dd>
                             <dt>Screen Command</dt>
                             <dd><c:out value="${rule.screenCommand}"/></dd>
                             <dt>PV</dt>
