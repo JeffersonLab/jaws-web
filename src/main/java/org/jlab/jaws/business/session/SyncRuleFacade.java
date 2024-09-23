@@ -226,6 +226,8 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     JsonObject inventory = object.getJsonObject("Inventory");
     JsonArray elements = inventory.getJsonArray("elements");
 
+    Map<String, Location> locationMap = loadSegmaskToLocationMap();
+
     for (JsonValue v : elements) {
       JsonObject o = v.asJsonObject();
 
@@ -244,7 +246,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
         if (properties.containsKey("SegMask") && !properties.isNull("SegMask")) {
           String segMask = properties.getString("SegMask");
 
-          locationList = locationsFromSegMask(segMask);
+          locationList = locationsFromSegMask(locationMap, segMask);
         }
       }
 
@@ -302,10 +304,8 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     return map;
   }
 
-  private List<Location> locationsFromSegMask(String segMask) {
+  private List<Location> locationsFromSegMask(Map<String, Location> locationMap, String segMask) {
     List<Location> locationList = new ArrayList<>();
-
-    Map<String, Location> locationMap = loadSegmaskToLocationMap();
 
     if (segMask != null && !segMask.isEmpty()) {
       String[] masks = segMask.split(",");
