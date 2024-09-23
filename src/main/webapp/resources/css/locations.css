@@ -4,3 +4,7 @@
 .inner-table tbody td:first-child {
     width: 101px;
 }
+.outer-table thead th:nth-child(2),
+.inner-table tbody td:nth-child(2) {
+    width: 135px;
+}

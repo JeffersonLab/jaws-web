@@ -30,6 +30,10 @@ public class Location implements Serializable, Node {
 
   private BigInteger weight;
 
+  @Size(max = 128)
+  @Column(length = 128, nullable = true)
+  private String segmask;
+
   @JoinColumn(name = "PARENT_ID", referencedColumnName = "LOCATION_ID", nullable = true)
   @ManyToOne(optional = true)
   private Location parent;
@@ -85,6 +89,14 @@ public class Location implements Serializable, Node {
 
   public BigInteger getWeight() {
     return weight;
+  }
+
+  public String getSegmask() {
+    return segmask;
+  }
+
+  public void setSegmask(String segmask) {
+    this.segmask = segmask;
   }
 
   public void setWeight(BigInteger weight) {

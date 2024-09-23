@@ -21,12 +21,13 @@
                     <tr>
                         <th>Name</th>
                         <th>Parent</th>
+                        <th>SegMask</th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="inner-table-cell" colspan="3">
+                        <td class="inner-table-cell" colspan="4">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table stripped-table">
@@ -35,6 +36,7 @@
                                             <tr data-id="${location.locationId}">
                                                 <td><c:out value="${location.name}"/></td>
                                                 <td><c:out value="${location.parent.name}"/></td>
+                                                <td><c:out value="${location.segmask}"/></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>
