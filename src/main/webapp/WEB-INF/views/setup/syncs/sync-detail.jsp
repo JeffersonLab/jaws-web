@@ -45,8 +45,8 @@
                         <dl>
                             <dt>Action</dt>
                             <dd><c:out value="${rule.action.name}"/></dd>
-                            <dt>Deployment</dt>
-                            <dd><c:out value="${rule.deployment}"/></dd>
+                            <dt>Server</dt>
+                            <dd><c:out value="${rule.syncServer.name}"/></dd>
                             <dt>Query</dt>
                             <dd><c:out value="${rule.query}"/></dd>
                         </dl>

@@ -1,6 +1,6 @@
 var jlab = jlab || {};
 jlab.editableRowTable = jlab.editableRowTable || {};
-jlab.editableRowTable.entity = 'Sync';
+jlab.editableRowTable.entity = 'Sync Server';
 jlab.editableRowTable.dialog.width = 800;
 jlab.editableRowTable.dialog.height = 400;
 jlab.addRow = function () {
@@ -19,7 +19,7 @@ jlab.addRow = function () {
     $(".ui-dialog-titlebar button").attr("disabled", "disabled");
 
     var request = jQuery.ajax({
-        url: "/jaws/ajax/add-sync",
+        url: "/jaws/ajax/add-sync-server",
         type: "POST",
         data: {
             actionId: actionId,
@@ -70,7 +70,7 @@ jlab.editRow = function () {
     $(".ui-dialog-titlebar button").attr("disabled", "disabled");
 
     var request = jQuery.ajax({
-        url: "/jaws/ajax/edit-sync",
+        url: "/jaws/ajax/edit-sync-server",
         type: "POST",
         data: {
             id: id,
@@ -116,7 +116,7 @@ jlab.removeRow = function () {
         .empty().append('<div class="button-indicator"></div>');
 
     var request = jQuery.ajax({
-        url: "/jaws/ajax/remove-sync",
+        url: "/jaws/ajax/remove-sync-server",
         type: "POST",
         data: {
             id: id

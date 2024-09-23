@@ -35,7 +35,7 @@ public class AddSyncRule extends HttpServlet {
       throws ServletException, IOException {
 
     BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
-    String deployment = request.getParameter("deployment");
+    String server = request.getParameter("server");
     String query = request.getParameter("query");
     String screencommand = request.getParameter("screencommand");
     String pv = request.getParameter("pv");
@@ -44,7 +44,7 @@ public class AddSyncRule extends HttpServlet {
     String error = null;
 
     try {
-      syncFacade.addSync(actionId, deployment, query, screencommand, pv);
+      syncFacade.addSync(actionId, server, query, screencommand, pv);
     } catch (UserFriendlyException e) {
       stat = "fail";
       error = "Unable to add Sync: " + e.getMessage();

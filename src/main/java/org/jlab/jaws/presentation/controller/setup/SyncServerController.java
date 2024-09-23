@@ -11,8 +11,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.jlab.jaws.business.session.*;
-import org.jlab.jaws.persistence.entity.*;
+import org.jlab.jaws.business.session.SyncServerFacade;
+import org.jlab.jaws.persistence.entity.SyncServer;
 import org.jlab.smoothness.presentation.util.Paginator;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 import org.jlab.smoothness.presentation.util.ParamUtil;
@@ -21,12 +21,10 @@ import org.jlab.smoothness.presentation.util.ParamUtil;
  * @author ryans
  */
 @WebServlet(
-    name = "SyncRuleController",
-    urlPatterns = {"/setup/syncs"})
-public class SyncRuleController extends HttpServlet {
+    name = "SyncServerController",
+    urlPatterns = {"/setup/sync-servers"})
+public class SyncServerController extends HttpServlet {
 
-  @EJB SyncRuleFacade syncFacade;
-  @EJB ActionFacade actionFacade;
   @EJB SyncServerFacade serverFacade;
 
   /**
@@ -46,34 +44,32 @@ public class SyncRuleController extends HttpServlet {
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
 
-    List<Action> actionList = actionFacade.findAll(new AbstractFacade.OrderDirective("name"));
-    List<SyncServer> serverList = serverFacade.findAll(new AbstractFacade.OrderDirective("name"));
-    List<SyncRule> syncList = syncFacade.filterList(syncId, actionName, offset, maxPerPage);
+    List<SyncServer> serverList = serverFacade.filterList(null, offset, maxPerPage);
 
-    long totalRecords = syncFacade.countList(syncId, actionName);
+    long totalRecords = serverFacade.countList(null);
 
     Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
     String selectionMessage = createSelectionMessage(paginator, syncId, actionName);
 
     request.setAttribute("selectionMessage", selectionMessage);
-    request.setAttribute("actionList", actionList);
     request.setAttribute("serverList", serverList);
-    request.setAttribute("syncList", syncList);
     request.setAttribute("paginator", paginator);
 
-    request.getRequestDispatcher("/WEB-INF/views/setup/syncs.jsp").forward(request, response);
+    request
+        .getRequestDispatcher("/WEB-INF/views/setup/sync-servers.jsp")
+        .forward(request, response);
   }
 
   private String createSelectionMessage(Paginator paginator, BigInteger syncId, String actionName) {
     DecimalFormat formatter = new DecimalFormat("###,###");
 
-    String selectionMessage = "All Sync Rules ";
+    String selectionMessage = "All Sync Servers ";
 
     List<String> filters = new ArrayList<>();
 
     if (syncId != null) {
-      filters.add("Sync ID \"" + syncId + "\"");
+      filters.add("Server ID \"" + syncId + "\"");
     }
 
     if (actionName != null && !actionName.isBlank()) {

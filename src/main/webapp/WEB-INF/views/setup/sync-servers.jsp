@@ -5,18 +5,18 @@
 <%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
 <%@taglib prefix="jaws" uri="http://jlab.org/jaws/functions" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-<c:set var="title" value="Sync Rules"/>
+<c:set var="title" value="Sync Servers"/>
 <t:setup-page title="${title}">
     <jsp:attribute name="stylesheets">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/syncs.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/sync-servers.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
-        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/syncs.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/sync-servers.js"></script>
     </jsp:attribute>
     <jsp:body>
         <section>
             <s:filter-flyout-widget clearButton="true">
-                <form id="filter-form" method="get" action="syncs">
+                <form id="filter-form" method="get" action="sync-servers">
                     <div id="filter-form-panel">
                         <fieldset>
                             <legend>Filter</legend>
@@ -59,11 +59,11 @@
                 <table class="data-table outer-table">
                     <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Action</th>
-                        <th>Server</th>
-                        <th>Query</th>
-                        <th></th>
+                        <th>Name</th>
+                        <th>Base URL</th>
+                        <th>Element Path</th>
+                        <th>Inventory Path</th>
+                        <th>Extra Inventory Query</th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
@@ -74,28 +74,13 @@
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
                                         <tbody>
-                                        <c:forEach items="${syncList}" var="sync">
-                                            <tr data-id="${sync.syncRuleId}" data-action-id="${sync.action.actionId}" data-screencommand="${fn:escapeXml(sync.screenCommand)}" data-pv="${fn:escapeXml(sync.pv)}">
-                                                <td><c:out value="${sync.syncRuleId}"/></td>
-                                                <td>
-                                                    <c:url value="/inventory/actions/${jaws:urlEncodePath(sync.action.name)}" var="url">
-                                                    </c:url>
-                                                    <a title="Action Information" class="dialog-ready"
-                                                       data-dialog-title="Action Information: ${fn:escapeXml(sync.action.name)}"
-                                                       href="${url}"><c:out
-                                                        value="${sync.action.name}"/></a>
-                                                </td>
-                                                <td><c:out value="${sync.syncServer.name}"/></td>
-                                                <td><c:out value="${sync.query}"/></td>
-                                                <td>
-                                                    <!-- Use onclick to avoid https://bugs.webkit.org/show_bug.cgi?id=30103 -->
-                                                    <c:url value="/setup/syncs/${jaws:urlEncodePath(sync.syncRuleId)}" var="url">
-                                                    </c:url>
-                                                    <form method="get"
-                                                          action="${pageContext.request.contextPath}/setup/syncs/${fn:escapeXml(sync.syncRuleId)}">
-                                                        <button class="single-char-button" type="button" onclick="window.location.href = '${url}';  return false;">&rarr;</button>
-                                                    </form>
-                                                </td>
+                                        <c:forEach items="${serverList}" var="server">
+                                            <tr data-id="${server.syncServerId}">
+                                                <td><c:out value="${server.name}"/></td>
+                                                <td><c:out value="${server.baseUrl}"/></td>
+                                                <td><c:out value="${server.elementPath}"/></td>
+                                                <td><c:out value="${server.inventoryPath}"/></td>
+                                                <td><c:out value="${server.extraInventoryQuery}"/></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>
@@ -133,15 +118,14 @@
                     </li>
                     <li>
                         <div class="li-key">
-                            <label for="row-server">Server</label>
+                            <label for="row-deployment">Deployment</label>
                         </div>
                         <div class="li-value">
-                            <select id="row-server" required="required">
+                            <select id="row-deployment" required="required">
                                 <option value="">&nbsp;</option>
-                                <c:forEach items="${serverList}" var="server">
-                                    <option value="${server.name}">
-                                        <c:out value="${server.name}"/></option>
-                                </c:forEach>
+                                <option value="CED">CED</option>
+                                <option value="LED">LED</option>
+                                <option value="UED">UED</option>
                             </select>
                         </div>
                     </li>
