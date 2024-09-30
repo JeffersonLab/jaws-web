@@ -15,39 +15,6 @@
     </jsp:attribute>
     <jsp:body>
         <section>
-            <s:filter-flyout-widget clearButton="true">
-                <form id="filter-form" method="get" action="sync-servers">
-                    <div id="filter-form-panel">
-                        <fieldset>
-                            <legend>Filter</legend>
-                            <ul class="key-value-list">
-                                <li>
-                                    <div class="li-key">
-                                        <label for="sync-id">Sync ID</label>
-                                    </div>
-                                    <div class="li-value">
-                                        <input id="sync-id"
-                                               name="syncId" value="${fn:escapeXml(param.syncId)}"/>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="li-key">
-                                        <label for="action-name">Action Name</label>
-                                    </div>
-                                    <div class="li-value">
-                                        <input id="action-name"
-                                               name="actionName" value="${fn:escapeXml(param.actionName)}"
-                                               placeholder="action name"/>
-                                        <div>(use % as wildcard)</div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </fieldset>
-                    </div>
-                    <input type="hidden" id="offset-input" name="offset" value="0"/>
-                    <input id="filter-form-submit-button" type="submit" value="Apply"/>
-                </form>
-            </s:filter-flyout-widget>
             <h2 id="page-header-title"><c:out value="${title}"/></h2>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="chart-wrap" class="chart-wrap-backdrop">
@@ -62,8 +29,8 @@
                         <th>Name</th>
                         <th>Base URL</th>
                         <th>Element Path</th>
-                        <th>Inventory Path</th>
-                        <th>Extra Inventory Query</th>
+                        <th>Search Path</th>
+                        <th>Extra Search Query</th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
@@ -79,8 +46,8 @@
                                                 <td><c:out value="${server.name}"/></td>
                                                 <td><c:out value="${server.baseUrl}"/></td>
                                                 <td><c:out value="${server.elementPath}"/></td>
-                                                <td><c:out value="${server.inventoryPath}"/></td>
-                                                <td><c:out value="${server.extraInventoryQuery}"/></td>
+                                                <td><c:out value="${server.searchPath}"/></td>
+                                                <td><c:out value="${server.extraSearchQuery}"/></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>

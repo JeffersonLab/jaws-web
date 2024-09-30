@@ -33,12 +33,12 @@ public class SyncServer implements Serializable {
   private String elementPath;
 
   @Size(max = 128)
-  @Column(name = "INVENTORY_PATH", length = 128, nullable = false)
-  private String inventoryPath;
+  @Column(name = "SEARCH_PATH", length = 128, nullable = false)
+  private String searchPath;
 
   @Size(max = 4000)
-  @Column(name = "EXTRA_INVENTORY_QUERY", length = 4000)
-  private String extraInventoryQuery;
+  @Column(name = "EXTRA_SEARCH_QUERY", length = 4000)
+  private String extraSearchQuery;
 
   public BigInteger getSyncServerId() {
     return syncServerId;
@@ -72,16 +72,20 @@ public class SyncServer implements Serializable {
     this.elementPath = elementPath;
   }
 
-  public String getInventoryPath() {
-    return inventoryPath;
+  public String getSearchPath() {
+    return searchPath;
   }
 
-  public String getExtraInventoryQuery() {
-    return extraInventoryQuery;
+  public void setSearchPath(String searchPath) {
+    this.searchPath = searchPath;
   }
 
-  public void setExtraInventoryQuery(String extraInventoryQuery) {
-    this.extraInventoryQuery = extraInventoryQuery;
+  public String getExtraSearchQuery() {
+    return extraSearchQuery;
+  }
+
+  public void setExtraSearchQuery(String extraSearchQuery) {
+    this.extraSearchQuery = extraSearchQuery;
   }
 
   @Override

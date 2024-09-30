@@ -89,10 +89,10 @@ public class SyncRule implements Serializable {
   }
 
   public String getSearchURL() {
-    String url = server.getBaseUrl() + server.getInventoryPath() + "?" + getQuery();
+    String url = server.getBaseUrl() + server.getSearchPath() + "?" + getQuery();
 
-    if (server.getExtraInventoryQuery() != null && !server.getExtraInventoryQuery().isBlank()) {
-      url = url + "&" + server.getExtraInventoryQuery();
+    if (server.getExtraSearchQuery() != null && !server.getExtraSearchQuery().isBlank()) {
+      url = url + "&" + server.getExtraSearchQuery();
     }
 
     return url;

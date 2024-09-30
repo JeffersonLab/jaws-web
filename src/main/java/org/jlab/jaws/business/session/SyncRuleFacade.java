@@ -329,7 +329,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     List<Location> locationList = new ArrayList<>();
 
     if (segMask != null && !segMask.isEmpty()) {
-      String[] masks = segMask.split(",");
+      String[] masks = segMask.split("\\+");
 
       for (String mask : masks) {
         if (mask != null && !mask.isBlank()) {
