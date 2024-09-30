@@ -214,13 +214,15 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
 
     HttpClient client = HttpClient.newHttpClient();
 
-    HttpRequest request = HttpRequest.newBuilder().uri(URI.create(rule.getQuery())).build();
+    String url = rule.getSearchURL();
+
+    HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
 
     HttpResponse<String> response = null;
     try {
       response = client.send(request, HttpResponse.BodyHandlers.ofString());
     } catch (IOException | InterruptedException e) {
-      throw new UserFriendlyException("Unable to execute query", e);
+      throw new UserFriendlyException("Unable to execute request for url " + url, e);
     }
 
     if (200 == response.statusCode()) {

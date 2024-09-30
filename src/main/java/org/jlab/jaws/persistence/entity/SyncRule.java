@@ -88,6 +88,16 @@ public class SyncRule implements Serializable {
     this.pv = pv;
   }
 
+  public String getSearchURL() {
+    String url = server.getBaseUrl() + server.getInventoryPath() + "?" + getQuery();
+
+    if (server.getExtraInventoryQuery() != null && !server.getExtraInventoryQuery().isBlank()) {
+      url = url + "&" + server.getExtraInventoryQuery();
+    }
+
+    return url;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
