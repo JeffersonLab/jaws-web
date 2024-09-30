@@ -16,13 +16,7 @@
     <jsp:body>
         <section>
             <h2 id="page-header-title"><c:out value="${title}"/></h2>
-            <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="chart-wrap" class="chart-wrap-backdrop">
-                <c:set var="readonly" value="${!pageContext.request.isUserInRole('jaws-admin')}"/>
-                <c:if test="${not readonly}">
-                    <s:editable-row-table-controls>
-                    </s:editable-row-table-controls>
-                </c:if>
                 <table class="data-table outer-table">
                     <thead>
                     <tr>
@@ -39,7 +33,7 @@
                         <td class="inner-table-cell" colspan="7">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
-                                    <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
+                                    <table class="data-table inner-table stripped-table">
                                         <tbody>
                                         <c:forEach items="${serverList}" var="server">
                                             <tr data-id="${server.syncServerId}">
@@ -58,90 +52,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <button id="previous-button" type="button" data-offset="${paginator.previousOffset}"
-                        value="Previous"${paginator.previous ? '' : ' disabled="disabled"'}>Previous
-                </button>
-                <button id="next-button" type="button" data-offset="${paginator.nextOffset}"
-                        value="Next"${paginator.next ? '' : ' disabled="disabled"'}>Next
-                </button>
             </div>
         </section>
-        <s:editable-row-table-dialog>
-            <form id="row-form">
-                <ul class="key-value-list">
-                    <li>
-                        <div class="li-key">
-                            <label for="row-action">Action</label>
-                        </div>
-                        <div class="li-value">
-                            <select id="row-action" required="required">
-                                <option value="">&nbsp;</option>
-                                <c:forEach items="${actionList}" var="action">
-                                    <option value="${action.actionId}">
-                                        <c:out value="${action.name}"/></option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="row-deployment">Deployment</label>
-                        </div>
-                        <div class="li-value">
-                            <select id="row-deployment" required="required">
-                                <option value="">&nbsp;</option>
-                                <option value="CED">CED</option>
-                                <option value="LED">LED</option>
-                                <option value="UED">UED</option>
-                            </select>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="row-query">Query</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="text" required="required" id="row-query"/>
-                        </div>
-                    </li>
-                </ul>
-                <div>Template</div>
-                <ul class="key-value-list">
-                    <li>
-                        <div class="li-key">
-                            <label for="row-name">Name</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="text" id="row-name" value="{ElementName} {Action}" disabled="disabled"/>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="row-location">Location</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="text" id="row-location" value="{function:locationFromSegMask(SegMask)}" disabled="disabled"/>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="row-screencommand">Screen Command</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="text" id="row-screencommand"/>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="row-pv">PV</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="text" id="row-pv"/>
-                        </div>
-                    </li>
-                </ul>
-                <div>Expression variables: {ElementName}, {EPICSName}, {Deployment}</div>
-            </form>
-        </s:editable-row-table-dialog>
     </jsp:body>         
 </t:setup-page>
