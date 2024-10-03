@@ -56,6 +56,45 @@ jlab.addRow = function($tr) {
         $button.empty().text("Add");
     });
 };
+jlab.removeRow = function($tr) {
+    var name = $tr.find("td:first-child").text(),
+        id = $tr.attr("data-id"),
+        $button = $tr.find("button");
+
+    $button
+        .height($button.height())
+        .width($button.width())
+        .empty().append('<div class="button-indicator"></div>');
+
+    var request = jQuery.ajax({
+        url: "/jaws/ajax/remove-alarm",
+        type: "POST",
+        data: {
+            id: id
+        },
+        dataType: "json"
+    });
+
+    request.done(function(json) {
+        if (json.stat === 'ok') {
+            $button.replaceWith("Success!");
+        } else {
+            alert(json.error);
+        }
+    });
+
+    request.fail(function(xhr, textStatus) {
+        window.console && console.log('Unable to remove alarm; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
+        alert('Unable to Remove Server unavailable or unresponsive');
+    });
+
+    request.always(function() {
+        $button.empty().text("Remove");
+    });
+};
 $(document).on("click", "#add-table button", function() {
     jlab.addRow($(this).closest("tr"));
+});
+$(document).on("click", "#remove-table button", function() {
+    jlab.removeRow($(this).closest("tr"));
 });
