@@ -567,4 +567,16 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
 
     return diff;
   }
+
+  @PermitAll
+  public LinkedHashMap<String, AlarmEntity> findDanglingByName(List<AlarmEntity> addList) {
+    LinkedHashMap<String, AlarmEntity> map = new LinkedHashMap<>();
+    return map;
+  }
+
+  @PermitAll
+  public LinkedHashMap<String, AlarmEntity> findDanglingByPv(List<AlarmEntity> addList) {
+    LinkedHashMap<String, AlarmEntity> map = new LinkedHashMap<>();
+    return map;
+  }
 }

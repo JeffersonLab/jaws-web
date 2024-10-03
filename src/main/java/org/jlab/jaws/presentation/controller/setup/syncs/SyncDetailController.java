@@ -50,6 +50,8 @@ public class SyncDetailController extends HttpServlet {
     }
 
     LinkedHashMap<BigInteger, AlarmEntity> remoteList = null;
+    LinkedHashMap<String, AlarmEntity> danglingByNameList = null;
+    LinkedHashMap<String, AlarmEntity> danglingByPvList = null;
     List<AlarmEntity> localList = null;
     String error = null;
     AlarmSyncDiff diff = null;
@@ -61,6 +63,11 @@ public class SyncDetailController extends HttpServlet {
         localList = alarmFacade.findByRule(rule);
 
         diff = alarmFacade.diff(remoteList, localList);
+
+        danglingByNameList = alarmFacade.findDanglingByName(diff.addList);
+        danglingByPvList = alarmFacade.findDanglingByPv(diff.addList);
+
+        // todo: generate side-by-side comparison struct for popping open in dialog
       } catch (UserFriendlyException e) {
         error = e.getMessage();
       }
