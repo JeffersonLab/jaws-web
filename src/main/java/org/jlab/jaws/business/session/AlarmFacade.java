@@ -20,6 +20,7 @@ import org.jlab.jaws.business.util.KafkaConfig;
 import org.jlab.jaws.clients.AlarmProducer;
 import org.jlab.jaws.entity.*;
 import org.jlab.jaws.persistence.entity.*;
+import org.jlab.jaws.persistence.model.AlarmSyncDiff;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
 /**
@@ -32,6 +33,8 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
   @EJB LocationFacade locationFacade;
 
   @EJB ActionFacade actionFacade;
+
+  @EJB SyncRuleFacade syncRuleFacade;
 
   @PersistenceContext(unitName = "webappPU")
   private EntityManager em;
@@ -214,9 +217,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
     Order o0 = cb.asc(p0);
     orders.add(o0);
     cq.orderBy(orders);
-    list =  getEntityManager()
-            .createQuery(cq)
-            .getResultList();
+    list = getEntityManager().createQuery(cq).getResultList();
 
     return list;
   }
@@ -230,7 +231,9 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       String screenCommand,
       String managedBy,
       String maskedBy,
-      String pv)
+      String pv,
+      BigInteger syncRuleId,
+      BigInteger elementId)
       throws UserFriendlyException {
     if (name == null || name.isBlank()) {
       throw new UserFriendlyException("Name is required");
@@ -262,6 +265,25 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       }
     }
 
+    SyncRule rule = null;
+
+    if (syncRuleId != null) {
+
+      if (elementId == null) {
+        throw new UserFriendlyException("Element ID is required if sync rule ID is provided");
+      }
+
+      rule = syncRuleFacade.find(syncRuleId);
+
+      if (rule == null) {
+        throw new UserFriendlyException("Sync Rule with ID " + syncRuleId + " not found");
+      }
+    }
+
+    if (syncRuleId == null && elementId != null) {
+      throw new UserFriendlyException("Sync rule ID is required if element ID is provided");
+    }
+
     AlarmEntity alarm = new AlarmEntity();
 
     alarm.setName(name);
@@ -272,6 +294,8 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
     alarm.setManagedBy(managedBy);
     alarm.setMaskedBy(maskedBy);
     alarm.setPv(pv);
+    alarm.setSyncRule(rule);
+    alarm.setSyncElementId(elementId);
 
     create(alarm);
 
@@ -510,6 +534,37 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
         screenCommand,
         managedBy,
         maskedBy,
-        pv);
+        pv,
+        null,
+        null);
+  }
+
+  @PermitAll
+  public AlarmSyncDiff diff(
+      LinkedHashMap<BigInteger, AlarmEntity> remoteList, List<AlarmEntity> localList) {
+    AlarmSyncDiff diff = new AlarmSyncDiff();
+
+    LinkedHashMap<BigInteger, AlarmEntity> addList = new LinkedHashMap<>(remoteList);
+
+    for (AlarmEntity local : localList) {
+      if (local.getSyncElementId() == null) {
+        diff.removeList.add(local);
+      } else {
+        AlarmEntity remote = remoteList.get(local.getSyncElementId());
+
+        if (remote == null) {
+          diff.removeList.add(local);
+        } else {
+          addList.remove(local.getSyncElementId());
+          if (!local.syncEquals(remote)) {
+            diff.updateList.add(remote);
+          }
+        }
+      }
+    }
+
+    diff.addList.addAll(addList.values());
+
+    return diff;
   }
 }

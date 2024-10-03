@@ -226,6 +226,17 @@ public class AlarmEntity implements Serializable {
     return Objects.equals(name, entity.name);
   }
 
+  public boolean syncEquals(AlarmEntity that) {
+    return Objects.equals(name, that.name)
+        && Objects.equals(action, that.action)
+        && Objects.equals(locationList, that.locationList)
+        && Objects.equals(device, that.device)
+        && Objects.equals(screenCommand, that.screenCommand)
+        && Objects.equals(managedBy, that.managedBy)
+        && Objects.equals(maskedBy, that.maskedBy)
+        && Objects.equals(pv, that.pv);
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(name);

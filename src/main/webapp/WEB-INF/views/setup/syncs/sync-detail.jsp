@@ -12,6 +12,7 @@
               href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/sync.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
+        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/sync-detail.js"></script>
     </jsp:attribute>
     <jsp:body>
         <div class="banner-breadbox">
@@ -68,8 +69,8 @@
                             <c:when test="${error ne null}">
                                 Error: <c:out value="${error}"/>
                             </c:when>
-                            <c:when test="${fn:length(alarmList) > 0}">
-                                <div>Found ${fn:length(alarmList)} alarms</div>
+                            <c:when test="${fn:length(remoteList) > 0}">
+                                <div>Found ${fn:length(remoteList)} remote alarms (vs ${fn:length(localList)} local alarms)</div>
                                 <table class="data-table">
                                     <thead>
                                         <tr>
@@ -80,7 +81,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach items="${alarmList}" var="alarm">
+                                        <c:forEach items="${remoteList.values()}" var="alarm">
                                             <tr>
                                                 <td><c:out value="${alarm.name}"/></td>
                                                 <td><c:out value="${alarm.locationNameCsv}"/></td>
@@ -93,6 +94,61 @@
                             </c:when>
                             <c:otherwise>
                                 <div>No results found.</div>
+                            </c:otherwise>
+                        </c:choose>
+                        <h3>Diff</h3>
+                        <h4>Add</h4>
+                        <c:choose>
+                            <c:when test="${fn:length(diff.addList) > 0}">
+                                <table id="add-table" class="data-table">
+                                    <tbody>
+                                        <c:forEach items="${diff.addList}" var="alarm">
+                                            <tr data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-managed-by="${alarm.managedBy}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}" data-rule-id="${alarm.syncRule.syncRuleId}" data-element-id="${alarm.syncElementId}">
+                                                <td><c:out value="${alarm.name}"/></td>
+                                                <td><button type="button">Add</button></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </c:when>
+                            <c:otherwise>
+                                <span>None</span>
+                            </c:otherwise>
+                        </c:choose>
+                        <h4>Remove</h4>
+                        <c:choose>
+                            <c:when test="${fn:length(diff.removeList) > 0}">
+                                <table id="remove-table" class="data-table">
+                                    <tbody>
+                                    <c:forEach items="${diff.removeList}" var="alarm">
+                                        <tr data-id="${alarm.alarmId}">
+                                            <td><c:out value="${alarm.name}"/></td>
+                                            <td><button type="button">Remove</button></td>
+                                        </tr>
+                                    </c:forEach>
+                                    </tbody>
+                                </table>
+                            </c:when>
+                            <c:otherwise>
+                                <span>None</span>
+                            </c:otherwise>
+                        </c:choose>
+                        <h4>Update</h4>
+                        <c:choose>
+                            <c:when test="${fn:length(diff.updateList) > 0}">
+                                <table id="update-table" class="data-table">
+                                    <tbody>
+                                    <c:forEach items="${diff.updateList}" var="alarm">
+                                        <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-managed-by="${alarm.managedBy}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}">
+                                            <td><c:out value="${alarm.name}"/></td>
+                                            <td><button type="button">Update</button></td>
+                                        </tr>
+                                    </c:forEach>
+                                    </tbody>
+                                </table>
+                            </c:when>
+                            <c:otherwise>
+                                <span>None</span>
                             </c:otherwise>
                         </c:choose>
                     </c:when>

@@ -7,10 +7,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -209,8 +206,9 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   }
 
   @RolesAllowed("jaws-admin")
-  public List<AlarmEntity> executeRule(SyncRule rule) throws UserFriendlyException {
-    List<AlarmEntity> alarmList = null;
+  public LinkedHashMap<BigInteger, AlarmEntity> executeRule(SyncRule rule)
+      throws UserFriendlyException {
+    LinkedHashMap<BigInteger, AlarmEntity> alarmList = null;
 
     HttpClient client = HttpClient.newHttpClient();
 
@@ -238,8 +236,8 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     return alarmList;
   }
 
-  private List<AlarmEntity> convertResponse(String body, SyncRule rule) {
-    List<AlarmEntity> alarmList = new ArrayList<>();
+  private LinkedHashMap<BigInteger, AlarmEntity> convertResponse(String body, SyncRule rule) {
+    LinkedHashMap<BigInteger, AlarmEntity> alarmList = new LinkedHashMap<>();
 
     JsonObject object = Json.createReader(new StringReader(body)).readObject();
 
@@ -285,7 +283,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       alarm.setLocationList(locationList);
       alarm.setScreenCommand(screenCommand);
       alarm.setPv(pv);
-      alarmList.add(alarm);
+      alarmList.put(elementId, alarm);
     }
 
     return alarmList;
