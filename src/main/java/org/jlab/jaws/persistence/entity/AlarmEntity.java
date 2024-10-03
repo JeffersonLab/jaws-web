@@ -3,6 +3,7 @@ package org.jlab.jaws.persistence.entity;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
@@ -181,10 +182,14 @@ public class AlarmEntity implements Serializable {
     String csv = "";
 
     if (locationList != null && !locationList.isEmpty()) {
-      csv = locationList.get(0).getLocationId().toString();
 
-      for (int i = 1; i < locationList.size(); i++) {
-        csv = csv + ", " + locationList.get(i).getLocationId().toString();
+      List<Location> sorted = new ArrayList<>(locationList);
+      Collections.sort(sorted);
+
+      csv = sorted.get(0).getLocationId().toString();
+
+      for (int i = 1; i < sorted.size(); i++) {
+        csv = csv + ", " + sorted.get(i).getLocationId().toString();
       }
     }
 
@@ -226,14 +231,38 @@ public class AlarmEntity implements Serializable {
     return Objects.equals(name, entity.name);
   }
 
+  /**
+   * Treat null and whitepsace only values as equal by converting them both to empty string.
+   *
+   * @param input string to normalize
+   * @return empty string or the original value
+   */
+  private String nvl(String input) {
+    String output = "";
+
+    if(input != null) {
+      output = input.trim();
+    }
+    return output;
+  }
+
   public boolean syncEquals(AlarmEntity that) {
+    /*System.err.println("Names match: " + Objects.equals(name, that.name));
+    System.err.println("Actions match: " + Objects.equals(action, that.action));
+    System.err.println("locationList match: " + Objects.equals(getLocationIdCsv(), that.getLocationIdCsv());
+    System.err.println("device match: " + Objects.equals(device, that.device));
+    System.err.println("screenCommand match: " + Objects.equals(nvl(screenCommand), nvl(that.screenCommand)));
+    System.err.println("managedBy match: " + Objects.equals(managedBy, that.managedBy));
+    System.err.println("maskedBy match: " + Objects.equals(maskedBy, that.maskedBy));
+    System.err.println("pv match: " + Objects.equals(pv, that.pv));*/
+
     return Objects.equals(name, that.name)
         && Objects.equals(action, that.action)
-        && Objects.equals(locationList, that.locationList)
-        && Objects.equals(device, that.device)
-        && Objects.equals(screenCommand, that.screenCommand)
-        && Objects.equals(managedBy, that.managedBy)
-        && Objects.equals(maskedBy, that.maskedBy)
+        && Objects.equals(getLocationIdCsv(), that.getLocationIdCsv())
+        && Objects.equals(nvl(device), nvl(that.device))
+        && Objects.equals(nvl(screenCommand), nvl(that.screenCommand))
+        && Objects.equals(nvl(managedBy), nvl(that.managedBy))
+        && Objects.equals(nvl(maskedBy), nvl(that.maskedBy))
         && Objects.equals(pv, that.pv);
   }
 
