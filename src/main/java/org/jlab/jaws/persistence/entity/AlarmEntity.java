@@ -240,7 +240,7 @@ public class AlarmEntity implements Serializable {
   private String nvl(String input) {
     String output = "";
 
-    if(input != null) {
+    if (input != null) {
       output = input.trim();
     }
     return output;
