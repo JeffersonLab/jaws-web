@@ -198,6 +198,29 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
     return entity;
   }
 
+  @PermitAll
+  public List<AlarmEntity> findByRule(SyncRule rule) {
+    List<AlarmEntity> list = null;
+
+    CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+    CriteriaQuery<AlarmEntity> cq = cb.createQuery(AlarmEntity.class);
+    Root<AlarmEntity> root = cq.from(AlarmEntity.class);
+    cq.select(root);
+
+    cq.where(cb.equal(root.get("syncRule"), rule));
+
+    List<Order> orders = new ArrayList<>();
+    Path p0 = root.get("name");
+    Order o0 = cb.asc(p0);
+    orders.add(o0);
+    cq.orderBy(orders);
+    list =  getEntityManager()
+            .createQuery(cq)
+            .getResultList();
+
+    return list;
+  }
+
   @RolesAllowed("jaws-admin")
   public void addAlarm(
       String name,

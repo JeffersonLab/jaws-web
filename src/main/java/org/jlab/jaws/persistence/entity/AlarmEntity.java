@@ -61,12 +61,13 @@ public class AlarmEntity implements Serializable {
   @Column(length = 64, nullable = true)
   private String pv;
 
-  /*@JoinColumns({
-          @JoinColumn(name = "CED_SYNC_RULE_ID", referencedColumnName = "CED_SYNC_RULE_ID", nullable = true),
-          @JoinColumn(name = "ACTION_ID", referencedColumnName = "ACTION_ID", nullable = true)
-  })
-  @ManyToOne(optional = true)*/
-  @Transient private SyncRule syncRule;
+  @Column(name = "SYNC_ELEMENT_ID", nullable = true, precision = 22, scale = 0)
+  private BigInteger syncElementId;
+
+  @JoinColumn(name = "SYNC_RULE_ID", referencedColumnName = "SYNC_RULE_ID", nullable = true)
+  @ManyToOne(optional = true)
+  @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+  private SyncRule syncRule;
 
   @Transient // The following doesn't work in Hibernate 5.3: @OneToOne(mappedBy = "alarm")
   private Notification notification;
@@ -142,6 +143,14 @@ public class AlarmEntity implements Serializable {
 
   public void setPv(String pv) {
     this.pv = pv;
+  }
+
+  public BigInteger getSyncElementId() {
+    return syncElementId;
+  }
+
+  public void setSyncElementId(BigInteger syncElementId) {
+    this.syncElementId = syncElementId;
   }
 
   public SyncRule getSyncRule() {

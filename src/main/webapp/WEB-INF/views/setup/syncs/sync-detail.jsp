@@ -95,9 +95,6 @@
                                 <div>No results found.</div>
                             </c:otherwise>
                         </c:choose>
-                        <div>
-                            <button type="button" disabled="disabled">Merge</button>
-                        </div>
                     </c:when>
                     <c:otherwise>
                         <div>Sync Rule with ID <c:out value="${param.syncRuleId}"/> not found!

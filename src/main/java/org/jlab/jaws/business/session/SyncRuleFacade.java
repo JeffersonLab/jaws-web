@@ -251,6 +251,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     for (JsonValue v : elements) {
       JsonObject o = v.asJsonObject();
 
+      BigInteger elementId = o.getJsonNumber("id").bigIntegerValue();
       String elementName = o.getString("name");
 
       List<Location> locationList = null;
@@ -277,6 +278,8 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
           applyExpressionVars(rule.getPv(), elementName, epicsName, rule.getSyncServer().getName());
 
       AlarmEntity alarm = new AlarmEntity();
+      alarm.setSyncElementId(elementId);
+      alarm.setSyncRule(rule);
       alarm.setName(elementName + " " + rule.getAction().getName());
       alarm.setAction(rule.getAction());
       alarm.setLocationList(locationList);

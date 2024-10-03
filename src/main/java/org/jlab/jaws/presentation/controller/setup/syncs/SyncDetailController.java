@@ -9,6 +9,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.jlab.jaws.business.session.AlarmFacade;
 import org.jlab.jaws.business.session.SyncRuleFacade;
 import org.jlab.jaws.persistence.entity.AlarmEntity;
 import org.jlab.jaws.persistence.entity.SyncRule;
@@ -24,6 +26,8 @@ import org.jlab.smoothness.presentation.util.ParamConverter;
 public class SyncDetailController extends HttpServlet {
 
   @EJB SyncRuleFacade syncFacade;
+  @EJB
+  AlarmFacade alarmFacade;
 
   /**
    * Handles the HTTP <code>GET</code> method.
@@ -46,11 +50,14 @@ public class SyncDetailController extends HttpServlet {
     }
 
     List<AlarmEntity> alarmList = null;
+    List<AlarmEntity> existingList = null;
     String error = null;
 
     if (rule != null) {
       try {
         alarmList = syncFacade.executeRule(rule);
+
+        existingList = alarmFacade.findByRule(rule);
       } catch (UserFriendlyException e) {
         error = e.getMessage();
       }
@@ -60,6 +67,7 @@ public class SyncDetailController extends HttpServlet {
 
     request.setAttribute("rule", rule);
     request.setAttribute("alarmList", alarmList);
+    request.setAttribute("existingList", existingList);
     request.setAttribute("error", error);
     request.setAttribute("editable", editable);
 
