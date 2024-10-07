@@ -1,6 +1,6 @@
 var jlab = jlab || {};
 jlab.addRow = function($tr) {
-    var name = $tr.find("td:first-child").text(),
+    var name = $tr.find("td:nth-child(2)").text(),
         actionId = $tr.attr("data-action-id"),
         locationCsv = $tr.attr("data-location-id-csv"),
         device = $tr.attr("data-device"),
@@ -57,7 +57,7 @@ jlab.addRow = function($tr) {
     });
 };
 jlab.removeRow = function($tr) {
-    var name = $tr.find("td:first-child").text(),
+    var name = $tr.find("td:nth-child(2)").text(),
         id = $tr.attr("data-id"),
         $button = $tr.find("button");
 
@@ -93,7 +93,7 @@ jlab.removeRow = function($tr) {
     });
 };
 jlab.linkRow = function($tr, alarmId) {
-    var name = $tr.find("td:first-child").text(),
+    var name = $tr.find("td:nth-child(2)").text(),
         actionId = $tr.attr("data-action-id"),
         locationCsv = $tr.attr("data-location-id-csv"),
         device = $tr.attr("data-device"),
@@ -150,12 +150,12 @@ jlab.linkRow = function($tr, alarmId) {
         $button.empty().text("Link");
     });
 };
-$(document).on("click", "#add-table button.add", function() {
+$(document).on("click", "button.add", function() {
     jlab.addRow($(this).closest("tr"));
 });
-$(document).on("click", "#remove-table button", function() {
+$(document).on("click", "button.remove", function() {
     jlab.removeRow($(this).closest("tr"));
 });
-$(document).on("click", "#add-table button.link", function() {
+$(document).on("click", "button.link", function() {
     jlab.linkRow($(this).closest("tr"), $(this).attr("data-alarm-id"));
 });

@@ -128,7 +128,7 @@
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
                                         <tbody>
                                         <c:forEach items="${alarmList}" var="alarm">
-                                            <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-managed-by="${alarm.managedBy}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}">
+                                            <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-managed-by="${alarm.managedBy}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}" data-sync-rule-id="${alarm.syncRule.syncRuleId}" data-sync-element-id="${alarm.syncElementId}">
                                                 <td>
                                                     <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}" var="url">
                                                     </c:url>
@@ -243,6 +243,8 @@
                         </div>
                     </li>
                 </ul>
+                <input type="hidden" id="row-sync-rule-id" value=""/>
+                <input type="hidden" id="row-sync-element-id" value=""/>
             </form>
         </s:editable-row-table-dialog>
     </jsp:body>         

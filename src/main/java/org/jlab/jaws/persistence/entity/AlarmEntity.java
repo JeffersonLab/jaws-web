@@ -182,7 +182,6 @@ public class AlarmEntity implements Serializable {
     String csv = "";
 
     if (locationList != null && !locationList.isEmpty()) {
-
       List<Location> sorted = new ArrayList<>(locationList);
       Collections.sort(sorted);
 
@@ -200,10 +199,13 @@ public class AlarmEntity implements Serializable {
     String csv = "";
 
     if (locationList != null && !locationList.isEmpty()) {
-      csv = locationList.get(0).getName();
+      List<Location> sorted = new ArrayList<>(locationList);
+      Collections.sort(sorted);
 
-      for (int i = 1; i < locationList.size(); i++) {
-        csv = csv + ", " + locationList.get(i).getName();
+      csv = sorted.get(0).getName();
+
+      for (int i = 1; i < sorted.size(); i++) {
+        csv = csv + ", " + sorted.get(i).getName();
       }
     }
 
@@ -219,6 +221,8 @@ public class AlarmEntity implements Serializable {
         list.add(name);
       }
     }
+
+    Collections.sort(list);
 
     return list;
   }

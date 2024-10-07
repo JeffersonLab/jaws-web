@@ -579,8 +579,10 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
           diff.removeList.add(local);
         } else {
           addList.remove(local.getSyncElementId());
-          if (!local.syncEquals(remote)) {
-            diff.updateList.add(remote);
+          if (local.syncEquals(remote)) {
+            diff.matchList.add(local);
+          } else {
+            diff.updateList.add(local);
           }
         }
       }
