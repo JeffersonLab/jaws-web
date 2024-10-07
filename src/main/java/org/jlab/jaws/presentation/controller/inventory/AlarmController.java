@@ -46,12 +46,14 @@ public class AlarmController extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+    String pv = request.getParameter("pv");
     String alarmName = request.getParameter("alarmName");
     BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
     String actionName = request.getParameter("actionName");
     BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
     String systemName = request.getParameter("systemName");
     BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
+    Boolean synced = ParamConverter.convertYNBoolean(request, "synced");
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
 
@@ -60,6 +62,8 @@ public class AlarmController extends HttpServlet {
             locationIdArray,
             priorityId,
             teamId,
+            synced,
+            pv,
             alarmName,
             actionName,
             systemName,
@@ -98,7 +102,7 @@ public class AlarmController extends HttpServlet {
 
     long totalRecords =
         alarmFacade.countList(
-            locationIdArray, priorityId, teamId, alarmName, actionName, systemName);
+            locationIdArray, priorityId, teamId, synced, pv, alarmName, actionName, systemName);
 
     Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
@@ -108,6 +112,8 @@ public class AlarmController extends HttpServlet {
             selectedLocationList,
             selectedPriority,
             selectedTeam,
+            synced,
+            pv,
             alarmName,
             actionName,
             systemName);
@@ -128,6 +134,8 @@ public class AlarmController extends HttpServlet {
       List<Location> locationList,
       Priority priority,
       Team team,
+      Boolean synced,
+      String pv,
       String alarmName,
       String actionName,
       String systemName) {
@@ -154,6 +162,14 @@ public class AlarmController extends HttpServlet {
 
     if (team != null) {
       filters.add("Team \"" + team.getName() + "\"");
+    }
+
+    if (synced != null) {
+      filters.add("Synced \"" + (synced ? "Yes" : "No") + "\"");
+    }
+
+    if (pv != null && !pv.isBlank()) {
+      filters.add("PV \"" + pv + "\"");
     }
 
     if (alarmName != null && !alarmName.isBlank()) {

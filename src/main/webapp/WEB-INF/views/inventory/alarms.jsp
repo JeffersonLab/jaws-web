@@ -64,6 +64,29 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
+                                        <label for="synced-select">Synced</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <select id="synced-select" name="synced">
+                                            <option value="">&nbsp;</option>
+                                            <option value="Y"${param.synced eq 'Y' ? ' selected="selected"' : ''}>Yes</option>
+                                            <option value="N"${param.synced eq 'N' ? ' selected="selected"' : ''}>No</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
+                                        <label for="pv">PV</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <input id="pv"
+                                               name="pv" value="${fn:escapeXml(param.pv)}"
+                                               placeholder="EPICS PV name"/>
+                                        <div>(use % as wildcard)</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="li-key">
                                         <label for="alarm-name">Alarm Name</label>
                                     </div>
                                     <div class="li-value">

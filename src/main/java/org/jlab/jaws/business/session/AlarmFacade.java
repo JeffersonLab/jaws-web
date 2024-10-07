@@ -55,6 +55,8 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       BigInteger[] locationIdArray,
       BigInteger priorityId,
       BigInteger teamId,
+      Boolean synced,
+      String pv,
       String alarmName,
       String actionName,
       String componentName) {
@@ -89,6 +91,18 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       }
     }
 
+    if (synced != null) {
+      if (synced) {
+        filters.add(cb.isNotNull(root.get("syncElementId")));
+      } else {
+        filters.add(cb.isNull(root.get("syncElementId")));
+      }
+    }
+
+    if (pv != null && !pv.isEmpty()) {
+      filters.add(cb.like(cb.lower(root.get("pv")), pv.toLowerCase()));
+    }
+
     if (alarmName != null && !alarmName.isEmpty()) {
       filters.add(cb.like(cb.lower(root.get("name")), alarmName.toLowerCase()));
     }
@@ -117,6 +131,8 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       BigInteger[] locationIdArray,
       BigInteger priorityId,
       BigInteger teamId,
+      Boolean synced,
+      String pv,
       String alarmName,
       String actionName,
       String componentName,
@@ -135,6 +151,8 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
             locationIdArray,
             priorityId,
             teamId,
+            synced,
+            pv,
             alarmName,
             actionName,
             componentName);
@@ -160,6 +178,8 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       BigInteger[] locationIdArray,
       BigInteger priorityId,
       BigInteger teamId,
+      Boolean synced,
+      String pv,
       String alarmName,
       String actionName,
       String componentName) {
@@ -175,6 +195,8 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
             locationIdArray,
             priorityId,
             teamId,
+            synced,
+            pv,
             alarmName,
             actionName,
             componentName);
@@ -190,7 +212,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
 
   @PermitAll
   public AlarmEntity findByName(String name) {
-    List<AlarmEntity> list = this.filterList(null, null, null, name, null, null, 0, 1);
+    List<AlarmEntity> list = this.filterList(null, null, null, null, null, name, null, null, 0, 1);
 
     AlarmEntity entity = null;
 

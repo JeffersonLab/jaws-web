@@ -56,6 +56,8 @@ public class ListAlarms extends HttpServlet {
               locationIdArray,
               priorityId,
               teamId,
+              null,
+              null,
               alarmName,
               actionName,
               componentName,

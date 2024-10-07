@@ -200,6 +200,8 @@ $(document).on("click", ".default-clear-panel", function () {
     $("#location-select").val(null).trigger('change');
     $("#priority-select").val('');
     $("#team-select").val('');
+    $("#synced-select").val('');
+    $("#pv").val('');
     $("#alarm-name").val('');
     $("#action-name").val('');
     $("#system-name").val('');
