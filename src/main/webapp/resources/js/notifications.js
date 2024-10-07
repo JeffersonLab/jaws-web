@@ -214,7 +214,7 @@ jlab.openSuppressDialog = function () {
     $selectedList.empty();
 
     for (var i = 0; i < nameArray.length; i++) {
-        $selectedList.append('<li>' + nameArray[i] + '</li>');
+        $selectedList.append('<li>' + String(nameArray[i]).encodeXml() + '</li>');
     }
 
     var count = $("#selected-count").text() * 1;
@@ -254,7 +254,7 @@ jlab.openUnsuppressDialog = function () {
     $selectedList.empty();
 
     for (var i = 0; i < nameArray.length; i++) {
-        $selectedList.append('<li>' + nameArray[i] + '</li>');
+        $selectedList.append('<li>' + String(nameArray[i]).encodeXml() + '</li>');
     }
 
     var count = $("#selected-count").text() * 1;
