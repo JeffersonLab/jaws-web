@@ -79,8 +79,6 @@ public class SyncDetailController extends HttpServlet {
         }
 
         collisionCount = alarmCollisions.size();
-
-        // todo: generate side-by-side comparison struct for popping open in dialog
       } catch (UserFriendlyException e) {
         error = e.getMessage();
       }

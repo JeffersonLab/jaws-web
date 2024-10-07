@@ -235,39 +235,25 @@ public class AlarmEntity implements Serializable {
     return Objects.equals(name, entity.name);
   }
 
-  /**
-   * Treat null and whitepsace only values as equal by converting them both to empty string.
-   *
-   * @param input string to normalize
-   * @return empty string or the original value
-   */
-  private String nvl(String input) {
-    String output = "";
-
-    if (input != null) {
-      output = input.trim();
-    }
-    return output;
-  }
-
-  public boolean syncEquals(AlarmEntity that) {
+  public boolean syncEquals(AlarmEntity remote) {
     /*System.err.println("Names match: " + Objects.equals(name, that.name));
     System.err.println("Actions match: " + Objects.equals(action, that.action));
     System.err.println("locationList match: " + Objects.equals(getLocationIdCsv(), that.getLocationIdCsv());
-    System.err.println("device match: " + Objects.equals(device, that.device));
     System.err.println("screenCommand match: " + Objects.equals(nvl(screenCommand), nvl(that.screenCommand)));
-    System.err.println("managedBy match: " + Objects.equals(managedBy, that.managedBy));
-    System.err.println("maskedBy match: " + Objects.equals(maskedBy, that.maskedBy));
     System.err.println("pv match: " + Objects.equals(pv, that.pv));*/
 
-    return Objects.equals(name, that.name)
-        && Objects.equals(action, that.action)
-        && Objects.equals(getLocationIdCsv(), that.getLocationIdCsv())
-        && Objects.equals(nvl(device), nvl(that.device))
-        && Objects.equals(nvl(screenCommand), nvl(that.screenCommand))
-        && Objects.equals(nvl(managedBy), nvl(that.managedBy))
-        && Objects.equals(nvl(maskedBy), nvl(that.maskedBy))
-        && Objects.equals(pv, that.pv);
+    boolean equals = Objects.equals(name, remote.name)
+            && Objects.equals(getLocationIdCsv(), remote.getLocationIdCsv());
+
+    if(remote.screenCommand != null && !remote.screenCommand.isBlank()) {
+      equals = equals && Objects.equals(screenCommand, remote.screenCommand);
+    }
+
+    if(remote.pv != null && !remote.pv.isBlank()) {
+      equals = equals && Objects.equals(pv, remote.pv);
+    }
+
+    return equals;
   }
 
   @Override

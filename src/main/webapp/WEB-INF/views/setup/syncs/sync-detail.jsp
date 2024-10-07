@@ -61,9 +61,9 @@
                             <dt>Location</dt>
                             <dd>{function:locationFromSegMask(SegMask)}</dd>
                             <dt>Screen Command</dt>
-                            <dd><c:out value="${rule.screenCommand}"/></dd>
+                            <dd><c:out value="${empty rule.screenCommand ? 'None' : rule.screenCommand}"/></dd>
                             <dt>PV</dt>
-                            <dd><c:out value="${rule.pv}"/></dd>
+                            <dd><c:out value="${empty rule.pv ? 'None' : rule.pv}"/></dd>
                         </dl>
                         <h3>Results</h3>
                         <c:choose>
@@ -140,15 +140,17 @@
                                         </tr>
                                     </c:forEach>
                                     <c:forEach items="${diff.updateList}" var="alarm">
+                                        <c:set value="${not empty remoteList[alarm.syncElementId].screenCommand}" var="screenCommandSync"/>
+                                        <c:set value="${not empty remoteList[alarm.syncElementId].pv}" var="pvSync"/>
                                         <tr data-id="${alarm.alarmId}"
                                             data-name="${remoteList[alarm.syncElementId].name}"
                                             data-action-id="${alarm.action.actionId}"
                                             data-location-id-csv="${remoteList[alarm.syncElementId].locationIdCsv}"
                                             data-device="${alarm.device}"
-                                            data-screen-command="${remoteList[alarm.syncElementId].screenCommand}"
+                                            data-screen-command="${screenCommandSync ? remoteList[alarm.syncElementId].screenCommand : alarm.screenCommand}"
                                             data-managed-by="${alarm.managedBy}"
                                             data-masked-by="${alarm.maskedBy}"
-                                            data-pv="${remoteList[alarm.syncElementId].pv}"
+                                            data-pv="${pvSync ? remoteList[alarm.syncElementId].pv : alarm.pv}"
                                             data-rule-id="${alarm.syncRule.syncRuleId}"
                                             data-element-id="${alarm.syncElementId}">
                                             <td><c:out value="${alarm.syncElementId}"/></td>
@@ -176,7 +178,7 @@
                                             </td>
                                             <td>
                                                 <c:choose>
-                                                    <c:when test="${alarm.screenCommand eq remoteList[alarm.syncElementId].screenCommand}">
+                                                    <c:when test="${not screenCommandSync || alarm.screenCommand eq remoteList[alarm.syncElementId].screenCommand}">
                                                         <c:out value="${alarm.screenCommand}"/>
                                                     </c:when>
                                                     <c:otherwise>
@@ -187,7 +189,7 @@
                                             </td>
                                             <td>
                                                 <c:choose>
-                                                    <c:when test="${alarm.pv eq remoteList[alarm.syncElementId].pv}">
+                                                    <c:when test="${not pvSync || alarm.pv eq remoteList[alarm.syncElementId].pv}">
                                                         <c:out value="${alarm.pv}"/>
                                                     </c:when>
                                                     <c:otherwise>
