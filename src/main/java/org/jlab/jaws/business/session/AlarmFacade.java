@@ -645,7 +645,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
 
       if (resultList != null) {
         for (AlarmEntity a : resultList) {
-          map.put(a.getName(), a);
+          map.put(a.getPv(), a);
         }
       }
     }

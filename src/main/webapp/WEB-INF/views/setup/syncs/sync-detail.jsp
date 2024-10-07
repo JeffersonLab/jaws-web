@@ -101,7 +101,7 @@
                                             <td><c:out value="${alarm.pv}"/></td>
                                             <td>
                                                 <c:set value="${danglingByNameList[alarm.name]}" var="danglingNameAlarm"/>
-                                                <c:set value="${danglingByPvList[alarm.name]}" var="danglingPvAlarm"/>
+                                                <c:set value="${danglingByPvList[alarm.pv]}" var="danglingPvAlarm"/>
                                                 <button class="add" type="button" ${danglingNameAlarm ne null || danglingByPvAlarm ne null ? 'disabled="disabled"' : ''}>Add</button>
                                                 <c:if test="${danglingNameAlarm ne null}">
                                                     <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}"
