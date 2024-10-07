@@ -242,14 +242,15 @@ public class AlarmEntity implements Serializable {
     System.err.println("screenCommand match: " + Objects.equals(nvl(screenCommand), nvl(that.screenCommand)));
     System.err.println("pv match: " + Objects.equals(pv, that.pv));*/
 
-    boolean equals = Objects.equals(name, remote.name)
+    boolean equals =
+        Objects.equals(name, remote.name)
             && Objects.equals(getLocationIdCsv(), remote.getLocationIdCsv());
 
-    if(remote.screenCommand != null && !remote.screenCommand.isBlank()) {
+    if (remote.screenCommand != null && !remote.screenCommand.isBlank()) {
       equals = equals && Objects.equals(screenCommand, remote.screenCommand);
     }
 
-    if(remote.pv != null && !remote.pv.isBlank()) {
+    if (remote.pv != null && !remote.pv.isBlank()) {
       equals = equals && Objects.equals(pv, remote.pv);
     }
 

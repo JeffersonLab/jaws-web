@@ -70,11 +70,11 @@ public class SyncDetailController extends HttpServlet {
         danglingByPvList = alarmFacade.findDanglingByPv(diff.addList);
 
         HashSet<BigInteger> alarmCollisions = new HashSet<BigInteger>();
-        for(AlarmEntity alarm: danglingByNameList.values()) {
+        for (AlarmEntity alarm : danglingByNameList.values()) {
           alarmCollisions.add(alarm.getAlarmId());
         }
 
-        for(AlarmEntity alarm: danglingByPvList.values()) {
+        for (AlarmEntity alarm : danglingByPvList.values()) {
           alarmCollisions.add(alarm.getAlarmId());
         }
 
