@@ -2,6 +2,7 @@ package org.jlab.jaws.presentation.controller.setup.syncs;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import javax.ejb.EJB;
@@ -55,6 +56,7 @@ public class SyncDetailController extends HttpServlet {
     List<AlarmEntity> localList = null;
     String error = null;
     AlarmSyncDiff diff = null;
+    long collisionCount = 0;
 
     if (rule != null) {
       try {
@@ -66,6 +68,17 @@ public class SyncDetailController extends HttpServlet {
 
         danglingByNameList = alarmFacade.findDanglingByName(diff.addList);
         danglingByPvList = alarmFacade.findDanglingByPv(diff.addList);
+
+        HashSet<BigInteger> alarmCollisions = new HashSet<BigInteger>();
+        for(AlarmEntity alarm: danglingByNameList.values()) {
+          alarmCollisions.add(alarm.getAlarmId());
+        }
+
+        for(AlarmEntity alarm: danglingByPvList.values()) {
+          alarmCollisions.add(alarm.getAlarmId());
+        }
+
+        collisionCount = alarmCollisions.size();
 
         // todo: generate side-by-side comparison struct for popping open in dialog
       } catch (UserFriendlyException e) {
@@ -83,6 +96,7 @@ public class SyncDetailController extends HttpServlet {
     request.setAttribute("diff", diff);
     request.setAttribute("danglingByNameList", danglingByNameList);
     request.setAttribute("danglingByPvList", danglingByPvList);
+    request.setAttribute("collisionCount", collisionCount);
 
     request
         .getRequestDispatcher("/WEB-INF/views/setup/syncs/sync-detail.jsp")

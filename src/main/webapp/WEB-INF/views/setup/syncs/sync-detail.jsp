@@ -71,8 +71,8 @@
                                 Error: <c:out value="${error}"/>
                             </c:when>
                             <c:when test="${fn:length(remoteList) > 0}">
-                                <div>Found ${fn:length(remoteList)} remote alarms (vs ${fn:length(localList)} local
-                                    alarms)
+                                <div>Found ${fn:length(remoteList)} remote alarms, ${fn:length(localList)} local
+                                    alarms, and ${collisionCount} name/pv collisions
                                 </div>
                                 <table class="data-table">
                                     <thead>
