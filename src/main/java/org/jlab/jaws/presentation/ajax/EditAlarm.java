@@ -43,13 +43,25 @@ public class EditAlarm extends HttpServlet {
     String managedBy = request.getParameter("managedBy");
     String maskedBy = request.getParameter("maskedBy");
     String pv = request.getParameter("pv");
+    BigInteger syncRuleId = ParamConverter.convertBigInteger(request, "syncRuleId");
+    BigInteger elementId = ParamConverter.convertBigInteger(request, "elementId");
 
     String stat = "ok";
     String error = null;
 
     try {
       alarmFacade.editAlarm(
-          alarmId, name, actionId, locationIdArray, device, screenCommand, managedBy, maskedBy, pv);
+          alarmId,
+          name,
+          actionId,
+          locationIdArray,
+          device,
+          screenCommand,
+          managedBy,
+          maskedBy,
+          pv,
+          syncRuleId,
+          elementId);
     } catch (UserFriendlyException e) {
       stat = "fail";
       error = "Unable to edit Alarm: " + e.getMessage();

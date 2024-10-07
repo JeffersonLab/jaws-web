@@ -81,6 +81,8 @@ public class SyncDetailController extends HttpServlet {
     request.setAttribute("error", error);
     request.setAttribute("editable", editable);
     request.setAttribute("diff", diff);
+    request.setAttribute("danglingByNameList", danglingByNameList);
+    request.setAttribute("danglingByPvList", danglingByPvList);
 
     request
         .getRequestDispatcher("/WEB-INF/views/setup/syncs/sync-detail.jsp")

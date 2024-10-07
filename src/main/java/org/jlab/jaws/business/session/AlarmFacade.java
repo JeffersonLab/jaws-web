@@ -369,7 +369,9 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       String screenCommand,
       String managedBy,
       String maskedBy,
-      String pv)
+      String pv,
+      BigInteger syncRuleId,
+      BigInteger elementId)
       throws UserFriendlyException {
     if (alarmId == null) {
       throw new UserFriendlyException("Alarm ID is required");
@@ -407,6 +409,25 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       }
     }
 
+    SyncRule rule = null;
+
+    if (syncRuleId != null) {
+
+      if (elementId == null) {
+        throw new UserFriendlyException("Element ID is required if sync rule ID is provided");
+      }
+
+      rule = syncRuleFacade.find(syncRuleId);
+
+      if (rule == null) {
+        throw new UserFriendlyException("Sync Rule with ID " + syncRuleId + " not found");
+      }
+    }
+
+    if (syncRuleId == null && elementId != null) {
+      throw new UserFriendlyException("Sync rule ID is required if element ID is provided");
+    }
+
     alarm.setName(name);
     alarm.setAction(action);
     alarm.setLocationList(locationList);
@@ -415,6 +436,8 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
     alarm.setManagedBy(managedBy);
     alarm.setMaskedBy(maskedBy);
     alarm.setPv(pv);
+    alarm.setSyncRule(rule);
+    alarm.setSyncElementId(elementId);
 
     edit(alarm);
 
@@ -571,12 +594,60 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
   @PermitAll
   public LinkedHashMap<String, AlarmEntity> findDanglingByName(List<AlarmEntity> addList) {
     LinkedHashMap<String, AlarmEntity> map = new LinkedHashMap<>();
+
+    if (addList != null && !addList.isEmpty()) {
+      List<String> names = new ArrayList<>();
+
+      // SQL in statement is limited to 1000 items
+      for (AlarmEntity a : addList.subList(0, Math.min(addList.size(), 1000))) {
+        names.add(a.getName());
+      }
+
+      String jpql = "select a from AlarmEntity a where a.name in :names";
+
+      TypedQuery<AlarmEntity> query = em.createQuery(jpql, AlarmEntity.class);
+
+      query.setParameter("names", names);
+
+      List<AlarmEntity> resultList = query.getResultList();
+
+      if (resultList != null) {
+        for (AlarmEntity a : resultList) {
+          map.put(a.getName(), a);
+        }
+      }
+    }
+
     return map;
   }
 
   @PermitAll
   public LinkedHashMap<String, AlarmEntity> findDanglingByPv(List<AlarmEntity> addList) {
     LinkedHashMap<String, AlarmEntity> map = new LinkedHashMap<>();
+
+    if (addList != null && !addList.isEmpty()) {
+      List<String> pvs = new ArrayList<>();
+
+      // SQL in statement is limited to 1000 items
+      for (AlarmEntity a : addList.subList(0, Math.min(addList.size(), 1000))) {
+        pvs.add(a.getPv());
+      }
+
+      String jpql = "select a from AlarmEntity a where a.pv in :pvs";
+
+      TypedQuery<AlarmEntity> query = em.createQuery(jpql, AlarmEntity.class);
+
+      query.setParameter("pvs", pvs);
+
+      List<AlarmEntity> resultList = query.getResultList();
+
+      if (resultList != null) {
+        for (AlarmEntity a : resultList) {
+          map.put(a.getName(), a);
+        }
+      }
+    }
+
     return map;
   }
 }
