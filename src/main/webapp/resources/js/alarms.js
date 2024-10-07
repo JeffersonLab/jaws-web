@@ -70,6 +70,8 @@ jlab.editRow = function() {
         managedBy = $("#row-managed-by").val(),
         maskedBy = $("#row-masked-by").val(),
         pv = $("#row-pv").val(),
+        syncRuleId = $("#row-sync-rule-id").val(),
+        elementId = $("#row-sync-element-id").val(),
         alarmId = $(".editable-row-table tr.selected-row").attr("data-id"),
         reloading = false;
 
@@ -94,7 +96,9 @@ jlab.editRow = function() {
             screenCommand: screenCommand,
             managedBy: managedBy,
             maskedBy: maskedBy,
-            pv: pv
+            pv: pv,
+            syncRuleId: syncRuleId,
+            elementId: elementId
         },
         dataType: "json"
     });
@@ -173,6 +177,8 @@ $(document).on("click", "#open-edit-row-dialog-button", function() {
     $("#row-managed-by").val($selectedRow.attr("data-managed-by"));
     $("#row-masked-by").val($selectedRow.attr("data-masked-by"));
     $("#row-pv").val($selectedRow.attr("data-pv"));
+    $("#row-sync-rule-id").val($selectedRow.attr("data-sync-rule-id"));
+    $("#row-sync-element-id").val($selectedRow.attr("data-sync-element-id"));
 
     let locationIdCsv = $selectedRow.attr("data-location-id-csv"),
         locationIdArray = locationIdCsv.split(/[ ,]+/);

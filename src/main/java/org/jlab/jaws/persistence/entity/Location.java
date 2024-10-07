@@ -11,7 +11,7 @@ import org.jlab.jaws.persistence.model.Node;
 
 @Entity
 @Table(name = "LOCATION", schema = "JAWS_OWNER")
-public class Location implements Serializable, Node {
+public class Location implements Serializable, Node, Comparable<Location> {
   private static final long serialVersionUID = 1L;
 
   public static final BigInteger TREE_ROOT = BigInteger.ZERO;
@@ -157,5 +157,10 @@ public class Location implements Serializable, Node {
     for (Location child : childList) {
       child.toTreeString(builder, indent + 1);
     }
+  }
+
+  @Override
+  public int compareTo(Location o) {
+    return this.getName().compareTo(o.getName());
   }
 }

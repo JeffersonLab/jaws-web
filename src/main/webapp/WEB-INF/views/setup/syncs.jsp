@@ -61,7 +61,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Action</th>
-                        <th>Deployment</th>
+                        <th>Server</th>
                         <th>Query</th>
                         <th></th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
@@ -85,7 +85,7 @@
                                                        href="${url}"><c:out
                                                         value="${sync.action.name}"/></a>
                                                 </td>
-                                                <td><c:out value="${sync.deployment}"/></td>
+                                                <td><c:out value="${sync.syncServer.name}"/></td>
                                                 <td><c:out value="${sync.query}"/></td>
                                                 <td>
                                                     <!-- Use onclick to avoid https://bugs.webkit.org/show_bug.cgi?id=30103 -->
@@ -133,14 +133,15 @@
                     </li>
                     <li>
                         <div class="li-key">
-                            <label for="row-deployment">Deployment</label>
+                            <label for="row-server">Server</label>
                         </div>
                         <div class="li-value">
-                            <select id="row-deployment" required="required">
+                            <select id="row-server" required="required">
                                 <option value="">&nbsp;</option>
-                                <option value="CED">CED</option>
-                                <option value="LED">LED</option>
-                                <option value="UED">UED</option>
+                                <c:forEach items="${serverList}" var="server">
+                                    <option value="${server.name}">
+                                        <c:out value="${server.name}"/></option>
+                                </c:forEach>
                             </select>
                         </div>
                     </li>

@@ -24,12 +24,12 @@ public class SyncRule implements Serializable {
   @ManyToOne(optional = false)
   private Action action;
 
-  @Size(max = 32)
-  @Column(length = 32)
-  private String deployment;
+  @JoinColumn(name = "SYNC_SERVER_ID", referencedColumnName = "SYNC_SERVER_ID", nullable = false)
+  @ManyToOne(optional = false)
+  private SyncServer server;
 
-  @Size(max = 4096)
-  @Column(length = 4096)
+  @Size(max = 4000)
+  @Column(length = 4000)
   private String query;
 
   @Size(max = 512)
@@ -56,12 +56,12 @@ public class SyncRule implements Serializable {
     this.action = action;
   }
 
-  public @Size(max = 32) String getDeployment() {
-    return deployment;
+  public SyncServer getSyncServer() {
+    return server;
   }
 
-  public void setDeployment(@Size(max = 32) String deployment) {
-    this.deployment = deployment;
+  public void setSyncServer(SyncServer server) {
+    this.server = server;
   }
 
   public String getQuery() {
@@ -86,6 +86,16 @@ public class SyncRule implements Serializable {
 
   public void setPv(String pv) {
     this.pv = pv;
+  }
+
+  public String getSearchURL() {
+    String url = server.getBaseUrl() + server.getSearchPath() + "?" + getQuery();
+
+    if (server.getExtraSearchQuery() != null && !server.getExtraSearchQuery().isBlank()) {
+      url = url + "&" + server.getExtraSearchQuery();
+    }
+
+    return url;
   }
 
   @Override

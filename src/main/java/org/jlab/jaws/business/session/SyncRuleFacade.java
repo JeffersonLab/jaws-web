@@ -7,10 +7,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -25,10 +22,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import org.jlab.jaws.entity.Alarm;
-import org.jlab.jaws.persistence.entity.Action;
-import org.jlab.jaws.persistence.entity.AlarmEntity;
-import org.jlab.jaws.persistence.entity.Location;
-import org.jlab.jaws.persistence.entity.SyncRule;
+import org.jlab.jaws.persistence.entity.*;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
 /**
@@ -40,6 +34,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
 
   @EJB ActionFacade actionFacade;
   @EJB LocationFacade locationFacade;
+  @EJB SyncServerFacade serverFacade;
 
   @PersistenceContext(unitName = "webappPU")
   private EntityManager em;
@@ -114,7 +109,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
 
   @RolesAllowed("jaws-admin")
   public void addSync(
-      BigInteger actionId, String deployment, String query, String screencommand, String pv)
+      BigInteger actionId, String syncServerName, String query, String screencommand, String pv)
       throws UserFriendlyException {
     if (actionId == null) {
       throw new UserFriendlyException("Action is required");
@@ -126,10 +121,20 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       throw new UserFriendlyException("Action not found with ID: " + actionId);
     }
 
+    if (syncServerName == null || syncServerName.isEmpty()) {
+      throw new UserFriendlyException("Sync server name is required");
+    }
+
+    SyncServer server = serverFacade.findByName(syncServerName);
+
+    if (server == null) {
+      throw new UserFriendlyException("Sync server not found with name: " + syncServerName);
+    }
+
     SyncRule rule = new SyncRule();
     rule.setAction(action);
 
-    rule.setDeployment(deployment);
+    rule.setSyncServer(server);
     rule.setQuery(query);
     rule.setScreenCommand(screencommand);
     rule.setPv(pv);
@@ -156,7 +161,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   public void editSync(
       BigInteger id,
       BigInteger actionId,
-      String deployment,
+      String syncServerName,
       String query,
       String screencommand,
       String pv)
@@ -181,8 +186,18 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       throw new UserFriendlyException("Action not found with ID: " + actionId);
     }
 
+    if (syncServerName == null || syncServerName.isEmpty()) {
+      throw new UserFriendlyException("Sync server name is required");
+    }
+
+    SyncServer server = serverFacade.findByName(syncServerName);
+
+    if (server == null) {
+      throw new UserFriendlyException("Sync server not found with name: " + syncServerName);
+    }
+
     rule.setAction(action);
-    rule.setDeployment(deployment);
+    rule.setSyncServer(server);
     rule.setQuery(query);
     rule.setScreenCommand(screencommand);
     rule.setPv(pv);
@@ -191,18 +206,21 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   }
 
   @RolesAllowed("jaws-admin")
-  public List<AlarmEntity> executeRule(SyncRule rule) throws UserFriendlyException {
-    List<AlarmEntity> alarmList = null;
+  public LinkedHashMap<BigInteger, AlarmEntity> executeRule(SyncRule rule)
+      throws UserFriendlyException {
+    LinkedHashMap<BigInteger, AlarmEntity> alarmList = null;
 
     HttpClient client = HttpClient.newHttpClient();
 
-    HttpRequest request = HttpRequest.newBuilder().uri(URI.create(rule.getQuery())).build();
+    String url = rule.getSearchURL();
+
+    HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
 
     HttpResponse<String> response = null;
     try {
       response = client.send(request, HttpResponse.BodyHandlers.ofString());
     } catch (IOException | InterruptedException e) {
-      throw new UserFriendlyException("Unable to execute query", e);
+      throw new UserFriendlyException("Unable to execute request for url " + url, e);
     }
 
     if (200 == response.statusCode()) {
@@ -218,8 +236,8 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     return alarmList;
   }
 
-  private List<AlarmEntity> convertResponse(String body, SyncRule rule) {
-    List<AlarmEntity> alarmList = new ArrayList<>();
+  private LinkedHashMap<BigInteger, AlarmEntity> convertResponse(String body, SyncRule rule) {
+    LinkedHashMap<BigInteger, AlarmEntity> alarmList = new LinkedHashMap<>();
 
     JsonObject object = Json.createReader(new StringReader(body)).readObject();
 
@@ -231,6 +249,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     for (JsonValue v : elements) {
       JsonObject o = v.asJsonObject();
 
+      BigInteger elementId = o.getJsonNumber("id").bigIntegerValue();
       String elementName = o.getString("name");
 
       List<Location> locationList = null;
@@ -252,16 +271,19 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
 
       String screenCommand =
           applyExpressionVars(
-              rule.getScreenCommand(), elementName, epicsName, rule.getDeployment());
-      String pv = applyExpressionVars(rule.getPv(), elementName, epicsName, rule.getDeployment());
+              rule.getScreenCommand(), elementName, epicsName, rule.getSyncServer().getName());
+      String pv =
+          applyExpressionVars(rule.getPv(), elementName, epicsName, rule.getSyncServer().getName());
 
       AlarmEntity alarm = new AlarmEntity();
+      alarm.setSyncElementId(elementId);
+      alarm.setSyncRule(rule);
       alarm.setName(elementName + " " + rule.getAction().getName());
       alarm.setAction(rule.getAction());
       alarm.setLocationList(locationList);
       alarm.setScreenCommand(screenCommand);
       alarm.setPv(pv);
-      alarmList.add(alarm);
+      alarmList.put(elementId, alarm);
     }
 
     return alarmList;
@@ -308,7 +330,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     List<Location> locationList = new ArrayList<>();
 
     if (segMask != null && !segMask.isEmpty()) {
-      String[] masks = segMask.split(",");
+      String[] masks = segMask.split("\\+");
 
       for (String mask : masks) {
         if (mask != null && !mask.isBlank()) {

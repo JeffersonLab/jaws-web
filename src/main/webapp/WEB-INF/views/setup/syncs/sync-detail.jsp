@@ -12,6 +12,8 @@
               href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/sync.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
+        <script type="text/javascript"
+                src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/sync-detail.js"></script>
     </jsp:attribute>
     <jsp:body>
         <div class="banner-breadbox">
@@ -45,10 +47,12 @@
                         <dl>
                             <dt>Action</dt>
                             <dd><c:out value="${rule.action.name}"/></dd>
-                            <dt>Deployment</dt>
-                            <dd><c:out value="${rule.deployment}"/></dd>
+                            <dt>Server</dt>
+                            <dd><c:out value="${rule.syncServer.name}"/></dd>
                             <dt>Query</dt>
-                            <dd><c:out value="${rule.query}"/></dd>
+                            <dd>
+                                <a href="${rule.searchURL}"><c:out value="${rule.query}"/></a>
+                            </dd>
                         </dl>
                         <h3>Template</h3>
                         <dl>
@@ -66,26 +70,152 @@
                             <c:when test="${error ne null}">
                                 Error: <c:out value="${error}"/>
                             </c:when>
-                            <c:when test="${fn:length(alarmList) > 0}">
-                                <div>Found ${fn:length(alarmList)} alarms</div>
+                            <c:when test="${fn:length(remoteList) > 0}">
+                                <div>Found ${fn:length(remoteList)} remote alarms (vs ${fn:length(localList)} local
+                                    alarms)
+                                </div>
                                 <table class="data-table">
                                     <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Location</th>
-                                            <th>Screen Command</th>
-                                            <th>PV</th>
-                                        </tr>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Location</th>
+                                        <th>Screen Command</th>
+                                        <th>PV</th>
+                                        <th></th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach items="${alarmList}" var="alarm">
-                                            <tr>
-                                                <td><c:out value="${alarm.name}"/></td>
-                                                <td><c:out value="${alarm.locationNameCsv}"/></td>
-                                                <td><c:out value="${alarm.screenCommand}"/></td>
-                                                <td><c:out value="${alarm.pv}"/></td>
-                                            </tr>
-                                        </c:forEach>
+                                    <c:forEach items="${diff.addList}" var="alarm">
+                                        <tr data-action-id="${alarm.action.actionId}"
+                                            data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}"
+                                            data-screen-command="${alarm.screenCommand}"
+                                            data-managed-by="${alarm.managedBy}" data-masked-by="${alarm.maskedBy}"
+                                            data-pv="${alarm.pv}" data-rule-id="${alarm.syncRule.syncRuleId}"
+                                            data-element-id="${alarm.syncElementId}"
+                                            class="add-row">
+                                            <td><c:out value="${alarm.syncElementId}"/></td>
+                                            <td><c:out value="${alarm.name}"/></td>
+                                            <td><c:out value="${alarm.locationNameCsv}"/></td>
+                                            <td><c:out value="${alarm.screenCommand}"/></td>
+                                            <td><c:out value="${alarm.pv}"/></td>
+                                            <td>
+                                                <c:set value="${danglingByNameList[alarm.name]}" var="danglingNameAlarm"/>
+                                                <c:set value="${danglingByPvList[alarm.name]}" var="danglingPvAlarm"/>
+                                                <button class="add" type="button" ${danglingNameAlarm ne null || danglingByPvAlarm ne null ? 'disabled="disabled"' : ''}>Add</button>
+                                                <c:if test="${danglingNameAlarm ne null}">
+                                                    <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}"
+                                                           var="url">
+                                                    </c:url>
+                                                    <div>
+                                                        <button class="link" type="button" data-alarm-id="${danglingNameAlarm.alarmId}">Link</button>
+                                                        <a title="Alarm Information" class="dialog-ready"
+                                                           data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
+                                                           href="${url}">Existing Name</a>
+                                                    </div>
+                                                </c:if>
+                                                <c:if test="${danglingPvAlarm ne null}">
+                                                    <c:url value="/inventory/alarms/${jaws:urlEncodePath(danglingPvAlarm.name)}"
+                                                           var="url">
+                                                    </c:url>
+                                                    <div>
+                                                        <button class="link" type="button" data-alarm-id="${danglingPvAlarm.alarmId}">Link</button>
+                                                        <a title="Alarm Information" class="dialog-ready"
+                                                           data-dialog-title="Alarm Information: ${fn:escapeXml(danglingPvAlarm.name)}"
+                                                           href="${url}">Existing PV</a>
+                                                    </div>
+                                                </c:if>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                    <c:forEach items="${diff.removeList}" var="alarm">
+                                        <tr data-id="${alarm.alarmId}"
+                                            class="remove-row">
+                                            <td><c:out value="${alarm.syncElementId}"/></td>
+                                            <td><c:out value="${alarm.name}"/></td>
+                                            <td><c:out value="${alarm.locationNameCsv}"/></td>
+                                            <td><c:out value="${alarm.screenCommand}"/></td>
+                                            <td><c:out value="${alarm.pv}"/></td>
+                                            <td><button class="remove" type="button">Remove</button></td>
+                                        </tr>
+                                    </c:forEach>
+                                    <c:forEach items="${diff.updateList}" var="alarm">
+                                        <tr data-id="${alarm.alarmId}"
+                                            data-name="${remoteList[alarm.syncElementId].name}"
+                                            data-action-id="${alarm.action.actionId}"
+                                            data-location-id-csv="${remoteList[alarm.syncElementId].locationIdCsv}"
+                                            data-device="${alarm.device}"
+                                            data-screen-command="${remoteList[alarm.syncElementId].screenCommand}"
+                                            data-managed-by="${alarm.managedBy}"
+                                            data-masked-by="${alarm.maskedBy}"
+                                            data-pv="${remoteList[alarm.syncElementId].pv}"
+                                            data-rule-id="${alarm.syncRule.syncRuleId}"
+                                            data-element-id="${alarm.syncElementId}">
+                                            <td><c:out value="${alarm.syncElementId}"/></td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${alarm.name eq remoteList[alarm.syncElementId].name}">
+                                                        <c:out value="${alarm.name}"/>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="remote"><c:out value="${remoteList[alarm.syncElementId].name}"/></div>
+                                                        <div class="local"><c:out value="${alarm.name}"/></div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${alarm.locationNameCsv eq remoteList[alarm.syncElementId].locationNameCsv}">
+                                                        <c:out value="${alarm.locationNameCsv}"/>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="remote"><c:out value="${remoteList[alarm.syncElementId].locationNameCsv}"/></div>
+                                                        <div class="local"><c:out value="${alarm.locationNameCsv}"/></div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${alarm.screenCommand eq remoteList[alarm.syncElementId].screenCommand}">
+                                                        <c:out value="${alarm.screenCommand}"/>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="remote"><c:out value="${remoteList[alarm.syncElementId].screenCommand}"/></div>
+                                                        <div class="local"><c:out value="${alarm.screenCommand}"/></div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${alarm.pv eq remoteList[alarm.syncElementId].pv}">
+                                                        <c:out value="${alarm.pv}"/>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="remote"><c:out value="${remoteList[alarm.syncElementId].pv}"/></div>
+                                                        <div class="local"><c:out value="${alarm.pv}"/></div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td><button class="update" type="button">Update</button></td>
+                                        </tr>
+                                    </c:forEach>
+                                    <c:forEach items="${diff.matchList}" var="alarm">
+                                        <tr>
+                                            <td><c:out value="${alarm.syncElementId}"/></td>
+                                            <td>
+                                                <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}"
+                                                       var="url">
+                                                </c:url>
+                                                <a title="Alarm Information" class="dialog-ready"
+                                                   data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
+                                                   href="${url}"><c:out value="${alarm.name}"/></a>
+                                            </td>
+                                            <td><c:out value="${alarm.locationNameCsv}"/></td>
+                                            <td><c:out value="${alarm.screenCommand}"/></td>
+                                            <td><c:out value="${alarm.pv}"/></td>
+                                            <td></td>
+                                        </tr>
+                                    </c:forEach>
                                     </tbody>
                                 </table>
                             </c:when>
@@ -93,9 +223,6 @@
                                 <div>No results found.</div>
                             </c:otherwise>
                         </c:choose>
-                        <div>
-                            <button type="button" disabled="disabled">Merge</button>
-                        </div>
                     </c:when>
                     <c:otherwise>
                         <div>Sync Rule with ID <c:out value="${param.syncRuleId}"/> not found!

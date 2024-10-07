@@ -1,0 +1,27 @@
+.outer-table thead th:first-child {
+    width: 125px;
+}
+.inner-table tbody td:first-child {
+    width: 121px;
+}
+.outer-table thead th:nth-child(2),
+.inner-table tbody td:nth-child(2) {
+    width: 201px;
+    word-break: break-word;
+}
+.outer-table thead th:nth-child(3),
+.inner-table tbody td:nth-child(3) {
+    width: 130px;
+    word-break: break-word;
+}
+.outer-table thead th:nth-child(4),
+.inner-table tbody td:nth-child(4) {
+    width: 200px;
+    word-break: break-word;
+}
+.bottom-ul {
+    margin-top: 1em;
+}
+#row-form input[type=text] {
+    width: 400px;
+}

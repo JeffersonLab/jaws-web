@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jlab.jaws.business.session.AlarmFacade;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
+import org.jlab.smoothness.business.util.ExceptionUtil;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 
 /**
@@ -42,13 +43,24 @@ public class AddAlarm extends HttpServlet {
     String managedBy = request.getParameter("managedBy");
     String maskedBy = request.getParameter("maskedBy");
     String pv = request.getParameter("pv");
+    BigInteger syncRuleId = ParamConverter.convertBigInteger(request, "syncRuleId");
+    BigInteger elementId = ParamConverter.convertBigInteger(request, "elementId");
 
     String stat = "ok";
     String error = null;
 
     try {
       alarmFacade.addAlarm(
-          name, actionId, locationIdArray, device, screenCommand, managedBy, maskedBy, pv);
+          name,
+          actionId,
+          locationIdArray,
+          device,
+          screenCommand,
+          managedBy,
+          maskedBy,
+          pv,
+          syncRuleId,
+          elementId);
     } catch (UserFriendlyException e) {
       stat = "fail";
       error = "Unable to add Alarm: " + e.getMessage();
@@ -59,6 +71,12 @@ public class AddAlarm extends HttpServlet {
       stat = "fail";
       error = "Unable to add Alarm";
       logger.log(Level.SEVERE, "Unable to add Alarm", e);
+      Throwable rootCause = ExceptionUtil.getRootCause(e);
+      // System.err.println("Top Cause: " + e.getClass().getSimpleName());
+      // System.err.println("Root Cause: " + rootCause.getClass().getSimpleName());
+      if ("OracleDatabaseException".equals(rootCause.getClass().getSimpleName())) {
+        error = "Oracle Database Exception - make sure name or pv name doesn't already exist!";
+      }
     }
 
     response.setContentType("application/json");

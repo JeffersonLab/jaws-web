@@ -141,6 +141,10 @@
                             <dd><c:out value="${alarm.maskedBy eq null ? 'None' : alarm.maskedBy}"/></dd>
                             <dt>Source:</dt>
                             <dd><c:out value="${alarm.pv eq null ? 'None' : 'EPICS PV: '.concat(alarm.pv)}"/></dd>
+                            <dt>Sync Rule:</dt>
+                            <dd><c:out value="${alarm.syncRule eq null ? 'None' : alarm.syncRule.syncRuleId}"/></dd>
+                            <dt>Sync Element:</dt>
+                            <dd><c:out value="${alarm.syncElementId eq null ? 'None' : alarm.syncElementId}"/></dd>
                         </dl>
                         <hr/>
                         <dl>
