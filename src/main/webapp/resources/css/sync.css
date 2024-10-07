@@ -6,3 +6,6 @@
 .local {
     background-color: #ff9094;
 }
+.query {
+    word-break: break-word;
+}

@@ -50,7 +50,7 @@
                             <dt>Server</dt>
                             <dd><c:out value="${rule.syncServer.name}"/></dd>
                             <dt>Query</dt>
-                            <dd>
+                            <dd class="query">
                                 <a href="${rule.searchURL}"><c:out value="${rule.query}"/></a>
                             </dd>
                         </dl>
