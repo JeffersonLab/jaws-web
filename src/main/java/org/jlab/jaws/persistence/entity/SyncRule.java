@@ -2,6 +2,8 @@ package org.jlab.jaws.persistence.entity;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -28,9 +30,17 @@ public class SyncRule implements Serializable {
   @ManyToOne(optional = false)
   private SyncServer server;
 
+  @Size(max = 128)
+  @Column(name = "DESCRIPTION", length = 128)
+  private String description;
+
   @Size(max = 4000)
   @Column(length = 4000)
   private String query;
+
+  @Size(max = 4000)
+  @Column(name = "PROPERTY_EXPRESSION", length = 4000)
+  private String propertyExpression;
 
   @Size(max = 512)
   @Column(name = "SCREEN_COMMAND", length = 512)
@@ -72,6 +82,22 @@ public class SyncRule implements Serializable {
     this.query = query;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getPropertyExpression() {
+    return propertyExpression;
+  }
+
+  public void setPropertyExpression(String propertyExpression) {
+    this.propertyExpression = propertyExpression;
+  }
+
   public String getScreenCommand() {
     return screenCommand;
   }
@@ -89,13 +115,33 @@ public class SyncRule implements Serializable {
   }
 
   public String getSearchURL() {
-    String url = server.getBaseUrl() + server.getSearchPath() + "?" + getQuery();
+    String url = getHTMLURL();
 
     if (server.getExtraSearchQuery() != null && !server.getExtraSearchQuery().isBlank()) {
       url = url + "&" + server.getExtraSearchQuery();
     }
 
     return url;
+  }
+
+  public String getHTMLURL() {
+    String url = server.getBaseUrl() + server.getSearchPath() + "?" + getQuery();
+
+    if (propertyExpression != null && !propertyExpression.isBlank()) {
+      url = url + "&Ex=" + URLEncoder.encode(propertyExpression, StandardCharsets.UTF_8);
+    }
+
+    return url;
+  }
+
+  public String[] getExpressionArray() {
+    String[] tokens = new String[0];
+
+    if (propertyExpression != null && !propertyExpression.isBlank()) {
+      tokens = propertyExpression.split("&");
+    }
+
+    return tokens;
   }
 
   @Override

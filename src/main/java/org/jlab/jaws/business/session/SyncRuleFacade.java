@@ -79,9 +79,15 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     }
 
     List<Order> orders = new ArrayList<>();
-    Path p0 = root.get("syncRuleId");
+    Path p0 = root.get("action").get("name");
     Order o0 = cb.asc(p0);
     orders.add(o0);
+    Path p1 = root.get("server").get("syncServerId");
+    Order o1 = cb.asc(p1);
+    orders.add(o1);
+    Path p2 = root.get("syncRuleId");
+    Order o2 = cb.asc(p2);
+    orders.add(o2);
     cq.orderBy(orders);
     return getEntityManager()
         .createQuery(cq)
@@ -108,8 +114,14 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   }
 
   @RolesAllowed("jaws-admin")
-  public void addSync(
-      BigInteger actionId, String syncServerName, String query, String screencommand, String pv)
+  public BigInteger addSync(
+      BigInteger actionId,
+      String syncServerName,
+      String description,
+      String query,
+      String expression,
+      String screencommand,
+      String pv)
       throws UserFriendlyException {
     if (actionId == null) {
       throw new UserFriendlyException("Action is required");
@@ -131,15 +143,23 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       throw new UserFriendlyException("Sync server not found with name: " + syncServerName);
     }
 
+    if (query == null || query.isBlank()) {
+      throw new UserFriendlyException("Query is required");
+    }
+
     SyncRule rule = new SyncRule();
     rule.setAction(action);
 
     rule.setSyncServer(server);
+    rule.setDescription(description);
     rule.setQuery(query);
+    rule.setPropertyExpression(expression);
     rule.setScreenCommand(screencommand);
     rule.setPv(pv);
 
     create(rule);
+
+    return rule.getSyncRuleId();
   }
 
   @RolesAllowed("jaws-admin")
@@ -162,7 +182,9 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       BigInteger id,
       BigInteger actionId,
       String syncServerName,
+      String description,
       String query,
+      String expression,
       String screencommand,
       String pv)
       throws UserFriendlyException {
@@ -198,7 +220,9 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
 
     rule.setAction(action);
     rule.setSyncServer(server);
+    rule.setDescription(description);
     rule.setQuery(query);
+    rule.setPropertyExpression(expression);
     rule.setScreenCommand(screencommand);
     rule.setPv(pv);
 

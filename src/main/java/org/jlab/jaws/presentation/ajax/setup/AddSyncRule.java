@@ -36,15 +36,19 @@ public class AddSyncRule extends HttpServlet {
 
     BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
     String server = request.getParameter("server");
+    String description = request.getParameter("description");
     String query = request.getParameter("query");
+    String expression = request.getParameter("expression");
     String screencommand = request.getParameter("screencommand");
     String pv = request.getParameter("pv");
 
     String stat = "ok";
     String error = null;
+    BigInteger syncRuleId = null;
 
     try {
-      syncFacade.addSync(actionId, server, query, screencommand, pv);
+      syncRuleId =
+          syncFacade.addSync(actionId, server, description, query, expression, screencommand, pv);
     } catch (UserFriendlyException e) {
       stat = "fail";
       error = "Unable to add Sync: " + e.getMessage();
@@ -65,6 +69,8 @@ public class AddSyncRule extends HttpServlet {
       gen.writeStartObject().write("stat", stat);
       if (error != null) {
         gen.write("error", error);
+      } else {
+        gen.write("id", syncRuleId);
       }
       gen.writeEnd();
     }

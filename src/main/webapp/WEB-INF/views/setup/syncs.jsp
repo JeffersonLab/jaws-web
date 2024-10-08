@@ -23,11 +23,11 @@
                             <ul class="key-value-list">
                                 <li>
                                     <div class="li-key">
-                                        <label for="sync-id">Sync ID</label>
+                                        <label for="sync-rule-id">Sync Rule ID</label>
                                     </div>
                                     <div class="li-value">
-                                        <input id="sync-id"
-                                               name="syncId" value="${fn:escapeXml(param.syncId)}"/>
+                                        <input id="sync-rule-id"
+                                               name="syncRuleId" value="${fn:escapeXml(param.syncRuleId)}"/>
                                     </div>
                                 </li>
                                 <li>
@@ -56,13 +56,13 @@
                     <s:editable-row-table-controls>
                     </s:editable-row-table-controls>
                 </c:if>
-                <table class="data-table outer-table">
+                <table id="rule-table" class="data-table outer-table">
                     <thead>
                     <tr>
                         <th>ID</th>
                         <th>Action</th>
                         <th>Server</th>
-                        <th>Query</th>
+                        <th>Description</th>
                         <th></th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
@@ -75,7 +75,7 @@
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
                                         <tbody>
                                         <c:forEach items="${syncList}" var="sync">
-                                            <tr data-id="${sync.syncRuleId}" data-action-id="${sync.action.actionId}" data-screencommand="${fn:escapeXml(sync.screenCommand)}" data-pv="${fn:escapeXml(sync.pv)}">
+                                            <tr data-id="${sync.syncRuleId}" data-action-id="${sync.action.actionId}" data-screencommand="${fn:escapeXml(sync.screenCommand)}" data-pv="${fn:escapeXml(sync.pv)}" data-query="${fn:escapeXml(sync.query)}" data-expression="${fn:escapeXml(sync.propertyExpression)}">
                                                 <td><c:out value="${sync.syncRuleId}"/></td>
                                                 <td>
                                                     <c:url value="/inventory/actions/${jaws:urlEncodePath(sync.action.name)}" var="url">
@@ -86,7 +86,7 @@
                                                         value="${sync.action.name}"/></a>
                                                 </td>
                                                 <td><c:out value="${sync.syncServer.name}"/></td>
-                                                <td><c:out value="${sync.query}"/></td>
+                                                <td><c:out value="${sync.description}"/></td>
                                                 <td>
                                                     <!-- Use onclick to avoid https://bugs.webkit.org/show_bug.cgi?id=30103 -->
                                                     <c:url value="/setup/syncs/${jaws:urlEncodePath(sync.syncRuleId)}" var="url">
@@ -147,13 +147,30 @@
                     </li>
                     <li>
                         <div class="li-key">
-                            <label for="row-query">Query</label>
+                            <label for="row-description">Description</label>
                         </div>
                         <div class="li-value">
-                            <input type="text" required="required" id="row-query"/>
+                            <input type="text" required="required" id="row-description"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-query">Base Query</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" required="required" id="row-query" placeholder="URL Encoded (Example: t=IOC&a=A_HallA)"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-expression">Property Expression</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" required="required" id="row-expression" placeholder="Not URL Encoded (Example: !unpowered&!hallcontrolled)"/>
                         </div>
                     </li>
                 </ul>
+                <hr/>
                 <div>Template</div>
                 <ul class="key-value-list">
                     <li>
@@ -191,6 +208,7 @@
                 </ul>
                 <div>Expression variables: {ElementName}, {EPICSName}, {Deployment}</div>
             </form>
+            <button id="save-and-run-button" type="button">Save and Run</button>
         </s:editable-row-table-dialog>
     </jsp:body>         
 </t:setup-page>

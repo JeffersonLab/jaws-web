@@ -37,6 +37,7 @@
                     <c:if test="${editable}">
                         <c:url var="url" value="/setup/syncs">
                             <c:param name="syncRuleId" value="${param.syncRuleId}"/>
+                            <c:param name="edit" value="Y"/>
                         </c:url>
                         <span class="dialog-only-link">|</span> <a href="${url}">Modify</a>
                     </c:if>
@@ -49,9 +50,25 @@
                             <dd><c:out value="${rule.action.name}"/></dd>
                             <dt>Server</dt>
                             <dd><c:out value="${rule.syncServer.name}"/></dd>
-                            <dt>Query</dt>
+                            <dt>Description</dt>
+                            <dd>
+                                <c:out value="${rule.description}"/>
+                            </dd>
+                            <dt>Base Query</dt>
                             <dd class="query">
-                                <a href="${rule.searchURL}"><c:out value="${rule.query}"/></a>
+                                <c:out value="${rule.query}"/>
+                            </dd>
+                            <dt>Property Expression</dt>
+                            <dd class="query">
+                                <ul>
+                                <c:forEach items="${rule.expressionArray}" var="operand">
+                                    <li><c:out value="${operand}"/></li>
+                                </c:forEach>
+                                </ul>
+                            </dd>
+                            <dt>Full URL</dt>
+                            <dd class="query">
+                                <div><a href="${rule.getHTMLURL()}">HTML</a> | <a href="${rule.searchURL}">JSON</a></div>
                             </dd>
                         </dl>
                         <h3>Template</h3>

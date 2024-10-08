@@ -41,20 +41,20 @@ public class SyncRuleController extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    BigInteger syncId = ParamConverter.convertBigInteger(request, "syncId");
+    BigInteger syncRuleId = ParamConverter.convertBigInteger(request, "syncRuleId");
     String actionName = request.getParameter("actionName");
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
 
     List<Action> actionList = actionFacade.findAll(new AbstractFacade.OrderDirective("name"));
     List<SyncServer> serverList = serverFacade.findAll(new AbstractFacade.OrderDirective("name"));
-    List<SyncRule> syncList = syncFacade.filterList(syncId, actionName, offset, maxPerPage);
+    List<SyncRule> syncList = syncFacade.filterList(syncRuleId, actionName, offset, maxPerPage);
 
-    long totalRecords = syncFacade.countList(syncId, actionName);
+    long totalRecords = syncFacade.countList(syncRuleId, actionName);
 
     Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
-    String selectionMessage = createSelectionMessage(paginator, syncId, actionName);
+    String selectionMessage = createSelectionMessage(paginator, syncRuleId, actionName);
 
     request.setAttribute("selectionMessage", selectionMessage);
     request.setAttribute("actionList", actionList);
@@ -65,15 +65,16 @@ public class SyncRuleController extends HttpServlet {
     request.getRequestDispatcher("/WEB-INF/views/setup/syncs.jsp").forward(request, response);
   }
 
-  private String createSelectionMessage(Paginator paginator, BigInteger syncId, String actionName) {
+  private String createSelectionMessage(
+      Paginator paginator, BigInteger syncRuleId, String actionName) {
     DecimalFormat formatter = new DecimalFormat("###,###");
 
     String selectionMessage = "All Sync Rules ";
 
     List<String> filters = new ArrayList<>();
 
-    if (syncId != null) {
-      filters.add("Sync ID \"" + syncId + "\"");
+    if (syncRuleId != null) {
+      filters.add("Sync Rule ID \"" + syncRuleId + "\"");
     }
 
     if (actionName != null && !actionName.isBlank()) {

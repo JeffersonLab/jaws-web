@@ -37,7 +37,9 @@ public class EditSyncRule extends HttpServlet {
     BigInteger id = ParamConverter.convertBigInteger(request, "id");
     BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
     String server = request.getParameter("server");
+    String description = request.getParameter("description");
     String query = request.getParameter("query");
+    String expression = request.getParameter("expression");
     String screencommand = request.getParameter("screencommand");
     String pv = request.getParameter("pv");
 
@@ -45,7 +47,7 @@ public class EditSyncRule extends HttpServlet {
     String error = null;
 
     try {
-      syncFacade.editSync(id, actionId, server, query, screencommand, pv);
+      syncFacade.editSync(id, actionId, server, description, query, expression, screencommand, pv);
     } catch (UserFriendlyException e) {
       stat = "fail";
       error = "Unable to edit Sync Rule: " + e.getMessage();
