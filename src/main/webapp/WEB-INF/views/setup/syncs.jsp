@@ -166,7 +166,10 @@
                             <label for="row-expression">Property Expression</label>
                         </div>
                         <div class="li-value">
-                            <input type="text" required="required" id="row-expression" placeholder="Not URL Encoded (Example: !unpowered&!hallcontrolled)"/>
+                            <textarea id="row-expression" placeholder="Not URL Encoded, each line is automatically combined with &amp;. Example:
+
+!unpowered
+!hallcontrolled"></textarea>
                         </div>
                     </li>
                 </ul>

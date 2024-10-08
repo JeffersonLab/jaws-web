@@ -2,7 +2,7 @@ var jlab = jlab || {};
 jlab.editableRowTable = jlab.editableRowTable || {};
 jlab.editableRowTable.entity = 'Sync';
 jlab.editableRowTable.dialog.width = 900;
-jlab.editableRowTable.dialog.height = 700;
+jlab.editableRowTable.dialog.height = 800;
 jlab.addRow = function (run) {
     var actionId = $("#row-action").val(),
         server = $("#row-server").val(),
@@ -14,6 +14,10 @@ jlab.addRow = function (run) {
         $button = $(".dialog-submit-button"),
         $runButton = $("#save-and-run-button"),
         reloading = false;
+
+    if(expression != null) {
+        expression = expression.replace(/\n/g, '&');
+    }
 
     $button
         .height($button.height())
@@ -77,6 +81,10 @@ jlab.editRow = function (run) {
         $button = $(".dialog-submit-button"),
         $runButton = $("#save-and-run-button"),
         reloading = false;
+
+    if(expression != null) {
+        expression = expression.replace(/\n/g, '&');
+    }
 
     $button
         .height($button.height())
@@ -178,7 +186,15 @@ $(document).on("click", "#open-edit-row-dialog-button", function () {
     $("#row-server").val($selectedRow.find("td:nth-child(3)").text());
     $("#row-description").val($selectedRow.find("td:nth-child(4)").text());
     $("#row-query").val($selectedRow.attr("data-query"));
-    $("#row-expression").val($selectedRow.attr("data-expression"));
+
+    var expression = $selectedRow.attr("data-expression"),
+        multilineExpression = "";
+
+    if(expression != null) {
+        multilineExpression = expression.replace(/&/g, '\n');
+    }
+
+    $("#row-expression").val(multilineExpression);
     $("#row-screencommand").val($selectedRow.attr("data-screencommand"));
     $("#row-pv").val($selectedRow.attr("data-pv"));
 });
@@ -202,14 +218,14 @@ $(document).on("click", "#remove-row-button", function () {
     }
 });
 $(document).on("click", ".default-clear-panel", function () {
-    $("#sync-id").val('');
+    $("#sync-rule-id").val('');
     $("#action-name").val('');
     return false;
 });
 $(function () {
     $("#table-row-dialog").dialog("option", "resizable", true);
     $("#table-row-dialog").dialog("option", "minWidth", 900);
-    $("#table-row-dialog").dialog("option", "minHeight", 700);
+    $("#table-row-dialog").dialog("option", "minHeight", 800);
 
     const urlParams = new URLSearchParams(window.location.search);
     const syncRuleId = urlParams.get('syncRuleId');

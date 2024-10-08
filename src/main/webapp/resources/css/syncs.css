@@ -23,6 +23,11 @@
 #row-form input[type=text] {
     width: 600px;
 }
+#row-expression {
+    width: 600px;
+    height: 300px;
+    resize: none;
+}
 #save-and-run-button {
     position: absolute;
     left: 1em;
