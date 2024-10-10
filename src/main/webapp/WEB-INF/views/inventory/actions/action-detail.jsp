@@ -70,6 +70,11 @@
                             <dt>Off Delay (seconds):</dt>
                             <dd><c:out value="${action.offDelaySeconds eq null ? 'None' : action.offDelaySeconds}"/></dd>
                         </dl>
+                        <hr/>
+                        <c:url var="url" value="/inventory/alarms">
+                            <c:param name="actionName" value="${action.name}"/>
+                        </c:url>
+                        <a href="${url}">List Alarms</a>
                     </c:when>
                     <c:otherwise>
                         <div>Unregistered Action!

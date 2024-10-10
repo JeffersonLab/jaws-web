@@ -142,9 +142,31 @@
                             <dt>Source:</dt>
                             <dd><c:out value="${alarm.pv eq null ? 'None' : 'EPICS PV: '.concat(alarm.pv)}"/></dd>
                             <dt>Sync Rule:</dt>
-                            <dd><c:out value="${alarm.syncRule eq null ? 'None' : alarm.syncRule.syncRuleId}"/></dd>
+                            <dd>
+                                <c:choose>
+                                    <c:when test="${alarm.syncRule eq null}">
+                                        None
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:url var="url" value="/setup/syncs/${alarm.syncRule.syncRuleId}">
+                                        </c:url>
+                                        <a href="${url}"><c:out value="${alarm.syncRule.syncRuleId}"/></a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </dd>
                             <dt>Sync Element:</dt>
-                            <dd><c:out value="${alarm.syncElementId eq null ? 'None' : alarm.syncElementId}"/></dd>
+                            <dd>
+                                <c:choose>
+                                    <c:when test="${alarm.syncElementId eq null}">
+                                        None
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:url var="url" value="${alarm.syncRule.syncServer.baseUrl}${alarm.syncRule.syncServer.elementPath}/${jaws:urlEncodePath(alarm.name.split(' ')[0])}">
+                                        </c:url>
+                                        <a href="${url}"><c:out value="${alarm.syncElementId}"/></a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </dd>
                         </dl>
                         <hr/>
                         <dl>
