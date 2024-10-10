@@ -220,6 +220,7 @@ $(document).on("click", "#remove-row-button", function () {
 $(document).on("click", ".default-clear-panel", function () {
     $("#sync-rule-id").val('');
     $("#action-name").val('');
+    $("#system-name").val('');
     return false;
 });
 $(function () {

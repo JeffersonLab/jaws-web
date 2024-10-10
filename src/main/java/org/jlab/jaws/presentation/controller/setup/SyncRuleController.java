@@ -43,18 +43,20 @@ public class SyncRuleController extends HttpServlet {
 
     BigInteger syncRuleId = ParamConverter.convertBigInteger(request, "syncRuleId");
     String actionName = request.getParameter("actionName");
+    String systemName = request.getParameter("systemName");
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
 
     List<Action> actionList = actionFacade.findAll(new AbstractFacade.OrderDirective("name"));
     List<SyncServer> serverList = serverFacade.findAll(new AbstractFacade.OrderDirective("name"));
-    List<SyncRule> syncList = syncFacade.filterList(syncRuleId, actionName, offset, maxPerPage);
+    List<SyncRule> syncList =
+        syncFacade.filterList(syncRuleId, actionName, systemName, offset, maxPerPage);
 
-    long totalRecords = syncFacade.countList(syncRuleId, actionName);
+    long totalRecords = syncFacade.countList(syncRuleId, actionName, systemName);
 
     Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
 
-    String selectionMessage = createSelectionMessage(paginator, syncRuleId, actionName);
+    String selectionMessage = createSelectionMessage(paginator, syncRuleId, actionName, systemName);
 
     request.setAttribute("selectionMessage", selectionMessage);
     request.setAttribute("actionList", actionList);
@@ -66,7 +68,7 @@ public class SyncRuleController extends HttpServlet {
   }
 
   private String createSelectionMessage(
-      Paginator paginator, BigInteger syncRuleId, String actionName) {
+      Paginator paginator, BigInteger syncRuleId, String actionName, String systemName) {
     DecimalFormat formatter = new DecimalFormat("###,###");
 
     String selectionMessage = "All Sync Rules ";
@@ -79,6 +81,10 @@ public class SyncRuleController extends HttpServlet {
 
     if (actionName != null && !actionName.isBlank()) {
       filters.add("Action Name \"" + actionName + "\"");
+    }
+
+    if (systemName != null && !systemName.isBlank()) {
+      filters.add("System Name \"" + systemName + "\"");
     }
 
     if (!filters.isEmpty()) {

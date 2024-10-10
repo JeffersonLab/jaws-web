@@ -21,7 +21,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import org.jlab.jaws.entity.Alarm;
 import org.jlab.jaws.persistence.entity.*;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
@@ -49,10 +48,15 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   }
 
   private List<Predicate> getFilters(
-      CriteriaBuilder cb, Root<SyncRule> root, BigInteger syncId, String actionName) {
+      CriteriaBuilder cb,
+      Root<SyncRule> root,
+      BigInteger syncId,
+      String actionName,
+      String systemName) {
     List<Predicate> filters = new ArrayList<>();
 
-    Join<Alarm, Action> actionJoin = root.join("action");
+    Join<AlarmEntity, Action> actionJoin = root.join("action");
+    Join<Action, SystemEntity> systemJoin = actionJoin.join("system");
 
     if (syncId != null) {
       filters.add(cb.equal(root.get("syncRuleId"), syncId));
@@ -62,17 +66,22 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       filters.add(cb.like(cb.lower(actionJoin.get("name")), actionName.toLowerCase()));
     }
 
+    if (systemName != null && !systemName.isEmpty()) {
+      filters.add(cb.like(cb.lower(systemJoin.get("name")), systemName.toLowerCase()));
+    }
+
     return filters;
   }
 
   @PermitAll
-  public List<SyncRule> filterList(BigInteger syncId, String actionName, int offset, int max) {
+  public List<SyncRule> filterList(
+      BigInteger syncId, String actionName, String systemName, int offset, int max) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<SyncRule> cq = cb.createQuery(SyncRule.class);
     Root<SyncRule> root = cq.from(SyncRule.class);
     cq.select(root);
 
-    List<Predicate> filters = getFilters(cb, root, syncId, actionName);
+    List<Predicate> filters = getFilters(cb, root, syncId, actionName, systemName);
 
     if (!filters.isEmpty()) {
       cq.where(cb.and(filters.toArray(new Predicate[] {})));
@@ -97,12 +106,12 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   }
 
   @PermitAll
-  public long countList(BigInteger syncId, String actionName) {
+  public long countList(BigInteger syncId, String actionName, String systemName) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
     Root<SyncRule> root = cq.from(SyncRule.class);
 
-    List<Predicate> filters = getFilters(cb, root, syncId, actionName);
+    List<Predicate> filters = getFilters(cb, root, syncId, actionName, systemName);
 
     if (!filters.isEmpty()) {
       cq.where(cb.and(filters.toArray(new Predicate[] {})));
