@@ -83,6 +83,7 @@ jlab.editRow = function (run) {
         reloading = false;
 
     if(expression != null) {
+        expression = expression.trim();
         expression = expression.replace(/\n/g, '&');
     }
 
