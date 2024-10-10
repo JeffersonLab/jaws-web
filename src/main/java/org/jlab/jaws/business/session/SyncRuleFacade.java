@@ -351,7 +351,8 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   }
 
   private List<Location> locationsFromSegMask(Map<String, Location> locationMap, String segMask) {
-    List<Location> locationList = new ArrayList<>();
+    // Use Set because some SegMasks map to same Location so we want to avoid duplicates
+    Set<Location> locationList = new HashSet<>();
 
     if (segMask != null && !segMask.isEmpty()) {
       String[] masks = segMask.split("\\+");
@@ -367,6 +368,59 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       }
     }
 
-    return locationList;
+    // Often SegMask includes implicit locations (parent locations in same branch)
+    List<Location> explicitOnly = new ArrayList<>();
+
+    Location rootLocation = getRoot(locationList);
+
+    // If There is more than 1 location then root is implied
+    if (locationList.size() > 1) {
+      locationList.remove(rootLocation);
+    }
+
+    for (Location location : locationList) {
+      if (isLowestInBranch(location, locationList)) {
+        explicitOnly.add(location);
+      }
+    }
+
+    return explicitOnly;
+  }
+
+  private boolean isLowestInBranch(Location location, Set<Location> locationList) {
+    boolean lowest = true;
+
+    Set<Location> descendents = getDescendents(location);
+
+    for (Location loc : locationList) {
+      if (descendents.contains(loc)) {
+        lowest = false;
+        break;
+      }
+    }
+
+    return lowest;
+  }
+
+  private Set<Location> getDescendents(Location location) {
+    Set<Location> descendents = new HashSet<>(location.getChildList());
+
+    for (Location loc : location.getChildList()) {
+      descendents.addAll(getDescendents(loc));
+    }
+
+    return descendents;
+  }
+
+  private Location getRoot(Set<Location> locationList) {
+    Location root = null;
+    for (Location location : locationList) {
+      if (location.getLocationId().equals(Location.TREE_ROOT) && location.getParent() == null) {
+        root = location;
+        break;
+      }
+    }
+
+    return root;
   }
 }
