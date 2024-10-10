@@ -99,7 +99,7 @@
                                         <th>Location</th>
                                         <th>Screen Command</th>
                                         <th>PV</th>
-                                        <th></th>
+                                        <th><button ${diff.hasChanges() ? '' : 'disabled="disabled"'} id="apply-all-button" type="button">Apply All</button></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -117,15 +117,19 @@
                                             <td><c:out value="${alarm.screenCommand}"/></td>
                                             <td><c:out value="${alarm.pv}"/></td>
                                             <td>
+                                                <c:set value="${false}" var="linkCreated"/>
                                                 <c:set value="${danglingByNameList[alarm.name]}" var="danglingNameAlarm"/>
                                                 <c:set value="${danglingByPvList[alarm.pv]}" var="danglingPvAlarm"/>
-                                                <button class="add" type="button" ${danglingNameAlarm ne null || danglingPvAlarm ne null ? 'disabled="disabled"' : ''}>Add</button>
+                                                <c:if test="${danglingNameAlarm eq null && danglingPvAlarm eq null}">
+                                                    <button class="add" type="button">Add</button>
+                                                </c:if>
                                                 <c:if test="${danglingNameAlarm ne null}">
+                                                    <c:set value="${true}" var="linkCreated"/>
                                                     <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}"
                                                            var="url">
                                                     </c:url>
                                                     <div>
-                                                        <button class="link" type="button" data-alarm-id="${danglingNameAlarm.alarmId}">Link</button>
+                                                        <button class="link autolink" type="button" data-alarm-id="${danglingNameAlarm.alarmId}">Link</button>
                                                         <a title="Alarm Information" class="dialog-ready"
                                                            data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
                                                            href="${url}">Existing Name</a>
@@ -136,7 +140,7 @@
                                                            var="url">
                                                     </c:url>
                                                     <div>
-                                                        <button class="link" type="button" data-alarm-id="${danglingPvAlarm.alarmId}">Link</button>
+                                                        <button class="link ${linkCreated ? '' : 'autolink'}" type="button" data-alarm-id="${danglingPvAlarm.alarmId}">Link</button>
                                                         <a title="Alarm Information" class="dialog-ready"
                                                            data-dialog-title="Alarm Information: ${fn:escapeXml(danglingPvAlarm.name)}"
                                                            href="${url}">Existing PV</a>

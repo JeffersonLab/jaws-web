@@ -25,4 +25,8 @@ public class AlarmSyncDiff {
   public List<AlarmEntity> getMatchList() {
     return matchList;
   }
+
+  public boolean hasChanges() {
+    return removeList.size() > 0 || addList.size() > 0 || updateList.size() > 0;
+  }
 }

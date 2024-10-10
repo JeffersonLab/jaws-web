@@ -1,5 +1,5 @@
 var jlab = jlab || {};
-jlab.addRow = function($tr) {
+jlab.addRow = function($tr, batch) {
     var name = $tr.find("td:nth-child(2)").text(),
         actionId = $tr.attr("data-action-id"),
         locationCsv = $tr.attr("data-location-id-csv"),
@@ -42,6 +42,13 @@ jlab.addRow = function($tr) {
     request.done(function(json) {
         if (json.stat === 'ok') {
             $button.replaceWith("Success!");
+
+            if(batch) {
+                var $tr = jlab.addTr.pop();
+                if($tr !== undefined) {
+                    jlab.addRow($tr, true);
+                }
+            }
         } else {
             alert(json.error);
         }
@@ -56,7 +63,7 @@ jlab.addRow = function($tr) {
         $button.empty().text("Add");
     });
 };
-jlab.removeRow = function($tr) {
+jlab.removeRow = function($tr, batch) {
     var name = $tr.find("td:nth-child(2)").text(),
         id = $tr.attr("data-id"),
         $button = $tr.find("button");
@@ -78,6 +85,13 @@ jlab.removeRow = function($tr) {
     request.done(function(json) {
         if (json.stat === 'ok') {
             $button.replaceWith("Success!");
+
+            if(batch) {
+                var $tr = jlab.removeTr.pop();
+                if($tr !== undefined) {
+                    jlab.removeRow($tr, true);
+                }
+            }
         } else {
             alert(json.error);
         }
@@ -92,7 +106,7 @@ jlab.removeRow = function($tr) {
         $button.empty().text("Remove");
     });
 };
-jlab.linkRow = function($tr, alarmId) {
+jlab.linkRow = function($tr, alarmId, batch) {
     var name = $tr.find("td:nth-child(2)").text(),
         actionId = $tr.attr("data-action-id"),
         locationCsv = $tr.attr("data-location-id-csv"),
@@ -136,6 +150,13 @@ jlab.linkRow = function($tr, alarmId) {
     request.done(function(json) {
         if (json.stat === 'ok') {
             $button.replaceWith("Success!");
+
+            if(batch) {
+                var $b = jlab.linkButton.pop();
+                if($b !== undefined) {
+                    jlab.linkRow($b.closest("tr"), $b.attr("data-alarm-id"), true);
+                }
+            }
         } else {
             alert(json.error);
         }
@@ -150,7 +171,7 @@ jlab.linkRow = function($tr, alarmId) {
         $button.empty().text("Link");
     });
 };
-jlab.updateRow = function($tr) {
+jlab.updateRow = function($tr, batch) {
     var alarmId = $tr.attr("data-id"),
         name = $tr.attr("data-name"),
         actionId = $tr.attr("data-action-id"),
@@ -195,6 +216,13 @@ jlab.updateRow = function($tr) {
     request.done(function(json) {
         if (json.stat === 'ok') {
             $button.replaceWith("Success!");
+
+            if(batch) {
+                var $tr = jlab.updateTr.pop();
+                if($tr !== undefined) {
+                    jlab.updateRow($tr, true);
+                }
+            }
         } else {
             alert(json.error);
         }
@@ -209,6 +237,71 @@ jlab.updateRow = function($tr) {
         $button.empty().text("Update");
     });
 };
+$(document).on("click", "#apply-all-button", function() {
+    var $table = $(this).closest("table"),
+        $updateButtons = $table.find("button.update"),
+        $removeButtons = $table.find("button.remove"),
+        $addButtons = $table.find("button.add"),
+        $linkButtons = $table.find("button.autolink");
+
+    if($updateButtons.length > 0 || $removeButtons.length > 0 || $addButtons.length > 0 || $linkButtons.length > 0) {
+        var questionArray = [];
+
+        if($updateButtons.length > 0) {
+            questionArray.push('Update ' + $updateButtons.length);
+        }
+
+        if($removeButtons.length > 0) {
+            questionArray.push('Remove ' + $removeButtons.length);
+        }
+
+        if($addButtons.length > 0) {
+            questionArray.push('Add ' + $addButtons.length);
+        }
+
+        if($linkButtons.length > 0) {
+            questionArray.push('Link ' + $linkButtons.length);
+        }
+
+        var question = 'Are you sure you want to ' + questionArray.join(', ');
+
+        if(confirm(question)) {
+            jlab.updateTr = [];
+            $updateButtons.each(function() {
+                jlab.updateTr.push($(this).closest("tr"));
+            });
+            jlab.removeTr = [];
+            $removeButtons.each(function() {
+                jlab.removeTr.push($(this).closest("tr"));
+            });
+            jlab.addTr = [];
+            $addButtons.each(function() {
+                jlab.addTr.push($(this).closest("tr"));
+            });
+            jlab.linkButton = [];
+            $linkButtons.each(function() {
+                jlab.linkButton.push($(this));
+            });
+
+            if(jlab.updateTr.length > 0) {
+                jlab.updateRow(jlab.updateTr.pop(), true);
+            }
+
+            if(jlab.removeTr.length > 0) {
+                jlab.removeRow(jlab.removeTr.pop(), true);
+            }
+
+            if(jlab.addTr.length > 0) {
+                jlab.addRow(jlab.addTr.pop(), true);
+            }
+
+            if(jlab.linkButton.length > 0) {
+                var $b = jlab.linkButton.pop();
+                jlab.linkRow($b.closest("tr"), $b.attr("data-alarm-id"), true);
+            }
+        }
+    }
+});
 $(document).on("click", "button.add", function() {
     jlab.addRow($(this).closest("tr"));
 });
