@@ -37,7 +37,7 @@ services:
       - 8080:8080
       - 9990:9990
     depends_on:
-      jaws:
+      cli:
         condition: service_healthy
       keycloak:
         condition: service_healthy
