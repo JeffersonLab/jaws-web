@@ -94,9 +94,12 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     Path p1 = root.get("server").get("syncServerId");
     Order o1 = cb.asc(p1);
     orders.add(o1);
-    Path p2 = root.get("syncRuleId");
+    Path p2 = root.get("description");
     Order o2 = cb.asc(p2);
     orders.add(o2);
+    Path p3 = root.get("syncRuleId");
+    Order o3 = cb.asc(p3);
+    orders.add(o3);
     cq.orderBy(orders);
     return getEntityManager()
         .createQuery(cq)
