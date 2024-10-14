@@ -284,18 +284,26 @@ $(document).on("click", "#apply-all-button", function() {
             });
 
             if(jlab.updateTr.length > 0) {
+                jlab.updateTr.reverse();
+
                 jlab.updateRow(jlab.updateTr.pop(), true);
             }
 
             if(jlab.removeTr.length > 0) {
+                jlab.removeTr.reverse();
+
                 jlab.removeRow(jlab.removeTr.pop(), true);
             }
 
             if(jlab.addTr.length > 0) {
+                jlab.addTr.reverse();
+
                 jlab.addRow(jlab.addTr.pop(), true);
             }
 
             if(jlab.linkButton.length > 0) {
+                jlab.linkButton.reverse();
+
                 var $b = jlab.linkButton.pop();
                 jlab.linkRow($b.closest("tr"), $b.attr("data-alarm-id"), true);
             }
