@@ -17,6 +17,7 @@
             <li${'/setup/transfer' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/setup/transfer">Transfer</a></li>
             <li${'/setup/sync-servers' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/setup/sync-servers">Sync Servers</a></li>
             <li${fn:startsWith(currentPath, '/setup/syncs') ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/setup/syncs">Sync Rules</a></li>
+            <li${'/setup/sync-summary' eq currentPath ? ' class="current-secondary"' : ''}><a href="${pageContext.request.contextPath}/setup/sync-summary">Sync Summary</a></li>
         </ul>
     </jsp:attribute>
     <jsp:body>

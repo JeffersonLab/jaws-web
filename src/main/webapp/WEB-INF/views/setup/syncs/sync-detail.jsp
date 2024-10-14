@@ -89,7 +89,7 @@
                             </c:when>
                             <c:when test="${fn:length(remoteList) > 0}">
                                 <div>Found ${fn:length(remoteList)} remote alarms, ${fn:length(localList)} local
-                                    alarms, and ${collisionCount} name/pv collisions
+                                    alarms, and ${collisionCount} name/pv collisions (${matchCount} Matched, ${addCount} Add, ${removeCount} Remove, ${updateCount} Update, ${linkCount} Link)
                                 </div>
                                 <table class="data-table">
                                     <thead>

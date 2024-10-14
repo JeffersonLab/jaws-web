@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "SYNC_RULE", schema = "JAWS_OWNER")
-public class SyncRule implements Serializable {
+public class SyncRule implements Serializable, Comparable<SyncRule> {
   private static final long serialVersionUID = 1L;
 
   @Id
@@ -155,5 +155,26 @@ public class SyncRule implements Serializable {
   @Override
   public int hashCode() {
     return Objects.hashCode(syncRuleId);
+  }
+
+  @Override
+  public int compareTo(SyncRule o) {
+    int result = action.getName().compareTo(o.getAction().getName());
+
+    if (result == 0) {
+      result = server.getSyncServerId().compareTo(o.getSyncServer().getSyncServerId());
+
+      if (result == 0) {
+        if (description != null && o.getDescription() != null) {
+          result = description.compareTo(o.getDescription());
+        }
+
+        if (result == 0) {
+          result = syncRuleId.compareTo(o.getSyncRuleId());
+        }
+      }
+    }
+
+    return result;
   }
 }

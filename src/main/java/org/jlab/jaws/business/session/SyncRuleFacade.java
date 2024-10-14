@@ -8,6 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -22,6 +23,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import org.jlab.jaws.persistence.entity.*;
+import org.jlab.jaws.persistence.model.RuleSet;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
 /**
@@ -34,6 +36,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   @EJB ActionFacade actionFacade;
   @EJB LocationFacade locationFacade;
   @EJB SyncServerFacade serverFacade;
+  @EJB SystemFacade systemFacade;
 
   @PersistenceContext(unitName = "webappPU")
   private EntityManager em;
@@ -256,6 +259,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     try {
       response = client.send(request, HttpResponse.BodyHandlers.ofString());
     } catch (IOException | InterruptedException e) {
+      logger.log(Level.SEVERE, "Unable to query URL: " + url, e);
       throw new UserFriendlyException("Unable to execute request for url " + url, e);
     }
 
@@ -434,5 +438,31 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     }
 
     return root;
+  }
+
+  @PermitAll
+  public List<RuleSet> findSystemRuleSetList() {
+    Map<String, RuleSet> ruleSetMap = new LinkedHashMap<>();
+
+    List<SystemEntity> systemList = systemFacade.findAll(new OrderDirective("name", true));
+
+    for (SystemEntity s : systemList) {
+      RuleSet rs = new RuleSet(s.getName());
+      ruleSetMap.put(s.getName(), rs);
+    }
+
+    List<SyncRule> ruleList = findAll();
+
+    for (SyncRule r : ruleList) {
+      SystemEntity s = r.getAction().getSystem();
+
+      RuleSet rs = ruleSetMap.get(s.getName());
+
+      if (rs != null) {
+        rs.addSyncRule(r);
+      }
+    }
+
+    return new ArrayList<>(ruleSetMap.values());
   }
 }

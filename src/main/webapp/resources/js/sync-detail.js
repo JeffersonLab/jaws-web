@@ -47,6 +47,10 @@ jlab.addRow = function($tr, batch) {
                 var $tr = jlab.addTr.pop();
                 if($tr !== undefined) {
                     jlab.addRow($tr, true);
+                } else {
+                    if(jlab.removeTr.length === 0 && jlab.updateTr.length === 0 && jlab.linkButton.length === 0) {
+                        $("#apply-all-button").replaceWith("Done!");
+                    }
                 }
             }
         } else {
@@ -90,6 +94,10 @@ jlab.removeRow = function($tr, batch) {
                 var $tr = jlab.removeTr.pop();
                 if($tr !== undefined) {
                     jlab.removeRow($tr, true);
+                } else {
+                    if(jlab.addTr.length === 0 && jlab.updateTr.length === 0 && jlab.linkButton.length === 0) {
+                        $("#apply-all-button").replaceWith("Done!");
+                    }
                 }
             }
         } else {
@@ -155,6 +163,10 @@ jlab.linkRow = function($tr, alarmId, batch) {
                 var $b = jlab.linkButton.pop();
                 if($b !== undefined) {
                     jlab.linkRow($b.closest("tr"), $b.attr("data-alarm-id"), true);
+                } else {
+                    if(jlab.addTr.length === 0 && lab.removeTr.length === 0 && jlab.updateTr.length === 0) {
+                        $("#apply-all-button").replaceWith("Done!");
+                    }
                 }
             }
         } else {
@@ -221,6 +233,10 @@ jlab.updateRow = function($tr, batch) {
                 var $tr = jlab.updateTr.pop();
                 if($tr !== undefined) {
                     jlab.updateRow($tr, true);
+                } else {
+                    if(jlab.addTr.length === 0 && lab.removeTr.length === 0 && jlab.linkButton.length === 0) {
+                        $("#apply-all-button").replaceWith("Done!");
+                    }
                 }
             }
         } else {
@@ -266,6 +282,16 @@ $(document).on("click", "#apply-all-button", function() {
         var question = 'Are you sure you want to ' + questionArray.join(', ');
 
         if(confirm(question)) {
+
+            var $button = $("#apply-all-button");
+
+            $button
+                .height($button.height())
+                .width($button.width())
+                .empty().append('<div class="button-indicator"></div>');
+
+            $button.attr("disabled", "disabled");
+
             jlab.updateTr = [];
             $updateButtons.each(function() {
                 jlab.updateTr.push($(this).closest("tr"));
@@ -284,18 +310,26 @@ $(document).on("click", "#apply-all-button", function() {
             });
 
             if(jlab.updateTr.length > 0) {
+                jlab.updateTr.reverse();
+
                 jlab.updateRow(jlab.updateTr.pop(), true);
             }
 
             if(jlab.removeTr.length > 0) {
+                jlab.removeTr.reverse();
+
                 jlab.removeRow(jlab.removeTr.pop(), true);
             }
 
             if(jlab.addTr.length > 0) {
+                jlab.addTr.reverse();
+
                 jlab.addRow(jlab.addTr.pop(), true);
             }
 
             if(jlab.linkButton.length > 0) {
+                jlab.linkButton.reverse();
+
                 var $b = jlab.linkButton.pop();
                 jlab.linkRow($b.closest("tr"), $b.attr("data-alarm-id"), true);
             }
