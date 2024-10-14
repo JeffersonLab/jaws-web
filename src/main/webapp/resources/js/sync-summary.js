@@ -2,7 +2,8 @@ var jlab = jlab || {};
 
 jlab.summaryRow = function($tr) {
     var id = $tr.attr("data-id"),
-        $status = $tr.find(".status");
+        $status = $tr.find(".status"),
+        $row = $tr;
 
     $status
         .height($status.height())
@@ -17,7 +18,23 @@ jlab.summaryRow = function($tr) {
 
     request.done(function(json) {
         if (json.error === undefined) {
-            $status.replaceWith("Success!");
+            $status.parent().replaceWith('<td>' + json.matchCount + '</td><td>' + json.addCount + '</td><td>' + json.removeCount + '</td><td>' + json.updateCount + '</td><td>' + json.linkCount + '</td>');
+
+            if(json.addCount > 0 || json.removeCount > 0 || json.updateCount > 0 || json.linkCount > 0) {
+                $row.addClass('needs-attention');
+            }
+
+            jlab.matchCount = jlab.matchCount + json.matchCount;
+            jlab.addCount = jlab.addCount + json.addCount;
+            jlab.removeCount = jlab.removeCount + json.removeCount;
+            jlab.updateCount = jlab.updateCount + json.updateCount;
+            jlab.linkCount = jlab.linkCount + json.linkCount;
+
+            jlab.$totalRow.find("th:nth-child(2)").text(jlab.matchCount);
+            jlab.$totalRow.find("th:nth-child(3)").text(jlab.addCount);
+            jlab.$totalRow.find("th:nth-child(4)").text(jlab.removeCount);
+            jlab.$totalRow.find("th:nth-child(5)").text(jlab.updateCount);
+            jlab.$totalRow.find("th:nth-child(6)").text(jlab.linkCount);
 
             var $tr = jlab.summaryTr.pop();
             if($tr !== undefined) {
@@ -38,6 +55,14 @@ jlab.summaryRow = function($tr) {
 };
 
 $(document).ready(function () {
+    jlab.matchCount = 0;
+    jlab.addCount = 0;
+    jlab.removeCount = 0;
+    jlab.updateCount = 0;
+    jlab.linkCount = 0;
+
+    jlab.$totalRow = $("#total-row");
+
     jlab.summaryTr = [];
 
     $(".rule-row").each(function () {

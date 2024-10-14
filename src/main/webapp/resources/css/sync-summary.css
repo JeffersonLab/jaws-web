@@ -1,0 +1,22 @@
+thead th:first-child {
+    width: 200px;
+}
+thead th:nth-child(2),
+thead th:nth-child(3),
+thead th:nth-child(4),
+thead th:nth-child(5),
+thead th:nth-child(6) {
+    width: 75px;
+    text-align: right;
+}
+
+tbody td:nth-child(2),
+tbody td:nth-child(3),
+tbody td:nth-child(4),
+tbody td:nth-child(5),
+tbody td:nth-child(6) {
+    text-align: right;
+}
+.needs-attention {
+    background-color: #fff9b2;
+}

@@ -16,16 +16,38 @@
     <jsp:body>
         <section>
             <h2 id="page-header-title"><c:out value="${title}"/></h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Matched</th>
+                        <th>Add</th>
+                        <th>Remove</th>
+                        <th>Update</th>
+                        <th>Link</th>
+                        <th></th>
+                    </tr>
+                    <tr id="total-row">
+                        <th></th>
+                        <th>0</th>
+                        <th>0</th>
+                        <th>0</th>
+                        <th>0</th>
+                        <th>0</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
             <c:forEach items="${ruleSetList}" var="rs">
-                <h3><c:out value="${rs.name}"/></h3>
+            <tr>
+                <td colspan="7"><h3><c:out value="${rs.name}"/></h3></td>
+            </tr>
                 <c:choose>
                     <c:when test="${fn:length(rs.ruleList) > 0}">
-                        <table>
-                            <tbody>
                             <c:forEach items="${rs.ruleList}" var="rule">
                                 <tr class="rule-row" data-id="${rule.syncRuleId}">
                                     <td><c:out value="${rule.syncRuleId} - ${rule.action.name} - ${rule.syncServer.name} - ${rule.description}"/></td>
-                                    <td><div class="status">Pending</div></td>
+                                    <td colspan="5"><div class="status">Pending</div></td>
                                     <td>
                                         <!-- Use onclick to avoid https://bugs.webkit.org/show_bug.cgi?id=30103 -->
                                         <c:url value="/setup/syncs/${jaws:urlEncodePath(rule.syncRuleId)}" var="url">
@@ -37,14 +59,14 @@
                                     </td>
                                 </tr>
                             </c:forEach>
-                            </tbody>
-                        </table>
                     </c:when>
                     <c:otherwise>
-                        None
+                        <tr><td colspan="7">None</td></tr>
                     </c:otherwise>
                 </c:choose>
             </c:forEach>
+                </tbody>
+            </table>
         </section>
     </jsp:body>         
 </t:setup-page>
