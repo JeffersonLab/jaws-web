@@ -39,9 +39,12 @@ jlab.summaryRow = function($tr) {
             var $tr = jlab.summaryTr.pop();
             if($tr !== undefined) {
                 jlab.summaryRow($tr);
+            } else {
+                $("#total-status-cell").empty().text("Done!");
             }
         } else {
             alert(json.error);
+            $("#total-status-cell").empty().text("Error");
         }
     });
 

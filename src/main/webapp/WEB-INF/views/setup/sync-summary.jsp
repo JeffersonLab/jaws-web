@@ -28,7 +28,7 @@
                         <th></th>
                     </tr>
                     <tr id="total-row">
-                        <th></th>
+                        <th id="total-status-cell"><div class="button-indicator"></div> Working...</th>
                         <th>0</th>
                         <th>0</th>
                         <th>0</th>
