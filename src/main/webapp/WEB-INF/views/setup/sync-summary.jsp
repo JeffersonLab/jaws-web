@@ -46,7 +46,7 @@
                     <c:when test="${fn:length(rs.ruleList) > 0}">
                             <c:forEach items="${rs.ruleList}" var="rule">
                                 <tr class="rule-row" data-id="${rule.syncRuleId}">
-                                    <td><c:out value="${rule.syncRuleId} - ${rule.action.name} - ${rule.syncServer.name} - ${rule.description}"/></td>
+                                    <td><c:out value="${rule.syncRuleId} - ${rule.action.name} - ${rule.syncServer.name}. ${rule.description}"/></td>
                                     <td colspan="5"><div class="status">Pending</div></td>
                                     <td>
                                         <!-- Use onclick to avoid https://bugs.webkit.org/show_bug.cgi?id=30103 -->
