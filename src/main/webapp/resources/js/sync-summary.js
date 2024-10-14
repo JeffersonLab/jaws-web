@@ -30,11 +30,11 @@ jlab.summaryRow = function($tr) {
             jlab.updateCount = jlab.updateCount + json.updateCount;
             jlab.linkCount = jlab.linkCount + json.linkCount;
 
-            jlab.$totalRow.find("th:nth-child(2)").text(jlab.matchCount);
-            jlab.$totalRow.find("th:nth-child(3)").text(jlab.addCount);
-            jlab.$totalRow.find("th:nth-child(4)").text(jlab.removeCount);
-            jlab.$totalRow.find("th:nth-child(5)").text(jlab.updateCount);
-            jlab.$totalRow.find("th:nth-child(6)").text(jlab.linkCount);
+            jlab.$totalRow.find("th:nth-child(2)").text(jlab.integerWithCommas(jlab.matchCount));
+            jlab.$totalRow.find("th:nth-child(3)").text(jlab.integerWithCommas(jlab.addCount));
+            jlab.$totalRow.find("th:nth-child(4)").text(jlab.integerWithCommas(jlab.removeCount));
+            jlab.$totalRow.find("th:nth-child(5)").text(jlab.integerWithCommas(jlab.updateCount));
+            jlab.$totalRow.find("th:nth-child(6)").text(jlab.integerWithCommas(jlab.linkCount));
 
             var $tr = jlab.summaryTr.pop();
             if($tr !== undefined) {
