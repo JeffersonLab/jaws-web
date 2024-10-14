@@ -104,23 +104,33 @@
                                     </thead>
                                     <tbody>
                                     <c:forEach items="${diff.addList}" var="alarm">
+                                        <c:set value="${danglingByNameList[alarm.name]}" var="danglingNameAlarm"/>
+                                        <c:set value="${danglingByPvList[alarm.pv]}" var="danglingPvAlarm"/>
+                                        <c:set value="${danglingNameAlarm eq null && danglingPvAlarm eq null}" var="doAdd"/>
+                                        <c:set value="${alarm.screenCommand}" var="screenCommand"/>
+                                        <c:set value="${alarm.pv}" var="pv"/>
+                                        <c:if test="${not doAdd}">
+                                            <c:set value="${danglingNameAlarm ne null ? danglingNameAlarm.screenCommand : dannglingPvAlarm.screenCommand}" var="screenCommand"/>
+                                            <c:set value="${danglingNameAlarm ne null ? danglingNameAlarm.pv : dannglingPvAlarm.pv}" var="pv"/>
+                                        </c:if>
                                         <tr data-action-id="${alarm.action.actionId}"
-                                            data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}"
-                                            data-screen-command="${alarm.screenCommand}"
-                                            data-managed-by="${alarm.managedBy}" data-masked-by="${alarm.maskedBy}"
-                                            data-pv="${alarm.pv}" data-rule-id="${alarm.syncRule.syncRuleId}"
+                                            data-location-id-csv="${alarm.locationIdCsv}"
+                                            data-device="${alarm.device}"
+                                            data-screen-command="${screenCommand}"
+                                            data-managed-by="${alarm.managedBy}"
+                                            data-masked-by="${alarm.maskedBy}"
+                                            data-pv="${pv}"
+                                            data-rule-id="${alarm.syncRule.syncRuleId}"
                                             data-element-id="${alarm.syncElementId}"
                                             class="add-row">
                                             <td><c:out value="${alarm.syncElementId}"/></td>
                                             <td><c:out value="${alarm.name}"/></td>
                                             <td><c:out value="${alarm.locationNameCsv}"/></td>
-                                            <td><c:out value="${alarm.screenCommand}"/></td>
-                                            <td><c:out value="${alarm.pv}"/></td>
+                                            <td><c:out value="${screenCommand}"/></td>
+                                            <td><c:out value="${pv}"/></td>
                                             <td>
                                                 <c:set value="${false}" var="linkCreated"/>
-                                                <c:set value="${danglingByNameList[alarm.name]}" var="danglingNameAlarm"/>
-                                                <c:set value="${danglingByPvList[alarm.pv]}" var="danglingPvAlarm"/>
-                                                <c:if test="${danglingNameAlarm eq null && danglingPvAlarm eq null}">
+                                                <c:if test="${doAdd}">
                                                     <button class="add" type="button">Add</button>
                                                 </c:if>
                                                 <c:if test="${danglingNameAlarm ne null}">
@@ -132,7 +142,7 @@
                                                         <button class="link autolink" type="button" data-alarm-id="${danglingNameAlarm.alarmId}">Link</button>
                                                         <a title="Alarm Information" class="dialog-ready"
                                                            data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
-                                                           href="${url}">Existing Name</a>
+                                                           href="${url}">Name Exists</a>
                                                     </div>
                                                 </c:if>
                                                 <c:if test="${danglingPvAlarm ne null}">
@@ -143,7 +153,7 @@
                                                         <button class="link ${linkCreated ? '' : 'autolink'}" type="button" data-alarm-id="${danglingPvAlarm.alarmId}">Link</button>
                                                         <a title="Alarm Information" class="dialog-ready"
                                                            data-dialog-title="Alarm Information: ${fn:escapeXml(danglingPvAlarm.name)}"
-                                                           href="${url}">Existing PV</a>
+                                                           href="${url}">PV Exists</a>
                                                     </div>
                                                 </c:if>
                                             </td>
