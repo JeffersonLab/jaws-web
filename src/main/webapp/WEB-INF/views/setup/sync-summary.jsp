@@ -20,11 +20,25 @@
                 <h3><c:out value="${rs.name}"/></h3>
                 <c:choose>
                     <c:when test="${fn:length(rs.ruleList) > 0}">
-                        <ul>
+                        <table>
+                            <tbody>
                             <c:forEach items="${rs.ruleList}" var="rule">
-                                <li><c:out value="${rule.syncRuleId} - ${rule.syncServer.name} - ${rule.action.name} - ${rule.description}"/></li>
+                                <tr>
+                                    <td><c:out value="${rule.syncRuleId} - ${rule.action.name} - ${rule.syncServer.name} - ${rule.description}"/></td>
+                                    <td>Pending</td>
+                                    <td>
+                                        <!-- Use onclick to avoid https://bugs.webkit.org/show_bug.cgi?id=30103 -->
+                                        <c:url value="/setup/syncs/${jaws:urlEncodePath(rule.syncRuleId)}" var="url">
+                                        </c:url>
+                                        <form method="get"
+                                              action="${pageContext.request.contextPath}/setup/syncs/${fn:escapeXml(rule.syncRuleId)}">
+                                        <button class="single-char-button" type="button" onclick="window.location.href = '${url}';  return false;">&rarr;</button>
+                                        </form>
+                                    </td>
+                                </tr>
                             </c:forEach>
-                        </ul>
+                            </tbody>
+                        </table>
                     </c:when>
                     <c:otherwise>
                         None
