@@ -114,7 +114,7 @@ jlab.editRow = function (run) {
     request.done(function (json) {
         if (json.stat === 'ok') {
             if(run) {
-                window.location = 'syncs/' + id;
+                window.location = 'syncs/' + parseInt(id);
             } else {
                 reloading = true;
                 window.location.reload();
