@@ -109,9 +109,13 @@
                                         <c:set value="${danglingNameAlarm eq null && danglingPvAlarm eq null}" var="doAdd"/>
                                         <c:set value="${alarm.screenCommand}" var="screenCommand"/>
                                         <c:set value="${alarm.pv}" var="pv"/>
-                                        <c:if test="${not doAdd}">
-                                            <c:set value="${danglingNameAlarm ne null ? danglingNameAlarm.screenCommand : dannglingPvAlarm.screenCommand}" var="screenCommand"/>
-                                            <c:set value="${danglingNameAlarm ne null ? danglingNameAlarm.pv : dannglingPvAlarm.pv}" var="pv"/>
+                                        <c:if test="${not doAdd}"> <%-- If need to link --%>
+                                            <c:if test="${empty alarm.pv}"> <%-- If remote PV undefined, then use local --%>
+                                                <c:set value="${danglingNameAlarm ne null ? danglingNameAlarm.pv : dannglingPvAlarm.pv}" var="pv"/>
+                                            </c:if>
+                                            <c:if test="${empty alarm.screenCommand}"> <%-- If remote command undefined, then use local --%>
+                                                <c:set value="${danglingNameAlarm ne null ? danglingNameAlarm.screenCommand : dannglingPvAlarm.screenCommand}" var="screenCommand"/>
+                                            </c:if>
                                         </c:if>
                                         <tr data-action-id="${alarm.action.actionId}"
                                             data-location-id-csv="${alarm.locationIdCsv}"
