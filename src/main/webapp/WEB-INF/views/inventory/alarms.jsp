@@ -151,7 +151,7 @@
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
                                         <tbody>
                                         <c:forEach items="${alarmList}" var="alarm">
-                                            <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-managed-by="${alarm.managedBy}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}" data-sync-rule-id="${alarm.syncRule.syncRuleId}" data-sync-element-id="${alarm.syncElementId}">
+                                            <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-alias="${alarm.alias}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-managed-by="${alarm.managedBy}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}" data-sync-rule-id="${alarm.syncRule.syncRuleId}" data-sync-element-id="${alarm.syncElementId}">
                                                 <td>
                                                     <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}" var="url">
                                                     </c:url>
@@ -223,6 +223,14 @@
                                                                   parameterName="location"/>
                                 </c:forEach>
                             </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-alias">Alias</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="row-alias"/>
                         </div>
                     </li>
                     <li>

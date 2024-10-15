@@ -75,6 +75,8 @@
                         <dl>
                             <dt>Name</dt>
                             <dd>{ElementName} {Action}</dd>
+                            <dt>Alias</dt>
+                            <dd>{NameAlias}</dd>
                             <dt>Location</dt>
                             <dd>{function:locationFromSegMask(SegMask)}</dd>
                             <dt>Screen Command</dt>
@@ -95,7 +97,7 @@
                                     <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Name</th>
+                                        <th>Name (Alias)</th>
                                         <th>Location</th>
                                         <th>Screen Command</th>
                                         <th>PV</th>
@@ -118,6 +120,8 @@
                                             </c:if>
                                         </c:if>
                                         <tr data-action-id="${alarm.action.actionId}"
+                                            data-name="${alarm.name}"
+                                            data-alias="${alarm.alias}"
                                             data-location-id-csv="${alarm.locationIdCsv}"
                                             data-device="${alarm.device}"
                                             data-screen-command="${screenCommand}"
@@ -128,7 +132,12 @@
                                             data-element-id="${alarm.syncElementId}"
                                             class="add-row">
                                             <td><c:out value="${alarm.syncElementId}"/></td>
-                                            <td><c:out value="${alarm.name}"/></td>
+                                            <td>
+                                                <c:out value="${alarm.name}"/>
+                                                <c:if test="${not empty alarm.alias}">
+                                                    (<c:out value="${alarm.alias}"/>)
+                                                </c:if>
+                                            </td>
                                             <td><c:out value="${alarm.locationNameCsv}"/></td>
                                             <td><c:out value="${screenCommand}"/></td>
                                             <td><c:out value="${pv}"/></td>
@@ -179,6 +188,7 @@
                                         <c:set value="${not empty remoteList[alarm.syncElementId].pv}" var="pvSync"/>
                                         <tr data-id="${alarm.alarmId}"
                                             data-name="${remoteList[alarm.syncElementId].name}"
+                                            data-alias="${remoteList[alarm.syncElementId].alias}"
                                             data-action-id="${alarm.action.actionId}"
                                             data-location-id-csv="${remoteList[alarm.syncElementId].locationIdCsv}"
                                             data-device="${alarm.device}"
