@@ -109,19 +109,23 @@
                                         <c:set value="${danglingByNameList[alarm.name]}" var="danglingNameAlarm"/>
                                         <c:set value="${danglingByPvList[alarm.pv]}" var="danglingPvAlarm"/>
                                         <c:set value="${danglingNameAlarm eq null && danglingPvAlarm eq null}" var="doAdd"/>
+                                        <c:set value="${alarm.alias}" var="alias"/>
                                         <c:set value="${alarm.screenCommand}" var="screenCommand"/>
                                         <c:set value="${alarm.pv}" var="pv"/>
                                         <c:if test="${not doAdd}"> <%-- If need to link --%>
+                                            <c:if test="${empty alarm.alias}"> <%-- If remote alias undefined, then use local --%>
+                                                <c:set value="${danglingNameAlarm ne null ? danglingNameAlarm.alias : danglingPvAlarm.alias}" var="alias"/>
+                                            </c:if>
                                             <c:if test="${empty alarm.pv}"> <%-- If remote PV undefined, then use local --%>
-                                                <c:set value="${danglingNameAlarm ne null ? danglingNameAlarm.pv : dannglingPvAlarm.pv}" var="pv"/>
+                                                <c:set value="${danglingNameAlarm ne null ? danglingNameAlarm.pv : danglingPvAlarm.pv}" var="pv"/>
                                             </c:if>
                                             <c:if test="${empty alarm.screenCommand}"> <%-- If remote command undefined, then use local --%>
-                                                <c:set value="${danglingNameAlarm ne null ? danglingNameAlarm.screenCommand : dannglingPvAlarm.screenCommand}" var="screenCommand"/>
+                                                <c:set value="${danglingNameAlarm ne null ? danglingNameAlarm.screenCommand : danglingPvAlarm.screenCommand}" var="screenCommand"/>
                                             </c:if>
                                         </c:if>
                                         <tr data-action-id="${alarm.action.actionId}"
                                             data-name="${alarm.name}"
-                                            data-alias="${alarm.alias}"
+                                            data-alias="${alias}"
                                             data-location-id-csv="${alarm.locationIdCsv}"
                                             data-device="${alarm.device}"
                                             data-screen-command="${screenCommand}"
@@ -134,8 +138,8 @@
                                             <td><c:out value="${alarm.syncElementId}"/></td>
                                             <td>
                                                 <c:out value="${alarm.name}"/>
-                                                <c:if test="${not empty alarm.alias}">
-                                                    (<c:out value="${alarm.alias}"/>)
+                                                <c:if test="${not empty alias}">
+                                                    (<c:out value="${alias}"/>)
                                                 </c:if>
                                             </td>
                                             <td><c:out value="${alarm.locationNameCsv}"/></td>
@@ -184,11 +188,12 @@
                                         </tr>
                                     </c:forEach>
                                     <c:forEach items="${diff.updateList}" var="alarm">
+                                        <c:set value="${not empty remoteList[alarm.syncElementId].alias}" var="aliasSync"/>
                                         <c:set value="${not empty remoteList[alarm.syncElementId].screenCommand}" var="screenCommandSync"/>
                                         <c:set value="${not empty remoteList[alarm.syncElementId].pv}" var="pvSync"/>
                                         <tr data-id="${alarm.alarmId}"
                                             data-name="${remoteList[alarm.syncElementId].name}"
-                                            data-alias="${remoteList[alarm.syncElementId].alias}"
+                                            data-alias="${aliasSync ? remoteList[alarm.syncElementId].alias : alarm.alias}"
                                             data-action-id="${alarm.action.actionId}"
                                             data-location-id-csv="${remoteList[alarm.syncElementId].locationIdCsv}"
                                             data-device="${alarm.device}"
@@ -207,6 +212,19 @@
                                                     <c:otherwise>
                                                         <div class="remote"><c:out value="${remoteList[alarm.syncElementId].name}"/></div>
                                                         <div class="local"><c:out value="${alarm.name}"/></div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                <c:choose>
+                                                    <c:when test="${not aliasSync || alarm.alias eq remoteList[alarm.syncElementId].alias}">
+                                                        <c:if test="${not empty alarm.alias}">
+                                                            (<c:out value="${alarm.alias}"/>)
+                                                        </c:if>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div>
+                                                            (<div class="remote"><c:out value="${remoteList[alarm.syncElementId].alias}"/></div>
+                                                            <div class="local"><c:out value="${alarm.alias}"/></div>)
+                                                        </div>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
@@ -256,6 +274,9 @@
                                                 <a title="Alarm Information" class="dialog-ready"
                                                    data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
                                                    href="${url}"><c:out value="${alarm.name}"/></a>
+                                                <c:if test="${not empty alarm.alias}">
+                                                    (<c:out value="${alarm.alias}"/>)
+                                                </c:if>
                                             </td>
                                             <td><c:out value="${alarm.locationNameCsv}"/></td>
                                             <td><c:out value="${alarm.screenCommand}"/></td>
