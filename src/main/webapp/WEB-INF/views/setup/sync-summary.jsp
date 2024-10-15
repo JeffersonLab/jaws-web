@@ -54,7 +54,7 @@
                                         </c:url>
                                         <form method="get"
                                               action="${pageContext.request.contextPath}/setup/syncs/${fn:escapeXml(rule.syncRuleId)}">
-                                        <button class="single-char-button" type="button" onclick="window.location.href = '${url}';  return false;">&rarr;</button>
+                                        <button class="single-char-button" type="button" onclick="window.open('${url}', '_blank');  return false;">🗗</button>
                                         </form>
                                     </td>
                                 </tr>
