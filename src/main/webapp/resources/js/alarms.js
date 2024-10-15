@@ -2,11 +2,12 @@ var jlab = jlab || {};
 jlab.editableRowTable = jlab.editableRowTable || {};
 jlab.editableRowTable.entity = 'Alarm';
 jlab.editableRowTable.dialog.width = 550;
-jlab.editableRowTable.dialog.height = 400;
+jlab.editableRowTable.dialog.height = 450;
 jlab.addRow = function() {
     var name = $("#row-name").val(),
         actionId = $("#row-action").val(),
         locationData = $("#row-location").select2('data');
+        alias = $("#row-alias").val(),
         device = $("#row-device").val(),
         screenCommand = $("#row-screen-command").val(),
         managedBy = $("#row-managed-by").val(),
@@ -30,6 +31,7 @@ jlab.addRow = function() {
             name: name,
             actionId: actionId,
             locationId: locationId, /*renamed 'locationId[]' by jQuery*/
+            alias: alias,
             device: device,
             screenCommand: screenCommand,
             managedBy: managedBy,
@@ -65,6 +67,7 @@ jlab.editRow = function() {
     var name = $("#row-name").val(),
         actionId = $("#row-action").val(),
         locationData = $("#row-location").select2('data');
+        alias = $("#row-alias").val(),
         device = $("#row-device").val(),
         screenCommand = $("#row-screen-command").val(),
         managedBy = $("#row-managed-by").val(),
@@ -92,6 +95,7 @@ jlab.editRow = function() {
             name: name,
             actionId: actionId,
             locationId: locationId, /*renamed 'locationId[]' by jQuery*/
+            alias: alias,
             device: device,
             screenCommand: screenCommand,
             managedBy: managedBy,
@@ -171,7 +175,7 @@ $(document).on("click", "#open-edit-row-dialog-button", function() {
     var $selectedRow = $(".editable-row-table tr.selected-row");
     $("#row-name").val($selectedRow.find("td:first-child a").text());
     $("#row-action").val($selectedRow.attr("data-action-id"));
-
+    $("#row-alias").val($selectedRow.attr("data-alias"));
     $("#row-device").val($selectedRow.attr("data-device"));
     $("#row-screen-command").val($selectedRow.attr("data-screen-command"));
     $("#row-managed-by").val($selectedRow.attr("data-managed-by"));

@@ -38,6 +38,7 @@ public class AddAlarm extends HttpServlet {
     String name = request.getParameter("name");
     BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
     BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId[]");
+    String alias = request.getParameter("alias");
     String device = request.getParameter("device");
     String screenCommand = request.getParameter("screenCommand");
     String managedBy = request.getParameter("managedBy");
@@ -54,6 +55,7 @@ public class AddAlarm extends HttpServlet {
           name,
           actionId,
           locationIdArray,
+          alias,
           device,
           screenCommand,
           managedBy,
