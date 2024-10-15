@@ -249,6 +249,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       String name,
       BigInteger actionId,
       BigInteger[] locationIdArray,
+      String alias,
       String device,
       String screenCommand,
       String managedBy,
@@ -311,6 +312,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
     alarm.setName(name);
     alarm.setAction(action);
     alarm.setLocationList(locationList);
+    alarm.setAlias(alias);
     alarm.setDevice(device);
     alarm.setScreenCommand(screenCommand);
     alarm.setManagedBy(managedBy);
@@ -387,6 +389,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       String name,
       BigInteger actionId,
       BigInteger[] locationIdArray,
+      String alias,
       String device,
       String screenCommand,
       String managedBy,
@@ -453,6 +456,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
     alarm.setName(name);
     alarm.setAction(action);
     alarm.setLocationList(locationList);
+    alarm.setAlias(alias);
     alarm.setDevice(device);
     alarm.setScreenCommand(screenCommand);
     alarm.setManagedBy(managedBy);
@@ -575,6 +579,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
         name,
         action.getActionId(),
         locationIdList.toArray(new BigInteger[0]),
+        null,
         device,
         screenCommand,
         managedBy,

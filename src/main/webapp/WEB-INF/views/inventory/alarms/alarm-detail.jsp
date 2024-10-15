@@ -131,6 +131,8 @@
                             </dd>
                             <dt>Location:</dt>
                             <dd><c:out value="${alarm.locationNameCsv}"/></dd>
+                            <dt>Alias:</dt>
+                            <dd><c:out value="${alarm.alias eq null ? 'None' : alarm.alias}"/></dd>
                             <dt>Device:</dt>
                             <dd><c:out value="${alarm.device eq null ? 'None' : alarm.device}"/></dd>
                             <dt>Screen Command:</dt>

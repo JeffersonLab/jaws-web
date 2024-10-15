@@ -1,8 +1,9 @@
 var jlab = jlab || {};
 jlab.addRow = function($tr, batch) {
-    var name = $tr.find("td:nth-child(2)").text(),
+    var name = $tr.attr("data-name"),
         actionId = $tr.attr("data-action-id"),
         locationCsv = $tr.attr("data-location-id-csv"),
+        alias = $tr.attr("data-alias"),
         device = $tr.attr("data-device"),
         screenCommand = $tr.attr("data-screen-command"),
         managedBy = $tr.attr("data-managed-by"),
@@ -28,6 +29,7 @@ jlab.addRow = function($tr, batch) {
             name: name,
             actionId: actionId,
             locationId: locationId, /*renamed 'locationId[]' by jQuery*/
+            alias: alias,
             device: device,
             screenCommand: screenCommand,
             managedBy: managedBy,
@@ -115,9 +117,10 @@ jlab.removeRow = function($tr, batch) {
     });
 };
 jlab.linkRow = function($tr, alarmId, batch) {
-    var name = $tr.find("td:nth-child(2)").text(),
+    var name = $tr.attr("data-name"),
         actionId = $tr.attr("data-action-id"),
         locationCsv = $tr.attr("data-location-id-csv"),
+        alias = $tr.attr("data-alias"),
         device = $tr.attr("data-device"),
         screenCommand = $tr.attr("data-screen-command"),
         managedBy = $tr.attr("data-managed-by"),
@@ -144,6 +147,7 @@ jlab.linkRow = function($tr, alarmId, batch) {
             name: name,
             actionId: actionId,
             locationId: locationId, /*renamed 'locationId[]' by jQuery*/
+            alias: alias,
             device: device,
             screenCommand: screenCommand,
             managedBy: managedBy,
@@ -188,6 +192,7 @@ jlab.updateRow = function($tr, batch) {
         name = $tr.attr("data-name"),
         actionId = $tr.attr("data-action-id"),
         locationCsv = $tr.attr("data-location-id-csv"),
+        alias = $tr.attr("data-alias"),
         device = $tr.attr("data-device"),
         screenCommand = $tr.attr("data-screen-command"),
         managedBy = $tr.attr("data-managed-by"),
@@ -214,6 +219,7 @@ jlab.updateRow = function($tr, batch) {
             name: name,
             actionId: actionId,
             locationId: locationId, /*renamed 'locationId[]' by jQuery*/
+            alias: alias,
             device: device,
             screenCommand: screenCommand,
             managedBy: managedBy,

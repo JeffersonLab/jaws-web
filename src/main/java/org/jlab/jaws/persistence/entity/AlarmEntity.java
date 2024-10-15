@@ -27,8 +27,12 @@ public class AlarmEntity implements Serializable {
   private BigInteger alarmId;
 
   @Size(max = 64)
-  @Column(length = 64)
+  @Column(length = 64, nullable = false)
   private String name;
+
+  @Size(max = 64)
+  @Column(length = 64)
+  private String alias;
 
   @JoinColumn(name = "ACTION_ID", referencedColumnName = "ACTION_ID", nullable = false)
   @ManyToOne(optional = false)
@@ -88,6 +92,14 @@ public class AlarmEntity implements Serializable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public @Size(max = 64) String getAlias() {
+    return alias;
+  }
+
+  public void setAlias(@Size(max = 64) String alias) {
+    this.alias = alias;
   }
 
   public Action getAction() {
@@ -245,6 +257,10 @@ public class AlarmEntity implements Serializable {
     boolean equals =
         Objects.equals(name, remote.name)
             && Objects.equals(getLocationIdCsv(), remote.getLocationIdCsv());
+
+    if (remote.alias != null && !remote.alias.isBlank()) {
+      equals = equals && Objects.equals(alias, remote.alias);
+    }
 
     if (remote.screenCommand != null && !remote.screenCommand.isBlank()) {
       equals = equals && Objects.equals(screenCommand, remote.screenCommand);

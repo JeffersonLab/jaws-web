@@ -293,10 +293,15 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       String elementName = o.getString("name");
 
       List<Location> locationList = null;
+      String alias = "";
       String epicsName = "";
 
       if (o.containsKey("properties")) {
         JsonObject properties = o.getJsonObject("properties");
+
+        if (properties.containsKey("NameAlias") && !properties.isNull("NameAlias")) {
+          alias = properties.getString("NameAlias");
+        }
 
         if (properties.containsKey("EPICSName") && !properties.isNull("EPICSName")) {
           epicsName = properties.getString("EPICSName");
@@ -319,6 +324,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       alarm.setSyncElementId(elementId);
       alarm.setSyncRule(rule);
       alarm.setName(elementName + " " + rule.getAction().getName());
+      alarm.setAlias(alias);
       alarm.setAction(rule.getAction());
       alarm.setLocationList(locationList);
       alarm.setScreenCommand(screenCommand);
