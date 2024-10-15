@@ -168,7 +168,7 @@ jlab.linkRow = function($tr, alarmId, batch) {
                 if($b !== undefined) {
                     jlab.linkRow($b.closest("tr"), $b.attr("data-alarm-id"), true);
                 } else {
-                    if(jlab.addTr.length === 0 && lab.removeTr.length === 0 && jlab.updateTr.length === 0) {
+                    if(jlab.addTr.length === 0 && jlab.removeTr.length === 0 && jlab.updateTr.length === 0) {
                         $("#apply-all-button").replaceWith("Done!");
                     }
                 }
