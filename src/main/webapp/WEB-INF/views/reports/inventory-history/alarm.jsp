@@ -123,6 +123,14 @@
                             </c:forEach>
                         </tr>
                         <tr>
+                            <th>Alias:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.alias}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
                             <th>Action:</th>
                             <c:forEach items="${revisionList}" var="entity">
                                 <td>
@@ -159,6 +167,22 @@
                             <c:forEach items="${revisionList}" var="entity">
                                 <td>
                                     <c:out value="${entity.pv}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <th>Sync Rule:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.syncRuleId}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <th>Sync Element ID:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.syncElementId}"/>
                                 </td>
                             </c:forEach>
                         </tr>

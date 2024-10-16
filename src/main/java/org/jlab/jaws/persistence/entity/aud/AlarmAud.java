@@ -1,6 +1,7 @@
 package org.jlab.jaws.persistence.entity.aud;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -61,6 +62,10 @@ public class AlarmAud implements Serializable {
   @Column(length = 64)
   private String name;
 
+  @Size(max = 64)
+  @Column(length = 64)
+  private String alias;
+
   @JoinColumn(name = "ACTION_ID", referencedColumnName = "ACTION_ID", nullable = false)
   @ManyToOne(optional = false)
   private Action action;
@@ -81,12 +86,26 @@ public class AlarmAud implements Serializable {
   @Column(length = 64, nullable = true)
   private String pv;
 
+  @Column(name = "SYNC_ELEMENT_ID", nullable = true, precision = 22, scale = 0)
+  private BigInteger syncElementId;
+
+  @Column(name = "SYNC_RULE_ID", nullable = true, precision = 22, scale = 0)
+  private BigInteger syncRuleId;
+
   public String getName() {
     return name;
   }
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getAlias() {
+    return alias;
+  }
+
+  public void setAlias(String alias) {
+    this.alias = alias;
   }
 
   public Action getAction() {
@@ -127,6 +146,22 @@ public class AlarmAud implements Serializable {
 
   public void setPv(String pv) {
     this.pv = pv;
+  }
+
+  public BigInteger getSyncElementId() {
+    return syncElementId;
+  }
+
+  public void setSyncElementId(BigInteger syncElementId) {
+    this.syncElementId = syncElementId;
+  }
+
+  public BigInteger getSyncRuleId() {
+    return syncRuleId;
+  }
+
+  public void setSyncRuleId(BigInteger syncRuleId) {
+    this.syncRuleId = syncRuleId;
   }
 
   @Override

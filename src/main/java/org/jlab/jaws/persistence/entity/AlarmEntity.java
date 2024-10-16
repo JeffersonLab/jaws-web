@@ -94,11 +94,11 @@ public class AlarmEntity implements Serializable {
     this.name = name;
   }
 
-  public @Size(max = 64) String getAlias() {
+  public String getAlias() {
     return alias;
   }
 
-  public void setAlias(@Size(max = 64) String alias) {
+  public void setAlias(String alias) {
     this.alias = alias;
   }
 
