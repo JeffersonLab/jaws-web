@@ -189,6 +189,17 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       throw new UserFriendlyException("Sync Rule not found with ID: " + id);
     }
 
+    // We must manually unlink any linked alarms
+    List<AlarmEntity> alarmList = rule.getAlarmList();
+
+    if (alarmList != null) {
+      for (AlarmEntity alarm : alarmList) {
+        alarm.setSyncRule(null);
+        alarm.setSyncElementId(null);
+        em.merge(alarm);
+      }
+    }
+
     remove(rule);
   }
 

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -49,6 +50,10 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
   @Size(max = 64)
   @Column(length = 64, nullable = true)
   private String pv;
+
+  @JoinColumn(name = "SYNC_RULE_ID")
+  @OneToMany
+  private List<AlarmEntity> alarmList;
 
   public BigInteger getSyncRuleId() {
     return syncRuleId;
@@ -112,6 +117,10 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
 
   public void setPv(String pv) {
     this.pv = pv;
+  }
+
+  public List<AlarmEntity> getAlarmList() {
+    return alarmList;
   }
 
   public String getSearchURL() {
