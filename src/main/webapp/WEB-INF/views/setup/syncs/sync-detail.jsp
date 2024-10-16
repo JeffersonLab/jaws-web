@@ -97,7 +97,10 @@
                                     <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Name (Alias)</th>
+                                        <th>
+                                            Name
+                                            <div>(Alias)</div>
+                                        </th>
                                         <th>Location</th>
                                         <th>Screen Command</th>
                                         <th>PV</th>
@@ -139,7 +142,7 @@
                                             <td>
                                                 <c:out value="${alarm.name}"/>
                                                 <c:if test="${not empty alias}">
-                                                    (<c:out value="${alias}"/>)
+                                                    <div>(<c:out value="${alias}"/>)</div>
                                                 </c:if>
                                             </td>
                                             <td><c:out value="${alarm.locationNameCsv}"/></td>
@@ -180,7 +183,12 @@
                                         <tr data-id="${alarm.alarmId}"
                                             class="remove-row">
                                             <td><c:out value="${alarm.syncElementId}"/></td>
-                                            <td><c:out value="${alarm.name}"/></td>
+                                            <td>
+                                                <c:out value="${alarm.name}"/>
+                                                <c:if test="${not empty alias}">
+                                                    <div>(<c:out value="${alias}"/>)</div>
+                                                </c:if>
+                                            </td>
                                             <td><c:out value="${alarm.locationNameCsv}"/></td>
                                             <td><c:out value="${alarm.screenCommand}"/></td>
                                             <td><c:out value="${alarm.pv}"/></td>
@@ -217,7 +225,7 @@
                                                 <c:choose>
                                                     <c:when test="${not aliasSync || alarm.alias eq remoteList[alarm.syncElementId].alias}">
                                                         <c:if test="${not empty alarm.alias}">
-                                                            (<c:out value="${alarm.alias}"/>)
+                                                            <div>(<c:out value="${alarm.alias}"/>)</div>
                                                         </c:if>
                                                     </c:when>
                                                     <c:otherwise>
@@ -275,7 +283,7 @@
                                                    data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
                                                    href="${url}"><c:out value="${alarm.name}"/></a>
                                                 <c:if test="${not empty alarm.alias}">
-                                                    (<c:out value="${alarm.alias}"/>)
+                                                    <div>(<c:out value="${alarm.alias}"/>)</div>
                                                 </c:if>
                                             </td>
                                             <td><c:out value="${alarm.locationNameCsv}"/></td>
