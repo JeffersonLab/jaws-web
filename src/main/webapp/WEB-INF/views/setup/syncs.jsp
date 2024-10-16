@@ -186,15 +186,33 @@
                 </ul>
                 <hr/>
                 <div>Template</div>
+                <div class="two-column">
+                    <div class="column">
+                        <ul class="key-value-list">
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-name">Name</label>
+                                </div>
+                                <div class="li-value">
+                                    <input type="text" id="row-name" value="{ElementName} {Action}" disabled="disabled"/>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <ul class="key-value-list">
+                            <li>
+                                <div class="li-key right">
+                                    <label for="row-alias">Alias</label>
+                                </div>
+                                <div class="li-value">
+                                    <input type="text" id="row-alias" value="{NameAlias}" disabled="disabled"/>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
                 <ul class="key-value-list">
-                    <li>
-                        <div class="li-key">
-                            <label for="row-name">Name</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="text" id="row-name" value="{ElementName} {Action}" disabled="disabled"/>
-                        </div>
-                    </li>
                     <li>
                         <div class="li-key">
                             <label for="row-location">Location</label>

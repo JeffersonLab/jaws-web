@@ -34,3 +34,21 @@
     bottom: 1em;
     z-index: 1;
 }
+.two-column {
+    display: flex;
+}
+.column {
+    flex: 50%;
+}
+#row-form .two-column input {
+    width: 215px;
+}
+#row-form .two-column ul {
+    margin: 0;
+}
+.key-value-list .li-key {
+    width: 185px;
+}
+#row-form .two-column .li-key.right {
+    width: 145px;
+}
