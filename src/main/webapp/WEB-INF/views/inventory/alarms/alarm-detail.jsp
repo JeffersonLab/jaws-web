@@ -190,6 +190,32 @@
                             <dd><c:out
                                     value="${alarm.action.offDelaySeconds eq null ? 'None' : alarm.action.offDelaySeconds}"/></dd>
                         </dl>
+                        <hr/>
+                        <dl>
+                            <dt>History:</dt>
+                            <dd>
+                                <ul>
+                                    <li>
+                                        <c:url var="url" value="/reports/active-history">
+                                            <c:param name="alarmName" value="${alarm.name}"/>
+                                        </c:url>
+                                        <a href="${url}">Active</a>
+                                    </li>
+                                    <li>
+                                        <c:url var="url" value="/reports/suppress-history">
+                                            <c:param name="alarmName" value="${alarm.name}"/>
+                                        </c:url>
+                                        <a href="${url}">Suppress</a>
+                                    </li>
+                                    <li>
+                                        <c:url var="url" value="/reports/inventory-history/alarm">
+                                            <c:param name="alarmId" value="${alarm.alarmId}"/>
+                                        </c:url>
+                                        <a href="${url}">Inventory</a>
+                                    </li>
+                                </ul>
+                            </dd>
+                        </dl>
                     </c:when>
                     <c:otherwise>
                         <div>Unregistered Alarm!
