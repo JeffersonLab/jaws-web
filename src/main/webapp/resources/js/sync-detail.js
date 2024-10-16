@@ -240,7 +240,7 @@ jlab.updateRow = function($tr, batch) {
                 if($tr !== undefined) {
                     jlab.updateRow($tr, true);
                 } else {
-                    if(jlab.addTr.length === 0 && lab.removeTr.length === 0 && jlab.linkButton.length === 0) {
+                    if(jlab.addTr.length === 0 && jlab.removeTr.length === 0 && jlab.linkButton.length === 0) {
                         $("#apply-all-button").replaceWith("Done!");
                     }
                 }
