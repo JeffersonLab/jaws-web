@@ -184,9 +184,14 @@
                                             class="remove-row">
                                             <td><c:out value="${alarm.syncElementId}"/></td>
                                             <td>
-                                                <c:out value="${alarm.name}"/>
-                                                <c:if test="${not empty alias}">
-                                                    <div>(<c:out value="${alias}"/>)</div>
+                                                <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}"
+                                                       var="url">
+                                                </c:url>
+                                                <a title="Alarm Information" class="dialog-ready"
+                                                   data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
+                                                   href="${url}"><c:out value="${alarm.name}"/></a>
+                                                <c:if test="${not empty alarm.alias}">
+                                                    <div>(<c:out value="${alarm.alias}"/>)</div>
                                                 </c:if>
                                             </td>
                                             <td><c:out value="${alarm.locationNameCsv}"/></td>
@@ -213,13 +218,21 @@
                                             data-element-id="${alarm.syncElementId}">
                                             <td><c:out value="${alarm.syncElementId}"/></td>
                                             <td>
+                                                <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}"
+                                                       var="url">
+                                                </c:url>
                                                 <c:choose>
                                                     <c:when test="${alarm.name eq remoteList[alarm.syncElementId].name}">
-                                                        <c:out value="${alarm.name}"/>
+                                                        <a title="Alarm Information" class="dialog-ready"
+                                                           data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
+                                                           href="${url}"><c:out value="${alarm.name}"/></a>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <div class="remote"><c:out value="${remoteList[alarm.syncElementId].name}"/></div>
-                                                        <div class="local"><c:out value="${alarm.name}"/></div>
+                                                        <span class="local"><c:out value="${alarm.name}"/></span>
+                                                        <a title="Alarm Information" class="dialog-ready"
+                                                           data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
+                                                           href="${url}"><c:out value="[🔗]"/></a>
                                                     </c:otherwise>
                                                 </c:choose>
                                                 <c:choose>
