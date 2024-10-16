@@ -39,11 +39,10 @@
                 </thead>
                 <tbody>
             <c:forEach items="${ruleSetList}" var="rs">
-            <tr>
-                <td colspan="7"><h3><c:out value="${rs.name}"/></h3></td>
-            </tr>
-                <c:choose>
-                    <c:when test="${fn:length(rs.ruleList) > 0}">
+                    <c:if test="${fn:length(rs.ruleList) > 0}">
+                        <tr>
+                            <td colspan="7"><h3><c:out value="${rs.name}"/></h3></td>
+                        </tr>
                             <c:forEach items="${rs.ruleList}" var="rule">
                                 <tr class="rule-row" data-id="${rule.syncRuleId}">
                                     <td>
@@ -63,11 +62,7 @@
                                     </td>
                                 </tr>
                             </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <tr><td colspan="7">None</td></tr>
-                    </c:otherwise>
-                </c:choose>
+                    </c:if>
             </c:forEach>
                 </tbody>
             </table>
