@@ -1,8 +1,8 @@
 var jlab = jlab || {};
 jlab.editableRowTable = jlab.editableRowTable || {};
 jlab.editableRowTable.entity = 'Alarm';
-jlab.editableRowTable.dialog.width = 550;
-jlab.editableRowTable.dialog.height = 450;
+jlab.editableRowTable.dialog.width = 600;
+jlab.editableRowTable.dialog.height = 500;
 jlab.addRow = function() {
     var name = $("#row-name").val(),
         actionId = $("#row-action").val(),
@@ -223,4 +223,15 @@ $(function () {
         width: 290,
         templateSelection: formatLocation
     });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const alarmName = urlParams.get('alarmName');
+    const edit = urlParams.get('edit');
+
+    if(edit === 'Y' && alarmName !== undefined) {
+        urlParams.delete('edit');
+        window.history.replaceState(null, null, 'alarms?' + urlParams.toString());
+        $(".inner-table tbody tr:first-child").trigger('click');
+        $("#open-edit-row-dialog-button").trigger('click');
+    }
 });

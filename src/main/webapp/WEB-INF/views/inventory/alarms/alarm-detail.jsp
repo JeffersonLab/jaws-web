@@ -35,6 +35,7 @@
                     <c:if test="${editable}">
                         <c:url var="url" value="/inventory/alarms">
                             <c:param name="alarmName" value="${alarm.name}"/>
+                            <c:param name="edit" value="Y"/>
                         </c:url>
                         <span class="dialog-only-link">|</span> <a href="${url}">Modify</a>
                     </c:if>

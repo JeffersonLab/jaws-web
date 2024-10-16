@@ -231,4 +231,15 @@ $(function () {
     $(document).on("keyup", "#rationale-textarea", function() {
         rationaleRenderDiv.innerHTML = DOMPurify.sanitize(marked.parse(rationaleTextarea.value), jlab.sanitizeConfig);
     });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const alarmName = urlParams.get('actionName');
+    const edit = urlParams.get('edit');
+
+    if(edit === 'Y' && alarmName !== undefined) {
+        urlParams.delete('edit');
+        window.history.replaceState(null, null, 'actions?' + urlParams.toString());
+        $(".inner-table tbody tr:first-child").trigger('click');
+        $("#open-edit-row-dialog-button").trigger('click');
+    }
 });
