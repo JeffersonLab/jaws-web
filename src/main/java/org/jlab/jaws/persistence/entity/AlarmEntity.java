@@ -78,6 +78,8 @@ public class AlarmEntity implements Serializable {
   private Notification notification;
   @Transient private List<AlarmOverride> overrideList;
 
+  @Transient private String joinAttributeValue;
+
   public BigInteger getAlarmId() {
     return alarmId;
   }
@@ -237,6 +239,14 @@ public class AlarmEntity implements Serializable {
     Collections.sort(list);
 
     return list;
+  }
+
+  public String getJoinAttributeValue() {
+    return joinAttributeValue;
+  }
+
+  public void setJoinAttributeValue(String joinAttributeValue) {
+    this.joinAttributeValue = joinAttributeValue;
   }
 
   @Override

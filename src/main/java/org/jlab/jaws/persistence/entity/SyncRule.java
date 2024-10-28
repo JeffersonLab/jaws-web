@@ -184,7 +184,9 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
   public String getJoinSearchURL() {
     String url = getJoinHTMLURL();
 
-    if (server.getExtraSearchQuery() != null && !server.getExtraSearchQuery().isBlank()) {
+    if (url != null
+        && server.getExtraSearchQuery() != null
+        && !server.getExtraSearchQuery().isBlank()) {
       url = url + "&" + server.getExtraSearchQuery();
     }
 
@@ -202,10 +204,14 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
   }
 
   public String getJoinHTMLURL() {
-    String url = server.getBaseUrl() + server.getSearchPath() + "?" + getForeignQuery();
+    String url = null;
 
-    if (foreignExpression != null && !foreignExpression.isBlank()) {
-      url = url + "&Ex=" + URLEncoder.encode(foreignExpression, StandardCharsets.UTF_8);
+    if (foreignQuery != null && !foreignQuery.isBlank()) {
+      url = server.getBaseUrl() + server.getSearchPath() + "?" + foreignQuery;
+
+      if (foreignExpression != null && !foreignExpression.isBlank()) {
+        url = url + "&Ex=" + URLEncoder.encode(foreignExpression, StandardCharsets.UTF_8);
+      }
     }
 
     return url;
