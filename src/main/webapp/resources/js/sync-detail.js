@@ -354,3 +354,10 @@ $(document).on("click", "button.link", function() {
 $(document).on("click", "button.update", function() {
     jlab.updateRow($(this).closest("tr"));
 });
+$(function(){
+    $( "#accordion" ).accordion({
+        collapsible: true,
+        heightStyle: "content",
+        active: 3
+    });
+});

@@ -2,13 +2,17 @@ var jlab = jlab || {};
 jlab.editableRowTable = jlab.editableRowTable || {};
 jlab.editableRowTable.entity = 'Sync';
 jlab.editableRowTable.dialog.width = 900;
-jlab.editableRowTable.dialog.height = 800;
+jlab.editableRowTable.dialog.height = 600;
 jlab.addRow = function (run) {
     var actionId = $("#row-action").val(),
         server = $("#row-server").val(),
         description = $("#row-description").val(),
         query = $("#row-query").val(),
         expression = $("#row-expression").val(),
+        primaryAttribute = $("#row-primary-attribute").val(),
+        foreignAttribute = $("#row-foreign-attribute").val(),
+        foreignQuery = $("#row-foreign-query").val(),
+        foreignExpression = $("#row-foreign-expression").val(),
         screencommand = $("#row-screencommand").val(),
         pv = $("#row-pv").val(),
         $button = $(".dialog-submit-button"),
@@ -16,7 +20,13 @@ jlab.addRow = function (run) {
         reloading = false;
 
     if(expression != null) {
+        expression = expression.trim();
         expression = expression.replace(/\n/g, '&');
+    }
+
+    if(foreignExpression != null) {
+        foreignExpression = foreignExpression.trim();
+        foreignExpression = foreignExpression.replace(/\n/g, '&');
     }
 
     $button
@@ -36,6 +46,10 @@ jlab.addRow = function (run) {
             description: description,
             query: query,
             expression: expression,
+            primaryAttribute: primaryAttribute,
+            foreignAttribute: foreignAttribute,
+            foreignQuery: foreignQuery,
+            foreignExpression: foreignExpression,
             screencommand: screencommand,
             pv: pv
         },
@@ -76,6 +90,10 @@ jlab.editRow = function (run) {
         description = $("#row-description").val(),
         query = $("#row-query").val(),
         expression = $("#row-expression").val(),
+        primaryAttribute = $("#row-primary-attribute").val(),
+        foreignAttribute = $("#row-foreign-attribute").val(),
+        foreignQuery = $("#row-foreign-query").val(),
+        foreignExpression = $("#row-foreign-expression").val(),
         screencommand = $("#row-screencommand").val(),
         pv = $("#row-pv").val(),
         $button = $(".dialog-submit-button"),
@@ -85,6 +103,11 @@ jlab.editRow = function (run) {
     if(expression != null) {
         expression = expression.trim();
         expression = expression.replace(/\n/g, '&');
+    }
+
+    if(foreignExpression != null) {
+        foreignExpression = foreignExpression.trim();
+        foreignExpression = foreignExpression.replace(/\n/g, '&');
     }
 
     $button
@@ -105,6 +128,10 @@ jlab.editRow = function (run) {
             description: description,
             query: query,
             expression: expression,
+            primaryAttribute: primaryAttribute,
+            foreignAttribute: foreignAttribute,
+            foreignQuery: foreignQuery,
+            foreignExpression: foreignExpression,
             screencommand: screencommand,
             pv: pv
         },
@@ -196,6 +223,18 @@ $(document).on("click", "#open-edit-row-dialog-button", function () {
     }
 
     $("#row-expression").val(multilineExpression);
+    $("#row-primary-attribute").val($selectedRow.attr("data-primary-attribute"));
+    $("#row-foreign-attribute").val($selectedRow.attr("data-foreign-attribute"));
+    $("#row-foreign-query").val($selectedRow.attr("data-foreign-query"));
+
+    var expression = $selectedRow.attr("data-foreign-expression"),
+        multilineExpression = "";
+
+    if(expression != null) {
+        multilineExpression = expression.replace(/&/g, '\n');
+    }
+
+    $("#row-foreign-expression").val(multilineExpression);
     $("#row-screencommand").val($selectedRow.attr("data-screencommand"));
     $("#row-pv").val($selectedRow.attr("data-pv"));
 });
@@ -227,7 +266,9 @@ $(document).on("click", ".default-clear-panel", function () {
 $(function () {
     $("#table-row-dialog").dialog("option", "resizable", true);
     $("#table-row-dialog").dialog("option", "minWidth", 900);
-    $("#table-row-dialog").dialog("option", "minHeight", 800);
+    $("#table-row-dialog").dialog("option", "minHeight", 600);
+
+    $("#rule-form-tabs").tabs();
 
     const urlParams = new URLSearchParams(window.location.search);
     const syncRuleId = urlParams.get('syncRuleId');

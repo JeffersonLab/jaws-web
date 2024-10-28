@@ -135,6 +135,10 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       String description,
       String query,
       String expression,
+      String primaryAttribute,
+      String foreignAttribute,
+      String foreignQuery,
+      String foreignExpression,
       String screencommand,
       String pv)
       throws UserFriendlyException {
@@ -162,6 +166,25 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       throw new UserFriendlyException("Query is required");
     }
 
+    int count = 0;
+
+    if (primaryAttribute != null && !primaryAttribute.isBlank()) {
+      count++;
+    }
+
+    if (foreignAttribute != null && !foreignAttribute.isBlank()) {
+      count++;
+    }
+
+    if (foreignQuery != null && !foreignQuery.isBlank()) {
+      count++;
+    }
+
+    if (count > 0 && count < 3) {
+      throw new UserFriendlyException(
+          "Primary Attribute, Foreign Attribute, and Foreign Query are all required to join");
+    }
+
     SyncRule rule = new SyncRule();
     rule.setAction(action);
 
@@ -169,6 +192,10 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     rule.setDescription(description);
     rule.setQuery(query);
     rule.setPropertyExpression(expression);
+    rule.setPrimaryAttribute(primaryAttribute);
+    rule.setForeignAttribute(foreignAttribute);
+    rule.setForeignQuery(foreignQuery);
+    rule.setForeignExpression(foreignExpression);
     rule.setScreenCommand(screencommand);
     rule.setPv(pv);
 
@@ -211,6 +238,10 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       String description,
       String query,
       String expression,
+      String primaryAttribute,
+      String foreignAttribute,
+      String foreignQuery,
+      String foreignExpression,
       String screencommand,
       String pv)
       throws UserFriendlyException {
@@ -244,25 +275,44 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       throw new UserFriendlyException("Sync server not found with name: " + syncServerName);
     }
 
+    int count = 0;
+
+    if (primaryAttribute != null && !primaryAttribute.isBlank()) {
+      count++;
+    }
+
+    if (foreignAttribute != null && !foreignAttribute.isBlank()) {
+      count++;
+    }
+
+    if (foreignQuery != null && !foreignQuery.isBlank()) {
+      count++;
+    }
+
+    if (count > 0 && count < 3) {
+      throw new UserFriendlyException(
+          "Primary Attribute, Foreign Attribute, and Foreign Query are all required to join");
+    }
+
     rule.setAction(action);
     rule.setSyncServer(server);
     rule.setDescription(description);
     rule.setQuery(query);
     rule.setPropertyExpression(expression);
+    rule.setPrimaryAttribute(primaryAttribute);
+    rule.setForeignAttribute(foreignAttribute);
+    rule.setForeignQuery(foreignQuery);
+    rule.setForeignExpression(foreignExpression);
     rule.setScreenCommand(screencommand);
     rule.setPv(pv);
 
     edit(rule);
   }
 
-  @RolesAllowed("jaws-admin")
-  public LinkedHashMap<BigInteger, AlarmEntity> executeRule(SyncRule rule)
-      throws UserFriendlyException {
-    LinkedHashMap<BigInteger, AlarmEntity> alarmList = null;
+  private String fetchAndParse(SyncRule rule, String url) throws UserFriendlyException {
+    String body = null;
 
     HttpClient client = HttpClient.newHttpClient();
-
-    String url = rule.getSearchURL();
 
     HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
 
@@ -275,41 +325,89 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     }
 
     if (200 == response.statusCode()) {
-      String body = response.body();
-
-      // System.out.println(body);
-
-      alarmList = convertResponse(body, rule);
+      body = response.body();
     } else {
       throw new UserFriendlyException("Response code " + response.statusCode());
+    }
+
+    return body;
+  }
+
+  private LinkedHashMap<BigInteger, AlarmEntity> fetchAndParseWithIdMap(
+      SyncRule rule, Map<String, Location> locationMap, String url) throws UserFriendlyException {
+    LinkedHashMap<BigInteger, AlarmEntity> alarmList = null;
+
+    String body = fetchAndParse(rule, url);
+
+    if (body != null) {
+      alarmList = convertResponseWithIdMap(body, rule, locationMap);
     }
 
     return alarmList;
   }
 
-  private LinkedHashMap<BigInteger, AlarmEntity> convertResponse(String body, SyncRule rule) {
-    LinkedHashMap<BigInteger, AlarmEntity> alarmList = new LinkedHashMap<>();
+  private LinkedHashMap<String, AlarmEntity> fetchAndParseWithAttributeMap(
+      SyncRule rule, Map<String, Location> locationMap, String url) throws UserFriendlyException {
+    LinkedHashMap<String, AlarmEntity> alarmList = null;
 
-    JsonObject object = Json.createReader(new StringReader(body)).readObject();
+    String body = fetchAndParse(rule, url);
 
-    JsonObject inventory = object.getJsonObject("Inventory");
-    JsonArray elements = inventory.getJsonArray("elements");
+    if (body != null) {
+      alarmList = convertResponseWithAttributeMap(body, rule, locationMap);
+    }
+
+    return alarmList;
+  }
+
+  @RolesAllowed("jaws-admin")
+  public LinkedHashMap<BigInteger, AlarmEntity> executeRule(SyncRule rule)
+      throws UserFriendlyException {
 
     Map<String, Location> locationMap = loadSegmaskToLocationMap();
 
-    for (JsonValue v : elements) {
-      JsonObject o = v.asJsonObject();
+    String url = rule.getSearchURL();
 
-      BigInteger elementId = o.getJsonNumber("id").bigIntegerValue();
-      String elementName = o.getString("name");
+    LinkedHashMap<BigInteger, AlarmEntity> primaryMap =
+        fetchAndParseWithIdMap(rule, locationMap, url);
 
-      List<Location> locationList = null;
-      String alias = "";
-      String epicsName = "";
+    LinkedHashMap<BigInteger, AlarmEntity> joinMap = primaryMap;
 
-      if (o.containsKey("properties")) {
-        JsonObject properties = o.getJsonObject("properties");
+    url = rule.getJoinSearchURL();
 
+    if (url != null && !url.isBlank()) {
+      LinkedHashMap<String, AlarmEntity> foreignMap =
+          fetchAndParseWithAttributeMap(rule, locationMap, url);
+
+      joinMap = new LinkedHashMap<>();
+
+      for (AlarmEntity alarm : primaryMap.values()) {
+        if (foreignMap.get(alarm.getJoinAttributeValue()) != null) {
+          joinMap.put(alarm.getSyncElementId(), alarm);
+        }
+      }
+    }
+
+    return joinMap;
+  }
+
+  private AlarmEntity convertEntity(
+      SyncRule rule, Map<String, Location> locationMap, boolean primary, JsonObject o) {
+    BigInteger elementId = o.getJsonNumber("id").bigIntegerValue();
+    String elementName = o.getString("name");
+
+    List<Location> locationList = null;
+    String alias = "";
+    String epicsName = "";
+    String joinAttributeValue = null;
+    JsonObject properties = null;
+    String joinAttribute = rule.getPrimaryAttribute();
+    String screenCommand = "";
+    String pv = "";
+
+    if (o.containsKey("properties")) {
+      properties = o.getJsonObject("properties");
+
+      if (primary) {
         if (properties.containsKey("NameAlias") && !properties.isNull("NameAlias")) {
           alias = properties.getString("NameAlias");
         }
@@ -324,23 +422,89 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
           locationList = locationsFromSegMask(locationMap, segMask);
         }
       }
+    }
 
-      String screenCommand =
+    if (primary) {
+      screenCommand =
           applyExpressionVars(
               rule.getScreenCommand(), elementName, epicsName, rule.getSyncServer().getName());
-      String pv =
+      pv =
           applyExpressionVars(rule.getPv(), elementName, epicsName, rule.getSyncServer().getName());
+    } else {
+      joinAttribute = rule.getForeignAttribute();
+    }
 
-      AlarmEntity alarm = new AlarmEntity();
-      alarm.setSyncElementId(elementId);
-      alarm.setSyncRule(rule);
-      alarm.setName(elementName + " " + rule.getAction().getName());
-      alarm.setAlias(alias);
-      alarm.setAction(rule.getAction());
-      alarm.setLocationList(locationList);
-      alarm.setScreenCommand(screenCommand);
-      alarm.setPv(pv);
-      alarmList.put(elementId, alarm);
+    if (joinAttribute != null && !joinAttribute.isBlank()) {
+      switch (joinAttribute.toLowerCase()) {
+        case "name":
+          joinAttributeValue = elementName;
+          break;
+        case "controlled_by":
+          if (properties != null
+              && properties.containsKey("Controlled_by")
+              && !properties.isNull("Controlled_by")) {
+            joinAttributeValue = properties.getString("Controlled_by");
+          }
+          break;
+        case "housed_by":
+          if (properties != null
+              && properties.containsKey("Housed_by")
+              && !properties.isNull("Housed_by")) {
+            joinAttributeValue = properties.getString("Housed_by");
+          }
+          break;
+      }
+    }
+
+    AlarmEntity alarm = new AlarmEntity();
+    alarm.setSyncElementId(elementId);
+    alarm.setSyncRule(rule);
+    alarm.setName(elementName + " " + rule.getAction().getName());
+    alarm.setAlias(alias);
+    alarm.setAction(rule.getAction());
+    alarm.setLocationList(locationList);
+    alarm.setScreenCommand(screenCommand);
+    alarm.setPv(pv);
+    alarm.setJoinAttributeValue(joinAttributeValue);
+
+    return alarm;
+  }
+
+  private LinkedHashMap<BigInteger, AlarmEntity> convertResponseWithIdMap(
+      String body, SyncRule rule, Map<String, Location> locationMap) {
+    LinkedHashMap<BigInteger, AlarmEntity> alarmList = new LinkedHashMap<>();
+
+    JsonObject object = Json.createReader(new StringReader(body)).readObject();
+
+    JsonObject inventory = object.getJsonObject("Inventory");
+    JsonArray elements = inventory.getJsonArray("elements");
+
+    for (JsonValue v : elements) {
+      JsonObject o = v.asJsonObject();
+
+      AlarmEntity alarm = convertEntity(rule, locationMap, true, o);
+
+      alarmList.put(alarm.getSyncElementId(), alarm);
+    }
+
+    return alarmList;
+  }
+
+  private LinkedHashMap<String, AlarmEntity> convertResponseWithAttributeMap(
+      String body, SyncRule rule, Map<String, Location> locationMap) {
+    LinkedHashMap<String, AlarmEntity> alarmList = new LinkedHashMap<>();
+
+    JsonObject object = Json.createReader(new StringReader(body)).readObject();
+
+    JsonObject inventory = object.getJsonObject("Inventory");
+    JsonArray elements = inventory.getJsonArray("elements");
+
+    for (JsonValue v : elements) {
+      JsonObject o = v.asJsonObject();
+
+      AlarmEntity alarm = convertEntity(rule, locationMap, false, o);
+
+      alarmList.put(alarm.getJoinAttributeValue(), alarm);
     }
 
     return alarmList;

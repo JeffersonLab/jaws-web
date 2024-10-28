@@ -43,6 +43,22 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
   @Column(name = "PROPERTY_EXPRESSION", length = 4000)
   private String propertyExpression;
 
+  @Size(max = 64)
+  @Column(name = "PRIMARY_ATTRIBUTE", length = 64)
+  private String primaryAttribute;
+
+  @Size(max = 64)
+  @Column(name = "FOREIGN_ATTRIBUTE", length = 64)
+  private String foreignAttribute;
+
+  @Size(max = 4000)
+  @Column(name = "FOREIGN_QUERY", length = 4000)
+  private String foreignQuery;
+
+  @Size(max = 4000)
+  @Column(name = "FOREIGN_EXPRESSION", length = 4000)
+  private String foreignExpression;
+
   @Size(max = 512)
   @Column(name = "SCREEN_COMMAND", length = 512)
   private String screenCommand;
@@ -103,6 +119,38 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
     this.propertyExpression = propertyExpression;
   }
 
+  public String getPrimaryAttribute() {
+    return primaryAttribute;
+  }
+
+  public void setPrimaryAttribute(String primaryAttribute) {
+    this.primaryAttribute = primaryAttribute;
+  }
+
+  public String getForeignAttribute() {
+    return foreignAttribute;
+  }
+
+  public void setForeignAttribute(String foreignAttribute) {
+    this.foreignAttribute = foreignAttribute;
+  }
+
+  public String getForeignQuery() {
+    return foreignQuery;
+  }
+
+  public void setForeignQuery(String foreignQuery) {
+    this.foreignQuery = foreignQuery;
+  }
+
+  public String getForeignExpression() {
+    return foreignExpression;
+  }
+
+  public void setForeignExpression(String foreignExpression) {
+    this.foreignExpression = foreignExpression;
+  }
+
   public String getScreenCommand() {
     return screenCommand;
   }
@@ -133,6 +181,18 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
     return url;
   }
 
+  public String getJoinSearchURL() {
+    String url = getJoinHTMLURL();
+
+    if (url != null
+        && server.getExtraSearchQuery() != null
+        && !server.getExtraSearchQuery().isBlank()) {
+      url = url + "&" + server.getExtraSearchQuery();
+    }
+
+    return url;
+  }
+
   public String getHTMLURL() {
     String url = server.getBaseUrl() + server.getSearchPath() + "?" + getQuery();
 
@@ -143,11 +203,35 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
     return url;
   }
 
+  public String getJoinHTMLURL() {
+    String url = null;
+
+    if (foreignQuery != null && !foreignQuery.isBlank()) {
+      url = server.getBaseUrl() + server.getSearchPath() + "?" + foreignQuery;
+
+      if (foreignExpression != null && !foreignExpression.isBlank()) {
+        url = url + "&Ex=" + URLEncoder.encode(foreignExpression, StandardCharsets.UTF_8);
+      }
+    }
+
+    return url;
+  }
+
   public String[] getExpressionArray() {
     String[] tokens = new String[0];
 
     if (propertyExpression != null && !propertyExpression.isBlank()) {
       tokens = propertyExpression.split("&");
+    }
+
+    return tokens;
+  }
+
+  public String[] getForeignExpressionArray() {
+    String[] tokens = new String[0];
+
+    if (foreignExpression != null && !foreignExpression.isBlank()) {
+      tokens = foreignExpression.split("&");
     }
 
     return tokens;

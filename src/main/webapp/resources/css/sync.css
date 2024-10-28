@@ -6,7 +6,7 @@
 .local {
     background-color: #ff9094;
 }
-.query {
+.breakword {
     word-break: break-word;
 }
 .data-table tbody td:first-child {
@@ -23,4 +23,17 @@
 }
 .data-table tbody td:nth-child(5) {
     width: 200px;
+}
+.dialog-content #accordion h3 {
+    color: black;
+}
+.dialog-links {
+    position: relative;
+    top: -60px;
+}
+#accordion .ui-widget-content a {
+    color: blue;
+}
+#accordion .ui-widget-content a:hover {
+    color: red;
 }

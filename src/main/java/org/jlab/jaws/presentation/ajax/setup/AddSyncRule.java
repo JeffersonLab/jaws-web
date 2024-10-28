@@ -39,6 +39,10 @@ public class AddSyncRule extends HttpServlet {
     String description = request.getParameter("description");
     String query = request.getParameter("query");
     String expression = request.getParameter("expression");
+    String primaryAttribute = request.getParameter("primaryAttribute");
+    String foreignAttribute = request.getParameter("foreignAttribute");
+    String foreignQuery = request.getParameter("foreignQuery");
+    String foreignExpression = request.getParameter("foreignExpression");
     String screencommand = request.getParameter("screencommand");
     String pv = request.getParameter("pv");
 
@@ -48,7 +52,18 @@ public class AddSyncRule extends HttpServlet {
 
     try {
       syncRuleId =
-          syncFacade.addSync(actionId, server, description, query, expression, screencommand, pv);
+          syncFacade.addSync(
+              actionId,
+              server,
+              description,
+              query,
+              expression,
+              primaryAttribute,
+              foreignAttribute,
+              foreignQuery,
+              foreignExpression,
+              screencommand,
+              pv);
     } catch (UserFriendlyException e) {
       stat = "fail";
       error = "Unable to add Sync: " + e.getMessage();
