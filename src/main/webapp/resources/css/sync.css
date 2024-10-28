@@ -6,7 +6,7 @@
 .local {
     background-color: #ff9094;
 }
-.query {
+.breakword {
     word-break: break-word;
 }
 .data-table tbody td:first-child {

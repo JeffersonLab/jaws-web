@@ -55,11 +55,11 @@
                                 <c:out value="${rule.description}"/>
                             </dd>
                             <dt>Base Query</dt>
-                            <dd class="query">
+                            <dd class="breakword">
                                 <c:out value="${rule.query}"/>
                             </dd>
                             <dt>Property Expression</dt>
-                            <dd class="query">
+                            <dd class="breakword">
                                 <c:choose>
                                     <c:when test="${not empty rule.expressionArray}">
                                         <ul>
@@ -74,7 +74,7 @@
                                 </c:choose>
                             </dd>
                             <dt>Full URL</dt>
-                            <dd class="query">
+                            <dd class="breakword">
                                 <div><a href="${rule.getHTMLURL()}">HTML</a> | <a href="${rule.searchURL}">JSON</a></div>
                             </dd>
                         </dl>
@@ -83,19 +83,19 @@
                             <c:when test="${not empty rule.primaryAttribute}">
                                 <dl>
                                     <dt>Primary Attribute</dt>
-                                    <dd class="query">
+                                    <dd class="breakword">
                                         <c:out value="${rule.primaryAttribute}"/>
                                     </dd>
                                     <dt>Foreign Attribute</dt>
-                                    <dd class="query">
+                                    <dd class="breakword">
                                         <c:out value="${rule.foreignAttribute}"/>
                                     </dd>
                                     <dt>Foreign Query</dt>
-                                    <dd class="query">
+                                    <dd class="breakword">
                                         <c:out value="${rule.foreignQuery}"/>
                                     </dd>
                                     <dt>Foreign Property Expression</dt>
-                                    <dd class="query">
+                                    <dd class="breakword">
                                         <c:choose>
                                             <c:when test="${not empty rule.foreignExpressionArray}">
                                                 <ul>
@@ -110,7 +110,7 @@
                                         </c:choose>
                                     </dd>
                                     <dt>Full URL</dt>
-                                    <dd class="query">
+                                    <dd class="breakword">
                                         <div><a href="${rule.getJoinHTMLURL()}">HTML</a> | <a href="${rule.joinSearchURL}">JSON</a></div>
                                     </dd>
                                 </dl>
