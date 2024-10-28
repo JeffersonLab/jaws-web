@@ -382,7 +382,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
 
       for (AlarmEntity alarm : primaryMap.values()) {
         if (foreignMap.get(alarm.getJoinAttributeValue()) != null) {
-          joinMap.put(alarm.getAlarmId(), alarm);
+          joinMap.put(alarm.getSyncElementId(), alarm);
         }
       }
     }
@@ -400,34 +400,37 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     String epicsName = "";
     String joinAttributeValue = null;
     JsonObject properties = null;
+    String joinAttribute = rule.getPrimaryAttribute();
+    String screenCommand = "";
+    String pv = "";
 
     if (o.containsKey("properties")) {
       properties = o.getJsonObject("properties");
 
-      if (properties.containsKey("NameAlias") && !properties.isNull("NameAlias")) {
-        alias = properties.getString("NameAlias");
-      }
+      if (primary) {
+        if (properties.containsKey("NameAlias") && !properties.isNull("NameAlias")) {
+          alias = properties.getString("NameAlias");
+        }
 
-      if (properties.containsKey("EPICSName") && !properties.isNull("EPICSName")) {
-        epicsName = properties.getString("EPICSName");
-      }
+        if (properties.containsKey("EPICSName") && !properties.isNull("EPICSName")) {
+          epicsName = properties.getString("EPICSName");
+        }
 
-      if (properties.containsKey("SegMask") && !properties.isNull("SegMask")) {
-        String segMask = properties.getString("SegMask");
+        if (properties.containsKey("SegMask") && !properties.isNull("SegMask")) {
+          String segMask = properties.getString("SegMask");
 
-        locationList = locationsFromSegMask(locationMap, segMask);
+          locationList = locationsFromSegMask(locationMap, segMask);
+        }
       }
     }
 
-    String screenCommand =
-        applyExpressionVars(
-            rule.getScreenCommand(), elementName, epicsName, rule.getSyncServer().getName());
-    String pv =
-        applyExpressionVars(rule.getPv(), elementName, epicsName, rule.getSyncServer().getName());
-
-    String joinAttribute = rule.getPrimaryAttribute();
-
-    if (!primary) {
+    if (primary) {
+      screenCommand =
+          applyExpressionVars(
+              rule.getScreenCommand(), elementName, epicsName, rule.getSyncServer().getName());
+      pv =
+          applyExpressionVars(rule.getPv(), elementName, epicsName, rule.getSyncServer().getName());
+    } else {
       joinAttribute = rule.getForeignAttribute();
     }
 
