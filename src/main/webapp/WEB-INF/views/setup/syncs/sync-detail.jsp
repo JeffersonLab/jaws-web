@@ -44,7 +44,7 @@
                 </div>
                 <c:choose>
                     <c:when test="${rule ne null}">
-                        <h3>Configuration</h3>
+                        <h3>Primary</h3>
                         <dl>
                             <dt>Action</dt>
                             <dd><c:out value="${rule.action.name}"/></dd>
@@ -60,17 +60,65 @@
                             </dd>
                             <dt>Property Expression</dt>
                             <dd class="query">
-                                <ul>
-                                <c:forEach items="${rule.expressionArray}" var="operand">
-                                    <li><c:out value="${operand}"/></li>
-                                </c:forEach>
-                                </ul>
+                                <c:choose>
+                                    <c:when test="${not empty rule.expressionArray}">
+                                        <ul>
+                                            <c:forEach items="${rule.expressionArray}" var="operand">
+                                                <li><c:out value="${operand}"/></li>
+                                            </c:forEach>
+                                        </ul>
+                                    </c:when>
+                                    <c:otherwise>
+                                        None
+                                    </c:otherwise>
+                                </c:choose>
                             </dd>
                             <dt>Full URL</dt>
                             <dd class="query">
                                 <div><a href="${rule.getHTMLURL()}">HTML</a> | <a href="${rule.searchURL}">JSON</a></div>
                             </dd>
                         </dl>
+                        <h3>Join</h3>
+                        <c:choose>
+                            <c:when test="${not empty rule.primaryAttribute}">
+                                <dl>
+                                    <dt>Primary Attribute</dt>
+                                    <dd class="query">
+                                        <c:out value="${rule.primaryAttribute}"/>
+                                    </dd>
+                                    <dt>Foreign Attribute</dt>
+                                    <dd class="query">
+                                        <c:out value="${rule.foreignAttribute}"/>
+                                    </dd>
+                                    <dt>Foreign Query</dt>
+                                    <dd class="query">
+                                        <c:out value="${rule.foreignQuery}"/>
+                                    </dd>
+                                    <dt>Foreign Property Expression</dt>
+                                    <dd class="query">
+                                        <c:choose>
+                                            <c:when test="${not empty rule.foreignExpressionArray}">
+                                                <ul>
+                                                    <c:forEach items="${rule.foreignExpressionArray}" var="operand">
+                                                        <li><c:out value="${operand}"/></li>
+                                                    </c:forEach>
+                                                </ul>
+                                            </c:when>
+                                            <c:otherwise>
+                                                None
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </dd>
+                                    <dt>Full URL</dt>
+                                    <dd class="query">
+                                        <div><a href="${rule.getJoinHTMLURL()}">HTML</a> | <a href="${rule.joinSearchURL}">JSON</a></div>
+                                    </dd>
+                                </dl>
+                            </c:when>
+                            <c:otherwise>
+                                None
+                            </c:otherwise>
+                        </c:choose>
                         <h3>Template</h3>
                         <dl>
                             <dt>Name</dt>
