@@ -2,7 +2,7 @@ var jlab = jlab || {};
 jlab.editableRowTable = jlab.editableRowTable || {};
 jlab.editableRowTable.entity = 'Sync';
 jlab.editableRowTable.dialog.width = 900;
-jlab.editableRowTable.dialog.height = 800;
+jlab.editableRowTable.dialog.height = 600;
 jlab.addRow = function (run) {
     var actionId = $("#row-action").val(),
         server = $("#row-server").val(),
@@ -227,7 +227,9 @@ $(document).on("click", ".default-clear-panel", function () {
 $(function () {
     $("#table-row-dialog").dialog("option", "resizable", true);
     $("#table-row-dialog").dialog("option", "minWidth", 900);
-    $("#table-row-dialog").dialog("option", "minHeight", 800);
+    $("#table-row-dialog").dialog("option", "minHeight", 600);
+
+    $("#rule-form-tabs").tabs();
 
     const urlParams = new URLSearchParams(window.location.search);
     const syncRuleId = urlParams.get('syncRuleId');

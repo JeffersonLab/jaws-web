@@ -21,11 +21,12 @@
     margin-top: 1em;
 }
 #row-form input[type=text] {
-    width: 600px;
+    width: 550px;
 }
-#row-expression {
-    width: 600px;
-    height: 300px;
+#row-expression,
+#row-join-expression {
+    width: 550px;
+    height: 200px;
     resize: none;
 }
 #save-and-run-button {
@@ -33,22 +34,4 @@
     left: 1em;
     bottom: 1em;
     z-index: 1;
-}
-.two-column {
-    display: flex;
-}
-.column {
-    flex: 50%;
-}
-#row-form .two-column input {
-    width: 215px;
-}
-#row-form .two-column ul {
-    margin: 0;
-}
-.key-value-list .li-key {
-    width: 185px;
-}
-#row-form .two-column .li-key.right {
-    width: 145px;
 }

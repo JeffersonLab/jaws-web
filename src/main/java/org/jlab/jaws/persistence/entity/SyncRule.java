@@ -43,6 +43,22 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
   @Column(name = "PROPERTY_EXPRESSION", length = 4000)
   private String propertyExpression;
 
+  @Size(max = 64)
+  @Column(name = "PRIMARY_ATTRIBUTE", length = 64)
+  private String primaryAttribute;
+
+  @Size(max = 64)
+  @Column(name = "FOREIGN_ATTRIBUTE", length = 64)
+  private String foreignAttribute;
+
+  @Size(max = 4000)
+  @Column(name = "FOREIGN_QUERY", length = 4000)
+  private String foreignQuery;
+
+  @Size(max = 4000)
+  @Column(name = "FOREIGN_EXPRESSION", length = 4000)
+  private String foreignExpression;
+
   @Size(max = 512)
   @Column(name = "SCREEN_COMMAND", length = 512)
   private String screenCommand;
@@ -101,6 +117,38 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
 
   public void setPropertyExpression(String propertyExpression) {
     this.propertyExpression = propertyExpression;
+  }
+
+  public String getPrimaryAttribute() {
+    return primaryAttribute;
+  }
+
+  public void setPrimaryAttribute(String primaryAttribute) {
+    this.primaryAttribute = primaryAttribute;
+  }
+
+  public String getForeignAttribute() {
+    return foreignAttribute;
+  }
+
+  public void setForeignAttribute(String foreignAttribute) {
+    this.foreignAttribute = foreignAttribute;
+  }
+
+  public String getForeignQuery() {
+    return foreignQuery;
+  }
+
+  public void setForeignQuery(String foreignQuery) {
+    this.foreignQuery = foreignQuery;
+  }
+
+  public String getForeignExpression() {
+    return foreignExpression;
+  }
+
+  public void setForeignExpression(String foreignExpression) {
+    this.foreignExpression = foreignExpression;
   }
 
   public String getScreenCommand() {

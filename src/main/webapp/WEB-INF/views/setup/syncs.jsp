@@ -1,17 +1,19 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness" %>
 <%@taglib prefix="jaws" uri="http://jlab.org/jaws/functions" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <c:set var="title" value="Sync Rules"/>
 <t:setup-page title="${title}">
     <jsp:attribute name="stylesheets">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/syncs.css"/>
+        <link rel="stylesheet" type="text/css"
+              href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/syncs.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
-        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/syncs.js"></script>
+        <script type="text/javascript"
+                src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/syncs.js"></script>
     </jsp:attribute>
     <jsp:body>
         <section>
@@ -86,25 +88,34 @@
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
                                         <tbody>
                                         <c:forEach items="${syncList}" var="sync">
-                                            <tr data-id="${sync.syncRuleId}" data-action-id="${sync.action.actionId}" data-screencommand="${fn:escapeXml(sync.screenCommand)}" data-pv="${fn:escapeXml(sync.pv)}" data-query="${fn:escapeXml(sync.query)}" data-expression="${fn:escapeXml(sync.propertyExpression)}">
+                                            <tr data-id="${sync.syncRuleId}" data-action-id="${sync.action.actionId}"
+                                                data-screencommand="${fn:escapeXml(sync.screenCommand)}"
+                                                data-pv="${fn:escapeXml(sync.pv)}"
+                                                data-query="${fn:escapeXml(sync.query)}"
+                                                data-expression="${fn:escapeXml(sync.propertyExpression)}">
                                                 <td><c:out value="${sync.syncRuleId}"/></td>
                                                 <td>
-                                                    <c:url value="/inventory/actions/${jaws:urlEncodePath(sync.action.name)}" var="url">
+                                                    <c:url value="/inventory/actions/${jaws:urlEncodePath(sync.action.name)}"
+                                                           var="url">
                                                     </c:url>
                                                     <a title="Action Information" class="dialog-ready"
                                                        data-dialog-title="Action Information: ${fn:escapeXml(sync.action.name)}"
                                                        href="${url}"><c:out
-                                                        value="${sync.action.name}"/></a>
+                                                            value="${sync.action.name}"/></a>
                                                 </td>
                                                 <td><c:out value="${sync.syncServer.name}"/></td>
                                                 <td><c:out value="${sync.description}"/></td>
                                                 <td>
                                                     <!-- Use onclick to avoid https://bugs.webkit.org/show_bug.cgi?id=30103 -->
-                                                    <c:url value="/setup/syncs/${jaws:urlEncodePath(sync.syncRuleId)}" var="url">
+                                                    <c:url value="/setup/syncs/${jaws:urlEncodePath(sync.syncRuleId)}"
+                                                           var="url">
                                                     </c:url>
                                                     <form method="get"
                                                           action="${pageContext.request.contextPath}/setup/syncs/${fn:escapeXml(sync.syncRuleId)}">
-                                                        <button class="single-char-button" type="button" onclick="window.location.href = '${url}';  return false;">&rarr;</button>
+                                                        <button class="single-char-button" type="button"
+                                                                onclick="window.location.href = '${url}';  return false;">
+                                                            &rarr;
+                                                        </button>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -127,80 +138,127 @@
         </section>
         <s:editable-row-table-dialog>
             <form id="row-form">
-                <ul class="key-value-list">
-                    <li>
-                        <div class="li-key">
-                            <label for="row-action">Action</label>
-                        </div>
-                        <div class="li-value">
-                            <select id="row-action" required="required">
-                                <option value="">&nbsp;</option>
-                                <c:forEach items="${actionList}" var="action">
-                                    <option value="${action.actionId}">
-                                        <c:out value="${action.name}"/></option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="row-server">Server</label>
-                        </div>
-                        <div class="li-value">
-                            <select id="row-server" required="required">
-                                <option value="">&nbsp;</option>
-                                <c:forEach items="${serverList}" var="server">
-                                    <option value="${server.name}">
-                                        <c:out value="${server.name}"/></option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="row-description">Description</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="text" required="required" id="row-description"/>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="row-query">Base Query</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="text" required="required" id="row-query" placeholder="URL Encoded (Example: t=IOC&a=A_HallA)"/>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="row-expression">Property Expression</label>
-                        </div>
-                        <div class="li-value">
-                            <textarea id="row-expression" placeholder="Not URL Encoded, each line is automatically combined with &amp;. Example:
+                <div id="rule-form-tabs">
+                    <ul>
+                        <li><a href="#primary-tab">Primary</a></li>
+                        <li><a href="#join-tab">Join</a></li>
+                        <li><a href="#template-tab">Template</a></li>
+                    </ul>
+                    <div id="primary-tab">
+                        <ul class="key-value-list">
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-action">Action</label>
+                                </div>
+                                <div class="li-value">
+                                    <select id="row-action" required="required">
+                                        <option value="">&nbsp;</option>
+                                        <c:forEach items="${actionList}" var="action">
+                                            <option value="${action.actionId}">
+                                                <c:out value="${action.name}"/></option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-server">Server</label>
+                                </div>
+                                <div class="li-value">
+                                    <select id="row-server" required="required">
+                                        <option value="">&nbsp;</option>
+                                        <c:forEach items="${serverList}" var="server">
+                                            <option value="${server.name}">
+                                                <c:out value="${server.name}"/></option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-description">Description</label>
+                                </div>
+                                <div class="li-value">
+                                    <input type="text" required="required" id="row-description"/>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-query">Base Query</label>
+                                </div>
+                                <div class="li-value">
+                                    <input type="text" required="required" id="row-query"
+                                           placeholder="URL Encoded (Example: t=IOC&a=A_HallA)"/>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-expression">Property Expression</label>
+                                </div>
+                                <div class="li-value">
+                            <textarea id="row-expression"
+                                      placeholder="Not URL Encoded, each line is automatically combined with &amp;. Example:
 
 !unpowered
 !hallcontrolled"></textarea>
-                        </div>
-                    </li>
-                </ul>
-                <hr/>
-                <div>Template</div>
-                <div class="two-column">
-                    <div class="column">
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="join-tab">
+                        <ul class="key-value-list">
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-join-primary">Primary Attribute</label>
+                                </div>
+                                <div class="li-value">
+                                    <input type="text" required="required" id="row-join-primary"
+                                           placeholder="Examples: name, Controlled_by, Housed_by"/>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-join-foreign">Foreign Attribute</label>
+                                </div>
+                                <div class="li-value">
+                                    <input type="text" required="required" id="row-join-foreign"
+                                           placeholder="Examples: name, Controlled_by, Housed_by"/>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-join-query">Foreign Base Query</label>
+                                </div>
+                                <div class="li-value">
+                                    <input type="text" required="required" id="row-join-query"
+                                           placeholder="URL Encoded (Example: t=IOC&a=A_HallA)"/>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-join-expression">Foreign<br/>Property Expression</label>
+                                </div>
+                                <div class="li-value">
+                            <textarea id="row-join-expression"
+                                      placeholder="Not URL Encoded, each line is automatically combined with &amp;. Example:
+
+!unpowered
+!hallcontrolled"></textarea>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="template-tab">
                         <ul class="key-value-list">
                             <li>
                                 <div class="li-key">
                                     <label for="row-name">Name</label>
                                 </div>
                                 <div class="li-value">
-                                    <input type="text" id="row-name" value="{ElementName} {Action}" disabled="disabled"/>
+                                    <input type="text" id="row-name" value="{ElementName} {Action}"
+                                           disabled="disabled"/>
                                 </div>
                             </li>
-                        </ul>
-                    </div>
-                    <div class="column">
-                        <ul class="key-value-list">
                             <li>
                                 <div class="li-key right">
                                     <label for="row-alias">Alias</label>
@@ -209,38 +267,37 @@
                                     <input type="text" id="row-alias" value="{NameAlias}" disabled="disabled"/>
                                 </div>
                             </li>
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-location">Location</label>
+                                </div>
+                                <div class="li-value">
+                                    <input type="text" id="row-location" value="{function:locationFromSegMask(SegMask)}"
+                                           disabled="disabled"/>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-screencommand">Screen Command</label>
+                                </div>
+                                <div class="li-value">
+                                    <input type="text" id="row-screencommand"/>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-pv">PV</label>
+                                </div>
+                                <div class="li-value">
+                                    <input type="text" id="row-pv"/>
+                                </div>
+                            </li>
                         </ul>
+                        <div>Expression variables: {ElementName}, {EPICSName}, {Deployment}</div>
                     </div>
                 </div>
-                <ul class="key-value-list">
-                    <li>
-                        <div class="li-key">
-                            <label for="row-location">Location</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="text" id="row-location" value="{function:locationFromSegMask(SegMask)}" disabled="disabled"/>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="row-screencommand">Screen Command</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="text" id="row-screencommand"/>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="row-pv">PV</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="text" id="row-pv"/>
-                        </div>
-                    </li>
-                </ul>
-                <div>Expression variables: {ElementName}, {EPICSName}, {Deployment}</div>
             </form>
             <button id="save-and-run-button" type="button">Save and Run</button>
         </s:editable-row-table-dialog>
-    </jsp:body>         
+    </jsp:body>
 </t:setup-page>
