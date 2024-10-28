@@ -24,7 +24,7 @@
     width: 550px;
 }
 #row-expression,
-#row-join-expression {
+#row-foreign-expression {
     width: 550px;
     height: 200px;
     resize: none;

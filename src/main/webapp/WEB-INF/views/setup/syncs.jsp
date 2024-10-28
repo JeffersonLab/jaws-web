@@ -92,7 +92,11 @@
                                                 data-screencommand="${fn:escapeXml(sync.screenCommand)}"
                                                 data-pv="${fn:escapeXml(sync.pv)}"
                                                 data-query="${fn:escapeXml(sync.query)}"
-                                                data-expression="${fn:escapeXml(sync.propertyExpression)}">
+                                                data-expression="${fn:escapeXml(sync.propertyExpression)}"
+                                                data-primary-attribute="${fn:escapeXml(sync.primaryAttribute)}"
+                                                data-foreign-attribute="${fn:escapeXml(sync.foreignAttribute)}"
+                                                data-foreign-query="${fn:escapeXml(sync.foreignQuery)}"
+                                                data-foreign-expression="${fn:escapeXml(sync.foreignExpression)}">
                                                 <td><c:out value="${sync.syncRuleId}"/></td>
                                                 <td>
                                                     <c:url value="/inventory/actions/${jaws:urlEncodePath(sync.action.name)}"
@@ -209,37 +213,37 @@
                         <ul class="key-value-list">
                             <li>
                                 <div class="li-key">
-                                    <label for="row-join-primary">Primary Attribute</label>
+                                    <label for="row-primary-attribute">Primary Attribute</label>
                                 </div>
                                 <div class="li-value">
-                                    <input type="text" required="required" id="row-join-primary"
+                                    <input type="text" required="required" id="row-primary-attribute"
                                            placeholder="Examples: name, Controlled_by, Housed_by"/>
                                 </div>
                             </li>
                             <li>
                                 <div class="li-key">
-                                    <label for="row-join-foreign">Foreign Attribute</label>
+                                    <label for="row-foreign-attribute">Foreign Attribute</label>
                                 </div>
                                 <div class="li-value">
-                                    <input type="text" required="required" id="row-join-foreign"
+                                    <input type="text" required="required" id="row-foreign-attribute"
                                            placeholder="Examples: name, Controlled_by, Housed_by"/>
                                 </div>
                             </li>
                             <li>
                                 <div class="li-key">
-                                    <label for="row-join-query">Foreign Base Query</label>
+                                    <label for="row-foreign-query">Foreign Base Query</label>
                                 </div>
                                 <div class="li-value">
-                                    <input type="text" required="required" id="row-join-query"
+                                    <input type="text" required="required" id="row-foreign-query"
                                            placeholder="URL Encoded (Example: t=IOC&a=A_HallA)"/>
                                 </div>
                             </li>
                             <li>
                                 <div class="li-key">
-                                    <label for="row-join-expression">Foreign<br/>Property Expression</label>
+                                    <label for="row-foreign-expression">Foreign<br/>Property Expression</label>
                                 </div>
                                 <div class="li-value">
-                            <textarea id="row-join-expression"
+                            <textarea id="row-foreign-expression"
                                       placeholder="Not URL Encoded, each line is automatically combined with &amp;. Example:
 
 !unpowered

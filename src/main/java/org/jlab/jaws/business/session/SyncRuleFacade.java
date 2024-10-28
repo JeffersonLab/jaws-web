@@ -135,6 +135,10 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       String description,
       String query,
       String expression,
+      String primaryAttribute,
+      String foreignAttribute,
+      String foreignQuery,
+      String foreignExpression,
       String screencommand,
       String pv)
       throws UserFriendlyException {
@@ -162,6 +166,25 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       throw new UserFriendlyException("Query is required");
     }
 
+    int count = 0;
+
+    if (primaryAttribute != null && !primaryAttribute.isBlank()) {
+      count++;
+    }
+
+    if (foreignAttribute != null && !foreignAttribute.isBlank()) {
+      count++;
+    }
+
+    if (foreignQuery != null && !foreignQuery.isBlank()) {
+      count++;
+    }
+
+    if (count > 0 && count < 3) {
+      throw new UserFriendlyException(
+          "Primary Attribute, Foreign Attribute, and Foreign Query are all required to join");
+    }
+
     SyncRule rule = new SyncRule();
     rule.setAction(action);
 
@@ -169,6 +192,10 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     rule.setDescription(description);
     rule.setQuery(query);
     rule.setPropertyExpression(expression);
+    rule.setPrimaryAttribute(primaryAttribute);
+    rule.setForeignAttribute(foreignAttribute);
+    rule.setForeignQuery(foreignQuery);
+    rule.setForeignExpression(foreignExpression);
     rule.setScreenCommand(screencommand);
     rule.setPv(pv);
 
