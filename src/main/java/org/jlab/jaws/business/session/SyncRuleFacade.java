@@ -381,7 +381,19 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       joinMap = new LinkedHashMap<>();
 
       for (AlarmEntity alarm : primaryMap.values()) {
-        if (foreignMap.get(alarm.getJoinAttributeValue()) != null) {
+        AlarmEntity foreign = foreignMap.get(alarm.getJoinAttributeValue());
+
+        if (foreign != null) {
+          String foreignName = foreign.getName();
+          String screenCommand = alarm.getScreenCommand();
+          String pv = alarm.getPv();
+
+          screenCommand = applyForeignExpressionVars(screenCommand, foreignName);
+          pv = applyForeignExpressionVars(pv, foreignName);
+
+          alarm.setScreenCommand(screenCommand);
+          alarm.setPv(pv);
+
           joinMap.put(alarm.getSyncElementId(), alarm);
         }
       }
@@ -516,6 +528,16 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     }
 
     return alarmList;
+  }
+
+  private String applyForeignExpressionVars(String input, String foreignName) {
+    String result = "";
+
+    if (input != null) {
+      result = input.replaceAll("\\{ForeignName}", foreignName);
+    }
+
+    return result;
   }
 
   private String applyExpressionVars(
