@@ -403,6 +403,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     String joinAttribute = rule.getPrimaryAttribute();
     String screenCommand = "";
     String pv = "";
+    String area = "";
 
     if (o.containsKey("properties")) {
       properties = o.getJsonObject("properties");
@@ -420,16 +421,23 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
           String segMask = properties.getString("SegMask");
 
           locationList = locationsFromSegMask(locationMap, segMask);
+
+          if (!locationList.isEmpty()) {
+            area = locationList.get(0).getSegmask();
+
+            if (area == null) {
+              area = "";
+            }
+
+            area = area.split(",")[0];
+          }
         }
       }
     }
 
     if (primary) {
-      screenCommand =
-          applyExpressionVars(
-              rule.getScreenCommand(), elementName, epicsName, rule.getSyncServer().getName());
-      pv =
-          applyExpressionVars(rule.getPv(), elementName, epicsName, rule.getSyncServer().getName());
+      screenCommand = applyExpressionVars(rule.getScreenCommand(), elementName, epicsName, area);
+      pv = applyExpressionVars(rule.getPv(), elementName, epicsName, area);
     } else {
       joinAttribute = rule.getForeignAttribute();
     }
@@ -511,7 +519,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   }
 
   private String applyExpressionVars(
-      String input, String elementName, String epicsName, String deployment) {
+      String input, String elementName, String epicsName, String area) {
     String result = "";
 
     if (input != null) {
@@ -519,7 +527,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
 
       result = result.replaceAll("\\{EPICSName}", epicsName);
 
-      result = result.replaceAll("\\{Deployment}", deployment);
+      result = result.replaceAll("\\{Area}", area);
     }
 
     return result;

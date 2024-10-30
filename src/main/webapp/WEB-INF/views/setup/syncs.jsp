@@ -297,7 +297,7 @@
                                 </div>
                             </li>
                         </ul>
-                        <div>Expression variables: {ElementName}, {EPICSName}, {Deployment}</div>
+                        <div>Expression variables: {ElementName}, {EPICSName}, {Area}, {ForeignName}</div>
                     </div>
                 </div>
             </form>
