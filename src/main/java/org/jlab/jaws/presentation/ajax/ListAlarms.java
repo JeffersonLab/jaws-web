@@ -102,6 +102,16 @@ public class ListAlarms extends HttpServlet {
           } else {
             gen.write("pv", alarm.getPv());
           }
+          if (alarm.getSyncRule() == null) {
+            gen.writeNull("syncRuleId");
+          } else {
+            gen.write("syncRuleId", alarm.getSyncRule().getSyncRuleId());
+          }
+          if (alarm.getSyncElementId() == null) {
+            gen.writeNull("syncElementId");
+          } else {
+            gen.write("syncElementId", alarm.getSyncElementId());
+          }
           if (alarm.getMaskedBy() == null) {
             gen.writeNull("maskedBy");
           } else {
