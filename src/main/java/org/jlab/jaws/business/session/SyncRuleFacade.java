@@ -432,7 +432,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
         if (properties.containsKey("SegMask") && !properties.isNull("SegMask")) {
           String segMask = properties.getString("SegMask");
 
-          locationList = locationsFromSegMask(locationMap, segMask);
+          locationList = locationsFromSegMask(locationMap, segMask, rule.getSyncServer());
 
           if (!locationList.isEmpty()) {
             area = locationList.get(0).getSegmask();
@@ -577,7 +577,8 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     return map;
   }
 
-  private List<Location> locationsFromSegMask(Map<String, Location> locationMap, String segMask) {
+  private List<Location> locationsFromSegMask(
+      Map<String, Location> locationMap, String segMask, SyncServer server) {
     // Use Set because some SegMasks map to same Location so we want to avoid duplicates
     Set<Location> locationList = new HashSet<>();
 
@@ -608,6 +609,21 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     for (Location location : locationList) {
       if (isLowestInBranch(location, locationList)) {
         explicitOnly.add(location);
+      }
+    }
+
+    // TODO: Deployment/Sync Server area names may collide / may not be unique.  We may need to have
+    // a separate map
+    // per Sync Server.  In the meantime, I'm only aware of one collision: LERF Injector collides
+    // with CEBAF Injector
+    if ("LED".equals(server.getName())) {
+      ListIterator<Location> iterator = explicitOnly.listIterator();
+      while (iterator.hasNext()) {
+        Location location = iterator.next();
+        if ("Injector".equals(location.getName())) {
+          iterator.remove();
+          break;
+        }
       }
     }
 
