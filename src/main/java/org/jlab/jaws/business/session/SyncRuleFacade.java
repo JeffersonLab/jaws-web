@@ -384,7 +384,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
         AlarmEntity foreign = foreignMap.get(alarm.getJoinAttributeValue());
 
         if (foreign != null) {
-          String foreignName = foreign.getName();
+          String foreignName = foreign.getName().split(" ")[0];
           String screenCommand = alarm.getScreenCommand();
           String pv = alarm.getPv();
 
