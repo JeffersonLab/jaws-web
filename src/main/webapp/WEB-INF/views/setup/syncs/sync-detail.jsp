@@ -179,6 +179,7 @@
                                         <c:forEach items="${diff.addList}" var="alarm">
                                             <c:set value="${danglingByNameList[alarm.name]}" var="danglingNameAlarm"/>
                                             <c:set value="${danglingByPvList[alarm.pv]}" var="danglingPvAlarm"/>
+                                            <c:set value="${danglingNameAlarm ne null && danglingPvAlarm ne null}" var="splitCollision"/>
                                             <c:set value="${danglingNameAlarm eq null && danglingPvAlarm eq null}"
                                                    var="doAdd"/>
                                             <c:set value="${alarm.alias}" var="alias"/>
@@ -231,12 +232,19 @@
                                                                var="url">
                                                         </c:url>
                                                         <div>
-                                                            <button class="link autolink" type="button"
-                                                                    data-alarm-id="${danglingNameAlarm.alarmId}">Link
-                                                            </button>
+                                                            <c:if test="${not splitCollision}">
+                                                                <button class="link autolink" type="button"
+                                                                        data-alarm-id="${danglingNameAlarm.alarmId}">Link
+                                                                </button>
+                                                            </c:if>
                                                             <a title="Alarm Information" class="dialog-ready"
                                                                data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
                                                                href="${url}">Name Exists</a>
+                                                        </div>
+                                                    </c:if>
+                                                    <c:if test="${splitCollision}">
+                                                        <div style="cursor: help;" title="One existing alarm matches name, while a different one matches PV.  You must delete/edit one of the alarms to continue!">
+                                                            ⚠
                                                         </div>
                                                     </c:if>
                                                     <c:if test="${danglingPvAlarm ne null}">
@@ -244,10 +252,12 @@
                                                                var="url">
                                                         </c:url>
                                                         <div>
-                                                            <button class="link ${linkCreated ? '' : 'autolink'}"
-                                                                    type="button"
-                                                                    data-alarm-id="${danglingPvAlarm.alarmId}">Link
-                                                            </button>
+                                                            <c:if test="${not splitCollision}">
+                                                                <button class="link ${linkCreated ? '' : 'autolink'}"
+                                                                        type="button"
+                                                                        data-alarm-id="${danglingPvAlarm.alarmId}">Link
+                                                                </button>
+                                                            </c:if>
                                                             <a title="Alarm Information" class="dialog-ready"
                                                                data-dialog-title="Alarm Information: ${fn:escapeXml(danglingPvAlarm.name)}"
                                                                href="${url}">PV Exists</a>
