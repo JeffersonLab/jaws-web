@@ -179,7 +179,7 @@
                                         <c:forEach items="${diff.addList}" var="alarm">
                                             <c:set value="${danglingByNameList[alarm.name]}" var="danglingNameAlarm"/>
                                             <c:set value="${danglingByPvList[alarm.pv]}" var="danglingPvAlarm"/>
-                                            <c:set value="${danglingNameAlarm ne null && danglingPvAlarm ne null}" var="splitCollision"/>
+                                            <c:set value="${danglingNameAlarm ne null && danglingPvAlarm ne null && danglingNameAlarm.alarmId ne danglingPvAlarm.alarmId}" var="splitCollision"/>
                                             <c:set value="${danglingNameAlarm eq null && danglingPvAlarm eq null}"
                                                    var="doAdd"/>
                                             <c:set value="${alarm.alias}" var="alias"/>
