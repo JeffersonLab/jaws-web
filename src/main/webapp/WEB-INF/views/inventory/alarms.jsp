@@ -151,7 +151,19 @@
                                     <table class="data-table inner-table stripped-table ${readonly ? '' : 'uniselect-table editable-row-table'}">
                                         <tbody>
                                         <c:forEach items="${alarmList}" var="alarm">
-                                            <tr data-id="${alarm.alarmId}" data-action-id="${alarm.action.actionId}" data-location-id-csv="${alarm.locationIdCsv}" data-alias="${alarm.alias}" data-device="${alarm.device}" data-screen-command="${alarm.screenCommand}" data-managed-by="${alarm.managedBy}" data-masked-by="${alarm.maskedBy}" data-pv="${alarm.pv}" data-sync-rule-id="${alarm.syncRule.syncRuleId}" data-sync-element-id="${alarm.syncElementId}">
+                                            <tr data-id="${alarm.alarmId}"
+                                                data-action-id="${alarm.action.actionId}"
+                                                data-location-id-csv="${alarm.locationIdCsv}"
+                                                data-alias="${alarm.alias}"
+                                                data-device="${alarm.device}"
+                                                data-screen-command="${alarm.screenCommand}"
+                                                data-managed-by="${alarm.managedBy}"
+                                                data-masked-by="${alarm.maskedBy}"
+                                                data-pv="${alarm.pv}"
+                                                data-sync-rule-id="${alarm.syncRule.syncRuleId}"
+                                                data-sync-element-id="${alarm.syncElementId}"
+                                                data-sync-screen-command="${empty alarm.syncRule.screenCommand ? 'N' : 'Y'}"
+                                                data-sync-pv="${empty alarm.syncRule.pv ? 'N' : 'Y'}">
                                                 <td>
                                                     <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}" var="url">
                                                     </c:url>
@@ -274,8 +286,24 @@
                         </div>
                     </li>
                 </ul>
-                <input type="hidden" id="row-sync-rule-id" value=""/>
-                <input type="hidden" id="row-sync-element-id" value=""/>
+                <ul class="key-value-list">
+                    <li>
+                        <div class="li-key">
+                            <label for="row-sync-rule-id">Sync Rule ID</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="row-sync-rule-id" disabled="disabled"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-sync-element-id">Sync Element ID</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="row-sync-element-id" disabled="disabled"/>
+                        </div>
+                    </li>
+                </ul>
             </form>
         </s:editable-row-table-dialog>
     </jsp:body>         
