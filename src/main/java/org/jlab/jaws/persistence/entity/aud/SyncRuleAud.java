@@ -1,30 +1,64 @@
-package org.jlab.jaws.persistence.entity;
+package org.jlab.jaws.persistence.entity.aud;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+import org.hibernate.envers.RevisionType;
+import org.jlab.jaws.persistence.entity.Action;
+import org.jlab.jaws.persistence.entity.ApplicationRevisionInfo;
+import org.jlab.jaws.persistence.entity.SyncServer;
 
 @Entity
 @Audited
 @Table(name = "SYNC_RULE", schema = "JAWS_OWNER")
-public class SyncRule implements Serializable, Comparable<SyncRule> {
+public class SyncRuleAud implements Serializable, Comparable<SyncRuleAud> {
   private static final long serialVersionUID = 1L;
+  @EmbeddedId protected SyncRuleAudPK syncRuleAudPK;
 
-  @Id
-  @SequenceGenerator(name = "SyncRuleId", sequenceName = "SYNC_RULE_ID", allocationSize = 1)
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SyncRuleId")
-  @Basic(optional = false)
+  @Enumerated(EnumType.ORDINAL)
   @NotNull
-  @Column(name = "SYNC_RULE_ID", nullable = false, precision = 22, scale = 0)
-  private BigInteger syncRuleId;
+  @Column(name = "REVTYPE")
+  private RevisionType type;
+
+  @JoinColumn(
+      name = "REV",
+      referencedColumnName = "REV",
+      insertable = false,
+      updatable = false,
+      nullable = false)
+  @NotNull
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  private ApplicationRevisionInfo revision;
+
+  public RevisionType getType() {
+    return type;
+  }
+
+  public void setType(RevisionType type) {
+    this.type = type;
+  }
+
+  public ApplicationRevisionInfo getRevision() {
+    return revision;
+  }
+
+  public void setRevision(ApplicationRevisionInfo revision) {
+    this.revision = revision;
+  }
+
+  public SyncRuleAudPK getSyncRuleAudPK() {
+    return syncRuleAudPK;
+  }
+
+  public void setSyncRuleAudPK(SyncRuleAudPK syncRuleAudPK) {
+    this.syncRuleAudPK = syncRuleAudPK;
+  }
 
   @JoinColumn(name = "ACTION_ID", referencedColumnName = "ACTION_ID", nullable = false)
   @ManyToOne(optional = false)
@@ -70,18 +104,6 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
   @Size(max = 64)
   @Column(length = 64, nullable = true)
   private String pv;
-
-  @JoinColumn(name = "SYNC_RULE_ID")
-  @OneToMany
-  private List<AlarmEntity> alarmList;
-
-  public BigInteger getSyncRuleId() {
-    return syncRuleId;
-  }
-
-  public void setSyncRuleId(BigInteger syncRuleId) {
-    this.syncRuleId = syncRuleId;
-  }
 
   public Action getAction() {
     return action;
@@ -171,10 +193,6 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
     this.pv = pv;
   }
 
-  public List<AlarmEntity> getAlarmList() {
-    return alarmList;
-  }
-
   public String getSearchURL() {
     String url = getHTMLURL();
 
@@ -244,18 +262,18 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof SyncRule)) return false;
-    SyncRule that = (SyncRule) o;
-    return Objects.equals(syncRuleId, that.syncRuleId);
+    if (!(o instanceof SyncRuleAud)) return false;
+    SyncRuleAud that = (SyncRuleAud) o;
+    return Objects.equals(this.getSyncRuleAudPK(), that.getSyncRuleAudPK());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(syncRuleId);
+    return Objects.hashCode(this.getSyncRuleAudPK());
   }
 
   @Override
-  public int compareTo(SyncRule o) {
+  public int compareTo(SyncRuleAud o) {
     int result = action.getName().compareTo(o.getAction().getName());
 
     if (result == 0) {
@@ -267,7 +285,10 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
         }
 
         if (result == 0) {
-          result = syncRuleId.compareTo(o.getSyncRuleId());
+          result =
+              this.getSyncRuleAudPK()
+                  .getSyncRuleId()
+                  .compareTo(o.getSyncRuleAudPK().getSyncRuleId());
         }
       }
     }
