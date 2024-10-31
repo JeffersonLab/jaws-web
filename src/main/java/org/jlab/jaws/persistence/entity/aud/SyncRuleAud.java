@@ -13,7 +13,6 @@ import org.hibernate.envers.RevisionType;
 import org.jlab.jaws.persistence.entity.*;
 
 @Entity
-@Audited
 @Table(name = "SYNC_RULE_AUD", schema = "JAWS_OWNER")
 public class SyncRuleAud implements Serializable, Comparable<SyncRuleAud> {
   private static final long serialVersionUID = 1L;
