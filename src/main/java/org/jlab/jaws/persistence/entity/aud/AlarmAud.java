@@ -54,8 +54,8 @@ public class AlarmAud implements Serializable {
     return alarmAudPK;
   }
 
-  public void setAlarmAudPK(AlarmAudPK componentAudPK) {
-    this.alarmAudPK = componentAudPK;
+  public void setAlarmAudPK(AlarmAudPK alarmAudPK) {
+    this.alarmAudPK = alarmAudPK;
   }
 
   @Size(max = 64)

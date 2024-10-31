@@ -15,6 +15,7 @@ import org.hibernate.envers.RevisionType;
 import org.jlab.jaws.persistence.entity.Action;
 import org.jlab.jaws.persistence.entity.AlarmEntity;
 import org.jlab.jaws.persistence.entity.ApplicationRevisionInfo;
+import org.jlab.jaws.persistence.entity.SyncRule;
 import org.jlab.jaws.persistence.model.AuditedEntityChange;
 import org.jlab.smoothness.business.service.UserAuthorizationService;
 import org.jlab.smoothness.persistence.view.User;
@@ -112,10 +113,13 @@ public class ApplicationRevisionInfoFacade extends AbstractFacade<ApplicationRev
   public List<AuditedEntityChange> findEntityChangeList(long revision) {
     Query q =
         em.createNativeQuery(
-            "select 'A', alarm_id, name, revtype from jaws_owner.alarm_aud where rev = ?1 union select 'B',action_id, name, revtype from jaws_owner.action_aud where rev = ?2");
+            "select 'A', alarm_id, name, revtype from jaws_owner.alarm_aud where rev = ?1 "
+                + "union select 'B', action_id, name, revtype from jaws_owner.action_aud where rev = ?2 "
+                + "union select 'C', sync_rule_id, description, revtype from jaws_owner.sync_rule_aud where rev = ?3");
 
     q.setParameter(1, revision);
     q.setParameter(2, revision);
+    q.setParameter(3, revision);
 
     List<Object[]> resultList = q.getResultList();
 
@@ -151,6 +155,9 @@ public class ApplicationRevisionInfoFacade extends AbstractFacade<ApplicationRev
         case 'B':
           label = "Action";
           break;
+        case 'C':
+          label = "Sync Rule";
+          break;
         default:
           break;
       }
@@ -170,6 +177,9 @@ public class ApplicationRevisionInfoFacade extends AbstractFacade<ApplicationRev
           break;
         case 'B':
           entityClass = Action.class;
+          break;
+        case 'C':
+          entityClass = SyncRule.class;
           break;
         default:
           break;

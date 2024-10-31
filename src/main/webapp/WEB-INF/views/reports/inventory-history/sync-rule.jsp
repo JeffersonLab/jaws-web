@@ -5,26 +5,31 @@
 <%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="jaws" uri="http://jlab.org/jaws/functions" %>
-<c:set var="title" value="Alarm History"/>
+<c:set var="title" value="Sync Rule History"/>
 <t:reports-page title="${title}">  
-    <jsp:attribute name="stylesheets"> 
+    <jsp:attribute name="stylesheets">
+        <style>
+            .data-table td {
+                word-break: break-word;
+            }
+        </style>
     </jsp:attribute>
     <jsp:attribute name="scripts">
     </jsp:attribute>
     <jsp:body>
         <section>
             <s:filter-flyout-widget requiredMessage="true">
-                <form id="filter-form" method="get" action="alarm">
+                <form id="filter-form" method="get" action="sync-rule">
                     <fieldset>
                         <legend>Filter</legend>
                         <ul class="key-value-list">
                             <li>
                                 <div class="li-key">
-                                    <label class="required-field" for="alarm-id">Alarm ID</label>
+                                    <label class="required-field" for="sync-rule-id">Sync Rule ID</label>
                                 </div>
                                 <div class="li-value">
-                                    <input type="text" id="alarm-id" name="alarmId"
-                                           value="${fn:escapeXml(param.alarmId)}"/>
+                                    <input type="text" id="sync-rule-id" name="syncRuleId"
+                                           value="${fn:escapeXml(param.syncRuleId)}"/>
                                 </div>
                             </li>
                             <li>
@@ -41,16 +46,16 @@
                     <input id="filter-form-submit-button" type="submit" value="Apply"/>
                 </form>
             </s:filter-flyout-widget>
-            <h2 id="page-header-title">Inventory Activity: Alarm <c:out value="${param.alarmId}"/></h2>
+            <h2 id="page-header-title">Inventory Activity: Sync Rule <c:out value="${param.syncRuleId}"/></h2>
             <ul class="bracket-horizontal-nav">
                 <li><a href="${pageContext.request.contextPath}/reports/inventory-history">Transactions</a>&nbsp;</li>
-                <li>Alarm&nbsp;</li>
+                <li><a href="${pageContext.request.contextPath}/reports/inventory-history/alarm">Alarm</a>&nbsp;</li>
                 <li><a href="${pageContext.request.contextPath}/reports/inventory-history/action">Action</a>&nbsp;
-                </li>
+                <li>Sync Rule&nbsp;</li>
             </ul>
             <c:choose>
-                <c:when test="${param.alarmId == null}">
-                    <div class="message-box">Choose an alarm ID to continue</div>
+                <c:when test="${param.syncRuleId == null}">
+                    <div class="message-box">Choose a Sync Rule ID to continue</div>
                 </c:when>
                 <c:when test="${fn:length(revisionList) == 0}">
                     <div class="message-box">Found 0 Revisions</div>
@@ -115,22 +120,6 @@
                         </tfoot>
                         <tbody>
                         <tr>
-                            <th>Name:</th>
-                            <c:forEach items="${revisionList}" var="entity">
-                                <td>
-                                    <c:out value="${entity.name}"/>
-                                </td>
-                            </c:forEach>
-                        </tr>
-                        <tr>
-                            <th>Alias:</th>
-                            <c:forEach items="${revisionList}" var="entity">
-                                <td>
-                                    <c:out value="${entity.alias}"/>
-                                </td>
-                            </c:forEach>
-                        </tr>
-                        <tr>
                             <th>Action:</th>
                             <c:forEach items="${revisionList}" var="entity">
                                 <td>
@@ -139,10 +128,66 @@
                             </c:forEach>
                         </tr>
                         <tr>
-                            <th>Device:</th>
+                            <th>Sync Server:</th>
                             <c:forEach items="${revisionList}" var="entity">
                                 <td>
-                                    <c:out value="${entity.device}"/>
+                                    <c:out value="${entity.syncServer.name}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <th>Description:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.description}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <th>Base Query:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.query}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <th>Property Expression:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.propertyExpression}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <th>Primary Attribute:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.foreignAttribute}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <th>Foreign Attribute:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.foreignAttribute}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <th>Foreign Base Query:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.foreignQuery}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <th>Foreign Property Expression:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.foreignExpression}"/>
                                 </td>
                             </c:forEach>
                         </tr>
@@ -155,34 +200,10 @@
                             </c:forEach>
                         </tr>
                         <tr>
-                            <th>Masked By:</th>
-                            <c:forEach items="${revisionList}" var="entity">
-                                <td>
-                                    <c:out value="${entity.maskedBy}"/>
-                                </td>
-                            </c:forEach>
-                        </tr>
-                        <tr>
                             <th>PV:</th>
                             <c:forEach items="${revisionList}" var="entity">
                                 <td>
                                     <c:out value="${entity.pv}"/>
-                                </td>
-                            </c:forEach>
-                        </tr>
-                        <tr>
-                            <th>Sync Rule:</th>
-                            <c:forEach items="${revisionList}" var="entity">
-                                <td>
-                                    <c:out value="${entity.syncRuleId}"/>
-                                </td>
-                            </c:forEach>
-                        </tr>
-                        <tr>
-                            <th>Sync Element ID:</th>
-                            <c:forEach items="${revisionList}" var="entity">
-                                <td>
-                                    <c:out value="${entity.syncElementId}"/>
                                 </td>
                             </c:forEach>
                         </tr>
