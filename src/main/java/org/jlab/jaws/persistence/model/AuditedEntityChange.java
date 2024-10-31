@@ -52,4 +52,25 @@ public class AuditedEntityChange {
   public String getClassLabel() {
     return classLabel;
   }
+
+  public String getPath() {
+    String path = "";
+
+    switch (entityClass.getSimpleName()) {
+      case "AlarmEntity":
+        path = "alarm?alarmId=" + entityId;
+        break;
+      case "Action":
+        path = "action?actionId=" + entityId;
+        break;
+      case "SyncRule":
+        path = "sync-rule?syncRuleId=" + entityId;
+        break;
+      default:
+        path = "unknown?entityId";
+        break;
+    }
+
+    return path;
+  }
 }

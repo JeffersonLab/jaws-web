@@ -62,6 +62,8 @@
                 </li>
                 <li><a href="${pageContext.request.contextPath}/reports/inventory-history/action">Action</a>&nbsp;
                 </li>
+                <li><a href="${pageContext.request.contextPath}/reports/inventory-history/sync-rule">Sync Rule</a>&nbsp;
+                </li>
             </ul>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div class="chart-wrap-backdrop">
@@ -90,7 +92,7 @@
                                             <c:forEach items="${revision.changeList}" var="change">
                                                 <li class="table-cell-list-item">
                                                     <a title="${change.entityClass.simpleName} Audit"
-                                                       href="${pageContext.request.contextPath}/reports/inventory-history/${change.entityClass.simpleName eq 'AlarmEntity' ? 'alarm?alarmId' : change.entityClass.simpleName eq 'Action' ? 'action?actionId' : 'unknown?entityId'}=${change.entityId}"><c:out
+                                                       href="${pageContext.request.contextPath}/reports/inventory-history/${change.path}"><c:out
                                                             value="${change.type} ${change.classLabel} ${change.entityName}"/></a>
                                                 </li>
                                             </c:forEach>

@@ -115,7 +115,7 @@ public class ApplicationRevisionInfoFacade extends AbstractFacade<ApplicationRev
         em.createNativeQuery(
             "select 'A', alarm_id, name, revtype from jaws_owner.alarm_aud where rev = ?1 "
                 + "union select 'B', action_id, name, revtype from jaws_owner.action_aud where rev = ?2 "
-                + "union select 'C', sync_rule_id, name, revtype from jaws_owner.sync_rule_aud where rev = ?3");
+                + "union select 'C', sync_rule_id, description, revtype from jaws_owner.sync_rule_aud where rev = ?3");
 
     q.setParameter(1, revision);
     q.setParameter(2, revision);
