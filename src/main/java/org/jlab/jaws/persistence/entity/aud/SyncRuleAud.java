@@ -10,13 +10,11 @@ import javax.validation.constraints.Size;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.hibernate.envers.RevisionType;
-import org.jlab.jaws.persistence.entity.Action;
-import org.jlab.jaws.persistence.entity.ApplicationRevisionInfo;
-import org.jlab.jaws.persistence.entity.SyncServer;
+import org.jlab.jaws.persistence.entity.*;
 
 @Entity
 @Audited
-@Table(name = "SYNC_RULE", schema = "JAWS_OWNER")
+@Table(name = "SYNC_RULE_AUD", schema = "JAWS_OWNER")
 public class SyncRuleAud implements Serializable, Comparable<SyncRuleAud> {
   private static final long serialVersionUID = 1L;
   @EmbeddedId protected SyncRuleAudPK syncRuleAudPK;
