@@ -27,7 +27,7 @@
 .dialog-content #accordion h3 {
     color: black;
 }
-.dialog-links {
+.sync-detail-dialog-links {
     position: relative;
     top: -60px;
 }

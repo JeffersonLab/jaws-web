@@ -28,7 +28,7 @@
         </div>
         <section>
             <div class="dialog-content">
-                <div class="dialog-links">
+                <div class="dialog-links sync-detail-dialog-links">
                     <c:url value="/setup/syncs/${jaws:urlEncodePath(param.syncRuleId)}" var="url">
                     </c:url>
                     <a class="dialog-only-link"
