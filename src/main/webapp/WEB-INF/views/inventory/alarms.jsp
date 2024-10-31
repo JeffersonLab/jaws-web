@@ -305,6 +305,7 @@
                     </li>
                 </ul>
             </form>
+            <button id="remove-sync-button" type="button">Remove Sync</button>
         </s:editable-row-table-dialog>
     </jsp:body>         
 </t:inventory-page>

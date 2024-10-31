@@ -63,7 +63,7 @@ jlab.addRow = function() {
         }
     });
 };
-jlab.editRow = function() {
+jlab.editRow = function(removeSync) {
     var name = $("#row-name").val(),
         actionId = $("#row-action").val(),
         locationData = $("#row-location").select2('data');
@@ -77,6 +77,19 @@ jlab.editRow = function() {
         elementId = $("#row-sync-element-id").val(),
         alarmId = $(".editable-row-table tr.selected-row").attr("data-id"),
         reloading = false;
+
+        if(removeSync) {
+            syncRuleId = "";
+            elementId = "";
+
+            $("#remove-sync-button")
+                .height($("#remove-sync-button").height())
+                .width($("#remove-sync-button").width())
+                .empty().append('<div class="button-indicator"></div>');
+        }
+        else {
+            $("#remove-sync-button").attr("disabled", "disabled");
+        }
 
     let locationId = locationData.map(a => a.id);
 
@@ -126,6 +139,9 @@ jlab.editRow = function() {
             $(".dialog-submit-button").empty().text("Save");
             $(".dialog-close-button").removeAttr("disabled");
             $(".ui-dialog-titlebar button").removeAttr("disabled");
+            $("#remove-sync-button").empty().text("Remove Sync");
+            $("#remove-sync-button").removeAttr("disabled");
+
         }
     });
 };
@@ -178,6 +194,8 @@ $(document).on("dialogclose", "#table-row-dialog", function() {
 
     $("#row-screen-command").removeAttr("disabled");
     $("#row-pv").removeAttr("disabled");
+
+    $("#remove-sync-button").addClass("hidden");
 });
 $(document).on("click", "#open-edit-row-dialog-button", function() {
     var $selectedRow = $(".editable-row-table tr.selected-row");
@@ -200,6 +218,8 @@ $(document).on("click", "#open-edit-row-dialog-button", function() {
     $("#row-sync-element-id").val($selectedRow.attr("data-sync-element-id"));
 
     if(syncRuleId) {
+        $("#remove-sync-button").removeClass("hidden");
+
         $("#row-name").attr("disabled", "disabled");
         $("#row-action").attr("disabled", "disabled");
         $("#row-alias").attr("disabled", "disabled");
@@ -216,6 +236,8 @@ $(document).on("click", "#open-edit-row-dialog-button", function() {
             $("#row-pv").attr("disabled", "disabled");
         }
     } else {
+        $("#remove-sync-button").addClass("hidden");
+
         $("#row-name").removeAttr("disabled");
         $("#row-action").removeAttr("disabled");
         $("#row-alias").removeAttr("disabled");
@@ -247,6 +269,9 @@ $(document).on("click", ".default-clear-panel", function () {
     $("#action-name").val('');
     $("#system-name").val('');
     return false;
+});
+$(document).on("click", "#remove-sync-button", function () {
+    jlab.editRow(true);
 });
 function formatLocation(location) {
     return location.text.trim();
