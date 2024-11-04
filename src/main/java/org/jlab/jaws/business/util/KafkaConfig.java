@@ -25,7 +25,7 @@ public class KafkaConfig {
 
     props.put(
         EventSourceConfig.GROUP_ID_CONFIG,
-        "web-admin-gui-" + Instant.now().toString() + "-" + Math.random());
+        "jaws-web-" + Instant.now().toString() + "-" + Math.random());
     props.put(EventSourceConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConfig.BOOTSTRAP_SERVERS);
     props.put(EventSourceConfig.RESUME_OFFSET_CONFIG, resumeOffset);
     props.put(EventSourceConfig.COMPACTED_CACHE_CONFIG, compactedCache);
@@ -44,7 +44,7 @@ public class KafkaConfig {
   public static Properties getProducerProps() {
     final Properties props = new Properties();
 
-    props.put("client.id", "JAWS-ADMIN");
+    props.put("client.id", "JAWS-WEB");
     props.put("bootstrap.servers", KafkaConfig.BOOTSTRAP_SERVERS);
 
     return props;

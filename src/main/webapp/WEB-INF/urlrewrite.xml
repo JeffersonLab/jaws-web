@@ -5,16 +5,6 @@
         <to>/resources/$2</to>
     </rule>
     <rule>
-        <note>Rewrite app version in modules for cache busting</note>
-        <from>^/resources/modules/jaws-admin-gui-(.*)/(.*)$</from>
-        <to>/resources/modules/jaws-admin-gui/$2</to>
-    </rule>
-    <rule>
-        <note>Rewrite app version in web worker for cache busting</note>
-        <from>^/worker-(.*)\.(.*)$</from>
-        <to>/worker.$2</to>
-    </rule>
-    <rule>
         <from>^/inventory/alarms/(.*)$</from>
         <to>/inventory/alarm-detail?name=${escape:${unescapePath:$1}}</to>
     </rule>

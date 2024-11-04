@@ -4,7 +4,7 @@
          xsi:schemaLocation="https://xmlns.jcp.org/xml/ns/javaee
                         https://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
-    <display-name>jaws-admin-gui</display-name>
+    <display-name>jaws-web</display-name>
     <context-param>
         <param-name>appName</param-name>
         <param-value>JLab Alarm Warning System (JAWS)</param-value>
