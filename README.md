@@ -102,5 +102,5 @@ The [server](https://github.com/JeffersonLab/wildfly/blob/main/scripts/server-se
 At JLab this app is found at [ace.jlab.org/jaws](https://ace.jlab.org/jaws) and internally at [acctest.acc.jlab.org/jaws](https://acctest.acc.jlab.org/jaws).  However, those servers are proxies for `jaws.acc.jlab.org` and `jawstest.acc.jlab.org` respectively.  This app makes up one service in a set of services defined in a compose file that make up the JAWS system and deployments are managed by [JAWS](https://github.com/JeffersonLab/jaws).
 
 ## See Also
+- [User Guide](https://github.com/JeffersonLab/jaws-web/wiki/User-Guide)
 - [JLab alarm data](https://github.com/JeffersonLab/alarms)
-- [Developer Notes](https://github.com/JeffersonLab/jaws-web/wiki/Developer-Notes)
