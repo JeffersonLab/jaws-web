@@ -1,20 +1,20 @@
-# jaws-admin-gui [![Java CI with Gradle](https://github.com/JeffersonLab/jaws-admin-gui/actions/workflows/ci.yaml/badge.svg)](https://github.com/JeffersonLab/jaws-admin-gui/actions/workflows/ci.yaml) [![Docker](https://img.shields.io/docker/v/jeffersonlab/jaws-admin-gui?sort=semver&label=DockerHub)](https://hub.docker.com/r/jeffersonlab/jaws-admin-gui)
+# jaws-web [![Java CI with Gradle](https://github.com/JeffersonLab/jaws-web/actions/workflows/ci.yaml/badge.svg)](https://github.com/JeffersonLab/jaws-web/actions/workflows/ci.yaml) [![Docker](https://img.shields.io/docker/v/jeffersonlab/jaws-web?sort=semver&label=DockerHub)](https://hub.docker.com/r/jeffersonlab/jaws-web)
 A [Java EE 8](https://en.wikipedia.org/wiki/Jakarta_EE) web application for managing [JAWS](https://github.com/JeffersonLab/jaws) inventory and notifications built with the [Smoothness](https://github.com/JeffersonLab/smoothness) web template.
 
 <p>
-<a href="#"><img src="https://github.com/JeffersonLab/jaws-admin-gui/raw/main/Screenshot.png"/></a>     
+<a href="#"><img src="https://github.com/JeffersonLab/jaws-web/raw/main/Screenshot.png"/></a>     
 </p>
 
 ---
- - [Overview](https://github.com/JeffersonLab/jaws-admin-gui#overview)
- - [Quick Start with Compose](https://github.com/JeffersonLab/jaws-admin-gui#quick-start-with-compose) 
- - [Install](https://github.com/JeffersonLab/jaws-admin-gui#install)
- - [Configure](https://github.com/JeffersonLab/jaws-admin-gui#configure)
- - [Build](https://github.com/JeffersonLab/jaws-admin-gui#build)
- - [Develop](https://github.com/JeffersonLab/jaws-admin-gui#develop)
- - [Release](https://github.com/JeffersonLab/jaws-admin-gui#release)
- - [Deploy](https://github.com/JeffersonLab/jaws-admin-gui#deploy) 
- - [See Also](https://github.com/JeffersonLab/jaws-admin-gui#see-also)
+ - [Overview](https://github.com/JeffersonLab/jaws-web#overview)
+ - [Quick Start with Compose](https://github.com/JeffersonLab/jaws-web#quick-start-with-compose) 
+ - [Install](https://github.com/JeffersonLab/jaws-web#install)
+ - [Configure](https://github.com/JeffersonLab/jaws-web#configure)
+ - [Build](https://github.com/JeffersonLab/jaws-web#build)
+ - [Develop](https://github.com/JeffersonLab/jaws-web#develop)
+ - [Release](https://github.com/JeffersonLab/jaws-web#release)
+ - [Deploy](https://github.com/JeffersonLab/jaws-web#deploy) 
+ - [See Also](https://github.com/JeffersonLab/jaws-web#see-also)
 ---
 
 ## Overview
@@ -23,8 +23,8 @@ This web app provides a user interface to JAWS.  Operators can view alarm notifi
 ## Quick Start with Compose
 1. Grab project
 ```
-git clone https://github.com/JeffersonLab/jaws-admin-gui
-cd jaws-admin-gui
+git clone https://github.com/JeffersonLab/jaws-web
+cd jaws-web
 ```
 2. Launch [Compose](https://github.com/docker/compose)
 ```
@@ -43,17 +43,17 @@ http://localhost:8080/jaws
 ## Install
 This application requires a Java 11+ JVM and standard library to run, plus a Java EE 8+ application server (developed with Wildfly).
 
-   1. Install service [dependencies](https://github.com/JeffersonLab/jaws-admin-gui/blob/main/deps.yaml)
+   1. Install service [dependencies](https://github.com/JeffersonLab/jaws-web/blob/main/deps.yaml)
    1. Download [Wildfly 26.1.3](https://www.wildfly.org/downloads/)
-   1. [Configure](https://github.com/JeffersonLab/jaws-admin-gui#configure) Wildfly and start it
-   1. Download [jaws.war](https://github.com/JeffersonLab/jaws-admin-gui/releases) and deploy it to Wildfly
+   1. [Configure](https://github.com/JeffersonLab/jaws-web#configure) Wildfly and start it
+   1. Download [jaws.war](https://github.com/JeffersonLab/jaws-web/releases) and deploy it to Wildfly
    1. Navigate your web browser to localhost:8080/jaws
 
 
 ## Configure
 
 ### Configtime
-Wildfly must be pre-configured before the first deployment of the app. The [wildfly bash scripts](https://github.com/JeffersonLab/wildfly#configure) can be used to accomplish this. See the [Dockerfile](https://github.com/JeffersonLab/jaws-admin-gui/blob/main/Dockerfile) for an example.
+Wildfly must be pre-configured before the first deployment of the app. The [wildfly bash scripts](https://github.com/JeffersonLab/wildfly#configure) can be used to accomplish this. See the [Dockerfile](https://github.com/JeffersonLab/jaws-web/blob/main/Dockerfile) for an example.
 
 ### Runtime
 The following environment variables are required:
@@ -67,8 +67,8 @@ The following environment variables are required:
 This project is built with [Java 17](https://adoptium.net/) (compiled to Java 11 bytecode), and uses the [Gradle 7](https://gradle.org/) build tool to automatically download dependencies and build the project from source:
 
 ```
-git clone https://github.com/JeffersonLab/jaws-admin-gui
-cd jaws-admin-gui
+git clone https://github.com/JeffersonLab/jaws-web
+cd jaws-web
 gradlew build
 ```
 **Note**: If you do not already have Gradle installed, it will be installed automatically by the wrapper script included in the source
@@ -83,7 +83,7 @@ In order to iterate rapidly when making changes it's often useful to run the app
 docker compose -f deps.yaml up
 # OR if on JLab network use control system config with `jlab-deps.yaml` instead.
 ```
-**Note**: The local install of Wildfly should be [configured](https://github.com/JeffersonLab/jaws-admin-gui#configure) to proxy connections to services via localhost and therefore the environment variables should contain:
+**Note**: The local install of Wildfly should be [configured](https://github.com/JeffersonLab/jaws-web#configure) to proxy connections to services via localhost and therefore the environment variables should contain:
 ```
 KEYCLOAK_BACKEND_SERVER_URL=http://localhost:8081
 FRONTEND_SERVER_URL=https://localhost:8443
@@ -94,7 +94,7 @@ The [server](https://github.com/JeffersonLab/wildfly/blob/main/scripts/server-se
 
 ## Release
 1. Bump the version number in the VERSION file and commit and push to GitHub (using [Semantic Versioning](https://semver.org/)).
-2. The [CD](https://github.com/JeffersonLab/jaws-admin-gui/blob/main/.github/workflows/cd.yaml) GitHub Action should run automatically invoking:
+2. The [CD](https://github.com/JeffersonLab/jaws-web/blob/main/.github/workflows/cd.yaml) GitHub Action should run automatically invoking:
     - The [Create release](https://github.com/JeffersonLab/java-workflows/blob/main/.github/workflows/gh-release.yaml) GitHub Action to tag the source and create release notes summarizing any pull requests.   Edit the release notes to add any missing details.  A war file artifact is attached to the release.
     - The [Publish docker image](https://github.com/JeffersonLab/container-workflows/blob/main/.github/workflows/docker-publish.yaml) GitHub Action to create a new demo Docker image.
 
@@ -103,4 +103,4 @@ At JLab this app is found at [ace.jlab.org/jaws](https://ace.jlab.org/jaws) and 
 
 ## See Also
 - [JLab alarm data](https://github.com/JeffersonLab/alarms)
-- [Developer Notes](https://github.com/JeffersonLab/jaws-admin-gui/wiki/Developer-Notes)
+- [Developer Notes](https://github.com/JeffersonLab/jaws-web/wiki/Developer-Notes)
