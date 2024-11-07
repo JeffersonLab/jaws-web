@@ -6,6 +6,7 @@
 .local {
     background-color: #ff9094;
 }
+.data-table tbody td,
 .breakword {
     word-break: break-word;
 }
