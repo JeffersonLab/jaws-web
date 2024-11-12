@@ -10,6 +10,8 @@ import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -406,16 +408,17 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       SyncRule rule, Map<String, Location> locationMap, boolean primary, JsonObject o) {
     BigInteger elementId = o.getJsonNumber("id").bigIntegerValue();
     String elementName = o.getString("name");
+    String alias = "";
 
     List<Location> locationList = null;
-    String alias = "";
-    String epicsName = "";
     String joinAttributeValue = null;
     JsonObject properties = null;
     String joinAttribute = rule.getPrimaryAttribute();
     String screenCommand = "";
     String pv = "";
-    String area = "";
+
+    Map<String, String> variableMap = new HashMap<>();
+    variableMap.put("ElementName", elementName);
 
     if (o.containsKey("properties")) {
       properties = o.getJsonObject("properties");
@@ -423,33 +426,51 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       if (primary) {
         if (properties.containsKey("NameAlias") && !properties.isNull("NameAlias")) {
           alias = properties.getString("NameAlias");
-        }
-
-        if (properties.containsKey("EPICSName") && !properties.isNull("EPICSName")) {
-          epicsName = properties.getString("EPICSName");
+          variableMap.put("NameAlias", alias);
         }
 
         if (properties.containsKey("SegMask") && !properties.isNull("SegMask")) {
           String segMask = properties.getString("SegMask");
+          variableMap.put("SegMask", segMask);
 
           locationList = locationsFromSegMask(locationMap, segMask, rule.getSyncServer());
 
           if (!locationList.isEmpty()) {
-            area = locationList.get(0).getSegmask();
+            String area = locationList.get(0).getSegmask();
 
             if (area == null) {
               area = "";
             }
 
             area = area.split(",")[0];
+            variableMap.put("Area", area);
+          }
+        }
+
+        List<String> commandTokens = getTemplateVars(rule.getScreenCommand());
+        List<String> pvTokens = getTemplateVars(rule.getPv());
+
+        Set<String> tokenSet = new HashSet<>(commandTokens);
+        tokenSet.addAll(pvTokens);
+
+        for (String token : tokenSet) {
+
+          if (!variableMap.containsKey(token)
+              && properties.containsKey(token)
+              && !properties.isNull(token)) {
+            String tokenValue = properties.getString(token);
+
+            // System.err.println("Adding token: " + token + "=" + tokenValue);
+
+            variableMap.put(token, tokenValue);
           }
         }
       }
     }
 
     if (primary) {
-      screenCommand = applyExpressionVars(rule.getScreenCommand(), elementName, epicsName, area);
-      pv = applyExpressionVars(rule.getPv(), elementName, epicsName, area);
+      screenCommand = applyExpressionVars(rule.getScreenCommand(), variableMap);
+      pv = applyExpressionVars(rule.getPv(), variableMap);
     } else {
       joinAttribute = rule.getForeignAttribute();
     }
@@ -488,6 +509,21 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     alarm.setJoinAttributeValue(joinAttributeValue);
 
     return alarm;
+  }
+
+  private static final Pattern p = Pattern.compile("\\{(.*?)}");
+
+  private List<String> getTemplateVars(String input) {
+    List<String> resultList = new ArrayList<>();
+
+    if (input != null) {
+      Matcher m = p.matcher(input);
+      while (m.find()) {
+        resultList.add(m.group(1));
+      }
+    }
+
+    return resultList;
   }
 
   private LinkedHashMap<BigInteger, AlarmEntity> convertResponseWithIdMap(
@@ -540,16 +576,19 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     return result;
   }
 
-  private String applyExpressionVars(
-      String input, String elementName, String epicsName, String area) {
-    String result = "";
+  private String applyExpressionVars(String input, Map<String, String> variableMap) {
+    String result = input;
 
-    if (input != null) {
-      result = input.replaceAll("\\{ElementName}", elementName);
+    if (result == null) {
+      result = "";
+    } else {
+      for (String key : variableMap.keySet()) {
+        String value = variableMap.get(key);
 
-      result = result.replaceAll("\\{EPICSName}", epicsName);
+        // TODO: Escape regex reserved chars in key?
 
-      result = result.replaceAll("\\{Area}", area);
+        result = result.replaceAll("\\{" + key + "}", value);
+      }
     }
 
     return result;

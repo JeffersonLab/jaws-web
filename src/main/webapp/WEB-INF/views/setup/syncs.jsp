@@ -297,7 +297,8 @@
                                 </div>
                             </li>
                         </ul>
-                        <div>Expression variables: {ElementName}, {EPICSName}, {Area}, {ForeignName}</div>
+                        <div><b>Expression variables</b>: {ElementName}, {Area}, {ForeignName}</div>
+                        <div><b>Plus any CED API Property Name such as</b>: {EPICSName}, {HVName}</div>
                     </div>
                 </div>
             </form>
