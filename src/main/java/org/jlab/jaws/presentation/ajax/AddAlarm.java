@@ -35,22 +35,22 @@ public class AddAlarm extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    String name = request.getParameter("name");
-    BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
-    BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId[]");
-    String alias = request.getParameter("alias");
-    String device = request.getParameter("device");
-    String screenCommand = request.getParameter("screenCommand");
-    String managedBy = request.getParameter("managedBy");
-    String maskedBy = request.getParameter("maskedBy");
-    String pv = request.getParameter("pv");
-    BigInteger syncRuleId = ParamConverter.convertBigInteger(request, "syncRuleId");
-    BigInteger elementId = ParamConverter.convertBigInteger(request, "elementId");
-
     String stat = "ok";
     String error = null;
 
     try {
+      String name = request.getParameter("name");
+      BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
+      BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId[]");
+      String alias = request.getParameter("alias");
+      String device = request.getParameter("device");
+      String screenCommand = request.getParameter("screenCommand");
+      String managedBy = request.getParameter("managedBy");
+      String maskedBy = request.getParameter("maskedBy");
+      String pv = request.getParameter("pv");
+      BigInteger syncRuleId = ParamConverter.convertBigInteger(request, "syncRuleId");
+      BigInteger elementId = ParamConverter.convertBigInteger(request, "elementId");
+
       alarmFacade.addAlarm(
           name,
           actionId,

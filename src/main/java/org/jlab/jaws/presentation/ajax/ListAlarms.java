@@ -36,21 +36,21 @@ public class ListAlarms extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    String alarmName = request.getParameter("alarmName");
-    BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
-    String actionName = request.getParameter("actionName");
-    BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
-    String componentName = request.getParameter("componentName");
-    BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
-    int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
-    int max = ParamUtil.convertAndValidateNonNegativeInt(request, "max", Integer.MAX_VALUE);
-
     List<AlarmEntity> alarmList = null;
 
     String stat = "ok";
     String error = null;
 
     try {
+      String alarmName = request.getParameter("alarmName");
+      BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
+      String actionName = request.getParameter("actionName");
+      BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
+      String componentName = request.getParameter("componentName");
+      BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
+      int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
+      int max = ParamUtil.convertAndValidateNonNegativeInt(request, "max", Integer.MAX_VALUE);
+
       alarmList =
           alarmFacade.filterList(
               locationIdArray,

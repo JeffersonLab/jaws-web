@@ -34,12 +34,12 @@ public class RemoveSystem extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    BigInteger id = ParamConverter.convertBigInteger(request, "id");
-
     String stat = "ok";
     String error = null;
 
     try {
+      BigInteger id = ParamConverter.convertBigInteger(request, "id");
+
       systemFacade.removeSystem(id);
     } catch (UserFriendlyException e) {
       stat = "fail";

@@ -34,13 +34,13 @@ public class AddSystem extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    String name = request.getParameter("name");
-    BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
-
     String stat = "ok";
     String error = null;
 
     try {
+      String name = request.getParameter("name");
+      BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
+
       systemFacade.addSystem(name, teamId);
     } catch (UserFriendlyException e) {
       stat = "fail";

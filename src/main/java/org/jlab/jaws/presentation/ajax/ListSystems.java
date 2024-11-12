@@ -35,17 +35,17 @@ public class ListSystems extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    String systemName = request.getParameter("systemName");
-    BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
-    int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
-    int max = ParamUtil.convertAndValidateNonNegativeInt(request, "max", Integer.MAX_VALUE);
-
     List<SystemEntity> systemList = null;
 
     String stat = "ok";
     String error = null;
 
     try {
+      String systemName = request.getParameter("systemName");
+      BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
+      int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
+      int max = ParamUtil.convertAndValidateNonNegativeInt(request, "max", Integer.MAX_VALUE);
+
       systemList = systemFacade.filterList(systemName, teamId, offset, max);
     } catch (RuntimeException e) {
       stat = "fail";

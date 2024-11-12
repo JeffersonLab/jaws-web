@@ -34,14 +34,14 @@ public class EditSystem extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    BigInteger id = ParamConverter.convertBigInteger(request, "id");
-    String name = request.getParameter("name");
-    BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
-
     String stat = "ok";
     String error = null;
 
     try {
+      BigInteger id = ParamConverter.convertBigInteger(request, "id");
+      String name = request.getParameter("name");
+      BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
+
       systemFacade.editSystem(id, name, teamId);
     } catch (UserFriendlyException e) {
       stat = "fail";

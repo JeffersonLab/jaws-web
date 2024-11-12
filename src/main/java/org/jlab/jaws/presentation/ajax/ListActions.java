@@ -35,19 +35,19 @@ public class ListActions extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    String actionName = request.getParameter("actionName");
-    BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
-    String componentName = request.getParameter("componentName");
-    BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
-    int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
-    int max = ParamUtil.convertAndValidateNonNegativeInt(request, "max", Integer.MAX_VALUE);
-
     List<Action> actionList = null;
 
     String stat = "ok";
     String error = null;
 
     try {
+      String actionName = request.getParameter("actionName");
+      BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
+      String componentName = request.getParameter("componentName");
+      BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
+      int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
+      int max = ParamUtil.convertAndValidateNonNegativeInt(request, "max", Integer.MAX_VALUE);
+
       actionList =
           actionFacade.filterList(priorityId, teamId, actionName, componentName, offset, max);
     } catch (RuntimeException e) {

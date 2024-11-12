@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jlab.jaws.business.session.ActionFacade;
+import org.jlab.jaws.presentation.util.FriendlyParamUtil;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 
@@ -34,21 +35,21 @@ public class EditAction extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
-    String name = request.getParameter("name");
-    BigInteger systemId = ParamConverter.convertBigInteger(request, "systemId");
-    BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
-    String correctiveAction = request.getParameter("correctiveAction");
-    String rationale = request.getParameter("rationale");
-    Boolean filterable = ParamConverter.convertYNBoolean(request, "filterable");
-    Boolean latchable = ParamConverter.convertYNBoolean(request, "latchable");
-    BigInteger onDelaySeconds = ParamConverter.convertBigInteger(request, "onDelaySeconds");
-    BigInteger offDelaySeconds = ParamConverter.convertBigInteger(request, "offDelaySeconds");
-
     String stat = "ok";
     String error = null;
 
     try {
+      BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
+      String name = request.getParameter("name");
+      BigInteger systemId = ParamConverter.convertBigInteger(request, "systemId");
+      BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
+      String correctiveAction = request.getParameter("correctiveAction");
+      String rationale = request.getParameter("rationale");
+      Boolean filterable = FriendlyParamUtil.convertYNBoolean(request, "filterable");
+      Boolean latchable = FriendlyParamUtil.convertYNBoolean(request, "latchable");
+      BigInteger onDelaySeconds = ParamConverter.convertBigInteger(request, "onDelaySeconds");
+      BigInteger offDelaySeconds = ParamConverter.convertBigInteger(request, "offDelaySeconds");
+
       actionFacade.editAction(
           actionId,
           name,

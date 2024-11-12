@@ -34,12 +34,12 @@ public class RemoveAlarm extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    BigInteger id = ParamConverter.convertBigInteger(request, "id");
-
     String stat = "ok";
     String error = null;
 
     try {
+      BigInteger id = ParamConverter.convertBigInteger(request, "id");
+
       alarmFacade.removeAlarm(id);
     } catch (UserFriendlyException e) {
       stat = "fail";

@@ -34,12 +34,12 @@ public class RemoveAction extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    BigInteger id = ParamConverter.convertBigInteger(request, "id");
-
     String stat = "ok";
     String error = null;
 
     try {
+      BigInteger id = ParamConverter.convertBigInteger(request, "id");
+
       actionFacade.removeAction(id);
     } catch (UserFriendlyException e) {
       stat = "fail";
