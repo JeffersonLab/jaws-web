@@ -20,3 +20,18 @@ tbody td:nth-child(6) {
 .needs-attention {
     background-color: #fff9b2;
 }
+#progress-th {
+    background-color: white;
+}
+.ui-progressbar {
+    position: relative;
+}
+.progress-label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    top: 4px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
+}

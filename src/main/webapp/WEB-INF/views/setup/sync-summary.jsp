@@ -23,7 +23,7 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th id="progress-th"><div id="progressbar"><div class="progress-label"></div></div></th>
                         <th>Matched</th>
                         <th>Add</th>
                         <th>Remove</th>

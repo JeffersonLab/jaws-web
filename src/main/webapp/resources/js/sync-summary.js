@@ -36,12 +36,18 @@ jlab.summaryRow = function($tr) {
             jlab.$totalRow.find("th:nth-child(5)").text(jlab.integerWithCommas(jlab.updateCount));
             jlab.$totalRow.find("th:nth-child(6)").text(jlab.integerWithCommas(jlab.linkCount));
 
+            jlab.completeRuleCount++;
+
+            let progress = (jlab.completeRuleCount / jlab.totalRuleCount) * 100;
+
+            jlab.progressbar.progressbar("value", progress);
+
             var $tr = jlab.summaryTr.pop();
             if($tr !== undefined) {
                 jlab.summaryRow($tr);
             } else {
                 jlab.endTime = performance.now();
-                $("#total-status-cell").empty().text("Done in " + ((jlab.endTime - jlab.startTime) / 1000).toFixed(1) + " seconds");
+                $("#total-status-cell").empty().text("Done in " + ((jlab.endTime - jlab.startTime) / 1000).toFixed(0) + " seconds");
                 $("#diff-button").empty().removeAttr("disabled").text("Diff");
             }
         } else {
@@ -60,9 +66,16 @@ jlab.summaryRow = function($tr) {
 };
 jlab.diff = function() {
 
+    jlab.totalRuleCount = $(".rule-row").length;
+    jlab.completeRuleCount = 0;
+
+    jlab.progressbar.progressbar("value", 0);
+
     let $button = $("#diff-button");
 
     $("#total-status-cell").empty();
+
+    jlab.completeRuleCount = 0;
 
     jlab.startTime = performance.now();
 
@@ -108,4 +121,23 @@ jlab.diff = function() {
 };
 $(document).on("click", "#diff-button", function () {
         jlab.diff();
+});
+$(function() {
+    jlab.progressbar = $( "#progressbar" ),
+        progressLabel = $( ".progress-label" );
+
+    jlab.progressbar.progressbar({
+        value: false,
+        change: function() {
+            let val = jlab.progressbar.progressbar( "value" );
+
+            if(typeof val === "number") {
+                val = val.toFixed(0);
+            }
+
+            progressLabel.text( val + "%" );
+        }
+    });
+
+    jlab.progressbar.progressbar("value", 0);
 });
