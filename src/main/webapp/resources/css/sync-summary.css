@@ -20,8 +20,13 @@ tbody td:nth-child(6) {
 .needs-attention {
     background-color: #fff9b2;
 }
-#progress-th {
+.data-table th.left-top-cell {
     background-color: white;
+    border-top-color: white;
+    border-left-color: white;
+}
+#progress-cell {
+    border-bottom-color: white;
 }
 .ui-progressbar {
     position: relative;

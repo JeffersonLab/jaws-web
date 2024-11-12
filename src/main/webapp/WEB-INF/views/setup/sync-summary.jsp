@@ -23,7 +23,7 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th id="progress-th"><div id="progressbar"><div class="progress-label"></div></div></th>
+                        <th id="progress-cell" class="left-top-cell"><div id="progressbar"><div class="progress-label"></div></div></th>
                         <th>Matched</th>
                         <th>Add</th>
                         <th>Remove</th>
@@ -32,7 +32,7 @@
                         <th></th>
                     </tr>
                     <tr id="total-row">
-                        <th id="total-status-cell"></th>
+                        <th class="left-top-cell" id="total-status-cell"></th>
                         <th>0</th>
                         <th>0</th>
                         <th>0</th>
