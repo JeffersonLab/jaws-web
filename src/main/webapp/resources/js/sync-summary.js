@@ -18,7 +18,7 @@ jlab.summaryRow = function($tr) {
 
     request.done(function(json) {
         if (json.error === undefined) {
-            $status.parent().replaceWith('<td>' + json.matchCount + '</td><td>' + json.addCount + '</td><td>' + json.removeCount + '</td><td>' + json.updateCount + '</td><td>' + json.linkCount + '</td>');
+            $status.parent().replaceWith('<td class="first-stat-td">' + json.matchCount + '</td><td class="stat-td">' + json.addCount + '</td><td class="stat-td">' + json.removeCount + '</td><td class="stat-td">' + json.updateCount + '</td><td class="stat-td">' + json.linkCount + '</td>');
 
             if(json.addCount > 0 || json.removeCount > 0 || json.updateCount > 0 || json.linkCount > 0) {
                 $row.addClass('needs-attention');
@@ -40,7 +40,9 @@ jlab.summaryRow = function($tr) {
             if($tr !== undefined) {
                 jlab.summaryRow($tr);
             } else {
-                $("#total-status-cell").empty().text("Done!");
+                jlab.endTime = performance.now();
+                $("#total-status-cell").empty().text("Done in " + ((jlab.endTime - jlab.startTime) / 1000).toFixed(1) + " seconds");
+                $("#diff-button").empty().removeAttr("disabled").text("Diff");
             }
         } else {
             alert(json.error);
@@ -56,8 +58,20 @@ jlab.summaryRow = function($tr) {
         $status.empty().text("Pending");
     });
 };
+jlab.diff = function() {
 
-$(document).ready(function () {
+    let $button = $("#diff-button");
+
+    $("#total-status-cell").empty();
+
+    jlab.startTime = performance.now();
+
+    $button
+        .height($button.height())
+        .width($button.width())
+        .attr("disabled", "disabled")
+        .empty().append('<div class="button-indicator"></div>');
+
     jlab.matchCount = 0;
     jlab.addCount = 0;
     jlab.removeCount = 0;
@@ -66,10 +80,24 @@ $(document).ready(function () {
 
     jlab.$totalRow = $("#total-row");
 
+    jlab.$totalRow.find("th:nth-child(2)").text(jlab.integerWithCommas(jlab.matchCount));
+    jlab.$totalRow.find("th:nth-child(3)").text(jlab.integerWithCommas(jlab.addCount));
+    jlab.$totalRow.find("th:nth-child(4)").text(jlab.integerWithCommas(jlab.removeCount));
+    jlab.$totalRow.find("th:nth-child(5)").text(jlab.integerWithCommas(jlab.updateCount));
+    jlab.$totalRow.find("th:nth-child(6)").text(jlab.integerWithCommas(jlab.linkCount));
+
     jlab.summaryTr = [];
 
+    $(".stat-td").remove();
+
     $(".rule-row").each(function () {
-        jlab.summaryTr.push($(this));
+        let $tr = $(this),
+            $firstStatTd = $tr.find(".first-stat-td");
+
+        $firstStatTd.replaceWith('<td class="first-stat-td" colspan="5"><div class="status">Pending</div></td>');
+        jlab.summaryTr.push($tr);
+
+        $tr.removeClass("needs-attention");
     });
 
     if(jlab.summaryTr.length > 0) {
@@ -77,4 +105,7 @@ $(document).ready(function () {
 
         jlab.summaryRow(jlab.summaryTr.pop());
     }
-})
+};
+$(document).on("click", "#diff-button", function () {
+        jlab.diff();
+});

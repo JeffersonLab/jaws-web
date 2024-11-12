@@ -16,6 +16,10 @@
     <jsp:body>
         <section>
             <h2 id="page-header-title"><c:out value="${title}"/></h2>
+            <div class="message-box"><c:out value="${selectionMessage}"/></div>
+            <div>
+                <button id="diff-button" type="button">Diff</button>
+            </div>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -28,7 +32,7 @@
                         <th></th>
                     </tr>
                     <tr id="total-row">
-                        <th id="total-status-cell"><div class="button-indicator"></div> Working...</th>
+                        <th id="total-status-cell"></th>
                         <th>0</th>
                         <th>0</th>
                         <th>0</th>
@@ -50,7 +54,7 @@
                                         <div><c:out value="${rule.action.name}"/></div>
                                         <div><c:out value="${rule.description}"/></div>
                                     </td>
-                                    <td colspan="5"><div class="status">Pending</div></td>
+                                    <td class="first-stat-td" colspan="5"><div class="status">Pending</div></td>
                                     <td>
                                         <!-- Use onclick to avoid https://bugs.webkit.org/show_bug.cgi?id=30103 -->
                                         <c:url value="/setup/syncs/${jaws:urlEncodePath(rule.syncRuleId)}" var="url">
