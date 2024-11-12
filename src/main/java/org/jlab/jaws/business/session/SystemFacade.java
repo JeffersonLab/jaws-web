@@ -42,11 +42,11 @@ public class SystemFacade extends AbstractFacade<SystemEntity> {
   }
 
   private List<Predicate> getFilters(
-      CriteriaBuilder cb, Root<SystemEntity> root, String componentName, BigInteger teamId) {
+      CriteriaBuilder cb, Root<SystemEntity> root, String systemName, BigInteger teamId) {
     List<Predicate> filters = new ArrayList<>();
 
-    if (componentName != null && !componentName.isEmpty()) {
-      filters.add(cb.like(cb.lower(root.get("name")), componentName.toLowerCase()));
+    if (systemName != null && !systemName.isEmpty()) {
+      filters.add(cb.like(cb.lower(root.get("name")), systemName.toLowerCase()));
     }
 
     if (teamId != null) {
@@ -57,14 +57,13 @@ public class SystemFacade extends AbstractFacade<SystemEntity> {
   }
 
   @PermitAll
-  public List<SystemEntity> filterList(
-      String componentName, BigInteger teamId, int offset, int max) {
+  public List<SystemEntity> filterList(String systemName, BigInteger teamId, int offset, int max) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<SystemEntity> cq = cb.createQuery(SystemEntity.class);
     Root<SystemEntity> root = cq.from(SystemEntity.class);
     cq.select(root);
 
-    List<Predicate> filters = getFilters(cb, root, componentName, teamId);
+    List<Predicate> filters = getFilters(cb, root, systemName, teamId);
 
     if (!filters.isEmpty()) {
       cq.where(cb.and(filters.toArray(new Predicate[] {})));
@@ -83,12 +82,12 @@ public class SystemFacade extends AbstractFacade<SystemEntity> {
   }
 
   @PermitAll
-  public long countList(String componentName, BigInteger teamId) {
+  public long countList(String systemName, BigInteger teamId) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
     Root<SystemEntity> root = cq.from(SystemEntity.class);
 
-    List<Predicate> filters = getFilters(cb, root, componentName, teamId);
+    List<Predicate> filters = getFilters(cb, root, systemName, teamId);
 
     if (!filters.isEmpty()) {
       cq.where(cb.and(filters.toArray(new Predicate[] {})));

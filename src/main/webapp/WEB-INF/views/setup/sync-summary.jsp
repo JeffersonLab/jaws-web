@@ -15,6 +15,30 @@
     </jsp:attribute>
     <jsp:body>
         <section>
+            <s:filter-flyout-widget clearButton="true">
+                <form id="filter-form" method="get" action="sync-summary">
+                    <div id="filter-form-panel">
+                        <fieldset>
+                            <legend>Filter</legend>
+                            <ul class="key-value-list">
+                                <li>
+                                    <div class="li-key">
+                                        <label for="system-name">System Name</label>
+                                    </div>
+                                    <div class="li-value">
+                                        <input id="system-name"
+                                               name="systemName" value="${fn:escapeXml(param.systemName)}"
+                                               placeholder="system name"/>
+                                        <div>(use % as wildcard)</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </fieldset>
+                    </div>
+                    <input type="hidden" id="offset-input" name="offset" value="0"/>
+                    <input id="filter-form-submit-button" type="submit" value="Apply"/>
+                </form>
+            </s:filter-flyout-widget>
             <h2 id="page-header-title"><c:out value="${title}"/></h2>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div>

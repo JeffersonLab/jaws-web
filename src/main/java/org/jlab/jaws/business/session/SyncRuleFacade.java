@@ -707,10 +707,10 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   }
 
   @PermitAll
-  public List<RuleSet> findSystemRuleSetList() {
+  public List<RuleSet> findSystemRuleSetList(String systemName) {
     Map<String, RuleSet> ruleSetMap = new LinkedHashMap<>();
 
-    List<SystemEntity> systemList = systemFacade.findAll(new OrderDirective("name", true));
+    List<SystemEntity> systemList = systemFacade.filterList(systemName, null, 0, Integer.MAX_VALUE);
 
     for (SystemEntity s : systemList) {
       RuleSet rs = new RuleSet(s.getName());

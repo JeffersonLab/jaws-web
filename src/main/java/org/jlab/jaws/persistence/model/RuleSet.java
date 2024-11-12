@@ -24,4 +24,8 @@ public class RuleSet {
   public List<SyncRule> getRuleList() {
     return new ArrayList<>(ts);
   }
+
+  public long count() {
+    return ts.size();
+  }
 }

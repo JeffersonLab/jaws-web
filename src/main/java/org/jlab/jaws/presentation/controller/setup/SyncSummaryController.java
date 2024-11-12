@@ -1,6 +1,8 @@
 package org.jlab.jaws.presentation.controller.setup;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -33,12 +35,48 @@ public class SyncSummaryController extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    List<RuleSet> ruleSetList = syncRuleFacade.findSystemRuleSetList();
+    String systemName = request.getParameter("systemName");
 
+    List<RuleSet> ruleSetList = syncRuleFacade.findSystemRuleSetList(systemName);
+
+    long totalRecords = 0;
+
+    for (RuleSet rs : ruleSetList) {
+      totalRecords = totalRecords + rs.count();
+    }
+
+    String selectionMessage = createSelectionMessage(totalRecords, systemName);
+
+    request.setAttribute("selectionMessage", selectionMessage);
     request.setAttribute("ruleSetList", ruleSetList);
 
     request
         .getRequestDispatcher("/WEB-INF/views/setup/sync-summary.jsp")
         .forward(request, response);
+  }
+
+  private String createSelectionMessage(long totalRecords, String systemName) {
+    DecimalFormat formatter = new DecimalFormat("###,###");
+
+    String selectionMessage = "All Sync Rules ";
+
+    List<String> filters = new ArrayList<>();
+
+    if (systemName != null && !systemName.isBlank()) {
+      filters.add("System Name \"" + systemName + "\"");
+    }
+
+    if (!filters.isEmpty()) {
+      selectionMessage = filters.get(0);
+
+      for (int i = 1; i < filters.size(); i++) {
+        String filter = filters.get(i);
+        selectionMessage += " and " + filter;
+      }
+    }
+
+    selectionMessage = selectionMessage + " {" + formatter.format(totalRecords) + "}";
+
+    return selectionMessage;
   }
 }

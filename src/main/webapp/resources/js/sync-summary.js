@@ -122,6 +122,10 @@ jlab.diff = function() {
 $(document).on("click", "#diff-button", function () {
         jlab.diff();
 });
+$(document).on("click", ".default-clear-panel", function () {
+    $("#system-name").val('');
+    return false;
+});
 $(function() {
     jlab.progressbar = $( "#progressbar" ),
         progressLabel = $( ".progress-label" );
