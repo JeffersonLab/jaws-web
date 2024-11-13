@@ -2,7 +2,6 @@ package org.jlab.jaws.presentation.controller.reports;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jlab.jaws.business.session.ApplicationRevisionInfoFacade;
 import org.jlab.jaws.persistence.entity.ApplicationRevisionInfo;
+import org.jlab.smoothness.business.exception.UserFriendlyException;
 import org.jlab.smoothness.business.util.TimeUtil;
 import org.jlab.smoothness.presentation.util.Paginator;
 import org.jlab.smoothness.presentation.util.ParamConverter;
@@ -46,7 +46,7 @@ public class InventoryHistoryReport extends HttpServlet {
     try {
       modifiedStart = ParamConverter.convertFriendlyDateTime(request, "start");
       modifiedEnd = ParamConverter.convertFriendlyDateTime(request, "end");
-    } catch (ParseException e) {
+    } catch (UserFriendlyException e) {
       throw new RuntimeException("Date format error", e);
     }
 

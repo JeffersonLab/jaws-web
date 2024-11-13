@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jlab.jaws.business.session.ActionFacade;
-import org.jlab.jaws.presentation.util.FriendlyParamUtil;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 
@@ -44,8 +43,8 @@ public class AddAction extends HttpServlet {
       BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
       String correctiveAction = request.getParameter("correctiveAction");
       String rationale = request.getParameter("rationale");
-      Boolean filterable = FriendlyParamUtil.convertYNBoolean(request, "filterable");
-      Boolean latchable = FriendlyParamUtil.convertYNBoolean(request, "latchable");
+      Boolean filterable = ParamConverter.convertYNBoolean(request, "filterable");
+      Boolean latchable = ParamConverter.convertYNBoolean(request, "latchable");
       BigInteger onDelaySeconds = ParamConverter.convertBigInteger(request, "onDelaySeconds");
       BigInteger offDelaySeconds = ParamConverter.convertBigInteger(request, "offDelaySeconds");
 

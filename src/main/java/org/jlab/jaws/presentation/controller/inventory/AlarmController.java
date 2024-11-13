@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jlab.jaws.business.session.*;
 import org.jlab.jaws.persistence.entity.*;
+import org.jlab.smoothness.business.exception.UserFriendlyException;
 import org.jlab.smoothness.presentation.util.Paginator;
 import org.jlab.smoothness.presentation.util.ParamConverter;
 import org.jlab.smoothness.presentation.util.ParamUtil;
@@ -53,7 +54,13 @@ public class AlarmController extends HttpServlet {
     BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
     String systemName = request.getParameter("systemName");
     BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
-    Boolean synced = ParamConverter.convertYNBoolean(request, "synced");
+    Boolean synced = null;
+    try {
+      synced = ParamConverter.convertYNBoolean(request, "synced");
+    } catch (UserFriendlyException e) {
+      // Forward to Error Servlet
+      throw new RuntimeException(e.getUserMessage(), e);
+    }
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
 

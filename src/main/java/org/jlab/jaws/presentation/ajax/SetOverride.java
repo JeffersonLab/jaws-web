@@ -2,7 +2,6 @@ package org.jlab.jaws.presentation.ajax;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,7 +43,7 @@ public class SetOverride extends HttpServlet {
     Date expiration = null;
     try {
       expiration = ParamConverter.convertFriendlyDateTime(request, "expiration");
-    } catch (ParseException e) {
+    } catch (UserFriendlyException e) {
       throw new RuntimeException("Invalid expiration date format");
     }
 
