@@ -207,7 +207,7 @@ jlab.openSuppressDialog = function () {
         idArray.push(alarmId);
     });
 
-    var $selectedList = $("#selected-row-list");
+    var $selectedList = $("#suppress-selected-row-list");
 
     $selectedList.attr("data-id-json", JSON.stringify(idArray));
 
