@@ -108,6 +108,10 @@
                                                                 <li>Expiration: <fmt:formatDate value="${override.expiration}"
                                                                                                 pattern="dd-MMM-yyyy HH:mm:ss"/></li>
                                                             </c:when>
+                                                            <c:when test="${'OnDelayed' eq override.overridePK.type}">
+                                                                <li>Expiration: <fmt:formatDate value="${override.expiration}"
+                                                                                                pattern="dd-MMM-yyyy HH:mm:ss"/></li>
+                                                            </c:when>
                                                         </c:choose>
                                                     </ul>
                                                 </li>
