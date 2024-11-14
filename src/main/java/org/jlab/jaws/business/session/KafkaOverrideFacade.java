@@ -2,6 +2,7 @@ package org.jlab.jaws.business.session;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -94,14 +95,23 @@ public class KafkaOverrideFacade {
               value.setUnion(new OffDelayedOverride());
               break;
             case Shelved:
-              Long expirationLong = override.getExpiration().getTime();
-              ShelvedReason reason = null;
-              if (override.getShelvedReason() != null) {
-                reason = ShelvedReason.valueOf(override.getShelvedReason());
+              Date expirationDate = override.getExpiration();
+              if (expirationDate != null) {
+                Long expirationLong = expirationDate.getTime();
+                ShelvedReason reason = null;
+                if (override.getShelvedReason() != null) {
+                  reason = ShelvedReason.valueOf(override.getShelvedReason());
+                }
+                value.setUnion(
+                    new ShelvedOverride(
+                        override.isOneshot(), expirationLong, reason, override.getComments()));
+              } else {
+                LOG.log(
+                    Level.WARNING,
+                    "Skipping: No shelve expiration date in override table for alarm: "
+                        + override.getAlarm().getName());
+                continue;
               }
-              value.setUnion(
-                  new ShelvedOverride(
-                      override.isOneshot(), expirationLong, reason, override.getComments()));
               break;
             case Latched:
               value.setUnion(new LatchedOverride());

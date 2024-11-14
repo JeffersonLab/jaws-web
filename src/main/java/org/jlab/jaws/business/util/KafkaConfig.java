@@ -44,7 +44,7 @@ public class KafkaConfig {
   public static Properties getProducerProps() {
     final Properties props = new Properties();
 
-    props.put("client.id", "JAWS-WEB");
+    props.put("client.id", "jaws-web-" + Instant.now().toString() + "-" + Math.random());
     props.put("bootstrap.servers", KafkaConfig.BOOTSTRAP_SERVERS);
 
     return props;
