@@ -162,13 +162,15 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="system-name">System Name</label>
+                                        <label for="system-select">System</label>
                                     </div>
                                     <div class="li-value">
-                                        <input id="system-name"
-                                               name="systemName" value="${fn:escapeXml(param.systemName)}"
-                                               placeholder="system name"/>
-                                        <div>(use % as wildcard)</div>
+                                        <select id="system-select" name="systemName" multiple="multiple">
+                                            <c:forEach items="${systemList}" var="system">
+                                                <option value="${system.name}"${s:inArray(paramValues.systemName, system.name) ? ' selected="selected"' : ''}>
+                                                    <c:out value="${system.name}"/></option>
+                                            </c:forEach>
+                                        </select>
                                     </div>
                                 </li>
                             </ul>

@@ -159,7 +159,7 @@ public class SuppressHistoryReport extends HttpServlet {
               filterable,
               alarmName,
               actionName,
-              systemName,
+              systemName == null ? null : new String[] {systemName},
               alwaysIncludeUnregistered,
               alwaysIncludeUnfilterable);
 

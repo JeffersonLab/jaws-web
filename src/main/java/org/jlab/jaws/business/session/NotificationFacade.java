@@ -282,7 +282,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       Boolean filterable,
       String alarmName,
       String actionName,
-      String componentName,
+      String[] systemNameArray,
       boolean alwaysIncludeUnregistered,
       boolean alwaysIncludeUnfilterable,
       Map<String, Join> joins) {
@@ -367,8 +367,8 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       filters.add(cb.like(cb.lower(actionJoin.get("name")), actionName.toLowerCase()));
     }
 
-    if (componentName != null && !componentName.isEmpty()) {
-      filters.add(cb.like(cb.lower(systemJoin.get("name")), componentName.toLowerCase()));
+    if (systemNameArray != null && systemNameArray.length > 0) {
+      filters.add(systemJoin.get("name").in((List.of(systemNameArray))));
     }
 
     if (teamId != null) {
@@ -403,7 +403,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       Boolean filterable,
       String alarmName,
       String actionName,
-      String componentName,
+      String[] systemNameArray,
       boolean alwaysIncludeUnregistered,
       boolean alwaysIncludeUnfilterable,
       int offset,
@@ -431,7 +431,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
             filterable,
             alarmName,
             actionName,
-            componentName,
+            systemNameArray,
             alwaysIncludeUnregistered,
             alwaysIncludeUnfilterable,
             joins);
@@ -473,7 +473,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       Boolean filterable,
       String alarmName,
       String actionName,
-      String componentName,
+      String[] systemNameArray,
       boolean alwaysIncludeUnregistered,
       boolean alwaysIncludeUnfilterable) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
@@ -498,7 +498,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
             filterable,
             alarmName,
             actionName,
-            componentName,
+            systemNameArray,
             alwaysIncludeUnregistered,
             alwaysIncludeUnfilterable,
             joins);

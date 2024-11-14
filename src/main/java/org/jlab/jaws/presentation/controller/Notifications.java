@@ -37,6 +37,7 @@ public class Notifications extends HttpServlet {
   @EJB PriorityFacade priorityFacade;
   @EJB ActionFacade actionFacade;
   @EJB LocationFacade locationFacade;
+  @EJB SystemFacade systemFacade;
 
   /**
    * Handles the HTTP <code>GET</code> method.
@@ -59,7 +60,7 @@ public class Notifications extends HttpServlet {
       BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
       String actionName = request.getParameter("actionName");
       BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
-      String systemName = request.getParameter("systemName");
+      String[] systemNameArray = request.getParameterValues("systemName");
       BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
       Boolean registered = ParamConverter.convertYNBoolean(request, "registered");
       Boolean filterable = ParamConverter.convertYNBoolean(request, "filterable");
@@ -83,7 +84,7 @@ public class Notifications extends HttpServlet {
               filterable,
               alarmName,
               actionName,
-              systemName,
+              systemNameArray,
               alwaysIncludeUnregistered,
               alwaysIncludeUnfilterable,
               offset,
@@ -94,6 +95,8 @@ public class Notifications extends HttpServlet {
       List<Priority> priorityList =
           priorityFacade.findAll(new AbstractFacade.OrderDirective("priorityId"));
       List<Action> actionList = actionFacade.findAll(new AbstractFacade.OrderDirective("name"));
+      List<SystemEntity> systemList =
+          systemFacade.findAll(new AbstractFacade.OrderDirective("name"));
       Location locationRoot = locationFacade.findBranch(Location.TREE_ROOT);
       List<String> typeList = new ArrayList<>();
 
@@ -142,7 +145,7 @@ public class Notifications extends HttpServlet {
               filterable,
               alarmName,
               actionName,
-              systemName,
+              systemNameArray,
               alwaysIncludeUnregistered,
               alwaysIncludeUnfilterable);
 
@@ -165,12 +168,13 @@ public class Notifications extends HttpServlet {
               filterable,
               alarmName,
               actionName,
-              systemName,
+              systemNameArray,
               alwaysIncludeUnregistered,
               alwaysIncludeUnfilterable);
 
       request.setAttribute("notificationList", notificationList);
       request.setAttribute("actionList", actionList);
+      request.setAttribute("systemList", systemList);
       request.setAttribute("selectionMessage", selectionMessage);
       request.setAttribute("teamList", teamList);
       request.setAttribute("stateList", stateList);
@@ -251,7 +255,7 @@ public class Notifications extends HttpServlet {
       Boolean filterable,
       String alarmName,
       String actionName,
-      String systemName,
+      String[] systemNameArray,
       boolean alwaysIncludeUnregistered,
       boolean alwaysIncludeUnfilterable) {
     DecimalFormat formatter = new DecimalFormat("###,###");
@@ -337,8 +341,15 @@ public class Notifications extends HttpServlet {
       filters.add("Action Name \"" + actionName + "\"");
     }
 
-    if (systemName != null && !systemName.isBlank()) {
-      filters.add("System Name \"" + systemName + "\"");
+    if (systemNameArray != null && systemNameArray.length > 0) {
+      String sublist = "\"" + systemNameArray[0] + "\"";
+
+      for (int i = 1; i < systemNameArray.length; i++) {
+        String name = systemNameArray[i];
+        sublist = sublist + ", \"" + name + "\"";
+      }
+
+      filters.add("System Name " + sublist);
     }
 
     if (!filters.isEmpty()) {

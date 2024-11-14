@@ -305,7 +305,7 @@ $(document).on("click", ".default-clear-panel", function () {
     $("#filterable-select").val('');
     $("#alarm-name").val('');
     $("#action-name").val('');
-    $("#system-name").val('');
+    $("#system-select").val(null).trigger('change');
     $("#always-include-unregistered").prop( "checked", false );
     $("#always-include-unfilterable").prop( "checked", false );
     return false;
@@ -331,6 +331,10 @@ $(function () {
     });
 
     $("#override-select").select2({
+        width: 390
+    });
+
+    $("#system-select").select2({
         width: 390
     });
 
