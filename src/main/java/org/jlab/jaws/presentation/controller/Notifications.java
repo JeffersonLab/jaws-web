@@ -256,9 +256,9 @@ public class Notifications extends HttpServlet {
         if (alwaysIncludeUnfilterable) {
           stateFilter = stateFilter + " (+Unfilterable)";
         }
-
-        filters.add(stateFilter);
       }
+
+      filters.add(stateFilter);
     }
 
     if (overridden != null) {
