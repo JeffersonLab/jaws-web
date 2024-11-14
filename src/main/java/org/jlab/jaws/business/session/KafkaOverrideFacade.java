@@ -78,6 +78,8 @@ public class KafkaOverrideFacade {
           AlarmOverrideKey key = new AlarmOverrideKey(name, type);
           AlarmOverrideUnion value = new AlarmOverrideUnion();
 
+          Date expirationDate = override.getExpiration();
+
           switch (type) {
             case Disabled:
               value.setUnion(new DisabledOverride(override.getComments()));
@@ -85,17 +87,7 @@ public class KafkaOverrideFacade {
             case Filtered:
               value.setUnion(new FilteredOverride(override.getComments()));
               break;
-            case Masked:
-              value.setUnion(new MaskedOverride());
-              break;
-            case OnDelayed:
-              value.setUnion(new OnDelayedOverride());
-              break;
-            case OffDelayed:
-              value.setUnion(new OffDelayedOverride());
-              break;
             case Shelved:
-              Date expirationDate = override.getExpiration();
               if (expirationDate != null) {
                 Long expirationLong = expirationDate.getTime();
                 ShelvedReason reason = null;
@@ -114,8 +106,13 @@ public class KafkaOverrideFacade {
               }
               break;
             case Latched:
-              value.setUnion(new LatchedOverride());
-              break;
+            case Masked:
+            case OnDelayed:
+            case OffDelayed:
+              // Automated overrides should just be cleared from cache on boot (not propagated back
+              // into Kafka)
+              overrideFacade.remove(override);
+              continue; // Skip to top of for loop
           }
 
           producer.send(key, value);

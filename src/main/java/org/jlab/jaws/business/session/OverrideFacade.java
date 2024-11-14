@@ -349,6 +349,9 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
           } else if (value.getUnion() instanceof FilteredOverride) {
             FilteredOverride filteredOverride = (FilteredOverride) value.getUnion();
             comments = filteredOverride.getFiltername();
+          } else if (value.getUnion() instanceof OnDelayedOverride) {
+            OnDelayedOverride onDelayedOverride = (OnDelayedOverride) value.getUnion();
+            expiration = onDelayedOverride.getExpiration();
           } else if (value.getUnion() instanceof ShelvedOverride) {
             ShelvedOverride shelvedOverride = (ShelvedOverride) value.getUnion();
             comments = shelvedOverride.getComments();
