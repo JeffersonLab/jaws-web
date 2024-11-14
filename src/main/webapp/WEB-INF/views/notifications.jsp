@@ -151,13 +151,15 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="action-name">Action Name</label>
+                                        <label for="action-select">Action</label>
                                     </div>
                                     <div class="li-value">
-                                        <input id="action-name"
-                                               name="actionName" value="${fn:escapeXml(param.actionName)}"
-                                               placeholder="action name"/>
-                                        <div>(use % as wildcard)</div>
+                                        <select id="action-select" name="actionName" multiple="multiple">
+                                            <c:forEach items="${actionList}" var="action">
+                                                <option value="${fn:escapeXml(action.name)}"${s:inArray(paramValues.actionName, action.name) ? ' selected="selected"' : ''}>
+                                                    <c:out value="${action.name}"/></option>
+                                            </c:forEach>
+                                        </select>
                                     </div>
                                 </li>
                                 <li>
@@ -167,7 +169,7 @@
                                     <div class="li-value">
                                         <select id="system-select" name="systemName" multiple="multiple">
                                             <c:forEach items="${systemList}" var="system">
-                                                <option value="${system.name}"${s:inArray(paramValues.systemName, system.name) ? ' selected="selected"' : ''}>
+                                                <option value="${fn:escapeXml(system.name)}"${s:inArray(paramValues.systemName, system.name) ? ' selected="selected"' : ''}>
                                                     <c:out value="${system.name}"/></option>
                                             </c:forEach>
                                         </select>

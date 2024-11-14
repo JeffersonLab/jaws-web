@@ -159,7 +159,7 @@ public class ActiveHistoryReport extends HttpServlet {
               registered,
               filterable,
               alarmName,
-              actionName,
+              actionName == null ? null : new String[] {actionName},
               systemName == null ? null : new String[] {systemName},
               alwaysIncludeUnregistered,
               alwaysIncludeUnfilterable);

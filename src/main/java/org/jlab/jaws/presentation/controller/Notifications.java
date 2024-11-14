@@ -58,7 +58,7 @@ public class Notifications extends HttpServlet {
       String activationType = request.getParameter("type");
       String alarmName = request.getParameter("alarmName");
       BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
-      String actionName = request.getParameter("actionName");
+      String[] actionNameArray = request.getParameterValues("actionName");
       BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
       String[] systemNameArray = request.getParameterValues("systemName");
       BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
@@ -83,7 +83,7 @@ public class Notifications extends HttpServlet {
               registered,
               filterable,
               alarmName,
-              actionName,
+              actionNameArray,
               systemNameArray,
               alwaysIncludeUnregistered,
               alwaysIncludeUnfilterable,
@@ -144,7 +144,7 @@ public class Notifications extends HttpServlet {
               registered,
               filterable,
               alarmName,
-              actionName,
+              actionNameArray,
               systemNameArray,
               alwaysIncludeUnregistered,
               alwaysIncludeUnfilterable);
@@ -167,7 +167,7 @@ public class Notifications extends HttpServlet {
               registered,
               filterable,
               alarmName,
-              actionName,
+              actionNameArray,
               systemNameArray,
               alwaysIncludeUnregistered,
               alwaysIncludeUnfilterable);
@@ -254,7 +254,7 @@ public class Notifications extends HttpServlet {
       Boolean registered,
       Boolean filterable,
       String alarmName,
-      String actionName,
+      String[] actionNameArray,
       String[] systemNameArray,
       boolean alwaysIncludeUnregistered,
       boolean alwaysIncludeUnfilterable) {
@@ -337,8 +337,15 @@ public class Notifications extends HttpServlet {
       filters.add("Alarm Name \"" + alarmName + "\"");
     }
 
-    if (actionName != null && !actionName.isBlank()) {
-      filters.add("Action Name \"" + actionName + "\"");
+    if (actionNameArray != null && actionNameArray.length > 0) {
+      String sublist = "\"" + actionNameArray[0] + "\"";
+
+      for (int i = 1; i < actionNameArray.length; i++) {
+        String name = actionNameArray[i];
+        sublist = sublist + ", \"" + name + "\"";
+      }
+
+      filters.add("Action Name " + sublist);
     }
 
     if (systemNameArray != null && systemNameArray.length > 0) {

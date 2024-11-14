@@ -281,7 +281,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       Boolean registered,
       Boolean filterable,
       String alarmName,
-      String actionName,
+      String[] actionNameArray,
       String[] systemNameArray,
       boolean alwaysIncludeUnregistered,
       boolean alwaysIncludeUnfilterable,
@@ -363,8 +363,8 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       filters.add(cb.equal(actionJoin.get("priority"), priorityId));
     }
 
-    if (actionName != null && !actionName.isEmpty()) {
-      filters.add(cb.like(cb.lower(actionJoin.get("name")), actionName.toLowerCase()));
+    if (actionNameArray != null && actionNameArray.length > 0) {
+      filters.add(actionJoin.get("name").in(List.of(actionNameArray)));
     }
 
     if (systemNameArray != null && systemNameArray.length > 0) {
@@ -402,7 +402,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       Boolean registered,
       Boolean filterable,
       String alarmName,
-      String actionName,
+      String[] actionNameArray,
       String[] systemNameArray,
       boolean alwaysIncludeUnregistered,
       boolean alwaysIncludeUnfilterable,
@@ -430,7 +430,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
             registered,
             filterable,
             alarmName,
-            actionName,
+            actionNameArray,
             systemNameArray,
             alwaysIncludeUnregistered,
             alwaysIncludeUnfilterable,
@@ -472,7 +472,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       Boolean registered,
       Boolean filterable,
       String alarmName,
-      String actionName,
+      String[] actionNameArray,
       String[] systemNameArray,
       boolean alwaysIncludeUnregistered,
       boolean alwaysIncludeUnfilterable) {
@@ -497,7 +497,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
             registered,
             filterable,
             alarmName,
-            actionName,
+            actionNameArray,
             systemNameArray,
             alwaysIncludeUnregistered,
             alwaysIncludeUnfilterable,

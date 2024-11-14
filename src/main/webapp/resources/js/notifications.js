@@ -304,7 +304,7 @@ $(document).on("click", ".default-clear-panel", function () {
     $("#registered-select").val('');
     $("#filterable-select").val('');
     $("#alarm-name").val('');
-    $("#action-name").val('');
+    $("#action-select").val(null).trigger('change');
     $("#system-select").val(null).trigger('change');
     $("#always-include-unregistered").prop( "checked", false );
     $("#always-include-unfilterable").prop( "checked", false );
@@ -326,16 +326,12 @@ $(function () {
     jlab.initDialog();
 
     $("#location-select").select2({
-        width: 390,
+        width: 425,
         templateSelection: formatLocation
     });
 
-    $("#override-select").select2({
-        width: 390
-    });
-
-    $("#system-select").select2({
-        width: 390
+    $("#override-select, #system-select, #action-select").select2({
+        width: 425
     });
 
     /*Custom time picker*/
