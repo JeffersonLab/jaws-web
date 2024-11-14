@@ -100,52 +100,13 @@ evtSource.onerror = (err) => {
 let table = document.getElementById("alarm-table"),
     tbody = table.querySelector("tbody"),
     thList = table.querySelectorAll("thead th"),
-    columnStrList = [...thList.values()].map(th => th.textContent),
     alarmCountSpan = document.getElementById("alarm-count"),
-    diagramContainer = document.getElementById("diagram-container"),
     unregisteredCountSpan = document.getElementById("unregistered-count"),
     unregisteredSpan = document.getElementById("unregistered"),
     unfilterableCountSpan = document.getElementById("unfilterable-count"),
     unfilterableSpan = document.getElementById("unfilterable");
 
-function addToTable(data) {
-    for(const record of data) {
-        let tr = document.createElement("tr");
-
-        const map = new Map(Object.entries(record));
-
-        for (const column of columnStrList) {
-            let value = map.get(column);
-            let td = document.createElement("td");
-            td.innerText = value === undefined ? '' : value;
-            tr.appendChild(td);
-        }
-
-        tbody.appendChild(tr);
-    }
-}
-
-function removeFromTable(keys) {
-    for(const record of keys) {
-
-        let nameList = tbody.querySelectorAll("tr td:first-child");
-
-        for(let i = 0; i < nameList.length; i++) {
-            let name = nameList[i].textContent;
-
-            if(name === record) {
-                // deleteRow method may only exist on table, not tbody?  +1 for thead row?
-                tbody.deleteRow(i);
-                break;
-            }
-        }
-    }
-}
-
 function updateOrAddAlarms(data) {
-
-    let keys = data.map(item => item.name);
-
     for(const record of data) {
         activeByName.set(record.name, record);
 
@@ -177,13 +138,7 @@ function updateOrAddAlarms(data) {
             }
             alarmSet.add(record.name);
         }
-
-        //updateOrAddToDiagram(record);
     }
-
-    //removeFromTable(keys);
-
-    //addToTable(data);
 }
 
 function removeAlarms(keys) {
@@ -221,11 +176,7 @@ function removeAlarms(keys) {
         activeByName.delete(name);
         activeUnregistered.delete(name);
         activeUnfilterable.delete(name);
-
-        //removeFromDiagram(name);
     }
-
-    //removeFromTable(keys);
 }
 
 const livenessEl = document.getElementById("liveness-ts");
@@ -398,44 +349,6 @@ function unionOfLocationTree(locationTree) {
 
     return unionSet;
 }
-
-function updateOrAddToDiagram(alarm) {
-    const element = document.createElement("span"),
-          id = "alarm-" + alarm.name.replaceAll(' ', ''),
-          existing = document.getElementById(id),
-          locationCsv = alarm.location;
-
-    element.setAttribute("id", id);
-
-    let locationArray = [];
-
-    if(locationCsv === undefined) {
-        locationArray = ['JLAB']
-    } else {
-        locationArray = locationCsv.split(",");
-    }
-
-    for(let l of locationArray) {
-        const locElement = document.createElement("span");
-        let locationClass = 'location-' + l.replaceAll(' ', '');
-        locElement.classList.add(locationClass);
-        element.append(locElement);
-    }
-
-    if(existing !== null) {
-        existing.remove();
-    }
-
-    diagramContainer.appendChild(element);
-}
-function removeFromDiagram(name) {
-    let id = "alarm-" + name.replaceAll(' ', ''),
-        element = document.getElementById(id);
-
-    if(element) {
-        element.remove();
-    }
-}
 $(document).on("click", ".default-clear-panel", function () {
     $("#location-select").val(null).trigger('change');
     return false;
@@ -454,19 +367,4 @@ $(function() {
         width: 390,
         templateSelection: formatLocation
     });
-});
-
-let tempSort = {},
-    offset = 0,
-    max = 1000;
-$(document).on("click", "#show-all", function() {
-    $("#all-dialog").dialog('open');
-
-    tbody.innerHTML = '';
-
-    tempSort = Array.from(activeByName.values()).sort();
-
-    let subset = tempSort.slice(offset, max);
-
-    addToTable(subset);
 });
