@@ -45,10 +45,6 @@ public class SetOverride extends HttpServlet {
       String oneshot = request.getParameter("oneshot");
       Date expiration = ParamConverter.convertFriendlyDateTime(request, "expiration");
 
-      if (expiration == null) {
-        throw new UserFriendlyException("Expiration date is required");
-      }
-
       String reason = request.getParameter("reason");
 
       AlarmOverrideUnion value = new AlarmOverrideUnion();
@@ -70,6 +66,10 @@ public class SetOverride extends HttpServlet {
           value.setUnion(new OffDelayedOverride());
           break;
         case Shelved:
+          if (expiration == null) {
+            throw new UserFriendlyException("Expiration date is required");
+          }
+
           Long expirationLong = expiration.getTime();
           value.setUnion(
               new ShelvedOverride(
