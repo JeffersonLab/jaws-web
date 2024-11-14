@@ -42,13 +42,3 @@
 .radio-pair {
     margin-right: 2em;
 }
-
-#unsuppress-selected-row-list {
-     border: 1px solid gray;
-     height: 10em;
-     list-style-type: none;
-     margin: 0;
-     min-width: 12em;
-     overflow: auto;
-     padding: 0.1em;
-}

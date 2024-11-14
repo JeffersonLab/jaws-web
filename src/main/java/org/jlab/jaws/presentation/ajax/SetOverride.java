@@ -2,7 +2,6 @@ package org.jlab.jaws.presentation.ajax;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,57 +35,55 @@ public class SetOverride extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    String[] nameArray = request.getParameterValues("name[]");
-    OverriddenAlarmType type = UnsetOverride.convertOverrideType(request, "type");
-    String comments = request.getParameter("comments");
-    String oneshot = request.getParameter("oneshot");
-
-    Date expiration = null;
-    try {
-      expiration = ParamConverter.convertFriendlyDateTime(request, "expiration");
-    } catch (ParseException e) {
-      throw new RuntimeException("Invalid expiration date format");
-    }
-
-    String reason = request.getParameter("reason");
-
     String stat = "ok";
     String error = null;
 
-    AlarmOverrideUnion value = new AlarmOverrideUnion();
-
-    switch (type) {
-      case Disabled:
-        value.setUnion(new DisabledOverride(comments));
-        break;
-      case Filtered:
-        value.setUnion(new FilteredOverride(comments));
-        break;
-      case Masked:
-        value.setUnion(new MaskedOverride());
-        break;
-      case OnDelayed:
-        value.setUnion(new OnDelayedOverride());
-        break;
-      case OffDelayed:
-        value.setUnion(new OffDelayedOverride());
-        break;
-      case Shelved:
-        Long expirationLong = expiration.getTime();
-        value.setUnion(
-            new ShelvedOverride(
-                "true".equals(oneshot), expirationLong, ShelvedReason.valueOf(reason), comments));
-        break;
-      case Latched:
-        value.setUnion(new LatchedOverride());
-        break;
-    }
-
     try {
+      String[] nameArray = request.getParameterValues("name[]");
+      OverriddenAlarmType type = UnsetOverride.convertOverrideType(request, "type");
+      String comments = request.getParameter("comments");
+      String oneshot = request.getParameter("oneshot");
+      Date expiration = expiration = ParamConverter.convertFriendlyDateTime(request, "expiration");
+
+      if (expiration == null) {
+        throw new UserFriendlyException("Expiration date is required");
+      }
+
+      String reason = request.getParameter("reason");
+
+      AlarmOverrideUnion value = new AlarmOverrideUnion();
+
+      switch (type) {
+        case Disabled:
+          value.setUnion(new DisabledOverride(comments));
+          break;
+        case Filtered:
+          value.setUnion(new FilteredOverride(comments));
+          break;
+        case Masked:
+          value.setUnion(new MaskedOverride());
+          break;
+        case OnDelayed:
+          value.setUnion(new OnDelayedOverride());
+          break;
+        case OffDelayed:
+          value.setUnion(new OffDelayedOverride());
+          break;
+        case Shelved:
+          Long expirationLong = expiration.getTime();
+          value.setUnion(
+              new ShelvedOverride(
+                  "true".equals(oneshot), expirationLong, ShelvedReason.valueOf(reason), comments));
+          break;
+        case Latched:
+          value.setUnion(new LatchedOverride());
+          break;
+      }
+
       overrideFacade.kafkaSet(nameArray, type, value);
     } catch (UserFriendlyException e) {
       stat = "fail";
-      error = "Unable to set overrides: " + e.getMessage();
+      error = "Unable to set overrides: " + e.getUserMessage();
     } catch (EJBAccessException e) {
       stat = "fail";
       error = "Unable to set overrides: Not authenticated / authorized (do you need to re-login?)";

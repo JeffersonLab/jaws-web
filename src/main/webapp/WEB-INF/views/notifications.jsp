@@ -297,7 +297,7 @@
                             <span>Alarms:</span>
                         </div>
                         <div class="li-value">
-                            <ul id="selected-row-list"></ul>
+                            <ul id="suppress-selected-row-list" class="selected-row-list"></ul>
                             <span id="suppress-dialog-alarm-count"></span>
                         </div>
                     </li>
@@ -379,7 +379,7 @@
                             <span>Alarms:</span>
                         </div>
                         <div class="li-value">
-                            <ul id="unsuppress-selected-row-list"></ul>
+                            <ul id="unsuppress-selected-row-list" class="selected-row-list"></ul>
                             <span id="unsuppress-dialog-alarm-count"></span>
                         </div>
                     </li>

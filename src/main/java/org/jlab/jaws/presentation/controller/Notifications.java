@@ -18,6 +18,7 @@ import org.jlab.jaws.entity.OverriddenAlarmType;
 import org.jlab.jaws.persistence.entity.*;
 import org.jlab.jaws.persistence.model.BinaryState;
 import org.jlab.jaws.persistence.model.OverriddenState;
+import org.jlab.smoothness.business.exception.UserFriendlyException;
 import org.jlab.smoothness.business.util.TimeUtil;
 import org.jlab.smoothness.presentation.util.Paginator;
 import org.jlab.smoothness.presentation.util.ParamConverter;
@@ -48,133 +49,141 @@ public class Notifications extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    BinaryState state = convertState(request, "state");
-    Boolean overridden = ParamConverter.convertYNBoolean(request, "overridden");
-    OverriddenAlarmType override = convertOverrideKey(request, "override");
-    String activationType = request.getParameter("type");
-    String alarmName = request.getParameter("alarmName");
-    BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
-    String actionName = request.getParameter("actionName");
-    BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
-    String systemName = request.getParameter("systemName");
-    BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
-    Boolean registered = ParamConverter.convertYNBoolean(request, "registered");
-    Boolean filterable = ParamConverter.convertYNBoolean(request, "filterable");
-    boolean alwaysIncludeUnregistered =
-        ParamUtil.convertAndValidateYNBoolean(request, "alwaysIncludeUnregistered", false);
-    boolean alwaysIncludeUnfilterable =
-        ParamUtil.convertAndValidateYNBoolean(request, "alwaysIncludeUnfilterable", false);
-    int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
-    int maxPerPage = 100;
 
-    List<Notification> notificationList =
-        notificationFacade.filterList(
-            state,
-            overridden,
-            override,
-            activationType,
-            locationIdArray,
-            priorityId,
-            teamId,
-            registered,
-            filterable,
-            alarmName,
-            actionName,
-            systemName,
-            alwaysIncludeUnregistered,
-            alwaysIncludeUnfilterable,
-            offset,
-            maxPerPage);
-    List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
-    List<OverriddenState> overrideList = Arrays.asList(OverriddenState.values());
-    List<BinaryState> stateList = Arrays.asList(BinaryState.values());
-    List<Priority> priorityList =
-        priorityFacade.findAll(new AbstractFacade.OrderDirective("priorityId"));
-    List<Action> actionList = actionFacade.findAll(new AbstractFacade.OrderDirective("name"));
-    Location locationRoot = locationFacade.findBranch(Location.TREE_ROOT);
-    List<String> typeList = new ArrayList<>();
+    try {
+      BinaryState state = convertState(request, "state");
+      Boolean overridden = ParamConverter.convertYNBoolean(request, "overridden");
+      OverriddenAlarmType override = convertOverrideKey(request, "override");
+      String activationType = request.getParameter("type");
+      String alarmName = request.getParameter("alarmName");
+      BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
+      String actionName = request.getParameter("actionName");
+      BigInteger priorityId = ParamConverter.convertBigInteger(request, "priorityId");
+      String systemName = request.getParameter("systemName");
+      BigInteger teamId = ParamConverter.convertBigInteger(request, "teamId");
+      Boolean registered = ParamConverter.convertYNBoolean(request, "registered");
+      Boolean filterable = ParamConverter.convertYNBoolean(request, "filterable");
+      boolean alwaysIncludeUnregistered =
+          ParamUtil.convertAndValidateYNBoolean(request, "alwaysIncludeUnregistered", false);
+      boolean alwaysIncludeUnfilterable =
+          ParamUtil.convertAndValidateYNBoolean(request, "alwaysIncludeUnfilterable", false);
+      int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
+      int maxPerPage = 100;
 
-    typeList.add("NotActive");
-    typeList.add("Simple");
-    typeList.add("ChannelError");
-    typeList.add("EPICS");
-    typeList.add("Note");
+      List<Notification> notificationList =
+          notificationFacade.filterList(
+              state,
+              overridden,
+              override,
+              activationType,
+              locationIdArray,
+              priorityId,
+              teamId,
+              registered,
+              filterable,
+              alarmName,
+              actionName,
+              systemName,
+              alwaysIncludeUnregistered,
+              alwaysIncludeUnfilterable,
+              offset,
+              maxPerPage);
+      List<Team> teamList = teamFacade.findAll(new AbstractFacade.OrderDirective("name"));
+      List<OverriddenState> overrideList = Arrays.asList(OverriddenState.values());
+      List<BinaryState> stateList = Arrays.asList(BinaryState.values());
+      List<Priority> priorityList =
+          priorityFacade.findAll(new AbstractFacade.OrderDirective("priorityId"));
+      List<Action> actionList = actionFacade.findAll(new AbstractFacade.OrderDirective("name"));
+      Location locationRoot = locationFacade.findBranch(Location.TREE_ROOT);
+      List<String> typeList = new ArrayList<>();
 
-    List<Location> selectedLocationList = new ArrayList<>();
+      typeList.add("NotActive");
+      typeList.add("Simple");
+      typeList.add("ChannelError");
+      typeList.add("EPICS");
+      typeList.add("Note");
 
-    if (locationIdArray != null && locationIdArray.length > 0) {
-      for (BigInteger id : locationIdArray) {
-        if (id == null) { // TODO: the convertBigIntegerArray method should be excluding empty/null
-          continue;
+      List<Location> selectedLocationList = new ArrayList<>();
+
+      if (locationIdArray != null && locationIdArray.length > 0) {
+        for (BigInteger id : locationIdArray) {
+          if (id
+              == null) { // TODO: the convertBigIntegerArray method should be excluding empty/null
+            continue;
+          }
+
+          Location l = locationFacade.find(id);
+          selectedLocationList.add(l);
         }
-
-        Location l = locationFacade.find(id);
-        selectedLocationList.add(l);
       }
+
+      Priority selectedPriority = null;
+
+      if (priorityId != null) {
+        selectedPriority = priorityFacade.find(priorityId);
+      }
+
+      Team selectedTeam = null;
+
+      if (teamId != null) {
+        selectedTeam = teamFacade.find(teamId);
+      }
+
+      long totalRecords =
+          notificationFacade.countList(
+              state,
+              overridden,
+              override,
+              activationType,
+              locationIdArray,
+              priorityId,
+              teamId,
+              registered,
+              filterable,
+              alarmName,
+              actionName,
+              systemName,
+              alwaysIncludeUnregistered,
+              alwaysIncludeUnfilterable);
+
+      Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
+
+      String selectionMessage =
+          createSelectionMessage(
+              "Notifications",
+              paginator,
+              null,
+              null,
+              state,
+              overridden,
+              override,
+              activationType,
+              selectedLocationList,
+              selectedPriority,
+              selectedTeam,
+              registered,
+              filterable,
+              alarmName,
+              actionName,
+              systemName,
+              alwaysIncludeUnregistered,
+              alwaysIncludeUnfilterable);
+
+      request.setAttribute("notificationList", notificationList);
+      request.setAttribute("actionList", actionList);
+      request.setAttribute("selectionMessage", selectionMessage);
+      request.setAttribute("teamList", teamList);
+      request.setAttribute("stateList", stateList);
+      request.setAttribute("overrideList", overrideList);
+      request.setAttribute("typeList", typeList);
+      request.setAttribute("priorityList", priorityList);
+      request.setAttribute("locationRoot", locationRoot);
+      request.setAttribute("paginator", paginator);
+
+    } catch (UserFriendlyException e) {
+      // Forward to Error Servlet
+      throw new RuntimeException(e.getUserMessage(), e);
     }
-
-    Priority selectedPriority = null;
-
-    if (priorityId != null) {
-      selectedPriority = priorityFacade.find(priorityId);
-    }
-
-    Team selectedTeam = null;
-
-    if (teamId != null) {
-      selectedTeam = teamFacade.find(teamId);
-    }
-
-    long totalRecords =
-        notificationFacade.countList(
-            state,
-            overridden,
-            override,
-            activationType,
-            locationIdArray,
-            priorityId,
-            teamId,
-            registered,
-            filterable,
-            alarmName,
-            actionName,
-            systemName,
-            alwaysIncludeUnregistered,
-            alwaysIncludeUnfilterable);
-
-    Paginator paginator = new Paginator(totalRecords, offset, maxPerPage);
-
-    String selectionMessage =
-        createSelectionMessage(
-            "Notifications",
-            paginator,
-            null,
-            null,
-            state,
-            overridden,
-            override,
-            activationType,
-            selectedLocationList,
-            selectedPriority,
-            selectedTeam,
-            registered,
-            filterable,
-            alarmName,
-            actionName,
-            systemName,
-            alwaysIncludeUnregistered,
-            alwaysIncludeUnfilterable);
-
-    request.setAttribute("notificationList", notificationList);
-    request.setAttribute("actionList", actionList);
-    request.setAttribute("selectionMessage", selectionMessage);
-    request.setAttribute("teamList", teamList);
-    request.setAttribute("stateList", stateList);
-    request.setAttribute("overrideList", overrideList);
-    request.setAttribute("typeList", typeList);
-    request.setAttribute("priorityList", priorityList);
-    request.setAttribute("locationRoot", locationRoot);
-    request.setAttribute("paginator", paginator);
 
     request.getRequestDispatcher("/WEB-INF/views/notifications.jsp").forward(request, response);
   }
