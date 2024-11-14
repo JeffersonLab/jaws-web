@@ -30,6 +30,10 @@ public class SSE implements ServletContextListener {
   private final ExecutorService exec = Executors.newFixedThreadPool(10);
   private Sse sse;
 
+  private final List<Mixin> SLIM_EFFECTIVE_ALARM_MIXINS = new ArrayList<>();
+  private final List<Mixin> SLIM_NOTIFICATION_MIXINS = new ArrayList<>();
+  private final List<Mixin> SLIM_REGISTRATION_MIXINS = new ArrayList<>();
+
   private final List<Mixin> EFFECTIVE_ALARM_MIXINS = new ArrayList<>();
   private final List<Mixin> ACTIVATION_MIXINS = new ArrayList<>();
   private final List<Mixin> ACTION_MIXINS = new ArrayList<>();
@@ -86,6 +90,18 @@ public class SSE implements ServletContextListener {
     EFFECTIVE_ALARM_MIXINS.add(new Mixin(EffectiveAlarm.class, EffectiveAlarmMixin.class));
     EFFECTIVE_ALARM_MIXINS.addAll(NOTIFICATION_MIXINS);
     EFFECTIVE_ALARM_MIXINS.addAll(REGISTRATION_MIXINS);
+
+    SLIM_NOTIFICATION_MIXINS.add(
+        new Mixin(EffectiveNotification.class, SlimEffectiveNotificationMixin.class));
+
+    SLIM_REGISTRATION_MIXINS.add(
+        new Mixin(EffectiveRegistration.class, EffectiveRegistrationMixin.class));
+    SLIM_REGISTRATION_MIXINS.add(new Mixin(Alarm.class, SlimAlarmMixin.class));
+    SLIM_REGISTRATION_MIXINS.add(new Mixin(AlarmAction.class, SlimAlarmActionMixin.class));
+
+    SLIM_EFFECTIVE_ALARM_MIXINS.add(new Mixin(EffectiveAlarm.class, EffectiveAlarmMixin.class));
+    SLIM_EFFECTIVE_ALARM_MIXINS.addAll(SLIM_NOTIFICATION_MIXINS);
+    SLIM_EFFECTIVE_ALARM_MIXINS.addAll(SLIM_REGISTRATION_MIXINS);
   }
 
   @Override
@@ -135,6 +151,7 @@ public class SSE implements ServletContextListener {
           String entitiesCsv,
       @QueryParam("initiallyActiveOnly") @DefaultValue("false") String initiallyActiveOnlyStr,
       @QueryParam("initiallyCompactedOnly") @DefaultValue("false") String initiallyCompactedOnlyStr,
+      @QueryParam("slimAlarms") @DefaultValue("false") String slimAlarmsStr,
       @QueryParam("alarmIndex") @DefaultValue("-1") long alarmIndex,
       @QueryParam("activationIndex") @DefaultValue("-1") long activationIndex,
       @QueryParam("systemIndex") @DefaultValue("-1") long systemIndex,
@@ -152,6 +169,8 @@ public class SSE implements ServletContextListener {
             + initiallyActiveOnlyStr
             + ", initiallyCompactedOnly: "
             + initiallyCompactedOnlyStr
+            + ", slimAlarms: "
+            + slimAlarmsStr
             + ", alarmIndex: "
             + alarmIndex
             + ", activationIndex: "
@@ -173,6 +192,7 @@ public class SSE implements ServletContextListener {
 
     final boolean initiallyActiveOnly = ("true".equals(initiallyActiveOnlyStr));
     final boolean initiallyCompactedOnly = ("true".equals(initiallyCompactedOnlyStr));
+    final boolean slimAlarms = ("true".equals(slimAlarmsStr));
 
     String[] tokens = entitiesCsv.split(",");
     List<String> entities = Arrays.asList(tokens);
@@ -251,8 +271,14 @@ public class SSE implements ServletContextListener {
               }
 
               if (initiallyCompactedOnly) {
-                alarmListener =
-                    new CompactedListener<>(sink, "alarm", strKeyConv, EFFECTIVE_ALARM_MIXINS);
+                if (slimAlarms) {
+                  alarmListener =
+                      new CompactedListener<>(
+                          sink, "alarm", strKeyConv, SLIM_EFFECTIVE_ALARM_MIXINS);
+                } else {
+                  alarmListener =
+                      new CompactedListener<>(sink, "alarm", strKeyConv, EFFECTIVE_ALARM_MIXINS);
+                }
                 notificationListener =
                     new CompactedListener<>(sink, "notification", strKeyConv, NOTIFICATION_MIXINS);
                 activationListener =

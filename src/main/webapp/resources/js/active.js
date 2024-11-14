@@ -52,6 +52,35 @@ class EffectiveAlarm {
     }
 }
 
+class SlimEffectiveAlarm {
+    constructor(name, priority, system, filterable,
+                location, state) {
+        this.name = name;
+
+        this.priority = priority;
+        this.system = system;
+        this.filterable = filterable;
+
+        this.location = location;
+
+        this.state = state;
+    }
+}
+
+let toSlimAlarm = function(key, value) {
+    value.registration = value.registration || {};
+    value.notification = value.notification || {};
+
+    return new SlimEffectiveAlarm(
+        key,
+        value.registration.priority,
+        value.registration.system,
+        value.registration.filterable,
+        value.registration.location ? value.registration.location.join(',') : undefined,
+        value.notification.state
+    );
+};
+
 let toAlarm = function(key, value) {
 
     value.registration = value.registration || {};
@@ -95,7 +124,7 @@ let toAlarm = function(key, value) {
 }
 
 
-let evtSource = new EventSource(contextPath + '/proxy/sse' + '?entitiesCsv=alarm&initiallyCompactedOnly=true');
+let evtSource = new EventSource(contextPath + '/proxy/sse' + '?entitiesCsv=alarm&initiallyCompactedOnly=true&slimAlarms=true');
 
 evtSource.onerror = (err) => {
     console.error("EventSource failed:", err);
@@ -224,7 +253,7 @@ evtSource.addEventListener('alarm', (e) => {
 
     for (const [key, value] of compacted.entries()) {
 
-        console.log(key, value);
+        //console.log(key, value);
 
         if (value === null) {
             remove.push(key);
@@ -281,7 +310,7 @@ evtSource.addEventListener('alarm', (e) => {
             if(value.notification.state.startsWith('Normal') || !inLocationSet) {
                 remove.push(key);
             } else if (inLocationSet) {
-                updateOrAdd.push(toAlarm(key, value));
+                updateOrAdd.push(toSlimAlarm(key, value));
             }
         }
     }
