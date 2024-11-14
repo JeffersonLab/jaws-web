@@ -287,12 +287,15 @@ public class Notifications extends HttpServlet {
       filters.add("Overridden \"" + (overridden ? "Yes" : "No") + "\"");
     }
 
-    if (overrideTypeList != null) {
-      for (OverriddenAlarmType type : overrideTypeList) {
-        if (type != null) {
-          filters.add("Override \"" + type + "\"");
-        }
+    if (overrideTypeList != null && !overrideTypeList.isEmpty()) {
+      String sublist = "\"" + overrideTypeList.get(0) + "\"";
+
+      for (int i = 1; i < overrideTypeList.size(); i++) {
+        OverriddenAlarmType l = overrideTypeList.get(i);
+        sublist = sublist + ", \"" + l + "\"";
       }
+
+      filters.add("Override " + sublist);
     }
 
     if (activationType != null && !activationType.isBlank()) {
