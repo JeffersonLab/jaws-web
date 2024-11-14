@@ -51,10 +51,9 @@
                                         <label for="override-select">Override</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="override-select" name="override">
-                                            <option value="">&nbsp;</option>
+                                        <select id="override-select" name="override" multiple="multiple">
                                             <c:forEach items="${overrideList}" var="override">
-                                                <option value="${override.name()}"${param.override eq override.name() ? ' selected="selected"' : ''}>
+                                                <option value="${override.name()}"${s:inArray(paramValues.override, override.name()) ? ' selected="selected"' : ''}>
                                                     <c:out value="${override.getLabel()}"/></option>
                                             </c:forEach>
                                         </select>

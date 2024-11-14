@@ -400,7 +400,7 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
         notificationFacade.filterList(
             null,
             null,
-            OverriddenAlarmType.Latched,
+            List.of(OverriddenAlarmType.Latched),
             null,
             null,
             null,

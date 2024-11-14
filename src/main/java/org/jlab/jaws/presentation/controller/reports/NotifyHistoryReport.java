@@ -154,7 +154,7 @@ public class NotifyHistoryReport extends HttpServlet {
               end,
               state,
               overridden,
-              override,
+              override == null ? null : List.of(override),
               activationType,
               selectedLocationList,
               selectedPriority,

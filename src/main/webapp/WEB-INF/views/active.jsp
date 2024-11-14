@@ -86,7 +86,7 @@
                 (<span><a href="${pageContext.request.contextPath}/notifications?override=Latched&override=OffDelayed${locationFilterStr}"><span id="incited-count">-</span></a> Incited</span>)
                 | <span><a href="${pageContext.request.contextPath}/notifications?state=Normal${locationFilterStr}"><span id="normal-count">-</span></a> Normal</span>
                 (<span><a href="${pageContext.request.contextPath}/notifications?override=Disabled&override=Shelved&override=Masked&override=OnDelayed&override=Filtered${locationFilterStr}"><span id="suppressed-count">-</span></a> Suppressed</span>)
-                | <span><a href="${pageContext.request.contextPath}/notifications${rootLocationFilterStr}"><span id="all-count">-</span></a> Notifications</span>
+                | <span><a href="${pageContext.request.contextPath}/notifications${rootLocationFilterStr}"><span id="all-count">-</span></a> Alarms</span>
             </span>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="diagram-container">

@@ -273,7 +273,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       Root<Notification> root,
       BinaryState state,
       Boolean overridden,
-      OverriddenAlarmType override,
+      List<OverriddenAlarmType> overrideTypeList,
       String activationType,
       BigInteger[] locationIdArray,
       BigInteger priorityId,
@@ -321,8 +321,8 @@ public class NotificationFacade extends AbstractFacade<Notification> {
       }
     }
 
-    if (override != null) {
-      filters.add(cb.equal(root.get("override"), override));
+    if (overrideTypeList != null && !overrideTypeList.isEmpty()) {
+      filters.add(root.get("override").in(overrideTypeList));
     }
 
     if (activationType != null && !activationType.isEmpty()) {
@@ -394,7 +394,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
   public List<Notification> filterList(
       BinaryState state,
       Boolean overridden,
-      OverriddenAlarmType override,
+      List<OverriddenAlarmType> overrideTypeList,
       String activationType,
       BigInteger[] locationIdArray,
       BigInteger priorityId,
@@ -422,7 +422,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
             root,
             state,
             overridden,
-            override,
+            overrideTypeList,
             activationType,
             locationIdArray,
             priorityId,
@@ -464,7 +464,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
   public long countList(
       BinaryState state,
       Boolean overridden,
-      OverriddenAlarmType override,
+      List<OverriddenAlarmType> overrideTypeList,
       String activationType,
       BigInteger[] locationIdArray,
       BigInteger priorityId,
@@ -489,7 +489,7 @@ public class NotificationFacade extends AbstractFacade<Notification> {
             root,
             state,
             overridden,
-            override,
+            overrideTypeList,
             activationType,
             locationIdArray,
             priorityId,

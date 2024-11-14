@@ -296,7 +296,7 @@ $(document).on("click", "#open-unsuppress-button", function () {
 $(document).on("click", ".default-clear-panel", function () {
     $("#state-select").val('');
     $("#overridden-select").val('');
-    $("#override-select").val('');
+    $("#override-select").val(null).trigger('change');
     $("#type-select").val('');
     $("#location-select").val(null).trigger('change');
     $("#priority-select").val('');
@@ -328,6 +328,10 @@ $(function () {
     $("#location-select").select2({
         width: 390,
         templateSelection: formatLocation
+    });
+
+    $("#override-select").select2({
+        width: 390
     });
 
     /*Custom time picker*/

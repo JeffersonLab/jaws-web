@@ -53,7 +53,7 @@ public class Notifications extends HttpServlet {
     try {
       BinaryState state = convertState(request, "state");
       Boolean overridden = ParamConverter.convertYNBoolean(request, "overridden");
-      OverriddenAlarmType override = convertOverrideKey(request, "override");
+      List<OverriddenAlarmType> overrideTypeList = convertOverrideKeyList(request, "override");
       String activationType = request.getParameter("type");
       String alarmName = request.getParameter("alarmName");
       BigInteger[] locationIdArray = ParamConverter.convertBigIntegerArray(request, "locationId");
@@ -74,7 +74,7 @@ public class Notifications extends HttpServlet {
           notificationFacade.filterList(
               state,
               overridden,
-              override,
+              overrideTypeList,
               activationType,
               locationIdArray,
               priorityId,
@@ -133,7 +133,7 @@ public class Notifications extends HttpServlet {
           notificationFacade.countList(
               state,
               overridden,
-              override,
+              overrideTypeList,
               activationType,
               locationIdArray,
               priorityId,
@@ -156,7 +156,7 @@ public class Notifications extends HttpServlet {
               null,
               state,
               overridden,
-              override,
+              overrideTypeList,
               activationType,
               selectedLocationList,
               selectedPriority,
@@ -186,6 +186,28 @@ public class Notifications extends HttpServlet {
     }
 
     request.getRequestDispatcher("/WEB-INF/views/notifications.jsp").forward(request, response);
+  }
+
+  public static List<OverriddenAlarmType> convertOverrideKeyList(
+      HttpServletRequest request, String name) {
+    List<OverriddenAlarmType> typeList = new ArrayList<>();
+
+    String[] valueArray = request.getParameterValues(name);
+
+    if (valueArray != null) {
+      for (String value : valueArray) {
+        OverriddenAlarmType type = null;
+
+        if (value != null && !value.isBlank()) {
+          OverriddenState intermediate = OverriddenState.valueOf(value);
+          type = intermediate.getOverrideType();
+
+          typeList.add(type);
+        }
+      }
+    }
+
+    return typeList;
   }
 
   public static OverriddenAlarmType convertOverrideKey(HttpServletRequest request, String name) {
@@ -220,7 +242,7 @@ public class Notifications extends HttpServlet {
       Date end,
       BinaryState state,
       Boolean overridden,
-      OverriddenAlarmType override,
+      List<OverriddenAlarmType> overrideTypeList,
       String activationType,
       List<Location> locationList,
       Priority priority,
@@ -265,8 +287,12 @@ public class Notifications extends HttpServlet {
       filters.add("Overridden \"" + (overridden ? "Yes" : "No") + "\"");
     }
 
-    if (override != null) {
-      filters.add("Override \"" + override + "\"");
+    if (overrideTypeList != null) {
+      for (OverriddenAlarmType type : overrideTypeList) {
+        if (type != null) {
+          filters.add("Override \"" + type + "\"");
+        }
+      }
     }
 
     if (activationType != null && !activationType.isBlank()) {
