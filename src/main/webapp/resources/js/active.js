@@ -6,6 +6,10 @@ const activeBySystem = new Map();
 const activeByName = new Map();
 const activeUnregistered = new Map();
 const activeUnfilterable = new Map();
+const suppressedByName = new Map();
+const incitedByName = new Map();
+const normalByName = new Map();
+const allByName = new Map();
 
 class EffectiveAlarm {
     constructor(name, priority, system, rationale, action, contact, filterable, latchable,
@@ -91,7 +95,7 @@ let toAlarm = function(key, value) {
 }
 
 
-let evtSource = new EventSource(contextPath + '/proxy/sse' + '?entitiesCsv=alarm&initiallyActiveOnly=true');
+let evtSource = new EventSource(contextPath + '/proxy/sse' + '?entitiesCsv=alarm&initiallyCompactedOnly=true');
 
 evtSource.onerror = (err) => {
     console.error("EventSource failed:", err);
@@ -99,12 +103,15 @@ evtSource.onerror = (err) => {
 
 let table = document.getElementById("alarm-table"),
     tbody = table.querySelector("tbody"),
-    thList = table.querySelectorAll("thead th"),
     alarmCountSpan = document.getElementById("alarm-count"),
     unregisteredCountSpan = document.getElementById("unregistered-count"),
     unregisteredSpan = document.getElementById("unregistered"),
     unfilterableCountSpan = document.getElementById("unfilterable-count"),
-    unfilterableSpan = document.getElementById("unfilterable");
+    unfilterableSpan = document.getElementById("unfilterable"),
+    allCountSpan = document.getElementById("all-count"),
+    normalCountSpan = document.getElementById("normal-count")
+    incitedCountSpan = document.getElementById("incited-count")
+    suppressedCountSpan = document.getElementById("suppressed-count");
 
 function updateOrAddAlarms(data) {
     for(const record of data) {
@@ -137,6 +144,12 @@ function updateOrAddAlarms(data) {
                 activeByLocation.set(l, alarmSet);
             }
             alarmSet.add(record.name);
+        }
+
+        if('ActiveLatched' === record.state || 'ActiveOffDelayed' === record.state) {
+            incitedByName.set(record.name, record);
+        } else {
+            incitedByName.delete(record.name);
         }
     }
 }
@@ -176,6 +189,7 @@ function removeAlarms(keys) {
         activeByName.delete(name);
         activeUnregistered.delete(name);
         activeUnfilterable.delete(name);
+        incitedByName.delete(name);
     }
 }
 
@@ -210,7 +224,9 @@ evtSource.addEventListener('alarm', (e) => {
 
     for (const [key, value] of compacted.entries()) {
 
-        if (value === null || value.notification.state.startsWith('Normal')) {
+        console.log(key, value);
+
+        if (value === null) {
             remove.push(key);
         } else {
             let inLocationSet = false;
@@ -240,6 +256,31 @@ evtSource.addEventListener('alarm', (e) => {
             }
 
             if(inLocationSet) {
+                allByName.set(key, name);
+            } else {
+                allByName.delete(key);
+            }
+
+            if(inLocationSet && value.notification.state.startsWith('Normal')) {
+                normalByName.set(key, value);
+            } else {
+                normalByName.delete(key);
+            }
+
+            if(inLocationSet && ('NormalDisabled' === value.notification.state
+                || 'NormalOneShotShelved' === value.notification.state
+                || 'NormalContinuousShelved' === value.notification.state
+                || 'NormalOnDelayed' === value.notification.state
+                || 'NormalMasked' === value.notification.state
+                || 'NormalFiltered' === value.notification.state)) {
+                suppressedByName.set(key, value);
+            } else {
+                suppressedByName.delete(key);
+            }
+
+            if(value.notification.state.startsWith('Normal') || !inLocationSet) {
+                remove.push(key);
+            } else if (inLocationSet) {
                 updateOrAdd.push(toAlarm(key, value));
             }
         }
@@ -281,6 +322,11 @@ function updateSiteCount() {
     } else {
         unfilterableSpan.classList.remove("shown");
     }
+
+    allCountSpan.textContent = jlab.integerWithCommas(allByName.size);
+    normalCountSpan.textContent = jlab.integerWithCommas(normalByName.size);
+    incitedCountSpan.textContent = jlab.integerWithCommas(incitedByName.size);
+    suppressedCountSpan.textContent = jlab.integerWithCommas(suppressedByName.size);
 }
 function updateLocationCount() {
     let locationUnionMap = new Map();

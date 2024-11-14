@@ -42,6 +42,7 @@ public class Active extends HttpServlet {
     List<Location> selectedLocationList = new ArrayList<>();
     Set<Location> materializedLocations = new HashSet<>();
     String locationFilterStr = "";
+    String rootLocationFilterStr = "";
 
     if (locationArray != null && locationArray.length > 0) {
       for (String name : locationArray) {
@@ -59,6 +60,10 @@ public class Active extends HttpServlet {
         Set<Location> subset = locationFacade.findBranchAsSet(l.getLocationId());
         materializedLocations.addAll(subset);
       }
+    }
+
+    if (!locationFilterStr.isBlank()) {
+      rootLocationFilterStr = "?" + locationFilterStr.substring(1);
     }
 
     String materializedLocationsArrayStr = "[]";
@@ -88,6 +93,7 @@ public class Active extends HttpServlet {
     request.setAttribute("locationList", locationList);
     request.setAttribute("materializedLocationsArrayStr", materializedLocationsArrayStr);
     request.setAttribute("locationFilterStr", locationFilterStr);
+    request.setAttribute("RootlocationFilterStr", rootLocationFilterStr);
     request.setAttribute("systemList", systemList);
 
     request.getRequestDispatcher("/WEB-INF/views/active.jsp").forward(request, response);

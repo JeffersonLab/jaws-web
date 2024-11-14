@@ -134,6 +134,7 @@ public class SSE implements ServletContextListener {
               "alarm,activation,system,action,instance,location,notification,override,registration")
           String entitiesCsv,
       @QueryParam("initiallyActiveOnly") @DefaultValue("false") String initiallyActiveOnlyStr,
+      @QueryParam("initiallyCompactedOnly") @DefaultValue("false") String initiallyCompactedOnlyStr,
       @QueryParam("alarmIndex") @DefaultValue("-1") long alarmIndex,
       @QueryParam("activationIndex") @DefaultValue("-1") long activationIndex,
       @QueryParam("systemIndex") @DefaultValue("-1") long systemIndex,
@@ -149,6 +150,8 @@ public class SSE implements ServletContextListener {
             + entitiesCsv
             + "), initiallyActiveOnly: "
             + initiallyActiveOnlyStr
+            + ", initiallyCompactedOnly: "
+            + initiallyCompactedOnlyStr
             + ", alarmIndex: "
             + alarmIndex
             + ", activationIndex: "
@@ -169,6 +172,7 @@ public class SSE implements ServletContextListener {
             + registrationIndex);
 
     final boolean initiallyActiveOnly = ("true".equals(initiallyActiveOnlyStr));
+    final boolean initiallyCompactedOnly = ("true".equals(initiallyCompactedOnlyStr));
 
     String[] tokens = entitiesCsv.split(",");
     List<String> entities = Arrays.asList(tokens);
@@ -203,22 +207,26 @@ public class SSE implements ServletContextListener {
           @Override
           public void run() {
             final Properties alarmProps =
-                KafkaConfig.getConsumerPropsWithRegistry(alarmIndex, initiallyActiveOnly);
+                KafkaConfig.getConsumerPropsWithRegistry(
+                    alarmIndex, initiallyActiveOnly || initiallyCompactedOnly);
             final Properties activationProps =
-                KafkaConfig.getConsumerPropsWithRegistry(activationIndex, initiallyActiveOnly);
-            final Properties systemProps = KafkaConfig.getConsumerProps(systemIndex, false);
+                KafkaConfig.getConsumerPropsWithRegistry(
+                    activationIndex, initiallyActiveOnly || initiallyCompactedOnly);
+            final Properties systemProps =
+                KafkaConfig.getConsumerProps(systemIndex, initiallyCompactedOnly);
             final Properties actionProps =
-                KafkaConfig.getConsumerPropsWithRegistry(actionIndex, false);
+                KafkaConfig.getConsumerPropsWithRegistry(actionIndex, initiallyCompactedOnly);
             final Properties instanceProps =
-                KafkaConfig.getConsumerPropsWithRegistry(instanceIndex, false);
+                KafkaConfig.getConsumerPropsWithRegistry(instanceIndex, initiallyCompactedOnly);
             final Properties locationProps =
-                KafkaConfig.getConsumerPropsWithRegistry(locationIndex, false);
+                KafkaConfig.getConsumerPropsWithRegistry(locationIndex, initiallyCompactedOnly);
             final Properties notificationProps =
-                KafkaConfig.getConsumerPropsWithRegistry(notificationIndex, initiallyActiveOnly);
+                KafkaConfig.getConsumerPropsWithRegistry(
+                    notificationIndex, initiallyActiveOnly || initiallyCompactedOnly);
             final Properties overrideProps =
-                KafkaConfig.getConsumerPropsWithRegistry(overrideIndex, false);
+                KafkaConfig.getConsumerPropsWithRegistry(overrideIndex, initiallyCompactedOnly);
             final Properties registrationProps =
-                KafkaConfig.getConsumerPropsWithRegistry(registrationIndex, false);
+                KafkaConfig.getConsumerPropsWithRegistry(registrationIndex, initiallyCompactedOnly);
 
             try (EffectiveAlarmConsumer alarmConsumer = new EffectiveAlarmConsumer(alarmProps);
                 ActivationConsumer activationConsumer = new ActivationConsumer(activationProps);
@@ -235,10 +243,20 @@ public class SSE implements ServletContextListener {
               EventSourceListener<String, EffectiveNotification> notificationListener;
               EventSourceListener<String, AlarmActivationUnion> activationListener;
 
+              // If both ActiveOnly and compactedOnly then compactedOnly has precedence
               if (initiallyActiveOnly) {
                 alarmListener = new AlarmIAOListener(sink);
                 notificationListener = new NotificationIAOListener(sink);
                 activationListener = new ActivationIAOListener(sink);
+              }
+
+              if (initiallyCompactedOnly) {
+                alarmListener =
+                    new CompactedListener<>(sink, "alarm", strKeyConv, EFFECTIVE_ALARM_MIXINS);
+                notificationListener =
+                    new CompactedListener<>(sink, "notification", strKeyConv, NOTIFICATION_MIXINS);
+                activationListener =
+                    new CompactedListener<>(sink, "activation", strKeyConv, ACTIVATION_MIXINS);
               } else {
                 alarmListener = new ESListener<>(sink, "alarm", strKeyConv, EFFECTIVE_ALARM_MIXINS);
                 notificationListener =
@@ -248,7 +266,10 @@ public class SSE implements ServletContextListener {
               }
 
               alarmConsumer.addListener(alarmListener);
+              notificationConsumer.addListener(notificationListener);
               activationConsumer.addListener(activationListener);
+
+              // TODO: honor initiallyCompactedOnly for these other topics
               systemConsumer.addListener(
                   new ESListener<>(sink, "system", strKeyConv, SYSTEM_MIXINS));
               actionConsumer.addListener(
@@ -257,7 +278,6 @@ public class SSE implements ServletContextListener {
                   new ESListener<>(sink, "instance", strKeyConv, ALARM_MIXINS));
               locationConsumer.addListener(
                   new ESListener<>(sink, "location", strKeyConv, LOCATION_MIXINS));
-              notificationConsumer.addListener(notificationListener);
               overrideConsumer.addListener(
                   new ESListener<>(sink, "override", new OverrideKeyConverter(), OVERRIDE_MIXINS));
               registrationConsumer.addListener(
@@ -313,6 +333,36 @@ public class SSE implements ServletContextListener {
     @Override
     public void batch(List<EventSourceRecord<K, V>> records, boolean highWaterReached) {
       sendRecords(sink, eventName, records, keyConverter, mixins);
+    }
+  }
+
+  class CompactedListener<K, V> implements EventSourceListener<K, V> {
+    protected final SseEventSink sink;
+    protected final String eventName;
+    protected final KeyConverter<K> keyConverter;
+    protected final List<Mixin> mixins;
+
+    CompactedListener(
+        SseEventSink sink, String eventName, KeyConverter<K> keyConverter, List<Mixin> mixins) {
+      this.sink = sink;
+      this.eventName = eventName;
+      this.keyConverter = keyConverter;
+      this.mixins = mixins;
+    }
+
+    @Override
+    public void highWaterOffset(LinkedHashMap<K, EventSourceRecord<K, V>> records) {
+      if (!records.isEmpty()) {
+        sendRecords(sink, eventName, new ArrayList<>(records.values()), keyConverter, mixins);
+      }
+      sink.send(sse.newEvent(eventName + "-highwatermark", ""));
+    }
+
+    @Override
+    public void batch(List<EventSourceRecord<K, V>> records, boolean highWaterReached) {
+      if (highWaterReached) {
+        sendRecords(sink, eventName, records, keyConverter, mixins);
+      }
     }
   }
 
