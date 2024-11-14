@@ -140,7 +140,7 @@ public class KafkaOverrideFacade {
       try {
         overrideFacade.oracleMerge(records);
       } catch (SQLException e) {
-        LOG.log(Level.SEVERE, "Unable to merge Kafka notifications into Oracle", e);
+        LOG.log(Level.SEVERE, "Unable to merge Kafka overrides into Oracle", e);
       }
     }
   }

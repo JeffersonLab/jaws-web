@@ -43,7 +43,7 @@ public class SetOverride extends HttpServlet {
       OverriddenAlarmType type = UnsetOverride.convertOverrideType(request, "type");
       String comments = request.getParameter("comments");
       String oneshot = request.getParameter("oneshot");
-      Date expiration = expiration = ParamConverter.convertFriendlyDateTime(request, "expiration");
+      Date expiration = ParamConverter.convertFriendlyDateTime(request, "expiration");
 
       if (expiration == null) {
         throw new UserFriendlyException("Expiration date is required");
