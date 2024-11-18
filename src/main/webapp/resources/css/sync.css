@@ -22,8 +22,8 @@
 .data-table tbody td:nth-child(4) {
     width: 200px;
 }
-.data-table tbody td:nth-child(5) {
-    width: 200px;
+.data-table tbody td:nth-child(6) {
+    width: 85px;
 }
 .dialog-content #accordion h3 {
     color: black;
