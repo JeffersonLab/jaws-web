@@ -84,6 +84,11 @@ public class ListAlarms extends HttpServlet {
           gen.writeStartObject();
           gen.write("name", alarm.getName());
           gen.write("id", alarm.getAlarmId());
+          if (alarm.getAlias() == null) {
+            gen.writeNull("alias");
+          } else {
+            gen.write("alias", alarm.getAlias());
+          }
           if (alarm.getAction() == null) {
             gen.writeNull("action");
           } else {
