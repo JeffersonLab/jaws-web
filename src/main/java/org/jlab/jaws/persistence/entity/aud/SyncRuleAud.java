@@ -91,6 +91,10 @@ public class SyncRuleAud implements Serializable, Comparable<SyncRuleAud> {
   @Column(name = "FOREIGN_EXPRESSION", length = 4000)
   private String foreignExpression;
 
+  @Size(max = 64)
+  @Column(name = "ALARM_NAME", length = 64, nullable = false)
+  private String alarmName;
+
   @Size(max = 512)
   @Column(name = "SCREEN_COMMAND", length = 512)
   private String screenCommand;
@@ -169,6 +173,14 @@ public class SyncRuleAud implements Serializable, Comparable<SyncRuleAud> {
 
   public void setForeignExpression(String foreignExpression) {
     this.foreignExpression = foreignExpression;
+  }
+
+  public String getAlarmName() {
+    return alarmName;
+  }
+
+  public void setAlarmName(String alarmName) {
+    this.alarmName = alarmName;
   }
 
   public String getScreenCommand() {

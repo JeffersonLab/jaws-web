@@ -141,6 +141,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       String foreignAttribute,
       String foreignQuery,
       String foreignExpression,
+      String name,
       String screencommand,
       String pv)
       throws UserFriendlyException {
@@ -187,6 +188,10 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
           "Primary Attribute, Foreign Attribute, and Foreign Query are all required to join");
     }
 
+    if (name == null || name.isBlank()) {
+      throw new UserFriendlyException("Name field in the Template is required");
+    }
+
     SyncRule rule = new SyncRule();
     rule.setAction(action);
 
@@ -198,6 +203,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     rule.setForeignAttribute(foreignAttribute);
     rule.setForeignQuery(foreignQuery);
     rule.setForeignExpression(foreignExpression);
+    rule.setAlarmName(name);
     rule.setScreenCommand(screencommand);
     rule.setPv(pv);
 
@@ -244,6 +250,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       String foreignAttribute,
       String foreignQuery,
       String foreignExpression,
+      String name,
       String screencommand,
       String pv)
       throws UserFriendlyException {
@@ -296,6 +303,10 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
           "Primary Attribute, Foreign Attribute, and Foreign Query are all required to join");
     }
 
+    if (name == null || name.isBlank()) {
+      throw new UserFriendlyException("Name field in the Template is required");
+    }
+
     rule.setAction(action);
     rule.setSyncServer(server);
     rule.setDescription(description);
@@ -305,6 +316,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     rule.setForeignAttribute(foreignAttribute);
     rule.setForeignQuery(foreignQuery);
     rule.setForeignExpression(foreignExpression);
+    rule.setAlarmName(name);
     rule.setScreenCommand(screencommand);
     rule.setPv(pv);
 
@@ -387,12 +399,15 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
 
         if (foreign != null) {
           String foreignName = foreign.getName().split(" ")[0];
+          String name = alarm.getName();
           String screenCommand = alarm.getScreenCommand();
           String pv = alarm.getPv();
 
+          name = applyForeignExpressionVars(name, foreignName);
           screenCommand = applyForeignExpressionVars(screenCommand, foreignName);
           pv = applyForeignExpressionVars(pv, foreignName);
 
+          alarm.setName(name);
           alarm.setScreenCommand(screenCommand);
           alarm.setPv(pv);
 
@@ -414,6 +429,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     String joinAttributeValue = null;
     JsonObject properties = null;
     String joinAttribute = rule.getPrimaryAttribute();
+    String alarmName = "";
     String screenCommand = "";
     String pv = "";
 
@@ -469,9 +485,13 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     }
 
     if (primary) {
+      variableMap.put("ActionName", rule.getAction().getName());
+
+      alarmName = applyExpressionVars(rule.getAlarmName(), variableMap);
       screenCommand = applyExpressionVars(rule.getScreenCommand(), variableMap);
       pv = applyExpressionVars(rule.getPv(), variableMap);
     } else {
+      alarmName = elementName + rule.getAlarmName(); // ForeignName is derived from this
       joinAttribute = rule.getForeignAttribute();
     }
 
@@ -500,7 +520,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     AlarmEntity alarm = new AlarmEntity();
     alarm.setSyncElementId(elementId);
     alarm.setSyncRule(rule);
-    alarm.setName(elementName + " " + rule.getAction().getName());
+    alarm.setName(alarmName);
     alarm.setAlias(alias);
     alarm.setAction(rule.getAction());
     alarm.setLocationList(locationList);

@@ -13,6 +13,7 @@ jlab.addRow = function (run) {
         foreignAttribute = $("#row-foreign-attribute").val(),
         foreignQuery = $("#row-foreign-query").val(),
         foreignExpression = $("#row-foreign-expression").val(),
+        name = $("#row-name").val(),
         screencommand = $("#row-screencommand").val(),
         pv = $("#row-pv").val(),
         $button = $(".dialog-submit-button"),
@@ -50,6 +51,7 @@ jlab.addRow = function (run) {
             foreignAttribute: foreignAttribute,
             foreignQuery: foreignQuery,
             foreignExpression: foreignExpression,
+            name: name,
             screencommand: screencommand,
             pv: pv
         },
@@ -94,6 +96,7 @@ jlab.editRow = function (run) {
         foreignAttribute = $("#row-foreign-attribute").val(),
         foreignQuery = $("#row-foreign-query").val(),
         foreignExpression = $("#row-foreign-expression").val(),
+        name = $("#row-name").val(),
         screencommand = $("#row-screencommand").val(),
         pv = $("#row-pv").val(),
         $button = $(".dialog-submit-button"),
@@ -132,6 +135,7 @@ jlab.editRow = function (run) {
             foreignAttribute: foreignAttribute,
             foreignQuery: foreignQuery,
             foreignExpression: foreignExpression,
+            name: name,
             screencommand: screencommand,
             pv: pv
         },
@@ -235,6 +239,7 @@ $(document).on("click", "#open-edit-row-dialog-button", function () {
     }
 
     $("#row-foreign-expression").val(multilineExpression);
+    $("#row-name").val($selectedRow.attr("data-name"));
     $("#row-screencommand").val($selectedRow.attr("data-screencommand"));
     $("#row-pv").val($selectedRow.attr("data-pv"));
 });

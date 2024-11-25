@@ -44,6 +44,7 @@ public class EditSyncRule extends HttpServlet {
     String foreignAttribute = request.getParameter("foreignAttribute");
     String foreignQuery = request.getParameter("foreignQuery");
     String foreignExpression = request.getParameter("foreignExpression");
+    String name = request.getParameter("name");
     String screencommand = request.getParameter("screencommand");
     String pv = request.getParameter("pv");
 
@@ -62,6 +63,7 @@ public class EditSyncRule extends HttpServlet {
           foreignAttribute,
           foreignQuery,
           foreignExpression,
+          name,
           screencommand,
           pv);
     } catch (UserFriendlyException e) {

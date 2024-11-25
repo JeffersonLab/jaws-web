@@ -89,6 +89,7 @@
                                         <tbody>
                                         <c:forEach items="${syncList}" var="sync">
                                             <tr data-id="${sync.syncRuleId}" data-action-id="${sync.action.actionId}"
+                                                data-name="${fn:escapeXml(sync.alarmName)}"
                                                 data-screencommand="${fn:escapeXml(sync.screenCommand)}"
                                                 data-pv="${fn:escapeXml(sync.pv)}"
                                                 data-query="${fn:escapeXml(sync.query)}"
@@ -259,8 +260,7 @@
                                     <label for="row-name">Name</label>
                                 </div>
                                 <div class="li-value">
-                                    <input type="text" id="row-name" value="{ElementName} {Action}"
-                                           disabled="disabled"/>
+                                    <input type="text" id="row-name" value="{ElementName} {ActionName}"/>
                                 </div>
                             </li>
                             <li>
@@ -297,7 +297,7 @@
                                 </div>
                             </li>
                         </ul>
-                        <div><b>Expression variables</b>: {ElementName}, {Area}, {ForeignName}</div>
+                        <div><b>Expression variables</b>: {ElementName}, {ActionName}, {Area}, {ForeignName}</div>
                         <div><b>Plus any CED API Property Name such as</b>: {EPICSName}, {HVName}</div>
                     </div>
                 </div>

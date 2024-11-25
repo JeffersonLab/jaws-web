@@ -133,7 +133,7 @@
                         <div>
                             <dl>
                                 <dt>Name</dt>
-                                <dd>{ElementName} {Action}</dd>
+                                <dd><c:out value="${rule.alarmName}"/></dd>
                                 <dt>Alias</dt>
                                 <dd>{NameAlias}</dd>
                                 <dt>Location</dt>

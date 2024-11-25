@@ -192,6 +192,14 @@
                             </c:forEach>
                         </tr>
                         <tr>
+                            <th>Alarm Name:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.alarmName}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
                             <th>Screen Command:</th>
                             <c:forEach items="${revisionList}" var="entity">
                                 <td>
