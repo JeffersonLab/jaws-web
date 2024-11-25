@@ -278,7 +278,8 @@ public class AlarmEntity implements Serializable {
 
     boolean equals =
         Objects.equals(name, remote.name)
-            && Objects.equals(getLocationIdCsv(), remote.getLocationIdCsv());
+            && Objects.equals(getLocationIdCsv(), remote.getLocationIdCsv())
+            && Objects.equals(syncElementName, remote.syncElementName);
 
     if (remote.alias != null && !remote.alias.isBlank()) {
       equals = equals && Objects.equals(alias, remote.alias);
