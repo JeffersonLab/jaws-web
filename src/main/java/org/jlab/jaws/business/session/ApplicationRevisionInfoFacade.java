@@ -103,7 +103,7 @@ public class ApplicationRevisionInfoFacade extends AbstractFacade<ApplicationRev
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<ApplicationRevisionInfo> cq = cb.createQuery(ApplicationRevisionInfo.class);
     Root<ApplicationRevisionInfo> root = cq.from(ApplicationRevisionInfo.class);
-    cq.select(root);
+    cq.select(root).distinct(true);
 
     List<Predicate> filters = getFilters(cb, root, modifiedStart, modifiedEnd, type, entity);
 
@@ -145,7 +145,7 @@ public class ApplicationRevisionInfoFacade extends AbstractFacade<ApplicationRev
       cq.where(cb.and(filters.toArray(new Predicate[] {})));
     }
 
-    cq.select(cb.count(root));
+    cq.select(cb.countDistinct(root));
     TypedQuery<Long> q = getEntityManager().createQuery(cq);
     return q.getSingleResult();
   }
