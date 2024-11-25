@@ -235,7 +235,7 @@ public class ActionFacade extends AbstractFacade<Action> {
         syncFacade.filterList(null, action.getName(), null, 0, Integer.MAX_VALUE);
 
     for (SyncRule rule : ruleList) {
-      syncFacade.remove(rule);
+      syncFacade.removeSync(rule.getSyncRuleId());
     }
 
     remove(action);
