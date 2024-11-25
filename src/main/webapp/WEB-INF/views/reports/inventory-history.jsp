@@ -30,12 +30,8 @@
                 $("#start").val('');
                 $("#end").val('');
                 $("#range").val('custom').trigger('change');
-                return false;
-            });
-            $(document).on("click", ".default-reset-panel", function () {
-                $("#start").val('');
-                $("#end").val('');
-                $("#range").val('1day').trigger('change');
+                $("#entity-select").val('');
+                $("#type-select").val('');
                 return false;
             });
         </script>
@@ -46,8 +42,40 @@
                 <form id="filter-form" method="get" action="inventory-history">
                     <div id="filter-form-panel">
                         <fieldset>
-                            <legend>Time</legend>
+                            <legend>Filter</legend>
                             <s:date-range datetime="${true}" sevenAmOffset="${true}"/>
+                        <ul class="key-value-list">
+                            <li>
+                                <div class="li-key">
+                                    <label for="entity-select">Entity</label>
+                                </div>
+                                <div class="li-value">
+                                    <select id="entity-select" name="entity">
+                                        <option value="">&nbsp;</option>
+                                        <option value="Alarm"${param.change eq 'Alarm' ? ' selected="selected"' : ''}>
+                                                Alarm</option>
+                                        <option value="Action"${param.change eq 'Action' ? ' selected="selected"' : ''}>
+                                            Action</option>
+                                        <option value="Sync Rule"${param.change eq 'Sync Rule' ? ' selected="selected"' : ''}>
+                                            Sync Rule</option>
+                                    </select>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="li-key">
+                                    <label for="type-select">Type</label>
+                                </div>
+                                <div class="li-value">
+                                    <select id="type-select" name="type">
+                                        <option value="">&nbsp;</option>
+                                        <c:forEach items="${typeList}" var="type">
+                                            <option value="${type.name()}"${param.type eq type.name() ? ' selected="selected"' : ''}>
+                                                <c:out value="${type.name()}"/></option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </li>
+                        </ul>
                         </fieldset>
                     </div>
                     <input type="hidden" id="offset-input" name="offset" value="0"/>

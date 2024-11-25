@@ -3,6 +3,7 @@ package org.jlab.jaws.presentation.controller.reports;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -11,6 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.hibernate.envers.RevisionType;
 import org.jlab.jaws.business.session.ApplicationRevisionInfoFacade;
 import org.jlab.jaws.persistence.entity.ApplicationRevisionInfo;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
@@ -50,12 +52,15 @@ public class InventoryHistoryReport extends HttpServlet {
       throw new RuntimeException("Date format error", e);
     }
 
+    String entity = request.getParameter("entity");
+    RevisionType type = convertRevisionType(request, "type");
+
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
 
     List<ApplicationRevisionInfo> transactionList =
-        revisionFacade.filterList(modifiedStart, modifiedEnd, offset, maxPerPage);
-    Long totalRecords = revisionFacade.countFilterList(modifiedStart, modifiedEnd);
+        revisionFacade.filterList(modifiedStart, modifiedEnd, type, offset, maxPerPage);
+    Long totalRecords = revisionFacade.countFilterList(modifiedStart, modifiedEnd, type);
 
     revisionFacade.loadUsers(transactionList);
 
@@ -65,7 +70,7 @@ public class InventoryHistoryReport extends HttpServlet {
 
     String selectionMessage = "All Transactions ";
 
-    String filters = message(modifiedStart, modifiedEnd);
+    String filters = message(modifiedStart, modifiedEnd, type);
 
     if (filters.length() > 0) {
       selectionMessage = filters;
@@ -86,6 +91,7 @@ public class InventoryHistoryReport extends HttpServlet {
               + "}";
     }
 
+    request.setAttribute("typeList", Arrays.asList(RevisionType.values()));
     request.setAttribute("transactionList", transactionList);
     request.setAttribute("selectionMessage", selectionMessage);
     request.setAttribute("paginator", paginator);
@@ -97,7 +103,18 @@ public class InventoryHistoryReport extends HttpServlet {
         .forward(request, response);
   }
 
-  private String message(Date modifiedStart, Date modifiedEnd) {
+  private RevisionType convertRevisionType(HttpServletRequest request, String name) {
+    String typeStr = request.getParameter(name);
+    RevisionType type = null;
+
+    if (typeStr != null && !typeStr.isBlank()) {
+      type = RevisionType.valueOf(typeStr);
+    }
+
+    return type;
+  }
+
+  private String message(Date modifiedStart, Date modifiedEnd, RevisionType type) {
     List<String> filters = new ArrayList<>();
 
     if (modifiedStart != null && modifiedEnd != null) {
@@ -106,6 +123,10 @@ public class InventoryHistoryReport extends HttpServlet {
       filters.add("Starting " + TimeUtil.formatSmartSingleTime(modifiedStart));
     } else if (modifiedEnd != null) {
       filters.add("Before " + TimeUtil.formatSmartSingleTime(modifiedEnd));
+    }
+
+    if (type != null) {
+      filters.add("Type: \"" + type.name() + "\"");
     }
 
     String message = "";

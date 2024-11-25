@@ -8,6 +8,9 @@ import javax.validation.constraints.Size;
 import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
+import org.jlab.jaws.persistence.entity.aud.ActionAud;
+import org.jlab.jaws.persistence.entity.aud.AlarmAud;
+import org.jlab.jaws.persistence.entity.aud.SyncRuleAud;
 import org.jlab.jaws.persistence.model.AuditedEntityChange;
 import org.jlab.jaws.presentation.util.ApplicationRevisionInfoListener;
 import org.jlab.smoothness.persistence.view.User;
@@ -40,6 +43,15 @@ public class ApplicationRevisionInfo implements Serializable {
   @Column(name = "ADDRESS", length = 64)
   @Size(max = 64)
   private String address;
+
+  @OneToMany(mappedBy = "revision")
+  private List<AlarmAud> alarmAudList;
+
+  @OneToMany(mappedBy = "revision")
+  private List<ActionAud> actionAudList;
+
+  @OneToMany(mappedBy = "revision")
+  private List<SyncRuleAud> syncRuleAudList;
 
   @Transient private List<AuditedEntityChange> changeList;
   @Transient private User user;
@@ -110,5 +122,29 @@ public class ApplicationRevisionInfo implements Serializable {
 
   public void setUser(User user) {
     this.user = user;
+  }
+
+  public List<AlarmAud> getAlarmAudList() {
+    return alarmAudList;
+  }
+
+  public void setAlarmAudList(List<AlarmAud> alarmAudList) {
+    this.alarmAudList = alarmAudList;
+  }
+
+  public List<ActionAud> getActionAudList() {
+    return actionAudList;
+  }
+
+  public void setActionAudList(List<ActionAud> actionAudList) {
+    this.actionAudList = actionAudList;
+  }
+
+  public List<SyncRuleAud> getSyncRuleAudList() {
+    return syncRuleAudList;
+  }
+
+  public void setSyncRuleAudList(List<SyncRuleAud> syncRuleAudList) {
+    this.syncRuleAudList = syncRuleAudList;
   }
 }
