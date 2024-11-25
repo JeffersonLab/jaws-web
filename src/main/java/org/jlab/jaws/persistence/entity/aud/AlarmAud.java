@@ -66,9 +66,8 @@ public class AlarmAud implements Serializable {
   @Column(length = 64)
   private String alias;
 
-  @JoinColumn(name = "ACTION_ID", referencedColumnName = "ACTION_ID", nullable = false)
-  @ManyToOne(optional = false)
-  private Action action;
+  @Column(name = "ACTION_ID", nullable = false, precision = 22, scale = 0)
+  private BigInteger actionId;
 
   @Size(max = 64)
   @Column(name = "DEVICE", length = 64, nullable = true)
@@ -112,12 +111,12 @@ public class AlarmAud implements Serializable {
     this.alias = alias;
   }
 
-  public Action getAction() {
-    return action;
+  public BigInteger getActionId() {
+    return actionId;
   }
 
-  public void setAction(Action action) {
-    this.action = action;
+  public void setActionId(BigInteger actionId) {
+    this.actionId = actionId;
   }
 
   public String getDevice() {
