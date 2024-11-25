@@ -52,12 +52,10 @@
                                 <div class="li-value">
                                     <select id="entity-select" name="entity">
                                         <option value="">&nbsp;</option>
-                                        <option value="Alarm"${param.change eq 'Alarm' ? ' selected="selected"' : ''}>
-                                                Alarm</option>
-                                        <option value="Action"${param.change eq 'Action' ? ' selected="selected"' : ''}>
-                                            Action</option>
-                                        <option value="Sync Rule"${param.change eq 'Sync Rule' ? ' selected="selected"' : ''}>
-                                            Sync Rule</option>
+                                        <c:forEach items="${entityList}" var="entity">
+                                            <option value="${entity.name()}"${param.entity eq entity.name() ? ' selected="selected"' : ''}>
+                                                <c:out value="${entity.name()}"/></option>
+                                        </c:forEach>
                                     </select>
                                 </div>
                             </li>

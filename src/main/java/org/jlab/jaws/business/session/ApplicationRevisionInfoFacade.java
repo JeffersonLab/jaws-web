@@ -15,6 +15,7 @@ import org.hibernate.envers.RevisionType;
 import org.jlab.jaws.persistence.entity.*;
 import org.jlab.jaws.persistence.entity.aud.ActionAud;
 import org.jlab.jaws.persistence.entity.aud.AlarmAud;
+import org.jlab.jaws.persistence.model.AuditedEntity;
 import org.jlab.jaws.persistence.model.AuditedEntityChange;
 import org.jlab.smoothness.business.service.UserAuthorizationService;
 import org.jlab.smoothness.persistence.view.User;
@@ -44,13 +45,33 @@ public class ApplicationRevisionInfoFacade extends AbstractFacade<ApplicationRev
       Root<ApplicationRevisionInfo> root,
       Date modifiedStart,
       Date modifiedEnd,
-      RevisionType type) {
+      RevisionType type,
+      AuditedEntity entity) {
     List<Predicate> filters = new ArrayList<>();
 
-    Join<ApplicationRevisionInfo, AlarmAud> alarmJoin = root.join("alarmAudList", JoinType.LEFT);
-    Join<ApplicationRevisionInfo, ActionAud> actionJoin = root.join("actionAudList", JoinType.LEFT);
+    JoinType alarmJoinType = JoinType.LEFT;
+    JoinType actionJoinType = JoinType.LEFT;
+    JoinType syncRuleJoinType = JoinType.LEFT;
+
+    if (entity != null) {
+      switch (entity) {
+        case Alarm:
+          alarmJoinType = JoinType.INNER;
+          break;
+        case Action:
+          actionJoinType = JoinType.INNER;
+          break;
+        case SyncRule:
+          syncRuleJoinType = JoinType.INNER;
+          break;
+      }
+    }
+
+    Join<ApplicationRevisionInfo, AlarmAud> alarmJoin = root.join("alarmAudList", alarmJoinType);
+    Join<ApplicationRevisionInfo, ActionAud> actionJoin =
+        root.join("actionAudList", actionJoinType);
     Join<ApplicationRevisionInfo, ActionAud> syncRuleJoin =
-        root.join("syncRuleAudList", JoinType.LEFT);
+        root.join("syncRuleAudList", syncRuleJoinType);
 
     if (modifiedStart != null) {
       filters.add(cb.greaterThanOrEqualTo(root.get("ts"), modifiedStart.getTime()));
@@ -73,13 +94,18 @@ public class ApplicationRevisionInfoFacade extends AbstractFacade<ApplicationRev
 
   @PermitAll
   public List<ApplicationRevisionInfo> filterList(
-      Date modifiedStart, Date modifiedEnd, RevisionType type, int offset, int max) {
+      Date modifiedStart,
+      Date modifiedEnd,
+      RevisionType type,
+      AuditedEntity entity,
+      int offset,
+      int max) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<ApplicationRevisionInfo> cq = cb.createQuery(ApplicationRevisionInfo.class);
     Root<ApplicationRevisionInfo> root = cq.from(ApplicationRevisionInfo.class);
     cq.select(root);
 
-    List<Predicate> filters = getFilters(cb, root, modifiedStart, modifiedEnd, type);
+    List<Predicate> filters = getFilters(cb, root, modifiedStart, modifiedEnd, type, entity);
 
     if (!filters.isEmpty()) {
       cq.where(cb.and(filters.toArray(new Predicate[] {})));
@@ -107,12 +133,13 @@ public class ApplicationRevisionInfoFacade extends AbstractFacade<ApplicationRev
   }
 
   @PermitAll
-  public Long countFilterList(Date modifiedStart, Date modifiedEnd, RevisionType type) {
+  public Long countFilterList(
+      Date modifiedStart, Date modifiedEnd, RevisionType type, AuditedEntity entity) {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery<Long> cq = cb.createQuery(Long.class);
     Root<ApplicationRevisionInfo> root = cq.from(ApplicationRevisionInfo.class);
 
-    List<Predicate> filters = getFilters(cb, root, modifiedStart, modifiedEnd, type);
+    List<Predicate> filters = getFilters(cb, root, modifiedStart, modifiedEnd, type, entity);
 
     if (!filters.isEmpty()) {
       cq.where(cb.and(filters.toArray(new Predicate[] {})));

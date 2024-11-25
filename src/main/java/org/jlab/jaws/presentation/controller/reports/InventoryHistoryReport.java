@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.hibernate.envers.RevisionType;
 import org.jlab.jaws.business.session.ApplicationRevisionInfoFacade;
 import org.jlab.jaws.persistence.entity.ApplicationRevisionInfo;
+import org.jlab.jaws.persistence.model.AuditedEntity;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 import org.jlab.smoothness.business.util.TimeUtil;
 import org.jlab.smoothness.presentation.util.Paginator;
@@ -52,15 +53,15 @@ public class InventoryHistoryReport extends HttpServlet {
       throw new RuntimeException("Date format error", e);
     }
 
-    String entity = request.getParameter("entity");
+    AuditedEntity entity = convertEntity(request, "entity");
     RevisionType type = convertRevisionType(request, "type");
 
     int offset = ParamUtil.convertAndValidateNonNegativeInt(request, "offset", 0);
     int maxPerPage = 100;
 
     List<ApplicationRevisionInfo> transactionList =
-        revisionFacade.filterList(modifiedStart, modifiedEnd, type, offset, maxPerPage);
-    Long totalRecords = revisionFacade.countFilterList(modifiedStart, modifiedEnd, type);
+        revisionFacade.filterList(modifiedStart, modifiedEnd, type, entity, offset, maxPerPage);
+    Long totalRecords = revisionFacade.countFilterList(modifiedStart, modifiedEnd, type, entity);
 
     revisionFacade.loadUsers(transactionList);
 
@@ -70,7 +71,7 @@ public class InventoryHistoryReport extends HttpServlet {
 
     String selectionMessage = "All Transactions ";
 
-    String filters = message(modifiedStart, modifiedEnd, type);
+    String filters = message(modifiedStart, modifiedEnd, type, entity);
 
     if (filters.length() > 0) {
       selectionMessage = filters;
@@ -91,6 +92,7 @@ public class InventoryHistoryReport extends HttpServlet {
               + "}";
     }
 
+    request.setAttribute("entityList", Arrays.asList(AuditedEntity.values()));
     request.setAttribute("typeList", Arrays.asList(RevisionType.values()));
     request.setAttribute("transactionList", transactionList);
     request.setAttribute("selectionMessage", selectionMessage);
@@ -101,6 +103,17 @@ public class InventoryHistoryReport extends HttpServlet {
         .getServletContext()
         .getRequestDispatcher("/WEB-INF/views/reports/inventory-history.jsp")
         .forward(request, response);
+  }
+
+  private AuditedEntity convertEntity(HttpServletRequest request, String name) {
+    String entityStr = request.getParameter(name);
+    AuditedEntity entity = null;
+
+    if (entityStr != null && !entityStr.isBlank()) {
+      entity = AuditedEntity.valueOf(entityStr);
+    }
+
+    return entity;
   }
 
   private RevisionType convertRevisionType(HttpServletRequest request, String name) {
@@ -114,7 +127,8 @@ public class InventoryHistoryReport extends HttpServlet {
     return type;
   }
 
-  private String message(Date modifiedStart, Date modifiedEnd, RevisionType type) {
+  private String message(
+      Date modifiedStart, Date modifiedEnd, RevisionType type, AuditedEntity entity) {
     List<String> filters = new ArrayList<>();
 
     if (modifiedStart != null && modifiedEnd != null) {
@@ -127,6 +141,10 @@ public class InventoryHistoryReport extends HttpServlet {
 
     if (type != null) {
       filters.add("Type: \"" + type.name() + "\"");
+    }
+
+    if (entity != null) {
+      filters.add("Entity: \"" + entity.name() + "\"");
     }
 
     String message = "";
