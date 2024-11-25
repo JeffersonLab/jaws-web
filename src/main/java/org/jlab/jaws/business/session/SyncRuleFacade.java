@@ -710,6 +710,4 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   public List<RuleSet> findSystemRuleSetList(String systemName) {
     return null;
   }
-
-  public List<SyncRule> findByAction(Action action) {}
 }
