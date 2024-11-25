@@ -23,6 +23,7 @@ import org.jlab.jaws.entity.AlarmAction;
 import org.jlab.jaws.entity.AlarmPriority;
 import org.jlab.jaws.persistence.entity.Action;
 import org.jlab.jaws.persistence.entity.Priority;
+import org.jlab.jaws.persistence.entity.SyncRule;
 import org.jlab.jaws.persistence.entity.SystemEntity;
 import org.jlab.smoothness.business.exception.UserFriendlyException;
 
@@ -36,6 +37,8 @@ public class ActionFacade extends AbstractFacade<Action> {
   @EJB SystemFacade systemFacade;
 
   @EJB PriorityFacade priorityFacade;
+
+  @EJB SyncRuleFacade syncFacade;
 
   @PersistenceContext(unitName = "webappPU")
   private EntityManager em;
@@ -224,6 +227,15 @@ public class ActionFacade extends AbstractFacade<Action> {
 
     if (action == null) {
       throw new UserFriendlyException("Action not found with ID: " + actionId);
+    }
+
+    // Can't cascade set null on composite key, so we manually must clear sync rules before deleting
+    // action
+    List<SyncRule> ruleList =
+        syncFacade.filterList(null, action.getName(), null, 0, Integer.MAX_VALUE);
+
+    for (SyncRule rule : ruleList) {
+      syncFacade.remove(rule);
     }
 
     remove(action);
