@@ -157,7 +157,7 @@
                                     <c:otherwise>
                                         <c:url var="url" value="/setup/syncs/${alarm.syncRule.syncRuleId}">
                                         </c:url>
-                                        <a href="${url}"><c:out value="${alarm.syncRule.syncRuleId}"/></a>
+                                        <a href="${url}"><c:out value="${alarm.syncRule.description ne null ? alarm.syncRule.description : alarm.action.name}"/> (#${alarm.syncRule.syncRuleId})</a>
                                     </c:otherwise>
                                 </c:choose>
                             </dd>
@@ -168,9 +168,10 @@
                                         None
                                     </c:when>
                                     <c:otherwise>
-                                        <c:url var="url" value="${alarm.syncRule.syncServer.baseUrl}${alarm.syncRule.syncServer.elementPath}/${jaws:urlEncodePath(alarm.name.split(' ')[0])}">
+                                        <c:set value="${alarm.syncElementName ne null ? alarm.syncElementName : alarm.name.split(' ')[0]}" var="elementName"/>
+                                        <c:url var="url" value="${alarm.syncRule.syncServer.baseUrl}${alarm.syncRule.syncServer.elementPath}/${jaws:urlEncodePath(elementName)}">
                                         </c:url>
-                                        <a href="${url}"><c:out value="${alarm.syncElementId}"/></a>
+                                        <a href="${url}"><c:out value="${elementName}"/> (#${alarm.syncElementId})</a>
                                     </c:otherwise>
                                 </c:choose>
                             </dd>

@@ -86,6 +86,10 @@ public class AlarmAud implements Serializable {
   @Column(length = 64, nullable = true)
   private String pv;
 
+  @Size(max = 64)
+  @Column(name = "SYNC_ELEMENT_NAME", length = 64, nullable = true)
+  private String syncElementName;
+
   @Column(name = "SYNC_ELEMENT_ID", nullable = true, precision = 22, scale = 0)
   private BigInteger syncElementId;
 
@@ -146,6 +150,14 @@ public class AlarmAud implements Serializable {
 
   public void setPv(String pv) {
     this.pv = pv;
+  }
+
+  public String getSyncElementName() {
+    return syncElementName;
+  }
+
+  public void setSyncElementName(String syncElementName) {
+    this.syncElementName = syncElementName;
   }
 
   public BigInteger getSyncElementId() {

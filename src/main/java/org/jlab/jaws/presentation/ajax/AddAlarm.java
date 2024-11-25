@@ -48,6 +48,7 @@ public class AddAlarm extends HttpServlet {
       String managedBy = request.getParameter("managedBy");
       String maskedBy = request.getParameter("maskedBy");
       String pv = request.getParameter("pv");
+      String elementName = request.getParameter("elementName");
       BigInteger syncRuleId = ParamConverter.convertBigInteger(request, "syncRuleId");
       BigInteger elementId = ParamConverter.convertBigInteger(request, "elementId");
 
@@ -61,6 +62,7 @@ public class AddAlarm extends HttpServlet {
           managedBy,
           maskedBy,
           pv,
+          elementName,
           syncRuleId,
           elementId);
     } catch (UserFriendlyException e) {

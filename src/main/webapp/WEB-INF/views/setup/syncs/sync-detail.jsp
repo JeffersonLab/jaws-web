@@ -200,18 +200,19 @@
                                                 </c:if>
                                             </c:if>
                                             <tr data-action-id="${alarm.action.actionId}"
-                                                data-name="${alarm.name}"
-                                                data-alias="${alias}"
+                                                data-name="${fn:escapeXml(alarm.name)}"
+                                                data-alias="${fn:escapeXml(alias)}"
                                                 data-location-id-csv="${alarm.locationIdCsv}"
-                                                data-device="${alarm.device}"
-                                                data-screen-command="${screenCommand}"
-                                                data-managed-by="${alarm.managedBy}"
-                                                data-masked-by="${alarm.maskedBy}"
-                                                data-pv="${pv}"
+                                                data-device="${fn:escapeXml(alarm.device)}"
+                                                data-screen-command="${fn:escapeXml(screenCommand)}"
+                                                data-managed-by="${fn:escapeXml(alarm.managedBy)}"
+                                                data-masked-by="${fn:escapeXml(alarm.maskedBy)}"
+                                                data-pv="${fn:escapeXml(pv)}"
                                                 data-rule-id="${alarm.syncRule.syncRuleId}"
                                                 data-element-id="${alarm.syncElementId}"
+                                                data-element-name="${fn:escapeXml(alarm.syncElementName)}"
                                                 class="add-row">
-                                                <td><c:out value="${alarm.syncElementId}"/></td>
+                                                <td title="${fn:escapeXml(alarm.syncElementName)}"><c:out value="${alarm.syncElementId}"/></td>
                                                 <td>
                                                     <c:out value="${alarm.name}"/>
                                                     <c:if test="${not empty alias}">
@@ -269,7 +270,7 @@
                                         <c:forEach items="${diff.removeList}" var="alarm">
                                             <tr data-id="${alarm.alarmId}"
                                                 class="remove-row">
-                                                <td><c:out value="${alarm.syncElementId}"/></td>
+                                                <td title="${fn:escapeXml(alarm.syncElementName)}"><c:out value="${alarm.syncElementId}"/></td>
                                                 <td>
                                                     <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}"
                                                            var="url">
@@ -297,18 +298,19 @@
                                             <c:set value="${not empty remoteList[alarm.syncElementId].pv}"
                                                    var="pvSync"/>
                                             <tr data-id="${alarm.alarmId}"
-                                                data-name="${remoteList[alarm.syncElementId].name}"
-                                                data-alias="${aliasSync ? remoteList[alarm.syncElementId].alias : alarm.alias}"
+                                                data-name="${fn:escapeXml(remoteList[alarm.syncElementId].name)}"
+                                                data-alias="${fn:escapeXml(aliasSync ? remoteList[alarm.syncElementId].alias : alarm.alias)}"
                                                 data-action-id="${alarm.action.actionId}"
                                                 data-location-id-csv="${remoteList[alarm.syncElementId].locationIdCsv}"
-                                                data-device="${alarm.device}"
-                                                data-screen-command="${screenCommandSync ? remoteList[alarm.syncElementId].screenCommand : alarm.screenCommand}"
-                                                data-managed-by="${alarm.managedBy}"
-                                                data-masked-by="${alarm.maskedBy}"
-                                                data-pv="${pvSync ? remoteList[alarm.syncElementId].pv : alarm.pv}"
+                                                data-device="${fn:escapeXml(alarm.device)}"
+                                                data-screen-command="${fn:escapeXml(screenCommandSync ? remoteList[alarm.syncElementId].screenCommand : alarm.screenCommand)}"
+                                                data-managed-by="${fn:escapeXml(alarm.managedBy)}"
+                                                data-masked-by="${fn:escapeXml(alarm.maskedBy)}"
+                                                data-pv="${fn:escapeXml(pvSync ? remoteList[alarm.syncElementId].pv : alarm.pv)}"
                                                 data-rule-id="${alarm.syncRule.syncRuleId}"
-                                                data-element-id="${alarm.syncElementId}">
-                                                <td><c:out value="${alarm.syncElementId}"/></td>
+                                                data-element-id="${alarm.syncElementId}"
+                                                data-element-name="${fn:escapeXml(alarm.syncElementName)}">
+                                                <td title="${fn:escapeXml(alarm.syncElementName)}"><c:out value="${alarm.syncElementId}"/></td>
                                                 <td>
                                                     <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}"
                                                            var="url">
@@ -390,7 +392,7 @@
                                         </c:forEach>
                                         <c:forEach items="${diff.matchList}" var="alarm">
                                             <tr>
-                                                <td><c:out value="${alarm.syncElementId}"/></td>
+                                                <td title="${fn:escapeXml(alarm.syncElementName)}"><c:out value="${alarm.syncElementId}"/></td>
                                                 <td>
                                                     <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}"
                                                            var="url">

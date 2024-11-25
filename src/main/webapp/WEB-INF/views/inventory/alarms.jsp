@@ -154,13 +154,14 @@
                                             <tr data-id="${alarm.alarmId}"
                                                 data-action-id="${alarm.action.actionId}"
                                                 data-location-id-csv="${alarm.locationIdCsv}"
-                                                data-alias="${alarm.alias}"
-                                                data-device="${alarm.device}"
-                                                data-screen-command="${alarm.screenCommand}"
-                                                data-managed-by="${alarm.managedBy}"
-                                                data-masked-by="${alarm.maskedBy}"
-                                                data-pv="${alarm.pv}"
+                                                data-alias="${fn:escapeXml(alarm.alias)}"
+                                                data-device="${fn:escapeXml(alarm.device)}"
+                                                data-screen-command="${fn:escapeXml(alarm.screenCommand)}"
+                                                data-managed-by="${fn:escapeXml(alarm.managedBy)}"
+                                                data-masked-by="${fn:escapeXml(alarm.maskedBy)}"
+                                                data-pv="${fn:escapeXml(alarm.pv)}"
                                                 data-sync-rule-id="${alarm.syncRule.syncRuleId}"
+                                                data-sync-element-name="${fn:escapeXml(alarm.syncElementName)}"
                                                 data-sync-element-id="${alarm.syncElementId}"
                                                 data-sync-screen-command="${empty alarm.syncRule.screenCommand ? 'N' : 'Y'}"
                                                 data-sync-pv="${empty alarm.syncRule.pv ? 'N' : 'Y'}">
@@ -293,6 +294,14 @@
                         </div>
                         <div class="li-value">
                             <input type="text" id="row-sync-rule-id" disabled="disabled"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="li-key">
+                            <label for="row-sync-element-name">Sync Element Name</label>
+                        </div>
+                        <div class="li-value">
+                            <input type="text" id="row-sync-element-name" disabled="disabled"/>
                         </div>
                     </li>
                     <li>

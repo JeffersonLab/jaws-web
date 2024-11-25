@@ -255,6 +255,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       String managedBy,
       String maskedBy,
       String pv,
+      String elementName,
       BigInteger syncRuleId,
       BigInteger elementId)
       throws UserFriendlyException {
@@ -318,6 +319,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
     alarm.setManagedBy(managedBy);
     alarm.setMaskedBy(maskedBy);
     alarm.setPv(pv);
+    alarm.setSyncElementName(elementName);
     alarm.setSyncRule(rule);
     alarm.setSyncElementId(elementId);
 
@@ -395,6 +397,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       String managedBy,
       String maskedBy,
       String pv,
+      String elementName,
       BigInteger syncRuleId,
       BigInteger elementId)
       throws UserFriendlyException {
@@ -462,6 +465,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
     alarm.setManagedBy(managedBy);
     alarm.setMaskedBy(maskedBy);
     alarm.setPv(pv);
+    alarm.setSyncElementName(elementName);
     alarm.setSyncRule(rule);
     alarm.setSyncElementId(elementId);
 
@@ -585,6 +589,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
         managedBy,
         maskedBy,
         pv,
+        null,
         null,
         null);
   }

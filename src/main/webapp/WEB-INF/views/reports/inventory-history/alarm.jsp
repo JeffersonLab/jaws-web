@@ -171,6 +171,14 @@
                             </c:forEach>
                         </tr>
                         <tr>
+                            <th>Sync Element Name:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.syncElementName}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
                             <th>Sync Rule:</th>
                             <c:forEach items="${revisionList}" var="entity">
                                 <td>

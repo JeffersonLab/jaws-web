@@ -74,6 +74,7 @@ jlab.editRow = function(removeSync) {
         maskedBy = $("#row-masked-by").val(),
         pv = $("#row-pv").val(),
         syncRuleId = $("#row-sync-rule-id").val(),
+        elementName = $("#row-sync-element-name").val(),
         elementId = $("#row-sync-element-id").val(),
         alarmId = $(".editable-row-table tr.selected-row").attr("data-id"),
         reloading = false;
@@ -81,6 +82,7 @@ jlab.editRow = function(removeSync) {
         if(removeSync) {
             syncRuleId = "";
             elementId = "";
+            elementName = "";
 
             $("#remove-sync-button")
                 .height($("#remove-sync-button").height())
@@ -114,6 +116,7 @@ jlab.editRow = function(removeSync) {
             managedBy: managedBy,
             maskedBy: maskedBy,
             pv: pv,
+            elementName: elementName,
             syncRuleId: syncRuleId,
             elementId: elementId
         },
@@ -216,6 +219,7 @@ $(document).on("click", "#open-edit-row-dialog-button", function() {
 
     $("#row-sync-rule-id").val(syncRuleId);
     $("#row-sync-element-id").val($selectedRow.attr("data-sync-element-id"));
+    $("#row-sync-element-name").val($selectedRow.attr("data-sync-element-name"));
 
     if(syncRuleId) {
         $("#remove-sync-button").removeClass("hidden");

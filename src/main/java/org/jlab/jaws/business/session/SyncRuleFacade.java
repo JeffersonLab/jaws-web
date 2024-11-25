@@ -398,7 +398,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
         AlarmEntity foreign = foreignMap.get(alarm.getJoinAttributeValue());
 
         if (foreign != null) {
-          String foreignName = foreign.getName().split(" ")[0];
+          String foreignName = foreign.getSyncElementName();
           String name = alarm.getName();
           String screenCommand = alarm.getScreenCommand();
           String pv = alarm.getPv();
@@ -463,10 +463,12 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
           }
         }
 
+        List<String> nameTokens = getTemplateVars(rule.getAlarmName());
         List<String> commandTokens = getTemplateVars(rule.getScreenCommand());
         List<String> pvTokens = getTemplateVars(rule.getPv());
 
-        Set<String> tokenSet = new HashSet<>(commandTokens);
+        Set<String> tokenSet = new HashSet<>(nameTokens);
+        tokenSet.addAll(commandTokens);
         tokenSet.addAll(pvTokens);
 
         for (String token : tokenSet) {
@@ -491,7 +493,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       screenCommand = applyExpressionVars(rule.getScreenCommand(), variableMap);
       pv = applyExpressionVars(rule.getPv(), variableMap);
     } else {
-      alarmName = elementName + rule.getAlarmName(); // ForeignName is derived from this
+      alarmName = elementName + rule.getAlarmName();
       joinAttribute = rule.getForeignAttribute();
     }
 
@@ -518,6 +520,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     }
 
     AlarmEntity alarm = new AlarmEntity();
+    alarm.setSyncElementName(elementName);
     alarm.setSyncElementId(elementId);
     alarm.setSyncRule(rule);
     alarm.setName(alarmName);

@@ -48,6 +48,7 @@ public class EditAlarm extends HttpServlet {
       String managedBy = request.getParameter("managedBy");
       String maskedBy = request.getParameter("maskedBy");
       String pv = request.getParameter("pv");
+      String elementName = request.getParameter("elementName");
       BigInteger syncRuleId = ParamConverter.convertBigInteger(request, "syncRuleId");
       BigInteger elementId = ParamConverter.convertBigInteger(request, "elementId");
 
@@ -62,6 +63,7 @@ public class EditAlarm extends HttpServlet {
           managedBy,
           maskedBy,
           pv,
+          elementName,
           syncRuleId,
           elementId);
     } catch (UserFriendlyException e) {
