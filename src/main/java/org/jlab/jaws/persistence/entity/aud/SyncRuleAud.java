@@ -1,6 +1,7 @@
 package org.jlab.jaws.persistence.entity.aud;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -55,9 +56,8 @@ public class SyncRuleAud implements Serializable, Comparable<SyncRuleAud> {
     this.syncRuleAudPK = syncRuleAudPK;
   }
 
-  @JoinColumn(name = "ACTION_ID", referencedColumnName = "ACTION_ID", nullable = false)
-  @ManyToOne(optional = false)
-  private Action action;
+  @Column(name = "ACTION_ID", nullable = false, precision = 22, scale = 0)
+  private BigInteger actionId;
 
   @JoinColumn(name = "SYNC_SERVER_ID", referencedColumnName = "SYNC_SERVER_ID", nullable = false)
   @ManyToOne(optional = false)
@@ -103,12 +103,12 @@ public class SyncRuleAud implements Serializable, Comparable<SyncRuleAud> {
   @Column(length = 64, nullable = true)
   private String pv;
 
-  public Action getAction() {
-    return action;
+  public BigInteger getActionId() {
+    return actionId;
   }
 
-  public void setAction(Action action) {
-    this.action = action;
+  public void setActionId(BigInteger actionId) {
+    this.actionId = actionId;
   }
 
   public SyncServer getSyncServer() {
@@ -280,7 +280,7 @@ public class SyncRuleAud implements Serializable, Comparable<SyncRuleAud> {
 
   @Override
   public int compareTo(SyncRuleAud o) {
-    int result = action.getName().compareTo(o.getAction().getName());
+    int result = actionId.compareTo(o.getActionId());
 
     if (result == 0) {
       result = server.getSyncServerId().compareTo(o.getSyncServer().getSyncServerId());

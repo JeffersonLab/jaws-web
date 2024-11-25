@@ -122,8 +122,11 @@
                         <tr>
                             <th>Action:</th>
                             <c:forEach items="${revisionList}" var="entity">
+                                <c:url value="/reports/inventory-history/action" var="url">
+                                    <c:param name="actionId" value="${entity.actionId}"/>
+                                </c:url>
                                 <td>
-                                    <c:out value="${entity.action.name}"/>
+                                    <a href="${url}"><c:out value="${entity.actionId}"/></a>
                                 </td>
                             </c:forEach>
                         </tr>
