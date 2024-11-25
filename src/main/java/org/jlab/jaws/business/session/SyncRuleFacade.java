@@ -708,6 +708,27 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
 
   @PermitAll
   public List<RuleSet> findSystemRuleSetList(String systemName) {
-    return null;
+    Map<String, RuleSet> ruleSetMap = new LinkedHashMap<>();
+
+    List<SystemEntity> systemList = systemFacade.filterList(systemName, null, 0, Integer.MAX_VALUE);
+
+    for (SystemEntity s : systemList) {
+      RuleSet rs = new RuleSet(s.getName());
+      ruleSetMap.put(s.getName(), rs);
+    }
+
+    List<SyncRule> ruleList = findAll();
+
+    for (SyncRule r : ruleList) {
+      SystemEntity s = r.getAction().getSystem();
+
+      RuleSet rs = ruleSetMap.get(s.getName());
+
+      if (rs != null) {
+        rs.addSyncRule(r);
+      }
+    }
+
+    return new ArrayList<>(ruleSetMap.values());
   }
 }

@@ -41,10 +41,8 @@ public class SyncSummaryController extends HttpServlet {
 
     long totalRecords = 0;
 
-    if (ruleSetList != null) {
-      for (RuleSet rs : ruleSetList) {
-        totalRecords = totalRecords + rs.count();
-      }
+    for (RuleSet rs : ruleSetList) {
+      totalRecords = totalRecords + rs.count();
     }
 
     String selectionMessage = createSelectionMessage(totalRecords, systemName);
