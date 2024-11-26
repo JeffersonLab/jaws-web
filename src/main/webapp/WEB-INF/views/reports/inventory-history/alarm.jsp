@@ -142,14 +142,6 @@
                             </c:forEach>
                         </tr>
                         <tr>
-                            <th>Location:</th>
-                            <c:forEach items="${revisionList}" var="entity">
-                                <td>
-                                    <c:out value="${entity.location}"/>
-                                </td>
-                            </c:forEach>
-                        </tr>
-                        <tr>
                             <th>Device:</th>
                             <c:forEach items="${revisionList}" var="entity">
                                 <td>
