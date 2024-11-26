@@ -387,6 +387,7 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
 
   @RolesAllowed("jaws-admin")
   public void editAlarm(
+      Set<String> editableParams,
       BigInteger alarmId,
       String name,
       BigInteger actionId,
@@ -411,63 +412,99 @@ public class AlarmFacade extends AbstractFacade<AlarmEntity> {
       throw new UserFriendlyException("Alarm not found with ID: " + alarmId);
     }
 
-    if (actionId == null) {
-      throw new UserFriendlyException("Action is required");
+    if (editableParams.contains("actionId")) {
+      if (actionId == null) {
+        throw new UserFriendlyException("Action is required");
+      }
+
+      Action action = actionFacade.find(actionId);
+
+      if (action == null) {
+        throw new UserFriendlyException("Action not found with ID: " + actionId);
+      }
+
+      alarm.setAction(action);
     }
 
-    Action action = actionFacade.find(actionId);
-
-    if (action == null) {
-      throw new UserFriendlyException("Action not found with ID: " + actionId);
+    if (editableParams.contains("name")) {
+      alarm.setName(name);
     }
 
-    List<Location> locationList = new ArrayList<>();
+    if (editableParams.contains("alias")) {
+      alarm.setAlias(alias);
+    }
 
-    if (locationIdArray != null && locationIdArray.length > 0) {
-      for (BigInteger id : locationIdArray) {
-        if (id == null) { // TODO: the convertBigIntegerArray method should be excluding empty/null
-          continue;
+    if (editableParams.contains("device")) {
+      alarm.setDevice(device);
+    }
+
+    if (editableParams.contains("screenCommand")) {
+      alarm.setScreenCommand(screenCommand);
+    }
+
+    if (editableParams.contains("managedBy")) {
+      alarm.setManagedBy(managedBy);
+    }
+
+    if (editableParams.contains("maskedBy")) {
+      alarm.setMaskedBy(maskedBy);
+    }
+
+    if (editableParams.contains("pv")) {
+      alarm.setPv(pv);
+    }
+
+    if (editableParams.contains("locationId[]")) {
+      List<Location> locationList = new ArrayList<>();
+
+      if (locationIdArray != null && locationIdArray.length > 0) {
+        for (BigInteger id : locationIdArray) {
+          if (id
+              == null) { // TODO: the convertBigIntegerArray method should be excluding empty/null
+            continue;
+          }
+
+          Location l = locationFacade.find(id);
+
+          if (l != null) {
+            locationList.add(l);
+          }
+        }
+      }
+
+      alarm.setLocationList(locationList);
+    }
+
+    if (editableParams.contains("syncRuleId")) {
+      SyncRule rule = null;
+
+      if (syncRuleId != null) {
+
+        if (elementId == null) {
+          throw new UserFriendlyException("Element ID is required if sync rule ID is provided");
         }
 
-        Location l = locationFacade.find(id);
+        rule = syncRuleFacade.find(syncRuleId);
 
-        if (l != null) {
-          locationList.add(l);
+        if (rule == null) {
+          throw new UserFriendlyException("Sync Rule with ID " + syncRuleId + " not found");
         }
       }
-    }
 
-    SyncRule rule = null;
-
-    if (syncRuleId != null) {
-
-      if (elementId == null) {
-        throw new UserFriendlyException("Element ID is required if sync rule ID is provided");
+      if (syncRuleId == null && elementId != null) {
+        throw new UserFriendlyException("Sync rule ID is required if element ID is provided");
       }
 
-      rule = syncRuleFacade.find(syncRuleId);
-
-      if (rule == null) {
-        throw new UserFriendlyException("Sync Rule with ID " + syncRuleId + " not found");
-      }
+      alarm.setSyncRule(rule);
     }
 
-    if (syncRuleId == null && elementId != null) {
-      throw new UserFriendlyException("Sync rule ID is required if element ID is provided");
+    if (editableParams.contains("syncElementName")) {
+      alarm.setSyncElementName(elementName);
     }
 
-    alarm.setName(name);
-    alarm.setAction(action);
-    alarm.setLocationList(locationList);
-    alarm.setAlias(alias);
-    alarm.setDevice(device);
-    alarm.setScreenCommand(screenCommand);
-    alarm.setManagedBy(managedBy);
-    alarm.setMaskedBy(maskedBy);
-    alarm.setPv(pv);
-    alarm.setSyncElementName(elementName);
-    alarm.setSyncRule(rule);
-    alarm.setSyncElementId(elementId);
+    if (editableParams.contains("syncElementId")) {
+      alarm.setSyncElementId(elementId);
+    }
 
     edit(alarm);
 

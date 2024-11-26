@@ -119,23 +119,10 @@ jlab.removeRow = function($tr, batch) {
     });
 };
 jlab.linkRow = function($tr, alarmId, batch) {
-    var name = $tr.attr("data-name"),
-        actionId = $tr.attr("data-action-id"),
-        locationCsv = $tr.attr("data-location-id-csv"),
-        alias = $tr.attr("data-alias"),
-        device = $tr.attr("data-device"),
-        screenCommand = $tr.attr("data-screen-command"),
-        managedBy = $tr.attr("data-managed-by"),
-        maskedBy = $tr.attr("data-masked-by"),
-        pv = $tr.attr("data-pv"),
-        syncRuleId = $tr.attr("data-rule-id"),
+    var syncRuleId = $tr.attr("data-rule-id"),
         syncElementName = $tr.attr("data-element-name"),
         syncElementId = $tr.attr("data-element-id"),
         $button = $tr.find("button.link");
-
-    let locationId = locationCsv.split(',');
-
-    locationId = locationId.map(s => s.trim());
 
     $button
         .height($button.height())
@@ -147,15 +134,6 @@ jlab.linkRow = function($tr, alarmId, batch) {
         type: "POST",
         data: {
             alarmId: alarmId,
-            name: name,
-            actionId: actionId,
-            locationId: locationId, /*renamed 'locationId[]' by jQuery*/
-            alias: alias,
-            device: device,
-            screenCommand: screenCommand,
-            managedBy: managedBy,
-            maskedBy: maskedBy,
-            pv: pv,
             syncRuleId: syncRuleId,
             syncElementName: syncElementName,
             syncElementId: syncElementId
@@ -207,7 +185,12 @@ jlab.updateRow = function($tr, batch) {
         syncElementId = $tr.attr("data-element-id"),
         $button = $tr.find("button.update");
 
-    let locationId = locationCsv.split(',');
+    let locationId = locationCsv.split(','),
+        emptyLocationId = 'N';
+
+    if(locationId.length === 0) {
+        emptyLocationId = 'Y';
+    }
 
     locationId = locationId.map(s => s.trim());
 
@@ -224,6 +207,7 @@ jlab.updateRow = function($tr, batch) {
             name: name,
             actionId: actionId,
             locationId: locationId, /*renamed 'locationId[]' by jQuery*/
+            'emptyLocationId[]': emptyLocationId,
             alias: alias,
             device: device,
             screenCommand: screenCommand,

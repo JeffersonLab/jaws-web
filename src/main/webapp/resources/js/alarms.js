@@ -93,7 +93,12 @@ jlab.editRow = function(removeSync) {
             $("#remove-sync-button").attr("disabled", "disabled");
         }
 
-    let locationId = locationData.map(a => a.id);
+    let locationId = locationData.map(a => a.id),
+        emptyLocationId = 'N';
+
+    if(locationId.length === 0) {
+        emptyLocationId = 'Y';
+    }
 
     $(".dialog-submit-button")
         .height($(".dialog-submit-button").height())
@@ -110,6 +115,7 @@ jlab.editRow = function(removeSync) {
             name: name,
             actionId: actionId,
             locationId: locationId, /*renamed 'locationId[]' by jQuery*/
+            'emptyLocationId[]': emptyLocationId,
             alias: alias,
             device: device,
             screenCommand: screenCommand,

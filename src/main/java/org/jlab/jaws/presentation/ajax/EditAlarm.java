@@ -3,6 +3,9 @@ package org.jlab.jaws.presentation.ajax;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -52,7 +55,21 @@ public class EditAlarm extends HttpServlet {
       BigInteger syncRuleId = ParamConverter.convertBigInteger(request, "syncRuleId");
       BigInteger syncElementId = ParamConverter.convertBigInteger(request, "syncElementId");
 
+      // We leave existing fields as is unless a parameter name is provided.
+      // This means if changing a single field, only that field needs to be provided.
+      // To set a value to null/empty, then simply include parameter with empty string value
+      // For multivalued parameters, set them to empty by including an extra parameter with the
+      // field name prefixed with
+      // empty and value 'Y'.  For example:
+      // - Set location to empty with: "emptyLocationId=Y"
+      Set<String> editableParams = new HashSet<>(Collections.list(request.getParameterNames()));
+
+      if ("Y".equals(request.getParameter("emptyLocationId[]"))) {
+        editableParams.add("locationId[]");
+      }
+
       alarmFacade.editAlarm(
+          editableParams,
           alarmId,
           name,
           actionId,
