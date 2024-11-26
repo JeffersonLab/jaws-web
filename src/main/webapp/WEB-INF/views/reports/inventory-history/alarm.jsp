@@ -159,6 +159,14 @@
                             </c:forEach>
                         </tr>
                         <tr>
+                            <th>Managed By:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.managedBy}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
                             <th>Masked By:</th>
                             <c:forEach items="${revisionList}" var="entity">
                                 <td>
