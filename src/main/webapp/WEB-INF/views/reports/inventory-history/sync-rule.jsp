@@ -8,11 +8,7 @@
 <c:set var="title" value="Sync Rule History"/>
 <t:reports-page title="${title}">  
     <jsp:attribute name="stylesheets">
-        <style>
-            .data-table td {
-                word-break: break-word;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/history-entity.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
     </jsp:attribute>

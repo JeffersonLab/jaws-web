@@ -7,7 +7,8 @@
 <%@taglib prefix="jaws" uri="http://jlab.org/jaws/functions" %>
 <c:set var="title" value="Action History"/>
 <t:reports-page title="${title}">  
-    <jsp:attribute name="stylesheets"> 
+    <jsp:attribute name="stylesheets">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/history-entity.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
     </jsp:attribute>
