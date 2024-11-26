@@ -68,7 +68,7 @@ public class EditAlarm extends HttpServlet {
           elementId);
     } catch (UserFriendlyException e) {
       stat = "fail";
-      error = "Unable to edit Alarm: " + e.getMessage();
+      error = "Unable to edit Alarm: " + e.getUserMessage();
     } catch (EJBAccessException e) {
       stat = "fail";
       error = "Unable to edit Alarm: Not authenticated / authorized (do you need to re-login?)";

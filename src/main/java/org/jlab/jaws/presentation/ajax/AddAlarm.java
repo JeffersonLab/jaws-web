@@ -67,7 +67,7 @@ public class AddAlarm extends HttpServlet {
           elementId);
     } catch (UserFriendlyException e) {
       stat = "fail";
-      error = "Unable to add Alarm: " + e.getMessage();
+      error = "Unable to add Alarm: " + e.getUserMessage();
     } catch (EJBAccessException e) {
       stat = "fail";
       error = "Unable to add Alarm: Not authenticated / authorized (do you need to re-login?)";
