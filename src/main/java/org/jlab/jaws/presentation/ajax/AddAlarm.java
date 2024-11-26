@@ -48,9 +48,9 @@ public class AddAlarm extends HttpServlet {
       String managedBy = request.getParameter("managedBy");
       String maskedBy = request.getParameter("maskedBy");
       String pv = request.getParameter("pv");
-      String elementName = request.getParameter("elementName");
+      String syncElementName = request.getParameter("syncElementName");
       BigInteger syncRuleId = ParamConverter.convertBigInteger(request, "syncRuleId");
-      BigInteger elementId = ParamConverter.convertBigInteger(request, "elementId");
+      BigInteger syncElementId = ParamConverter.convertBigInteger(request, "syncElementId");
 
       alarmFacade.addAlarm(
           name,
@@ -62,9 +62,9 @@ public class AddAlarm extends HttpServlet {
           managedBy,
           maskedBy,
           pv,
-          elementName,
+          syncElementName,
           syncRuleId,
-          elementId);
+          syncElementId);
     } catch (UserFriendlyException e) {
       stat = "fail";
       error = "Unable to add Alarm: " + e.getUserMessage();

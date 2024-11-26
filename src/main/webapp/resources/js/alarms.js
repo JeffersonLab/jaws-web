@@ -74,15 +74,15 @@ jlab.editRow = function(removeSync) {
         maskedBy = $("#row-masked-by").val(),
         pv = $("#row-pv").val(),
         syncRuleId = $("#row-sync-rule-id").val(),
-        elementName = $("#row-sync-element-name").val(),
-        elementId = $("#row-sync-element-id").val(),
+        syncElementName = $("#row-sync-element-name").val(),
+        syncElementId = $("#row-sync-element-id").val(),
         alarmId = $(".editable-row-table tr.selected-row").attr("data-id"),
         reloading = false;
 
         if(removeSync) {
             syncRuleId = "";
-            elementId = "";
-            elementName = "";
+            syncElementId = "";
+            syncElementName = "";
 
             $("#remove-sync-button")
                 .height($("#remove-sync-button").height())
@@ -116,9 +116,9 @@ jlab.editRow = function(removeSync) {
             managedBy: managedBy,
             maskedBy: maskedBy,
             pv: pv,
-            elementName: elementName,
+            syncElementName: syncElementName,
             syncRuleId: syncRuleId,
-            elementId: elementId
+            syncElementId: syncElementId
         },
         dataType: "json"
     });

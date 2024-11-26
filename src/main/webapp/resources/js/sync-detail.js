@@ -10,8 +10,8 @@ jlab.addRow = function($tr, batch) {
         maskedBy = $tr.attr("data-masked-by"),
         pv = $tr.attr("data-pv"),
         syncRuleId = $tr.attr("data-rule-id"),
-        elementName = $tr.attr("data-element-name"),
-        elementId = $tr.attr("data-element-id"),
+        syncElementName = $tr.attr("data-element-name"),
+        syncElementId = $tr.attr("data-element-id"),
         $button = $tr.find("button.add");
 
     let locationId = locationCsv.split(',');
@@ -37,8 +37,8 @@ jlab.addRow = function($tr, batch) {
             maskedBy: maskedBy,
             pv: pv,
             syncRuleId: syncRuleId,
-            elementName: elementName,
-            elementId: elementId
+            syncElementName: syncElementName,
+            syncElementId: syncElementId
         },
         dataType: "json"
     });
@@ -129,8 +129,8 @@ jlab.linkRow = function($tr, alarmId, batch) {
         maskedBy = $tr.attr("data-masked-by"),
         pv = $tr.attr("data-pv"),
         syncRuleId = $tr.attr("data-rule-id"),
-        elementName = $tr.attr("data-element-name"),
-        elementId = $tr.attr("data-element-id"),
+        syncElementName = $tr.attr("data-element-name"),
+        syncElementId = $tr.attr("data-element-id"),
         $button = $tr.find("button.link");
 
     let locationId = locationCsv.split(',');
@@ -157,8 +157,8 @@ jlab.linkRow = function($tr, alarmId, batch) {
             maskedBy: maskedBy,
             pv: pv,
             syncRuleId: syncRuleId,
-            elementName: elementName,
-            elementId: elementId
+            syncElementName: syncElementName,
+            syncElementId: syncElementId
         },
         dataType: "json"
     });
@@ -203,8 +203,8 @@ jlab.updateRow = function($tr, batch) {
         maskedBy = $tr.attr("data-masked-by"),
         pv = $tr.attr("data-pv"),
         syncRuleId = $tr.attr("data-rule-id"),
-        elementName = $tr.attr("data-element-name"),
-        elementId = $tr.attr("data-element-id"),
+        syncElementName = $tr.attr("data-element-name"),
+        syncElementId = $tr.attr("data-element-id"),
         $button = $tr.find("button.update");
 
     let locationId = locationCsv.split(',');
@@ -231,8 +231,8 @@ jlab.updateRow = function($tr, batch) {
             maskedBy: maskedBy,
             pv: pv,
             syncRuleId: syncRuleId,
-            elementName: elementName,
-            elementId: elementId
+            syncElementName: syncElementName,
+            syncElementId: syncElementId
         },
         dataType: "json"
     });
