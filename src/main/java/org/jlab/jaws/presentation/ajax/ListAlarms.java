@@ -122,6 +122,11 @@ public class ListAlarms extends HttpServlet {
           } else {
             gen.write("syncElementName", alarm.getSyncElementName());
           }
+          if (alarm.getManagedBy() == null) {
+            gen.writeNull("managedBy");
+          } else {
+            gen.write("managedBy", alarm.getManagedBy());
+          }
           if (alarm.getMaskedBy() == null) {
             gen.writeNull("maskedBy");
           } else {
