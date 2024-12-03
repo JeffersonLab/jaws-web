@@ -1,15 +1,14 @@
 package org.jlab.jaws.presentation.util;
 
+import java.io.Serializable;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import org.hibernate.envers.EntityTrackingRevisionListener;
 import org.hibernate.envers.RevisionType;
 import org.jlab.jaws.business.session.AlarmFacade;
 import org.jlab.jaws.persistence.entity.AlarmEntity;
 import org.jlab.jaws.persistence.entity.ApplicationRevisionInfo;
 import org.jlab.smoothness.presentation.filter.AuditContext;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.io.Serializable;
 
 /**
  * @author ryans
@@ -47,8 +46,9 @@ public class ApplicationRevisionInfoListener implements EntityTrackingRevisionLi
   }
 
   @Override
-  public void entityChanged(Class aClass, String s, Serializable serializable, RevisionType revisionType, Object o) {
-    if(AlarmEntity.class.equals(aClass)) {
+  public void entityChanged(
+      Class aClass, String s, Serializable serializable, RevisionType revisionType, Object o) {
+    if (AlarmEntity.class.equals(aClass)) {
       System.err.println("Alarm class modified!");
     }
 
@@ -56,7 +56,7 @@ public class ApplicationRevisionInfoListener implements EntityTrackingRevisionLi
 
     AlarmEntity alarmEntity = alarmFacade.find(serializable);
 
-    if(alarmEntity != null) {
+    if (alarmEntity != null) {
       System.err.println("Locations: " + alarmEntity.getLocationIdCsv());
     } else {
       System.err.println("entity is null.  Prob was deleted");
