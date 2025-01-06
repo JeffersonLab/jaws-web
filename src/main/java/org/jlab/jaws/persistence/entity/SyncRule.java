@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+import org.jlab.smoothness.persistence.util.YnStringToBoolean;
 
 @Entity
 @Audited
@@ -74,6 +75,11 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
   @Size(max = 64)
   @Column(length = 64, nullable = true)
   private String pv;
+
+  @Basic
+  @Column(name = "SUB_LOCATIONS_YN", nullable = false, length = 1)
+  @Convert(converter = YnStringToBoolean.class)
+  private boolean subLocations;
 
   @JoinColumn(name = "SYNC_RULE_ID")
   @OneToMany
@@ -185,6 +191,14 @@ public class SyncRule implements Serializable, Comparable<SyncRule> {
 
   public List<AlarmEntity> getAlarmList() {
     return alarmList;
+  }
+
+  public boolean isSubLocations() {
+    return subLocations;
+  }
+
+  public void setSubLocations(boolean subLocations) {
+    this.subLocations = subLocations;
   }
 
   public String getSearchURL() {

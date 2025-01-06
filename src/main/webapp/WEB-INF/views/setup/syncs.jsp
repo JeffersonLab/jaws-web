@@ -282,6 +282,15 @@
                             </li>
                             <li>
                                 <div class="li-key">
+                                    <label for="row-sub-locations">Sub-locations</label>
+                                </div>
+                                <div class="li-value">
+                                    <input type="checkbox" id="row-sub-locations" checked="checked"/>
+                                    <div>Check to include SegMasks that specify pass or fine-grained location</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="li-key">
                                     <label for="row-screencommand">Screen Command</label>
                                 </div>
                                 <div class="li-value">
