@@ -143,7 +143,8 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       String foreignExpression,
       String name,
       String screencommand,
-      String pv)
+      String pv,
+      boolean subLocations)
       throws UserFriendlyException {
     if (actionId == null) {
       throw new UserFriendlyException("Action is required");
@@ -206,6 +207,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     rule.setAlarmName(name);
     rule.setScreenCommand(screencommand);
     rule.setPv(pv);
+    rule.setSubLocations(subLocations);
 
     create(rule);
 
@@ -252,7 +254,8 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       String foreignExpression,
       String name,
       String screencommand,
-      String pv)
+      String pv,
+      boolean subLocations)
       throws UserFriendlyException {
     if (id == null) {
       throw new UserFriendlyException("Sync Rule ID is required");
@@ -319,6 +322,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     rule.setAlarmName(name);
     rule.setScreenCommand(screencommand);
     rule.setPv(pv);
+    rule.setSubLocations(subLocations);
 
     edit(rule);
   }

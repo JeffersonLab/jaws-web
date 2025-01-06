@@ -138,6 +138,8 @@
                                 <dd>{NameAlias}</dd>
                                 <dt>Location</dt>
                                 <dd>{function:locationFromSegMask(SegMask)}</dd>
+                                <dt>Sub-Locations</dt>
+                                <dd><c:out value="${rule.subLocations ? 'Yes' : 'No'}"/></dd>
                                 <dt>Screen Command</dt>
                                 <dd><c:out value="${empty rule.screenCommand ? 'None' : rule.screenCommand}"/></dd>
                                 <dt>PV</dt>

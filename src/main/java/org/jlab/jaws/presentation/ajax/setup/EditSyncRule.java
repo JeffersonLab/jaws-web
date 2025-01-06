@@ -34,24 +34,25 @@ public class EditSyncRule extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    BigInteger id = ParamConverter.convertBigInteger(request, "id");
-    BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
-    String server = request.getParameter("server");
-    String description = request.getParameter("description");
-    String query = request.getParameter("query");
-    String expression = request.getParameter("expression");
-    String primaryAttribute = request.getParameter("primaryAttribute");
-    String foreignAttribute = request.getParameter("foreignAttribute");
-    String foreignQuery = request.getParameter("foreignQuery");
-    String foreignExpression = request.getParameter("foreignExpression");
-    String name = request.getParameter("name");
-    String screencommand = request.getParameter("screencommand");
-    String pv = request.getParameter("pv");
-
     String stat = "ok";
     String error = null;
 
     try {
+      BigInteger id = ParamConverter.convertBigInteger(request, "id");
+      BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
+      String server = request.getParameter("server");
+      String description = request.getParameter("description");
+      String query = request.getParameter("query");
+      String expression = request.getParameter("expression");
+      String primaryAttribute = request.getParameter("primaryAttribute");
+      String foreignAttribute = request.getParameter("foreignAttribute");
+      String foreignQuery = request.getParameter("foreignQuery");
+      String foreignExpression = request.getParameter("foreignExpression");
+      String name = request.getParameter("name");
+      String screencommand = request.getParameter("screencommand");
+      String pv = request.getParameter("pv");
+      boolean subLocations = ParamConverter.convertYNBoolean(request, "subLocations");
+
       syncFacade.editSync(
           id,
           actionId,
@@ -65,7 +66,8 @@ public class EditSyncRule extends HttpServlet {
           foreignExpression,
           name,
           screencommand,
-          pv);
+          pv,
+          subLocations);
     } catch (UserFriendlyException e) {
       stat = "fail";
       error = "Unable to edit Sync Rule: " + e.getMessage();

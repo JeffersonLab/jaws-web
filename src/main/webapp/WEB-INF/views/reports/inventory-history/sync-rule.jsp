@@ -214,6 +214,14 @@
                                 </td>
                             </c:forEach>
                         </tr>
+                        <tr>
+                            <th>Sub-Locations:</th>
+                            <c:forEach items="${revisionList}" var="entity">
+                                <td>
+                                    <c:out value="${entity.subLocations ? 'Yes' : 'No'}"/>
+                                </td>
+                            </c:forEach>
+                        </tr>
                         </tbody>
                     </table>
                     <div class="revision-controls">

@@ -34,24 +34,25 @@ public class AddSyncRule extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
-    String server = request.getParameter("server");
-    String description = request.getParameter("description");
-    String query = request.getParameter("query");
-    String expression = request.getParameter("expression");
-    String primaryAttribute = request.getParameter("primaryAttribute");
-    String foreignAttribute = request.getParameter("foreignAttribute");
-    String foreignQuery = request.getParameter("foreignQuery");
-    String foreignExpression = request.getParameter("foreignExpression");
-    String name = request.getParameter("name");
-    String screencommand = request.getParameter("screencommand");
-    String pv = request.getParameter("pv");
-
     String stat = "ok";
     String error = null;
     BigInteger syncRuleId = null;
 
     try {
+      BigInteger actionId = ParamConverter.convertBigInteger(request, "actionId");
+      String server = request.getParameter("server");
+      String description = request.getParameter("description");
+      String query = request.getParameter("query");
+      String expression = request.getParameter("expression");
+      String primaryAttribute = request.getParameter("primaryAttribute");
+      String foreignAttribute = request.getParameter("foreignAttribute");
+      String foreignQuery = request.getParameter("foreignQuery");
+      String foreignExpression = request.getParameter("foreignExpression");
+      String name = request.getParameter("name");
+      String screencommand = request.getParameter("screencommand");
+      String pv = request.getParameter("pv");
+      boolean subLocations = ParamConverter.convertYNBoolean(request, "subLocations");
+
       syncRuleId =
           syncFacade.addSync(
               actionId,
@@ -65,7 +66,8 @@ public class AddSyncRule extends HttpServlet {
               foreignExpression,
               name,
               screencommand,
-              pv);
+              pv,
+              subLocations);
     } catch (UserFriendlyException e) {
       stat = "fail";
       error = "Unable to add Sync: " + e.getMessage();
