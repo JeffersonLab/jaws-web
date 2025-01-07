@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.jlab.jaws.persistence.model.Node;
+import org.jlab.smoothness.persistence.util.YnStringToBoolean;
 
 @Entity
 @Table(name = "LOCATION", schema = "JAWS_OWNER")
@@ -33,6 +34,11 @@ public class Location implements Serializable, Node, Comparable<Location> {
   @Size(max = 128)
   @Column(length = 128, nullable = true)
   private String segmask;
+
+  @Basic
+  @Column(name = "SUB_LOCATION_YN", nullable = false, length = 1)
+  @Convert(converter = YnStringToBoolean.class)
+  private boolean subLocation;
 
   @JoinColumn(name = "PARENT_ID", referencedColumnName = "LOCATION_ID", nullable = true)
   @ManyToOne(optional = true)
@@ -97,6 +103,14 @@ public class Location implements Serializable, Node, Comparable<Location> {
 
   public void setSegmask(String segmask) {
     this.segmask = segmask;
+  }
+
+  public boolean isSubLocation() {
+    return subLocation;
+  }
+
+  public void setSubLocation(boolean subLocation) {
+    this.subLocation = subLocation;
   }
 
   public void setWeight(BigInteger weight) {

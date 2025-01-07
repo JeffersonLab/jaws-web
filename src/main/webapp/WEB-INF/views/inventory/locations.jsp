@@ -22,12 +22,13 @@
                         <th>Name</th>
                         <th>Parent</th>
                         <th>SegMask</th>
+                        <th>SubLocation</th>
                         <th class="scrollbar-header"><span class="expand-icon" title="Expand Table"></span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="inner-table-cell" colspan="4">
+                        <td class="inner-table-cell" colspan="5">
                             <div class="pane-decorator">
                                 <div class="table-scroll-pane">
                                     <table class="data-table inner-table stripped-table">
@@ -37,6 +38,7 @@
                                                 <td><c:out value="${location.name}"/></td>
                                                 <td><c:out value="${location.parent.name}"/></td>
                                                 <td><c:out value="${location.segmask}"/></td>
+                                                <td><c:out value="${location.subLocation ? 'Yes' : 'No'}"/></td>
                                             </tr>
                                         </c:forEach>
                                         </tbody>
