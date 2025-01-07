@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.hibernate.envers.RevisionType;
 import org.jlab.jaws.persistence.entity.*;
+import org.jlab.smoothness.persistence.util.YnStringToBoolean;
 
 @Entity
 @Table(name = "SYNC_RULE_AUD", schema = "JAWS_OWNER")
@@ -102,6 +103,11 @@ public class SyncRuleAud implements Serializable, Comparable<SyncRuleAud> {
   @Size(max = 64)
   @Column(length = 64, nullable = true)
   private String pv;
+
+  @Basic
+  @Column(name = "SUB_LOCATIONS_YN", nullable = false, length = 1)
+  @Convert(converter = YnStringToBoolean.class)
+  private boolean subLocations;
 
   public BigInteger getActionId() {
     return actionId;
@@ -197,6 +203,14 @@ public class SyncRuleAud implements Serializable, Comparable<SyncRuleAud> {
 
   public void setPv(String pv) {
     this.pv = pv;
+  }
+
+  public boolean isSubLocations() {
+    return subLocations;
+  }
+
+  public void setSubLocations(boolean subLocations) {
+    this.subLocations = subLocations;
   }
 
   public String getSearchURL() {

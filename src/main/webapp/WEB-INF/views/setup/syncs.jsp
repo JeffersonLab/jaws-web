@@ -92,6 +92,7 @@
                                                 data-name="${fn:escapeXml(sync.alarmName)}"
                                                 data-screencommand="${fn:escapeXml(sync.screenCommand)}"
                                                 data-pv="${fn:escapeXml(sync.pv)}"
+                                                data-sub-locations="${sync.subLocations ? 'Y' : 'N'}"
                                                 data-query="${fn:escapeXml(sync.query)}"
                                                 data-expression="${fn:escapeXml(sync.propertyExpression)}"
                                                 data-primary-attribute="${fn:escapeXml(sync.primaryAttribute)}"
@@ -278,6 +279,15 @@
                                 <div class="li-value">
                                     <input type="text" id="row-location" value="{function:locationFromSegMask(SegMask)}"
                                            disabled="disabled"/>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="li-key">
+                                    <label for="row-sub-locations">Sub-Locations</label>
+                                </div>
+                                <div class="li-value">
+                                    <input type="checkbox" id="row-sub-locations" checked="checked"/>
+                                    <div>Check to include Locations that specify pass or fine-grained segment</div>
                                 </div>
                             </li>
                             <li>

@@ -143,7 +143,8 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       String foreignExpression,
       String name,
       String screencommand,
-      String pv)
+      String pv,
+      boolean subLocations)
       throws UserFriendlyException {
     if (actionId == null) {
       throw new UserFriendlyException("Action is required");
@@ -206,6 +207,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     rule.setAlarmName(name);
     rule.setScreenCommand(screencommand);
     rule.setPv(pv);
+    rule.setSubLocations(subLocations);
 
     create(rule);
 
@@ -252,7 +254,8 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       String foreignExpression,
       String name,
       String screencommand,
-      String pv)
+      String pv,
+      boolean subLocations)
       throws UserFriendlyException {
     if (id == null) {
       throw new UserFriendlyException("Sync Rule ID is required");
@@ -319,6 +322,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     rule.setAlarmName(name);
     rule.setScreenCommand(screencommand);
     rule.setPv(pv);
+    rule.setSubLocations(subLocations);
 
     edit(rule);
   }
@@ -449,7 +453,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
           String segMask = properties.getString("SegMask");
           variableMap.put("SegMask", segMask);
 
-          locationList = locationsFromSegMask(locationMap, segMask, rule.getSyncServer());
+          locationList = locationsFromSegMask(locationMap, segMask, rule);
 
           if (!locationList.isEmpty()) {
             String area = locationList.get(0).getSegmask();
@@ -640,7 +644,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   }
 
   private List<Location> locationsFromSegMask(
-      Map<String, Location> locationMap, String segMask, SyncServer server) {
+      Map<String, Location> locationMap, String segMask, SyncRule rule) {
     // Use Set because some SegMasks map to same Location so we want to avoid duplicates
     Set<Location> locationList = new HashSet<>();
 
@@ -678,7 +682,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
     // a separate map
     // per Sync Server.  In the meantime, I'm only aware of one collision: LERF Injector collides
     // with CEBAF Injector
-    if ("LED".equals(server.getName())) {
+    if ("LED".equals(rule.getSyncServer().getName())) {
       ListIterator<Location> iterator = explicitOnly.listIterator();
       while (iterator.hasNext()) {
         Location location = iterator.next();
@@ -689,7 +693,22 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
       }
     }
 
-    return explicitOnly;
+    // To accommodate legacy data that doesn't include pass or fine-grained segment
+    HashSet<Location> granularLocations = new HashSet<>();
+
+    if (rule.isSubLocations()) {
+      granularLocations.addAll(explicitOnly);
+    } else {
+      for (Location location : explicitOnly) {
+        if (location.isSubLocation()) {
+          granularLocations.add(location.getParent());
+        } else {
+          granularLocations.add(location);
+        }
+      }
+    }
+
+    return new ArrayList<>(granularLocations);
   }
 
   private boolean isLowestInBranch(Location location, Set<Location> locationList) {

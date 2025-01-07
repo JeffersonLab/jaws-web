@@ -16,6 +16,7 @@ jlab.addRow = function (run) {
         name = $("#row-name").val(),
         screencommand = $("#row-screencommand").val(),
         pv = $("#row-pv").val(),
+        subLocations = $("#row-sub-locations").prop("checked"),
         $button = $(".dialog-submit-button"),
         $runButton = $("#save-and-run-button"),
         reloading = false;
@@ -53,7 +54,8 @@ jlab.addRow = function (run) {
             foreignExpression: foreignExpression,
             name: name,
             screencommand: screencommand,
-            pv: pv
+            pv: pv,
+            subLocations: subLocations ? "Y" : "N"
         },
         dataType: "json"
     });
@@ -99,6 +101,7 @@ jlab.editRow = function (run) {
         name = $("#row-name").val(),
         screencommand = $("#row-screencommand").val(),
         pv = $("#row-pv").val(),
+        subLocations = $("#row-sub-locations").prop("checked"),
         $button = $(".dialog-submit-button"),
         $runButton = $("#save-and-run-button"),
         reloading = false;
@@ -137,7 +140,8 @@ jlab.editRow = function (run) {
             foreignExpression: foreignExpression,
             name: name,
             screencommand: screencommand,
-            pv: pv
+            pv: pv,
+            subLocations: subLocations ? "Y" : "N"
         },
         dataType: "json"
     });
@@ -242,6 +246,7 @@ $(document).on("click", "#open-edit-row-dialog-button", function () {
     $("#row-name").val($selectedRow.attr("data-name"));
     $("#row-screencommand").val($selectedRow.attr("data-screencommand"));
     $("#row-pv").val($selectedRow.attr("data-pv"));
+    $("#row-sub-locations").prop("checked", $selectedRow.attr("data-sub-locations") === "Y");
 });
 $(document).on("table-row-add", function () {
     jlab.addRow();
