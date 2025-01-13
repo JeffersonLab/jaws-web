@@ -424,7 +424,8 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   }
 
   private AlarmEntity convertEntity(
-      SyncRule rule, Map<String, Location> locationMap, boolean primary, JsonObject o) {
+      SyncRule rule, Map<String, Location> locationMap, boolean primary, JsonObject o)
+      throws UserFriendlyException {
     BigInteger elementId = o.getJsonNumber("id").bigIntegerValue();
     String elementName = o.getString("name");
     String alias = "";
@@ -506,18 +507,16 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
         case "name":
           joinAttributeValue = elementName;
           break;
-        case "controlled_by":
+        default:
           if (properties != null
-              && properties.containsKey("Controlled_by")
-              && !properties.isNull("Controlled_by")) {
-            joinAttributeValue = properties.getString("Controlled_by");
-          }
-          break;
-        case "housed_by":
-          if (properties != null
-              && properties.containsKey("Housed_by")
-              && !properties.isNull("Housed_by")) {
-            joinAttributeValue = properties.getString("Housed_by");
+              && properties.containsKey(joinAttribute)
+              && !properties.isNull(joinAttribute)) {
+            joinAttributeValue = properties.getString(joinAttribute);
+          } else {
+            throw new UserFriendlyException(
+                "Invalid Foreign Join Attribute: "
+                    + joinAttribute
+                    + "; check capitalization in JSON");
           }
           break;
       }
@@ -554,7 +553,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   }
 
   private LinkedHashMap<BigInteger, AlarmEntity> convertResponseWithIdMap(
-      String body, SyncRule rule, Map<String, Location> locationMap) {
+      String body, SyncRule rule, Map<String, Location> locationMap) throws UserFriendlyException {
     LinkedHashMap<BigInteger, AlarmEntity> alarmList = new LinkedHashMap<>();
 
     JsonObject object = Json.createReader(new StringReader(body)).readObject();
@@ -574,7 +573,7 @@ public class SyncRuleFacade extends AbstractFacade<SyncRule> {
   }
 
   private LinkedHashMap<String, AlarmEntity> convertResponseWithAttributeMap(
-      String body, SyncRule rule, Map<String, Location> locationMap) {
+      String body, SyncRule rule, Map<String, Location> locationMap) throws UserFriendlyException {
     LinkedHashMap<String, AlarmEntity> alarmList = new LinkedHashMap<>();
 
     JsonObject object = Json.createReader(new StringReader(body)).readObject();
