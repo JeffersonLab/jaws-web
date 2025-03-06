@@ -1,17 +1,26 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness"%>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib prefix="s" uri="http://jlab.org/jsp/smoothness" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <c:set var="title" value="Notifications"/>
 <t:page title="${title}">  
     <jsp:attribute name="stylesheets">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/notifications.css"/>
+        <link rel="stylesheet" type="text/css"
+              href="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/css/notifications.css"/>
     </jsp:attribute>
     <jsp:attribute name="scripts">
-        <script type="text/javascript" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/notifications.js"></script>
-    </jsp:attribute>        
+        <script type="text/javascript"
+                src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/notifications.js"></script>
+        <script>
+            <%-- Full page load only; partial page loads ignore non-src script tags --%>
+            <%-- This prevents pageInit() from being called twice in partial page usage --%>
+            $(function () {
+                pageInit();
+            });
+        </script>
+</jsp:attribute>
     <jsp:body>
         <section>
             <s:filter-flyout-widget ribbon="true" clearButton="true">
@@ -41,8 +50,12 @@
                                     <div class="li-value">
                                         <select id="notifications-overridden-select" name="overridden">
                                             <option value="">&nbsp;</option>
-                                            <option value="Y"${param.overridden eq 'Y' ? ' selected="selected"' : ''}>Yes</option>
-                                            <option value="N"${param.overridden eq 'N' ? ' selected="selected"' : ''}>No</option>
+                                            <option value="Y"${param.overridden eq 'Y' ? ' selected="selected"' : ''}>
+                                                Yes
+                                            </option>
+                                            <option value="N"${param.overridden eq 'N' ? ' selected="selected"' : ''}>
+                                                No
+                                            </option>
                                         </select>
                                     </div>
                                 </li>
@@ -78,7 +91,8 @@
                                         <label for="notifications-location-select">Location</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="notifications-location-select" name="locationId" multiple="multiple">
+                                        <select id="notifications-location-select" name="locationId"
+                                                multiple="multiple">
                                             <c:forEach items="${locationRoot.children}" var="child">
                                                 <t:hierarchical-select-option node="${child}" level="0"
                                                                               parameterName="locationId"/>
@@ -121,8 +135,12 @@
                                     <div class="li-value">
                                         <select id="notifications-registered-select" name="registered">
                                             <option value="">&nbsp;</option>
-                                            <option value="Y"${param.registered eq 'Y' ? ' selected="selected"' : ''}>Yes</option>
-                                            <option value="N"${param.registered eq 'N' ? ' selected="selected"' : ''}>No</option>
+                                            <option value="Y"${param.registered eq 'Y' ? ' selected="selected"' : ''}>
+                                                Yes
+                                            </option>
+                                            <option value="N"${param.registered eq 'N' ? ' selected="selected"' : ''}>
+                                                No
+                                            </option>
                                         </select>
                                     </div>
                                 </li>
@@ -133,8 +151,12 @@
                                     <div class="li-value">
                                         <select id="notifications-filterable-select" name="filterable">
                                             <option value="">&nbsp;</option>
-                                            <option value="Y"${param.filterable eq 'Y' ? ' selected="selected"' : ''}>Yes</option>
-                                            <option value="N"${param.filterable eq 'N' ? ' selected="selected"' : ''}>No</option>
+                                            <option value="Y"${param.filterable eq 'Y' ? ' selected="selected"' : ''}>
+                                                Yes
+                                            </option>
+                                            <option value="N"${param.filterable eq 'N' ? ' selected="selected"' : ''}>
+                                                No
+                                            </option>
                                         </select>
                                     </div>
                                 </li>
@@ -182,18 +204,24 @@
                             <ul class="key-value-list">
                                 <li>
                                     <div class="li-key">
-                                        <label for="notifications-always-include-unregistered">Always Include Unregistered</label>
+                                        <label for="notifications-always-include-unregistered">Always Include
+                                            Unregistered</label>
                                     </div>
                                     <div class="li-value">
-                                        <input type="checkbox" id="notifications-always-include-unregistered" name="alwaysIncludeUnregistered" value="Y" ${param.alwaysIncludeUnregistered eq 'Y' ? 'checked="checked"' : ''}>
+                                        <input type="checkbox" id="notifications-always-include-unregistered"
+                                               name="alwaysIncludeUnregistered"
+                                               value="Y" ${param.alwaysIncludeUnregistered eq 'Y' ? 'checked="checked"' : ''}>
                                     </div>
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="notifications-always-include-unfilterable">Always Include Unfilterable</label>
+                                        <label for="notifications-always-include-unfilterable">Always Include
+                                            Unfilterable</label>
                                     </div>
                                     <div class="li-value">
-                                        <input type="checkbox" id="notifications-always-include-unfilterable" name="alwaysIncludeUnfilterable" value="Y" ${param.alwaysIncludeUnfilterable eq 'Y' ? 'checked="checked"' : ''}>
+                                        <input type="checkbox" id="notifications-always-include-unfilterable"
+                                               name="alwaysIncludeUnfilterable"
+                                               value="Y" ${param.alwaysIncludeUnfilterable eq 'Y' ? 'checked="checked"' : ''}>
                                     </div>
                                 </li>
                             </ul>
@@ -206,22 +234,24 @@
             <h2 class="page-header-title"><c:out value="${title}"/></h2>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="chart-wrap" class="chart-wrap-backdrop">
-                <c:set var="editable" value="${pageContext.request.isUserInRole('jaws-admin') || pageContext.request.isUserInRole('jaws-operator')}"/>
+                <c:set var="editable"
+                       value="${pageContext.request.isUserInRole('jaws-admin') || pageContext.request.isUserInRole('jaws-operator')}"/>
                 <c:if test="${editable}">
-                <s:editable-row-table-controls excludeAdd="${true}" excludeDelete="${true}"
-                                               excludeEdit="${true}" multiselect="${true}">
-                    <button type="button" id="acknowledge-all-button" class="">Acknowledge All
-                    </button> |
-                    <button type="button" id="acknowledge-button" class="selected-row-action"
-                            disabled="disabled">Acknowledge
-                    </button>
-                    <button type="button" id="open-suppress-button" class="selected-row-action"
-                            disabled="disabled">Suppress
-                    </button>
-                    <button type="button" id="open-unsuppress-button" class="selected-row-action"
-                            disabled="disabled">Unsuppress
-                    </button>
-                </s:editable-row-table-controls>
+                    <s:editable-row-table-controls excludeAdd="${true}" excludeDelete="${true}"
+                                                   excludeEdit="${true}" multiselect="${true}">
+                        <button type="button" id="acknowledge-all-button" class="">Acknowledge All
+                        </button>
+                        |
+                        <button type="button" id="acknowledge-button" class="selected-row-action"
+                                disabled="disabled">Acknowledge
+                        </button>
+                        <button type="button" id="open-suppress-button" class="selected-row-action"
+                                disabled="disabled">Suppress
+                        </button>
+                        <button type="button" id="open-unsuppress-button" class="selected-row-action"
+                                disabled="disabled">Unsuppress
+                        </button>
+                    </s:editable-row-table-controls>
                 </c:if>
                 <table id="notification-table" class="data-table outer-table stripped-table">
                     <thead>
@@ -242,7 +272,14 @@
                                     <table class="data-table inner-table${editable ? ' multiselect-table editable-row-table' : ''}">
                                         <tbody>
                                         <c:forEach items="${notificationList}" var="notification">
-                                            <tr data-id="${notification.alarm.alarmId}" data-action-id="${notification.alarm.action.actionId}" data-location-id-csv="${notification.alarm.locationIdCsv}" data-device="${notification.alarm.device}" data-screen-command="${notification.alarm.screenCommand}" data-managed-by="${notification.alarm.managedBy}" data-masked-by="${notification.alarm.maskedBy}" data-pv="${notification.alarm.pv}">
+                                            <tr data-id="${notification.alarm.alarmId}"
+                                                data-action-id="${notification.alarm.action.actionId}"
+                                                data-location-id-csv="${notification.alarm.locationIdCsv}"
+                                                data-device="${notification.alarm.device}"
+                                                data-screen-command="${notification.alarm.screenCommand}"
+                                                data-managed-by="${notification.alarm.managedBy}"
+                                                data-masked-by="${notification.alarm.maskedBy}"
+                                                data-pv="${notification.alarm.pv}">
                                                 <td>
                                                     <c:url value="/inventory/alarm-detail" var="url">
                                                         <c:param name="name" value="${notification.name}"/>
@@ -263,14 +300,18 @@
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${'ChannelError' eq notification.activationType}">
-                                                            <div>Error=<c:out value="${notification.activationError}"/></div>
+                                                            <div>Error=<c:out
+                                                                    value="${notification.activationError}"/></div>
                                                         </c:when>
                                                         <c:when test="${'EPICS' eq notification.activationType}">
-                                                            <div>SEVR=<c:out value="${notification.activationSevr}"/></div>
-                                                            <div>STAT=<c:out value="${notification.activationStat}"/></div>
+                                                            <div>SEVR=<c:out
+                                                                    value="${notification.activationSevr}"/></div>
+                                                            <div>STAT=<c:out
+                                                                    value="${notification.activationStat}"/></div>
                                                         </c:when>
                                                         <c:when test="${'Note' eq notification.activationType}">
-                                                            <div>Note=<c:out value="${notification.activationNote}"/></div>
+                                                            <div>Note=<c:out
+                                                                    value="${notification.activationNote}"/></div>
                                                         </c:when>
                                                     </c:choose>
                                                 </td>
@@ -309,18 +350,18 @@
                             <span>Type:</span>
                         </div>
                         <div class="li-value">
+                        <span class="radio-pair">
+                            <label for="type-disabled">Disable</label>
+                            <input name="suppress-type" id="type-disabled" type="radio" value="Disabled"/>
+                        </span>
                             <span class="radio-pair">
-                                <label for="type-disabled">Disable</label>
-                                <input name="suppress-type" id="type-disabled" type="radio" value="Disabled"/>
-                            </span>
+                            <label for="type-filtered">Filter</label>
+                            <input name="suppress-type" id="type-filtered" type="radio" value="Filtered"/>
+                        </span>
                             <span class="radio-pair">
-                                <label for="type-filtered">Filter</label>
-                                <input name="suppress-type" id="type-filtered" type="radio" value="Filtered"/>
-                            </span>
-                            <span class="radio-pair">
-                                <label for="type-shelved">Shelve</label>
-                                <input name="suppress-type" id="type-shelved" type="radio" value="Shelved"/>
-                            </span>
+                            <label for="type-shelved">Shelve</label>
+                            <input name="suppress-type" id="type-shelved" type="radio" value="Shelved"/>
+                        </span>
                         </div>
                     </li>
                     <li>
@@ -334,39 +375,39 @@
                 </ul>
                 <fieldset id="shelve-fieldset">
                     <legend>Shelve</legend>
-                <ul class="key-value-list">
-                    <li>
-                        <div class="li-key">
-                            <label for="oneshot"
-                                   title="Check if this alarm unshelves when active">Oneshot</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="checkbox" id="oneshot"/>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="shelve-reason">Reason</label>
-                        </div>
-                        <div class="li-value">
-                            <select id="shelve-reason">
-                                <option>Stale_Alarm</option>
-                                <option>Chattering_Fleeting_Alarm</option>
-                                <option>Other</option>
-                            </select>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="li-key">
-                            <label for="shelve-expiration"
-                                   title="How long do you want this alarm to be shelved for?">Expiration</label>
-                        </div>
-                        <div class="li-value">
-                            <input type="text" id="shelve-expiration" class="date-time-field"
-                                   placeholder="DD-MMM-YYYY hh:mm"/>
-                        </div>
-                    </li>
-                </ul>
+                    <ul class="key-value-list">
+                        <li>
+                            <div class="li-key">
+                                <label for="oneshot"
+                                       title="Check if this alarm unshelves when active">Oneshot</label>
+                            </div>
+                            <div class="li-value">
+                                <input type="checkbox" id="oneshot"/>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="li-key">
+                                <label for="shelve-reason">Reason</label>
+                            </div>
+                            <div class="li-value">
+                                <select id="shelve-reason">
+                                    <option>Stale_Alarm</option>
+                                    <option>Chattering_Fleeting_Alarm</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="li-key">
+                                <label for="shelve-expiration"
+                                       title="How long do you want this alarm to be shelved for?">Expiration</label>
+                            </div>
+                            <div class="li-value">
+                                <input type="text" id="shelve-expiration" class="date-time-field"
+                                       placeholder="DD-MMM-YYYY hh:mm"/>
+                            </div>
+                        </li>
+                    </ul>
                 </fieldset>
                 <div class="dialog-button-panel">
                     <button type="button" id="suppress-button" class="dialog-submit-button">Save</button>
@@ -391,18 +432,18 @@
                             <span>Type:</span>
                         </div>
                         <div class="li-value">
+                        <span class="radio-pair">
+                            <label for="type-reenable">Reenable</label>
+                            <input name="unsuppress-type" id="type-reenable" type="radio" value="Disabled"/>
+                        </span>
                             <span class="radio-pair">
-                                <label for="type-reenable">Reenable</label>
-                                <input name="unsuppress-type" id="type-reenable" type="radio" value="Disabled"/>
-                            </span>
+                            <label for="type-unfilter">Unfilter</label>
+                            <input name="unsuppress-type" id="type-unfilter" type="radio" value="Filtered"/>
+                        </span>
                             <span class="radio-pair">
-                                <label for="type-unfilter">Unfilter</label>
-                                <input name="unsuppress-type" id="type-unfilter" type="radio" value="Filtered"/>
-                            </span>
-                            <span class="radio-pair">
-                                <label for="type-unshelve">Unshelve</label>
-                                <input name="unsuppress-type" id="type-unshelve" type="radio" value="Shelved"/>
-                            </span>
+                            <label for="type-unshelve">Unshelve</label>
+                            <input name="unsuppress-type" id="type-unshelve" type="radio" value="Shelved"/>
+                        </span>
                         </div>
                     </li>
                 </ul>
@@ -412,5 +453,5 @@
                 </div>
             </form>
         </div>
-    </jsp:body>         
+    </jsp:body>
 </t:page>

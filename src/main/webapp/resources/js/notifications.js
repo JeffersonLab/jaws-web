@@ -376,9 +376,6 @@ function pageInit() {
         timeFormat: 'HH:mm'
     }).mask("99-aaa-9999 99:99", {placeholder: " "});
 }
-$(function () {
-    pageInit();
-});
 $(document).on("partial-page-init", function() {
     console.log('on partial-page-init');
     pageInit();
