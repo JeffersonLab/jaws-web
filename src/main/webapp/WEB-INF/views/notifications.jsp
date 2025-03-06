@@ -22,10 +22,10 @@
                             <ul class="key-value-list">
                                 <li>
                                     <div class="li-key">
-                                        <label for="state-select">State</label>
+                                        <label for="notifications-state-select">State</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="state-select" name="state">
+                                        <select id="notifications-state-select" name="state">
                                             <option value="">&nbsp;</option>
                                             <c:forEach items="${stateList}" var="state">
                                                 <option value="${state.name()}"${param.state eq state.name() ? ' selected="selected"' : ''}>
@@ -36,10 +36,10 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="overridden-select">Overridden</label>
+                                        <label for="notifications-overridden-select">Overridden</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="overridden-select" name="overridden">
+                                        <select id="notifications-overridden-select" name="overridden">
                                             <option value="">&nbsp;</option>
                                             <option value="Y"${param.overridden eq 'Y' ? ' selected="selected"' : ''}>Yes</option>
                                             <option value="N"${param.overridden eq 'N' ? ' selected="selected"' : ''}>No</option>
@@ -48,10 +48,10 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="override-select">Override</label>
+                                        <label for="notifications-override-select">Override</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="override-select" name="override" multiple="multiple">
+                                        <select id="notifications-override-select" name="override" multiple="multiple">
                                             <c:forEach items="${overrideList}" var="override">
                                                 <option value="${override.name()}"${s:inArray(paramValues.override, override.name()) ? ' selected="selected"' : ''}>
                                                     <c:out value="${override.getLabel()}"/></option>
@@ -61,10 +61,10 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="type-select">Type</label>
+                                        <label for="notifications-type-select">Type</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="type-select" name="type">
+                                        <select id="notifications-type-select" name="type">
                                             <option value="">&nbsp;</option>
                                             <c:forEach items="${typeList}" var="type">
                                                 <option value="${type}"${param.type eq type ? ' selected="selected"' : ''}>
@@ -75,10 +75,10 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="location-select">Location</label>
+                                        <label for="notifications-location-select">Location</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="location-select" name="locationId" multiple="multiple">
+                                        <select id="notifications-location-select" name="locationId" multiple="multiple">
                                             <c:forEach items="${locationRoot.children}" var="child">
                                                 <t:hierarchical-select-option node="${child}" level="0"
                                                                               parameterName="locationId"/>
@@ -88,10 +88,10 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="priority-select">Priority</label>
+                                        <label for="notifications-priority-select">Priority</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="priority-select" name="priorityId">
+                                        <select id="notifications-priority-select" name="priorityId">
                                             <option value="">&nbsp;</option>
                                             <c:forEach items="${priorityList}" var="priority">
                                                 <option value="${priority.priorityId}"${param.priorityId eq priority.priorityId ? ' selected="selected"' : ''}>
@@ -102,10 +102,10 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="team-select">Team</label>
+                                        <label for="notifications-team-select">Team</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="team-select" name="teamId">
+                                        <select id="notifications-team-select" name="teamId">
                                             <option value="">&nbsp;</option>
                                             <c:forEach items="${teamList}" var="team">
                                                 <option value="${team.teamId}"${param.teamId eq team.teamId ? ' selected="selected"' : ''}>
@@ -116,10 +116,10 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="registered-select">Registered</label>
+                                        <label for="notifications-registered-select">Registered</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="registered-select" name="registered">
+                                        <select id="notifications-registered-select" name="registered">
                                             <option value="">&nbsp;</option>
                                             <option value="Y"${param.registered eq 'Y' ? ' selected="selected"' : ''}>Yes</option>
                                             <option value="N"${param.registered eq 'N' ? ' selected="selected"' : ''}>No</option>
@@ -128,10 +128,10 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="filterable-select">Filterable</label>
+                                        <label for="notifications-filterable-select">Filterable</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="filterable-select" name="filterable">
+                                        <select id="notifications-filterable-select" name="filterable">
                                             <option value="">&nbsp;</option>
                                             <option value="Y"${param.filterable eq 'Y' ? ' selected="selected"' : ''}>Yes</option>
                                             <option value="N"${param.filterable eq 'N' ? ' selected="selected"' : ''}>No</option>
@@ -140,10 +140,10 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="alarm-name">Alarm Name</label>
+                                        <label for="notifications-alarm-name">Alarm Name</label>
                                     </div>
                                     <div class="li-value">
-                                        <input id="alarm-name"
+                                        <input id="notifications-alarm-name"
                                                name="alarmName" value="${fn:escapeXml(param.alarmName)}"
                                                placeholder="alarm name"/>
                                         <div>(use % as wildcard)</div>
@@ -151,10 +151,10 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="action-select">Action</label>
+                                        <label for="notifications-action-select">Action</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="action-select" name="actionName" multiple="multiple">
+                                        <select id="notifications-action-select" name="actionName" multiple="multiple">
                                             <c:forEach items="${actionList}" var="action">
                                                 <option value="${fn:escapeXml(action.name)}"${s:inArray(paramValues.actionName, action.name) ? ' selected="selected"' : ''}>
                                                     <c:out value="${action.name}"/></option>
@@ -164,10 +164,10 @@
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="system-select">System</label>
+                                        <label for="notifications-system-select">System</label>
                                     </div>
                                     <div class="li-value">
-                                        <select id="system-select" name="systemName" multiple="multiple">
+                                        <select id="notifications-system-select" name="systemName" multiple="multiple">
                                             <c:forEach items="${systemList}" var="system">
                                                 <option value="${fn:escapeXml(system.name)}"${s:inArray(paramValues.systemName, system.name) ? ' selected="selected"' : ''}>
                                                     <c:out value="${system.name}"/></option>
@@ -182,24 +182,24 @@
                             <ul class="key-value-list">
                                 <li>
                                     <div class="li-key">
-                                        <label for="always-include-unregistered">Always Include Unregistered</label>
+                                        <label for="notifications-always-include-unregistered">Always Include Unregistered</label>
                                     </div>
                                     <div class="li-value">
-                                        <input type="checkbox" id="always-include-unregistered" name="alwaysIncludeUnregistered" value="Y" ${param.alwaysIncludeUnregistered eq 'Y' ? 'checked="checked"' : ''}>
+                                        <input type="checkbox" id="notifications-always-include-unregistered" name="alwaysIncludeUnregistered" value="Y" ${param.alwaysIncludeUnregistered eq 'Y' ? 'checked="checked"' : ''}>
                                     </div>
                                 </li>
                                 <li>
                                     <div class="li-key">
-                                        <label for="always-include-unfilterable">Always Include Unfilterable</label>
+                                        <label for="notifications-always-include-unfilterable">Always Include Unfilterable</label>
                                     </div>
                                     <div class="li-value">
-                                        <input type="checkbox" id="always-include-unfilterable" name="alwaysIncludeUnfilterable" value="Y" ${param.alwaysIncludeUnfilterable eq 'Y' ? 'checked="checked"' : ''}>
+                                        <input type="checkbox" id="notifications-always-include-unfilterable" name="alwaysIncludeUnfilterable" value="Y" ${param.alwaysIncludeUnfilterable eq 'Y' ? 'checked="checked"' : ''}>
                                     </div>
                                 </li>
                             </ul>
                         </fieldset>
                     </div>
-                    <input type="hidden" id="offset-input" name="offset" value="0"/>
+                    <input type="hidden" class="offset-input" name="offset" value="0"/>
                     <input class="filter-form-submit-button" type="submit" value="Apply"/>
                 </form>
             </s:filter-flyout-widget>

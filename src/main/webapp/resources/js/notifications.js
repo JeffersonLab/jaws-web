@@ -294,24 +294,24 @@ $(document).on("click", "#open-unsuppress-button", function () {
     jlab.openUnsuppressDialog();
 });
 $(document).on("click", ".default-clear-panel", function () {
-    $("#state-select").val('');
-    $("#overridden-select").val('');
-    $("#override-select").val(null).trigger('change');
-    $("#type-select").val('');
-    $("#location-select").val(null).trigger('change');
-    $("#priority-select").val('');
-    $("#team-select").val('');
-    $("#registered-select").val('');
-    $("#filterable-select").val('');
-    $("#alarm-name").val('');
-    $("#action-select").val(null).trigger('change');
-    $("#system-select").val(null).trigger('change');
-    $("#always-include-unregistered").prop( "checked", false );
-    $("#always-include-unfilterable").prop( "checked", false );
+    $("#notifications-state-select").val('');
+    $("#notifications-overridden-select").val('');
+    $("#notifications-override-select").val(null).trigger('change');
+    $("#notifications-type-select").val('');
+    $("#notifications-location-select").val(null).trigger('change');
+    $("#notifications-priority-select").val('');
+    $("#notifications-team-select").val('');
+    $("#notifications-registered-select").val('');
+    $("#notifications-filterable-select").val('');
+    $("#notifications-alarm-name").val('');
+    $("#notifications-action-select").val(null).trigger('change');
+    $("#notifications-system-select").val(null).trigger('change');
+    $("#notifications-always-include-unregistered").prop( "checked", false );
+    $("#notifications-always-include-unfilterable").prop( "checked", false );
     return false;
 });
 jlab.initDialog = function () {
-    $(".dialog").dialog({
+    $("#unsuppress-dialog, #suppress-dialog").dialog({
         autoOpen: false,
         width: 700,
         height: 700,
@@ -322,15 +322,16 @@ jlab.initDialog = function () {
 function formatLocation(location) {
     return location.text.trim();
 }
-$(function () {
+function pageInit() {
+    console.log('page init');
     jlab.initDialog();
 
-    $("#location-select").select2({
+    $("#notifications-location-select").select2({
         width: 425,
         templateSelection: formatLocation
     });
 
-    $("#override-select, #system-select, #action-select").select2({
+    $("#notifications-override-select, #notifications-system-select, #notifications-action-select").select2({
         width: 425
     });
 
@@ -374,4 +375,11 @@ $(function () {
         controlType: myControl,
         timeFormat: 'HH:mm'
     }).mask("99-aaa-9999 99:99", {placeholder: " "});
+}
+$(function () {
+    pageInit();
+});
+$(document).on("partial-page-init", function() {
+    console.log('on partial-page-init');
+    pageInit();
 });

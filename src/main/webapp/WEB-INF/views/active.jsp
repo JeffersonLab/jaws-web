@@ -50,9 +50,10 @@
                 jlab.systemCountDivMap.set(id, document.getElementById("system-count-" + id));
             }
 
-            jlab.pageDialog.width = 1000;
-            jlab.pageDialog.height =  900;
+            jlab.pageDialog.width = 900;
+            jlab.pageDialog.height =  800;
             jlab.pageDialog.resizable = false;
+            jlab.pageDialog.modal = true;
         </script>
         <script type="text/javascript"
                 src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/active.js"></script>
