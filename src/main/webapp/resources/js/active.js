@@ -130,9 +130,7 @@ evtSource.onerror = (err) => {
     console.error("EventSource failed:", err);
 };
 
-let table = document.getElementById("alarm-table"),
-    tbody = table.querySelector("tbody"),
-    alarmCountSpan = document.getElementById("alarm-count"),
+let alarmCountSpan = document.getElementById("alarm-count"),
     unregisteredCountSpan = document.getElementById("unregistered-count"),
     unregisteredSpan = document.getElementById("unregistered"),
     unfilterableCountSpan = document.getElementById("unfilterable-count"),

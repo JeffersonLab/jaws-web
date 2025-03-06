@@ -168,7 +168,7 @@
                                                 <td>
                                                     <c:url value="/inventory/alarms/${jaws:urlEncodePath(alarm.name)}" var="url">
                                                     </c:url>
-                                                    <a title="Alarm Information" class="dialog-ready"
+                                                    <a title="Alarm Information" class="dialog-opener"
                                                        data-dialog-title="Alarm Information: ${fn:escapeXml(alarm.name)}"
                                                        href="${url}"><c:out
                                                             value="${alarm.name}"/></a>

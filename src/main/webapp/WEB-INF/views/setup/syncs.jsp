@@ -103,7 +103,7 @@
                                                     <c:url value="/inventory/actions/${jaws:urlEncodePath(sync.action.name)}"
                                                            var="url">
                                                     </c:url>
-                                                    <a title="Action Information" class="dialog-ready"
+                                                    <a title="Action Information" class="dialog-opener"
                                                        data-dialog-title="Action Information: ${fn:escapeXml(sync.action.name)}"
                                                        href="${url}"><c:out
                                                             value="${sync.action.name}"/></a>

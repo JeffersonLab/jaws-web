@@ -199,7 +199,7 @@
                                                     <c:url value="/inventory/alarm-detail" var="url">
                                                         <c:param name="name" value="${notification.alarm.name}"/>
                                                     </c:url>
-                                                    <a title="Alarm Information" class="dialog-ready"
+                                                    <a title="Alarm Information" class="dialog-opener"
                                                        data-dialog-title="Alarm Information: ${fn:escapeXml(notification.alarm.name)}"
                                                        href="${url}"><c:out
                                                             value="${notification.alarm.name}"/></a>
