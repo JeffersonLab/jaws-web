@@ -15,7 +15,7 @@
     <jsp:body>
         <section>
             <s:filter-flyout-widget ribbon="true" clearButton="true">
-                <form id="filter-form" method="get" action="notifications">
+                <form class="filter-form" method="get" action="notifications">
                     <div id="filter-form-panel">
                         <fieldset>
                             <legend>Filter</legend>
@@ -200,7 +200,7 @@
                         </fieldset>
                     </div>
                     <input type="hidden" id="offset-input" name="offset" value="0"/>
-                    <input id="filter-form-submit-button" type="submit" value="Apply"/>
+                    <input class="filter-form-submit-button" type="submit" value="Apply"/>
                 </form>
             </s:filter-flyout-widget>
             <h2 class="page-header-title"><c:out value="${title}"/></h2>

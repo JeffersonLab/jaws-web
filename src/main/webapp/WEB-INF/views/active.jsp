@@ -56,7 +56,7 @@
     <jsp:body>
         <section>
             <s:filter-flyout-widget ribbon="true" clearButton="true">
-                <form id="filter-form" method="get" action="active">
+                <form class="filter-form" method="get" action="active">
                     <div id="filter-form-panel">
                         <fieldset>
                             <legend>Filter</legend>
@@ -77,7 +77,7 @@
                             </ul>
                         </fieldset>
                     </div>
-                    <input id="filter-form-submit-button" type="submit" value="Apply"/>
+                    <input class="filter-form-submit-button" type="submit" value="Apply"/>
                 </form>
             </s:filter-flyout-widget>
             <h2 class="page-header-title"><c:out value="${title}"/><span class="status" id="alarm-count"><a id="list-active-link" href="${pageContext.request.contextPath}/notifications?state=Active&alwaysIncludeUnregistered=Y&alwaysIncludeUnfilterable=Y${locationFilterStr}">0</a></span><span class="status" id="loading"><span class="button-indicator"></span> Loading...</span></h2>

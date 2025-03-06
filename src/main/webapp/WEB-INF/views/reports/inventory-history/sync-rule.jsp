@@ -15,7 +15,7 @@
     <jsp:body>
         <section>
             <s:filter-flyout-widget requiredMessage="true">
-                <form id="filter-form" method="get" action="sync-rule">
+                <form class="filter-form" method="get" action="sync-rule">
                     <fieldset>
                         <legend>Filter</legend>
                         <ul class="key-value-list">
@@ -39,7 +39,7 @@
                         </ul>
                     </fieldset>
                     <input type="hidden" id="offset-input" name="offset" value="0"/>
-                    <input id="filter-form-submit-button" type="submit" value="Apply"/>
+                    <input class="filter-form-submit-button" type="submit" value="Apply"/>
                 </form>
             </s:filter-flyout-widget>
             <h2 class="page-header-title">Inventory Activity: Sync Rule <c:out value="${param.syncRuleId}"/></h2>
