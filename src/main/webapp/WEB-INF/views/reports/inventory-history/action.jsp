@@ -196,10 +196,10 @@
                         </tbody>
                     </table>
                     <div class="revision-controls">
-                        <button id="previous-button" type="button" data-offset="${paginator.previousOffset}"
+                        <button class="previous-button" type="button" data-offset="${paginator.previousOffset}"
                                 value="Previous"${paginator.previous ? '' : ' disabled="disabled"'}>Previous
                         </button>
-                        <button id="next-button" type="button" data-offset="${paginator.nextOffset}"
+                        <button class="next-button" type="button" data-offset="${paginator.nextOffset}"
                                 value="Next"${paginator.next ? '' : ' disabled="disabled"'}>Next
                         </button>
                     </div>
