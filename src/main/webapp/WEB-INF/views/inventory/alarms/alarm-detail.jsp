@@ -14,7 +14,7 @@
     <jsp:attribute name="scripts">
     </jsp:attribute>
     <jsp:body>
-        <div class="banner-breadbox">
+        <div class="banner-breadbox hide-in-dialog">
             <ul>
                 <li>
                     <span>Alarms</span>
@@ -25,12 +25,12 @@
             </ul>
         </div>
         <section>
-            <div class="dialog-content">
+            <div>
                 <div class="dialog-links">
                     <c:url value="/inventory/alarms/${jaws:urlEncodePath(param.name)}" var="url">
                     </c:url>
                     <a class="dialog-only-link"
-                       href="${url}">Link</a>
+                       href="${url}" target="_blank">Open in new tab</a>
                     <c:set var="editable" value="${pageContext.request.isUserInRole('jaws-admin')}"/>
                     <c:if test="${editable}">
                         <c:url var="url" value="/inventory/alarms">
@@ -132,7 +132,7 @@
                             <dd>
                                 <c:out value="${alarm.action.system.team.name}"/> &gt;
                                 <c:out value="${alarm.action.system.name}"/> &gt;
-                                <a href="${url}"><c:out value="${alarm.action.name}"/></a>
+                                <a class="partial-support" href="${url}"><c:out value="${alarm.action.name}"/></a>
                             </dd>
                             <dt>Location:</dt>
                             <dd><c:out value="${alarm.locationNameCsv}"/></dd>
