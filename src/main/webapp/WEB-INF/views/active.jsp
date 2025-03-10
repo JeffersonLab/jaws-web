@@ -51,7 +51,7 @@
             }
 
             jlab.pageDialog.width = 900;
-            jlab.pageDialog.height =  800;
+            jlab.pageDialog.height =  900;
             jlab.pageDialog.resizable = false;
             jlab.pageDialog.modal = true;
         </script>
