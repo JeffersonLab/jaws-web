@@ -39,7 +39,6 @@ jlab.showPartialPageDialog = function($dialog, title) {
     $(document).trigger('partial-page-init');
 };
 jlab.openPageInDialog = function (href) {
-    console.log('openPageInDialog');
     try {
         let url = new URL(href, window.location.href);
         url.searchParams.set('partial', 'Y');

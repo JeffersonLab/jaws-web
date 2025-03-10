@@ -342,7 +342,6 @@ function formatLocation(location) {
     return location.text.trim();
 }
 function pageInit() {
-    console.log('page init');
     jlab.initDialog();
 
     $("#notifications-location-select").select2({
@@ -396,6 +395,5 @@ function pageInit() {
     }).mask("99-aaa-9999 99:99", {placeholder: " "});
 }
 $(document).on("partial-page-init", function() {
-    console.log('on partial-page-init');
     pageInit();
 });
