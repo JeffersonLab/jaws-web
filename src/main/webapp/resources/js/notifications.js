@@ -1,39 +1,4 @@
 var jlab = jlab || {};
-jlab.acknowledgeAll = function() {
-    var reloading = false;
-
-    $("#acknowledge-all-button")
-        .height($("#acknowledge-all-button").height())
-        .width($("#acknowledge-all-button").width())
-        .empty().append('<div class="button-indicator"></div>');
-
-    var request = jQuery.ajax({
-        url: "/jaws/ajax/acknowledge-all",
-        type: "POST",
-        dataType: "json"
-    });
-
-    request.done(function(json) {
-        if (json.stat === 'ok') {
-            reloading = true;
-            alert('Sent ' + jlab.integerWithCommas(json.count) + ' acknowledgements');
-            window.location.reload();
-        } else {
-            alert(json.error);
-        }
-    });
-
-    request.fail(function(xhr, textStatus) {
-        window.console && console.log('Unable to acknowledge all alarms; Text Status: ' + textStatus + ', Ready State: ' + xhr.readyState + ', HTTP Status Code: ' + xhr.status);
-        alert('Unable to acknowledge all: Server unavailable or unresponsive');
-    });
-
-    request.always(function() {
-        if (!reloading) {
-            $("#acknowledge-all-button").empty().text("Acknowledge All");
-        }
-    });
-};
 jlab.acknowledge = function() {
     var reloading = false,
         nameArray = [],
@@ -297,11 +262,6 @@ $(document).on("click", "#suppress-button", function () {
 });
 $(document).on("click", "#unsuppress-button", function () {
     jlab.unsuppress();
-});
-$(document).on("click", "#acknowledge-all-button", function () {
-    if (confirm('Acknowledge all Latched alarms?')) {
-        jlab.acknowledgeAll();
-    }
 });
 $(document).on("click", "#acknowledge-button", function () {
     jlab.acknowledge();

@@ -91,6 +91,27 @@ public class OverrideFacade extends AbstractFacade<AlarmOverride> {
       throw new UserFriendlyException("Type selection must not be null");
     }
 
+    try (OverrideProducer producer =
+        new OverrideProducer(KafkaConfig.getProducerPropsWithRegistry())) {
+      for (String name : nameArray) {
+        AlarmOverrideKey key = new AlarmOverrideKey(name, type);
+        producer.send(key, value);
+      }
+    }
+  }
+
+  @RolesAllowed({"jaws-admin", "jaws-operator"})
+  public void kafkaSetWithConfirmation(
+      String[] nameArray, OverriddenAlarmType type, AlarmOverrideUnion value)
+      throws UserFriendlyException {
+    if (nameArray == null || nameArray.length == 0) {
+      throw new UserFriendlyException("Names selection must not be empty");
+    }
+
+    if (type == null) {
+      throw new UserFriendlyException("Type selection must not be null");
+    }
+
     // Duplicates are squashed
     HashSet<String> nameSet = new HashSet<>(Arrays.asList(nameArray));
     boolean wasNotified = false;
