@@ -265,3 +265,6 @@ span.system-active {
     color: white;
     padding: 0.2em;
 }
+#acknowledge-all-button {
+    float: right;
+}
