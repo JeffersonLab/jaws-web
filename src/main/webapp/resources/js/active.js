@@ -438,9 +438,9 @@ function acknowledgeAll() {
 
     request.done(function(json) {
         if (json.stat === 'ok') {
-            reloading = true;
-            alert('Sent ' + jlab.integerWithCommas(json.count) + ' acknowledgements');
-            window.location.reload();
+            //reloading = true;
+            //alert('Sent ' + jlab.integerWithCommas(json.count) + ' acknowledgements');
+            //window.location.reload();
         } else {
             alert(json.error);
         }
@@ -458,9 +458,9 @@ function acknowledgeAll() {
     });
 }
 $(document).on("click", "#acknowledge-all-button", function () {
-    if (confirm('Acknowledge all Latched alarms?')) {
+    //if (confirm('Acknowledge all Latched alarms?')) {
        acknowledgeAll();
-    }
+    //}
 });
 $(document).on("click", ".default-clear-panel", function () {
     $("#location-select").val(null).trigger('change');

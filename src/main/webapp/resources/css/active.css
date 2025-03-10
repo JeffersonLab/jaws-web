@@ -266,5 +266,8 @@ span.system-active {
     padding: 0.2em;
 }
 #acknowledge-all-button {
+    position: relative;
     float: right;
+    z-index: 10;
+    width: 125px;
 }

@@ -94,7 +94,11 @@
                 | <span><a class="dialog-opener" href="${pageContext.request.contextPath}/notifications${rootLocationFilterStr}"><span id="all-count">-</span></a> Alarms</span>
             </span>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
-            <button type="button" id="acknowledge-all-button" class="">Acknowledge All</button>
+            <c:set var="editable"
+                   value="${pageContext.request.isUserInRole('jaws-admin') || pageContext.request.isUserInRole('jaws-operator')}"/>
+            <c:if test="${editable}">
+                <button type="button" id="acknowledge-all-button" class="">Acknowledge All</button>
+            </c:if>
             <div id="diagram-container">
                 <img draggable="false" alt="site" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/img/site.png"/>
                 <div id="system-grid">
