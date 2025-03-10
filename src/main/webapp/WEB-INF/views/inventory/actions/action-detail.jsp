@@ -13,22 +13,22 @@
     <jsp:attribute name="scripts">
     </jsp:attribute>        
     <jsp:body>
-        <div class="banner-breadbox">
+        <div class="banner-breadbox hide-in-dialog">
             <ul>
                 <li>
                     <span>Actions</span>
                 </li>
                 <li>
-                    <h2 id="page-header-title"><c:out value="${param.name}"/></h2>
+                    <h2 class="page-header-title"><c:out value="${param.name}"/></h2>
                 </li>
             </ul>
         </div>
         <section>
-            <div class="dialog-content">
+            <div>
                 <div class="dialog-links">
                     <c:url value="/inventory/actions/${jaws:urlEncodePath(param.name)}" var="url">
                     </c:url>
-                    <a class="dialog-only-link" href="${url}">Link</a>
+                    <a class="dialog-only-link" href="${url}" target="_blank">Open in new tab</a>
                     <c:set var="editable" value="${pageContext.request.isUserInRole('jaws-admin')}"/>
                     <c:if test="${editable}">
                         <c:url var="url" value="/inventory/actions">

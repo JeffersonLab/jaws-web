@@ -15,23 +15,7 @@ jlab.initMarkdownWidgets = function() {
 jlab.doneLoading = function() {
     jlab.initMarkdownWidgets();
 };
-jlab.openPageInDialog = function (href, title) {
-    $("<div class=\"page-dialog\"></div>")
-        .load(href + ' .dialog-content', jlab.doneLoading)
-        .dialog({
-            modal: true,
-            autoOpen: true,
-            title: title,
-            width: jlab.pageDialog.width,
-            height: jlab.pageDialog.height,
-            minWidth: jlab.pageDialog.minWidth,
-            minHeight: jlab.pageDialog.minHeight,
-            resizable: jlab.pageDialog.resizable,
-            close: function () {
-                $(this).dialog('destroy').remove();
-            }
-        });
-};
+
 $(function () {
     jlab.initMarkdownWidgets();
 });

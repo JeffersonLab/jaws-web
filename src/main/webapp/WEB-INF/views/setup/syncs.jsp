@@ -18,7 +18,7 @@
     <jsp:body>
         <section>
             <s:filter-flyout-widget clearButton="true">
-                <form id="filter-form" method="get" action="syncs">
+                <form class="filter-form" method="get" action="syncs">
                     <div id="filter-form-panel">
                         <fieldset>
                             <legend>Filter</legend>
@@ -58,10 +58,10 @@
                         </fieldset>
                     </div>
                     <input type="hidden" id="offset-input" name="offset" value="0"/>
-                    <input id="filter-form-submit-button" type="submit" value="Apply"/>
+                    <input class="filter-form-submit-button" type="submit" value="Apply"/>
                 </form>
             </s:filter-flyout-widget>
-            <h2 id="page-header-title"><c:out value="${title}"/></h2>
+            <h2 class="page-header-title"><c:out value="${title}"/></h2>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="chart-wrap" class="chart-wrap-backdrop">
                 <c:set var="readonly" value="${!pageContext.request.isUserInRole('jaws-admin')}"/>
@@ -104,7 +104,7 @@
                                                     <c:url value="/inventory/actions/${jaws:urlEncodePath(sync.action.name)}"
                                                            var="url">
                                                     </c:url>
-                                                    <a title="Action Information" class="dialog-ready"
+                                                    <a title="Action Information" class="dialog-opener"
                                                        data-dialog-title="Action Information: ${fn:escapeXml(sync.action.name)}"
                                                        href="${url}"><c:out
                                                             value="${sync.action.name}"/></a>
@@ -134,10 +134,10 @@
                     </tr>
                     </tbody>
                 </table>
-                <button id="previous-button" type="button" data-offset="${paginator.previousOffset}"
+                <button class="previous-button" type="button" data-offset="${paginator.previousOffset}"
                         value="Previous"${paginator.previous ? '' : ' disabled="disabled"'}>Previous
                 </button>
-                <button id="next-button" type="button" data-offset="${paginator.nextOffset}"
+                <button class="next-button" type="button" data-offset="${paginator.nextOffset}"
                         value="Next"${paginator.next ? '' : ' disabled="disabled"'}>Next
                 </button>
             </div>

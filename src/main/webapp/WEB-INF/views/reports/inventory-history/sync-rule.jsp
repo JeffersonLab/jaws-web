@@ -15,7 +15,7 @@
     <jsp:body>
         <section>
             <s:filter-flyout-widget requiredMessage="true">
-                <form id="filter-form" method="get" action="sync-rule">
+                <form class="filter-form" method="get" action="sync-rule">
                     <fieldset>
                         <legend>Filter</legend>
                         <ul class="key-value-list">
@@ -39,10 +39,10 @@
                         </ul>
                     </fieldset>
                     <input type="hidden" id="offset-input" name="offset" value="0"/>
-                    <input id="filter-form-submit-button" type="submit" value="Apply"/>
+                    <input class="filter-form-submit-button" type="submit" value="Apply"/>
                 </form>
             </s:filter-flyout-widget>
-            <h2 id="page-header-title">Inventory Activity: Sync Rule <c:out value="${param.syncRuleId}"/></h2>
+            <h2 class="page-header-title">Inventory Activity: Sync Rule <c:out value="${param.syncRuleId}"/></h2>
             <ul class="bracket-horizontal-nav">
                 <li><a href="${pageContext.request.contextPath}/reports/inventory-history">Transactions</a>&nbsp;</li>
                 <li><a href="${pageContext.request.contextPath}/reports/inventory-history/alarm">Alarm</a>&nbsp;</li>
@@ -225,10 +225,10 @@
                         </tbody>
                     </table>
                     <div class="revision-controls">
-                        <button id="previous-button" type="button" data-offset="${paginator.previousOffset}"
+                        <button class="previous-button" type="button" data-offset="${paginator.previousOffset}"
                                 value="Previous"${paginator.previous ? '' : ' disabled="disabled"'}>Previous
                         </button>
-                        <button id="next-button" type="button" data-offset="${paginator.nextOffset}"
+                        <button class="next-button" type="button" data-offset="${paginator.nextOffset}"
                                 value="Next"${paginator.next ? '' : ' disabled="disabled"'}>Next
                         </button>
                     </div>

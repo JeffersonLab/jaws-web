@@ -37,7 +37,8 @@ jlab.acknowledgeAll = function() {
 jlab.acknowledge = function() {
     var reloading = false,
         nameArray = [],
-        idArray = [];
+        idArray = [],
+        inPartialPageDialog = $(document).find(".partial #notification-table").length > 0;
 
     $("#notification-table .inner-table .selected-row").each(function () {
         var alarmName = $(this).closest("tr").find(":nth-child(1) a").text(),
@@ -64,8 +65,12 @@ jlab.acknowledge = function() {
 
     request.done(function(json) {
         if (json.stat === 'ok') {
-            reloading = true;
-            window.location.reload();
+            if(inPartialPageDialog) {
+                $(".page-dialog").dialog("close");
+            } else {
+                reloading = true;
+                window.location.reload();
+            }
         } else {
             alert(json.error);
         }
@@ -86,7 +91,9 @@ jlab.unsuppress = function() {
     var reloading = false,
         nameArray = [],
         idArray = [],
-        type = $('input[name="unsuppress-type"]:checked').val();
+        type = $('input[name="unsuppress-type"]:checked').val(),
+        inPartialPageDialog = $(document).find(".partial #notification-table").length > 0,
+        $dialog = $("#unsuppress-dialog");
 
     $("#notification-table .inner-table .selected-row").each(function () {
         var alarmName = $(this).closest("tr").find(":nth-child(1) a").text(),
@@ -113,8 +120,13 @@ jlab.unsuppress = function() {
 
     request.done(function(json) {
         if (json.stat === 'ok') {
-            reloading = true;
-            window.location.reload();
+            if(inPartialPageDialog) {
+                $dialog.dialog("close");
+                $(".page-dialog").dialog("close");
+            } else {
+                reloading = true;
+                window.location.reload();
+            }
         } else {
             alert(json.error);
         }
@@ -135,7 +147,9 @@ jlab.suppress = function () {
     var reloading = false,
         nameArray = [],
         idArray = [],
-        type = $('input[name="suppress-type"]:checked').val();
+        type = $('input[name="suppress-type"]:checked').val(),
+        inPartialPageDialog = $(document).find(".partial #notification-table").length > 0,
+        $dialog = $("#suppress-dialog");
 
     var comments = $("#suppress-comments").val(),
         oneshot = $("#oneshot").is(":checked"),
@@ -171,8 +185,13 @@ jlab.suppress = function () {
 
     request.done(function(json) {
         if (json.stat === 'ok') {
-            reloading = true;
-            window.location.reload();
+            if(inPartialPageDialog) {
+                $dialog.dialog("close");
+                $(".page-dialog").dialog("close");
+            } else {
+                reloading = true;
+                window.location.reload();
+            }
         } else {
             alert(json.error);
         }
@@ -294,24 +313,24 @@ $(document).on("click", "#open-unsuppress-button", function () {
     jlab.openUnsuppressDialog();
 });
 $(document).on("click", ".default-clear-panel", function () {
-    $("#state-select").val('');
-    $("#overridden-select").val('');
-    $("#override-select").val(null).trigger('change');
-    $("#type-select").val('');
-    $("#location-select").val(null).trigger('change');
-    $("#priority-select").val('');
-    $("#team-select").val('');
-    $("#registered-select").val('');
-    $("#filterable-select").val('');
-    $("#alarm-name").val('');
-    $("#action-select").val(null).trigger('change');
-    $("#system-select").val(null).trigger('change');
-    $("#always-include-unregistered").prop( "checked", false );
-    $("#always-include-unfilterable").prop( "checked", false );
+    $("#notifications-state-select").val('');
+    $("#notifications-overridden-select").val('');
+    $("#notifications-override-select").val(null).trigger('change');
+    $("#notifications-type-select").val('');
+    $("#notifications-location-select").val(null).trigger('change');
+    $("#notifications-priority-select").val('');
+    $("#notifications-team-select").val('');
+    $("#notifications-registered-select").val('');
+    $("#notifications-filterable-select").val('');
+    $("#notifications-alarm-name").val('');
+    $("#notifications-action-select").val(null).trigger('change');
+    $("#notifications-system-select").val(null).trigger('change');
+    $("#notifications-always-include-unregistered").prop( "checked", false );
+    $("#notifications-always-include-unfilterable").prop( "checked", false );
     return false;
 });
 jlab.initDialog = function () {
-    $(".dialog").dialog({
+    $("#unsuppress-dialog, #suppress-dialog").dialog({
         autoOpen: false,
         width: 700,
         height: 700,
@@ -322,15 +341,15 @@ jlab.initDialog = function () {
 function formatLocation(location) {
     return location.text.trim();
 }
-$(function () {
+function pageInit() {
     jlab.initDialog();
 
-    $("#location-select").select2({
+    $("#notifications-location-select").select2({
         width: 425,
         templateSelection: formatLocation
     });
 
-    $("#override-select, #system-select, #action-select").select2({
+    $("#notifications-override-select, #notifications-system-select, #notifications-action-select").select2({
         width: 425
     });
 
@@ -374,4 +393,7 @@ $(function () {
         controlType: myControl,
         timeFormat: 'HH:mm'
     }).mask("99-aaa-9999 99:99", {placeholder: " "});
+}
+$(document).on("partial-page-init", function() {
+    pageInit();
 });

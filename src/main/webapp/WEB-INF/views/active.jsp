@@ -49,6 +49,11 @@
             for(let id of jlab.systemNameIdMap.values()) {
                 jlab.systemCountDivMap.set(id, document.getElementById("system-count-" + id));
             }
+
+            jlab.pageDialog.width = 900;
+            jlab.pageDialog.height =  900;
+            jlab.pageDialog.resizable = false;
+            jlab.pageDialog.modal = true;
         </script>
         <script type="text/javascript"
                 src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/js/active.js"></script>
@@ -56,7 +61,7 @@
     <jsp:body>
         <section>
             <s:filter-flyout-widget ribbon="true" clearButton="true">
-                <form id="filter-form" method="get" action="active">
+                <form class="filter-form" method="get" action="active">
                     <div id="filter-form-panel">
                         <fieldset>
                             <legend>Filter</legend>
@@ -77,52 +82,33 @@
                             </ul>
                         </fieldset>
                     </div>
-                    <input id="filter-form-submit-button" type="submit" value="Apply"/>
+                    <input class="filter-form-submit-button" type="submit" value="Apply"/>
                 </form>
             </s:filter-flyout-widget>
-            <h2 id="page-header-title"><c:out value="${title}"/><span class="status" id="alarm-count"><a id="list-active-link" href="${pageContext.request.contextPath}/notifications?state=Active&alwaysIncludeUnregistered=Y&alwaysIncludeUnfilterable=Y${locationFilterStr}">0</a></span><span class="status" id="loading"><span class="button-indicator"></span> Loading...</span></h2>
+            <h2 class="page-header-title"><c:out value="${title}"/><span class="status" id="alarm-count"><a id="list-active-link" class="dialog-opener" href="${pageContext.request.contextPath}/notifications?state=Active&alwaysIncludeUnregistered=Y&alwaysIncludeUnfilterable=Y${locationFilterStr}">0</a></span><span class="status" id="loading"><span class="button-indicator"></span> Loading...</span></h2>
             <div id="liveness-heartbeat">Liveness: <span id="liveness-ts">None</span></div>
             <span id="info-counts">
-                (<span><a href="${pageContext.request.contextPath}/notifications?override=Latched&override=OffDelayed${locationFilterStr}"><span id="incited-count">-</span></a> Incited</span>)
-                | <span><a href="${pageContext.request.contextPath}/notifications?state=Normal${locationFilterStr}"><span id="normal-count">-</span></a> Normal</span>
-                (<span><a href="${pageContext.request.contextPath}/notifications?override=Disabled&override=Shelved&override=Masked&override=OnDelayed&override=Filtered${locationFilterStr}"><span id="suppressed-count">-</span></a> Suppressed</span>)
-                | <span><a href="${pageContext.request.contextPath}/notifications${rootLocationFilterStr}"><span id="all-count">-</span></a> Alarms</span>
+                (<span><a class="dialog-opener" href="${pageContext.request.contextPath}/notifications?override=Latched&override=OffDelayed${locationFilterStr}"><span id="incited-count">-</span></a> Incited</span>)
+                | <span><a class="dialog-opener" href="${pageContext.request.contextPath}/notifications?state=Normal${locationFilterStr}"><span id="normal-count">-</span></a> Normal</span>
+                (<span><a class="dialog-opener" href="${pageContext.request.contextPath}/notifications?override=Disabled&override=Shelved&override=Masked&override=OnDelayed&override=Filtered${locationFilterStr}"><span id="suppressed-count">-</span></a> Suppressed</span>)
+                | <span><a class="dialog-opener" href="${pageContext.request.contextPath}/notifications${rootLocationFilterStr}"><span id="all-count">-</span></a> Alarms</span>
             </span>
             <div class="message-box"><c:out value="${selectionMessage}"/></div>
             <div id="diagram-container">
                 <img draggable="false" alt="site" src="${pageContext.request.contextPath}/resources/v${initParam.releaseNumber}/img/site.png"/>
                 <div id="system-grid">
                     <c:forEach items="${systemList}" var="system">
-                        <div id="system-count-${system.systemId}"><span class="system-status system-count"><a href="${pageContext.request.contextPath}/notifications?state=Active&systemName=${system.name}${locationFilterStr}">0</a></span> <c:out value="${system.name}"/></div>
+                        <div id="system-count-${system.systemId}"><span class="system-status system-count"><a class="dialog-opener" href="${pageContext.request.contextPath}/notifications?state=Active&systemName=${system.name}${locationFilterStr}">0</a></span> <c:out value="${system.name}"/></div>
                     </c:forEach>
                 </div>
                 <c:forEach items="${locationList}" var="location">
-                    <span class="location-status" id="location-count-${location.locationId}"><a href="${pageContext.request.contextPath}/notifications?state=Active&locationId=${location.locationId}">0</a></span>
+                    <span class="location-status" id="location-count-${location.locationId}"><a class="dialog-opener" href="${pageContext.request.contextPath}/notifications?state=Active&locationId=${location.locationId}">0</a></span>
                 </c:forEach>
             </div>
             <span id="link-bar">
-                <span id="unregistered" class="initially-none"><a href="${pageContext.request.contextPath}/notifications?state=Active&registered=N"><span class="special-count" id="unregistered-count"></span></a> Unregistered</span>
-                <span id="unfilterable" class="initially-none"><a href="${pageContext.request.contextPath}/notifications?state=Active&filterable=N"><span class="special-count" id="unfilterable-count"></span></a> Unfilterable</span>
+                <span id="unregistered" class="initially-none"><a class="dialog-opener" href="${pageContext.request.contextPath}/notifications?state=Active&registered=N"><span class="special-count" id="unregistered-count"></span></a> Unregistered</span>
+                <span id="unfilterable" class="initially-none"><a class="dialog-opener" href="${pageContext.request.contextPath}/notifications?state=Active&filterable=N"><span class="special-count" id="unfilterable-count"></span></a> Unfilterable</span>
             </span>
         </section>
-        <div id="all-dialog" class="dialog" title="Active Alarms">
-            <table id="alarm-table" class="data-table">
-                <thead>
-                <tr>
-                    <th>name</th>
-                    <th>priority</th>
-                    <th>state</th>
-                    <th>type</th>
-                    <th>error</th>
-                    <th>stat</th>
-                    <th>sevr</th>
-                    <th>epicspv</th>
-                    <th>location</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
     </jsp:body>
 </t:page>
