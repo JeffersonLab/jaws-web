@@ -37,7 +37,8 @@ jlab.acknowledgeAll = function() {
 jlab.acknowledge = function() {
     var reloading = false,
         nameArray = [],
-        idArray = [];
+        idArray = [],
+        inPartialPageDialog = $(document).find(".partial #notification-table").length > 0;
 
     $("#notification-table .inner-table .selected-row").each(function () {
         var alarmName = $(this).closest("tr").find(":nth-child(1) a").text(),
@@ -64,8 +65,12 @@ jlab.acknowledge = function() {
 
     request.done(function(json) {
         if (json.stat === 'ok') {
-            reloading = true;
-            window.location.reload();
+            if(inPartialPageDialog) {
+                $(".page-dialog").dialog("close");
+            } else {
+                reloading = true;
+                window.location.reload();
+            }
         } else {
             alert(json.error);
         }
@@ -86,7 +91,9 @@ jlab.unsuppress = function() {
     var reloading = false,
         nameArray = [],
         idArray = [],
-        type = $('input[name="unsuppress-type"]:checked').val();
+        type = $('input[name="unsuppress-type"]:checked').val(),
+        inPartialPageDialog = $(document).find(".partial #notification-table").length > 0,
+        $dialog = $("#unsuppress-dialog");
 
     $("#notification-table .inner-table .selected-row").each(function () {
         var alarmName = $(this).closest("tr").find(":nth-child(1) a").text(),
@@ -113,8 +120,13 @@ jlab.unsuppress = function() {
 
     request.done(function(json) {
         if (json.stat === 'ok') {
-            reloading = true;
-            window.location.reload();
+            if(inPartialPageDialog) {
+                $dialog.dialog("close");
+                $(".page-dialog").dialog("close");
+            } else {
+                reloading = true;
+                window.location.reload();
+            }
         } else {
             alert(json.error);
         }
@@ -135,7 +147,9 @@ jlab.suppress = function () {
     var reloading = false,
         nameArray = [],
         idArray = [],
-        type = $('input[name="suppress-type"]:checked').val();
+        type = $('input[name="suppress-type"]:checked').val(),
+        inPartialPageDialog = $(document).find(".partial #notification-table").length > 0,
+        $dialog = $("#suppress-dialog");
 
     var comments = $("#suppress-comments").val(),
         oneshot = $("#oneshot").is(":checked"),
@@ -171,8 +185,13 @@ jlab.suppress = function () {
 
     request.done(function(json) {
         if (json.stat === 'ok') {
-            reloading = true;
-            window.location.reload();
+            if(inPartialPageDialog) {
+                $dialog.dialog("close");
+                $(".page-dialog").dialog("close");
+            } else {
+                reloading = true;
+                window.location.reload();
+            }
         } else {
             alert(json.error);
         }

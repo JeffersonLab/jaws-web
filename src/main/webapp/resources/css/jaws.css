@@ -71,3 +71,6 @@ dd ul {
 .markdown-widget .markdown-text {
     display: none;
 }
+.editable-row-table tr.selected-row a {
+    color: red;
+}
