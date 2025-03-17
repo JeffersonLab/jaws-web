@@ -17,7 +17,7 @@
         <section>
             <s:filter-flyout-widget ribbon="false" clearButton="true">
                 <form class="filter-form" method="get" action="suppress-history">
-                    <div id="filter-form-panel">
+                    <div class="filter-form-panel">
                         <fieldset>
                             <legend>Filter</legend>
                             <s:date-range datetime="${true}" sevenAmOffset="${false}"/>

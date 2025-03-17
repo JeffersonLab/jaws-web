@@ -40,7 +40,7 @@
         <section>
             <s:filter-flyout-widget clearButton="true">
                 <form class="filter-form" method="get" action="inventory-history">
-                    <div id="filter-form-panel">
+                    <div class="filter-form-panel">
                         <fieldset>
                             <legend>Filter</legend>
                             <s:date-range datetime="${true}" sevenAmOffset="${true}"/>

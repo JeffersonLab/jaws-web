@@ -16,7 +16,7 @@
         <section>
             <s:filter-flyout-widget clearButton="true">
                 <form class="filter-form" method="get" action="systems">
-                    <div id="filter-form-panel">
+                    <div class="filter-form-panel">
                         <fieldset>
                             <legend>Filter</legend>
                             <ul class="key-value-list">
