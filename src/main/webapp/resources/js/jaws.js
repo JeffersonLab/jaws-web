@@ -12,10 +12,11 @@ jlab.initMarkdownWidgets = function() {
         $(this).find(".markdown-html").html(rendered);
     });
 };
-jlab.doneLoading = function() {
-    jlab.initMarkdownWidgets();
-};
 
 $(function () {
+    jlab.initMarkdownWidgets();
+});
+
+$(document).on("partial-page-init", function() {
     jlab.initMarkdownWidgets();
 });
